@@ -1,0 +1,95 @@
+
+{% extends "layouts/baseLogin.html" %}
+
+{% block title %} Login {% endblock title %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+   
+    <div class="col-md-12">
+        <img src="/static/assets/img/JC-Energy-Logo-Full.png" class="navbar-brand mt-5">
+    </div>
+    
+    <div class="col-md-12 d-flex justify-content-center">     
+        <div class="card" style="width: 30rem;">
+                <div class="card-header bg-dark2">
+                    <div class="card-title">
+                        {% if msg %}
+                            <span class="text-danger">{{ msg | safe }}</span>
+                        {% else %}
+                            <span style="color: white">
+                                Sign in!
+                            </span>
+                        {% endif %}
+        
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form method="POST" >
+                        {% csrf_token %}
+                    
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">
+                                                <i class="icon-user"></i>
+                                            </span>
+                                        </div>
+                                        {{ form.username }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+    
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">
+                                                <i class="icon-lock"></i>
+                                            </span>
+                                        </div>
+                                        {{ form.password }}
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-md-12  d-flex justify-content-end">
+                                        <a href="{% url 'passwordReset' %}" >Forgot password?</a>
+                                    </div>
+                                </div>  
+                            </div>   
+                        </div>
+    
+                        <div class="form-group row mt-2">
+                            <div class="col-6 d-flex justify-content-start mt-2">
+                                <div class="custom-control custom-checkbox ml-2">
+                                    <input type="checkbox" class="custom-control-input" id="rememberme">
+                                    <label class="custom-control-label" for="rememberme">Remember Me</label>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <button type="submit" class="btn bg-dark2 btn-block" style="color: white">Submit</button>
+                                &nbsp; &nbsp;
+                            </div>
+                        </div>
+                     
+                        <div class="form-group row justify-content-center mt-2">
+                            <div class="col-md-12">
+                                <span>Not a member?</span> Please <a href="{% url 'register' %}" >Register</a>
+                              
+                            </div>
+                        </div>
+                    </form>
+                </div>
+        </div>
+    </div>
+   
+{% endblock content %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}{% endblock javascripts %}

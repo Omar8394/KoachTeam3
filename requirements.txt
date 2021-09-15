@@ -1,0 +1,11 @@
+asgiref
+autopep8
+django
+mysqlclient
+pycodestyle
+pytz
+sqlparse
+Unipath
+dj-database-url
+python-decouple
+whitenoise
