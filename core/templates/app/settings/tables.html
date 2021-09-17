@@ -1,0 +1,133 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}{% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<div class="content">
+   <div class="page-inner">
+      <div class="page-header">
+         <h4 class="page-title">System tables</h4>
+         <ul class="breadcrumbs">
+            <li class="nav-home">
+               <a href="{% url 'home' %}">
+                  <i class="flaticon-home"></i>
+               </a>
+            </li>
+            <li class="separator">
+               <i class="flaticon-right-arrow"></i>
+            </li>
+            <li class="nav-item">
+               <span>Settings</span>
+            </li>
+            <li class="separator">
+               <i class="flaticon-right-arrow"></i>
+            </li>
+            <li class="nav-item">
+               <a href="{% url 'system_tables' %}">Tables</a>
+            </li>
+         </ul>
+      </div>
+      <div class="page-category">
+         <div class="card">
+            <div class="card-header">
+               <div class="form-row">
+                  <div class="form-group col-md-6">
+                     <h2 class="card-text mt-2">
+                        List of scales
+                     </h2>
+   
+                  </div>
+                  <div class="form-group col-md-6 d-flex justify-content-end">
+   
+                     <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addNewScale"
+                        onclick="abrir">
+                        Add scale <i class="fas fa-plus ml-1"></i>
+                     </button>
+   
+                  </div>
+   
+               </div>
+   
+            </div>
+            <div class="card-body">
+               <div class="table-responsive">
+                  <table class="table table-hover table-striped table-borderless text-center">
+                     <thead>
+                        <tr>
+                           <th>#</th>
+                           <th>Table heading</th>
+                           <th>Actions</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        <tr>
+                           <th scope="row">1</th>
+                           <td>Table cell</td>
+                           <td>
+                              <button type="button" class="btn btn-icon btn-sm btn-info" data-placement="top"
+                                 title="Tooltip on top" data-toggle="modal" data-target="#newModal">
+                                 <i class="fas fa-edit"></i>
+                              </button>
+                              <button type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="modal"
+                                 data-target="#newModal">
+                                 <i class="fas fa-trash-alt"></i>
+                              </button>
+                           </td>
+   
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               <ul class="list-group list-group-flush">
+                  <li class="list-group-item align-items-center">
+                     <div class="form-group col-md-10">
+                        asdadasdasdsadad
+                     </div>
+   
+   
+                     <div class="form-group col-md-2 d-flex justify-content-end">
+                        <button type="button" class="btn btn-icon btn-round btn-info" data-placement="top"
+                           title="Tooltip on top" data-toggle="modal" data-target="#newModal">
+                           <i class="fas fa-edit"></i>
+                        </button>
+                        <button type="button" class="btn btn-icon btn-round btn-danger ml-1" data-toggle="modal"
+                           data-target="#newModal">
+                           <i class="fas fa-trash-alt"></i>
+                        </button>
+                     </div>
+                  </li>
+               </ul>
+            </div>
+            <div class="card-footer">
+               <nav aria-label="...">
+                  <ul class="pagination mb-0  justify-content-end">
+                     <li class="page-item">
+                        <a class="page-link" href="#" tabindex="-1">Previous</a>
+                     </li>
+                     <li class="page-item active">
+                        <a class="page-link" href="#">1</a>
+                     </li>
+                     <li class="page-item">
+                        <a class="page-link" href="#">2</a>
+                     </li>
+                     <li class="page-item"><a class="page-link" href="#">3</a></li>
+                     <li class="page-item">
+                        <a class="page-link" href="#">Next</a>
+                     </li>
+                  </ul>
+               </nav>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+
+
+{% endblock content %}
+
+{% block javascripts %}
+{% endblock javascripts %}

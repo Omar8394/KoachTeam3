@@ -8,12 +8,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.template import loader
 from django.http import HttpResponse
 from django import template
-# from modules.security.models import Seguro
-# from modules.academic.models import Curso 
-
-# from modules.planning.models import Plan 
-
-# from modules.registration.models import Registro 
+from .models import TablasConfiguracion
+from ..academic.models import EscalaCalificacion
 
 
 
@@ -27,6 +23,18 @@ def index(request):
     context['segment'] = 'index'
 
     html_template = loader.get_template( 'index.html' )
+    return HttpResponse(html_template.render(context, request))
+
+@login_required(login_url="/login/")
+def tables(request):
+    context = {"tables": TablasConfiguracion.objects.all()}
+    html_template = (loader.get_template('app/settings/tables.html'))
+    return HttpResponse(html_template.render(context, request))
+
+@login_required(login_url="/login/")
+def scales(request):
+    context = {"escalas": EscalaCalificacion.objects.all()}
+    html_template = (loader.get_template('app/settings/scales.html'))
     return HttpResponse(html_template.render(context, request))
 
 @login_required(login_url="/login/")
