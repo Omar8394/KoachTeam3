@@ -1,9 +1,17 @@
 from django.db import models
+from ..app.models import TablasConfiguracion
 
-# Create your models here.
-class Plan(models.Model):
-    name = models.CharField(max_length=200)
-    email = models.EmailField()
 
-    def __str__(self):
-        return self.name
+class Perfil(models.Model):
+    idperfil = models.SmallAutoField(primary_key=True)
+    deescripcion = models.TextField()
+    desc_corta = models.TextField()
+    fk_rama = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE)
+
+
+class CompetenciasReq(models.Model):
+    idcompetenciasreq = models.AutoField(primary_key=True)
+    desc_competencia = models.TextField()
+    fk_perfil = models.ForeignKey(Perfil, on_delete=models.CASCADE)
+    fk_tipo_competencia = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE)
+    fk_nivel = models.ForeignKey(TablasConfiguracion, related_name='competencias_nivel', on_delete=models.CASCADE)

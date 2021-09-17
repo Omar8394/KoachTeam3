@@ -1,9 +1,19 @@
 from django.db import models
+from ..app.models import Estructuraprograma, TablasConfiguracion, Publico
 
 # Create your models here.
-class Registro(models.Model):
-    name = models.CharField(max_length=200)
-    email = models.EmailField()
+class PreciosFormacion(models.Model):
+    idprograma_precios = models.AutoField(primary_key=True)
+    fk_estruc_programa = models.ForeignKey(Estructuraprograma, on_delete=models.CASCADE)
+    fecha_registro = models.DateField()
+    precio = models.DecimalField(max_digits=11, decimal_places=2)
+    fk_tipo_moneda = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE)
 
-    def __str__(self):
-        return self.name
+
+class MatriculaAlumnos(models.Model):
+    idmatricula_alumnos = models.AutoField(primary_key=True)
+    fk_publico = models.ForeignKey(Publico, on_delete=models.CASCADE)
+    fk_estruc_programa = models.ForeignKey(Estructuraprograma, on_delete=models.CASCADE)
+    fecha_matricula = models.DateField()
+    fk_tipo_matricula = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE, related_name='tipo')
+    fk_status_matricula = models.ForeignKey(TablasConfiguracion , on_delete=models.CASCADE, related_name='status')

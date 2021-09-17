@@ -8,7 +8,17 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.template import loader
 from django.http import HttpResponse
 from django import template
-from modules.security.models import Seguro 
+# from modules.security.models import Seguro
+# from modules.academic.models import Curso 
+
+# from modules.planning.models import Plan 
+
+# from modules.registration.models import Registro 
+
+
+
+
+
 
 @login_required(login_url="/login/")
 def index(request):
