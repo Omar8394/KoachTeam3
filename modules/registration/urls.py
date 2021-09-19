@@ -3,11 +3,17 @@
 Copyright (c) 2019 - present AppSeed.us
 """
 
-from django.urls import path, re_path
-from modules.app import views
+from django.urls import path
+
+from modules.registration import views
+
+
 
 urlpatterns = [
+    path('enrollment/', views.enrollment, name='enrollment'  ),
+    
 
-
+    
+    path('enrollment/ComboOptions/', views.ComboOptions, name='ComboOptions'  ),
 
 ]

@@ -1,4 +1,6 @@
 from django.db import models
+from django.conf import settings
+from django.contrib.auth.models import User
 # from django.contrib.auth.models import User
 
 class TablasConfiguracion(models.Model):
@@ -34,10 +36,11 @@ class Publico(models.Model):
     nombre = models.CharField(db_column='Nombre', max_length=45)  # Field name made lowercase.
     apellido = models.CharField(db_column='Apellido', max_length=45)  # Field name made lowercase.
     direccion = models.TextField()
+    user = models.OneToOneField(User, on_delete=models.CASCADE , default=None, null=True)
     procedencia = models.CharField(max_length=1)
     docto_identidad = models.TextField()
     fk_ciudad = models.SmallIntegerField()
-    fk_contratante = models.ForeignKey(Contratantes, on_delete=models.CASCADE)
+    fk_contratante = models.ForeignKey(Contratantes, on_delete=models.CASCADE , default=None, null=True)
     correos = models.TextField()
     telefonos = models.TextField()
 
@@ -51,8 +54,8 @@ class Partners(models.Model):
 
 class PublicoRelacion(models.Model):
     idpublico_rol = models.SmallAutoField(primary_key=True)
-    fk_publico = models.ForeignKey(Publico, on_delete=models.CASCADE)
-    fk_relacion = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE)
+    fk_publico = models.ForeignKey(Publico, on_delete=models.CASCADE, default=None, null=True)
+    fk_relacion = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE, default=None, null=True)
 
 class Aplicaciones(models.Model):
     idaplicaciones = models.SmallAutoField(primary_key=True)  # Field name made lowercase.
@@ -68,8 +71,12 @@ class AplicacionesContratante(models.Model):
 class Estructuraprograma(models.Model):
     idestructuraprogrmas = models.SmallAutoField(primary_key=True)
     descripcion = models.TextField()
-    fk_estructura_padre = models.ForeignKey('self', on_delete=models.CASCADE)
+    fk_estructura_padre = models.ForeignKey('self', on_delete=models.CASCADE, default=None, null=True)
     peso_creditos = models.DecimalField(max_digits=7, decimal_places=2, blank=True, null=True)
+    def __str__(self):
+        return self.descripcion
+
+
 
 class Nivelesprog(models.Model):
     idprogniveles = models.SmallAutoField(primary_key=True)

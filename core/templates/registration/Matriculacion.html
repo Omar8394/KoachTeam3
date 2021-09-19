@@ -1,0 +1,210 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}{% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+	<div class="content">
+		<div class="page-inner">
+			<div class="page-header">
+				<h4 class="page-title">Starter page</h4>
+				<ul class="breadcrumbs">
+					<li class="nav-home">
+						<a href="index.html">
+							<i class="flaticon-home"></i>
+						</a>
+					</li>
+					<li class="separator">
+						<i class="flaticon-right-arrow"></i>
+					</li>
+					<li class="nav-item">
+						<span>Module name</span>
+					</li>
+					<li class="separator">
+						<i class="flaticon-right-arrow"></i>
+					</li>
+					<li class="nav-item">
+						<a href="#">Page 1</a>
+					</li>
+				</ul>
+			</div>
+			<div class="page-category">
+        <h2>Enrollment</h2>
+		<div class="col-md-12 d-flex justify-content-center" > 
+			<form method="POST" >
+				{% csrf_token %}
+
+
+			
+
+		<div class="row">
+	   <label>Program</label>
+			   
+		 <select id="program" onchange="programChange()" >
+			<option value="-1" selected>------- </option>
+
+			 {% for mat in structuraProg %}
+			 <option value="{{mat.idestructuraprogrmas}}"> {{mat}}</option>
+			 {% endfor %}
+      
+
+		 </select>
+		</div>
+		<div id="listaProcess"  class="row">
+			<label>Process</label>
+					
+			  <select id="cbProcess" onchange="processChange()">
+				 <option value="-1">------- </option>
+	 
+			
+		   
+	 
+			  </select>
+			 </div>
+
+			 <div class="row" >
+				<label>Unit</label>
+						
+				  <select id="cbUnit" onchange="unitChange()">
+					 <option value="-1">------- </option>
+		 
+					
+			   
+		 
+				  </select>
+				 </div>
+
+				 <div class="row">
+					<label>Course</label>
+							
+					  <select id="cbCourse" onchange="courseChange()">
+						 <option value="-1">---------</option>
+			 
+						
+				   
+			 
+					  </select>
+					 </div>
+	
+		<div class="row">
+		<label>Enrollment Type</label>
+			   
+			{{form.fk_tipo_matricula}}
+		</div>
+	   
+	   
+	   
+	
+			
+		</div> 
+	
+	   </form>
+		</div>			            
+      </div>
+		</div>
+	</div>
+<script>
+
+window.addEventListener("load", function(event) {
+    console.log("'Todos los recursos terminaron de cargar!");
+	program.value=-1;
+  });
+ 
+function programChange(){
+	
+	cbProcess.value=-1;
+	cbCourse.value=-1;
+	cbUnit.value=-1;
+               
+let program=document.getElementById("program").value;
+
+
+if (program<=0)
+{
+	
+//let listaProcess=document.getElementById("listaProcess");
+////listaProcess.style.visibility=false;
+}
+
+let url='ComboOptions/?structuraProg='+program;
+fetch(url,{
+	mode: 'no-cors',
+  method: 'get'
+}).then(function(result){
+
+return result.text();
+
+}).then(function(result){
+	
+	let cbProcess=document.getElementById("cbProcess").innerHTML=result;
+
+});
+
+}
+
+function processChange(){
+	cbUnit.value=-1;
+	cbCourse.value=-1;
+
+	let process=document.getElementById("cbProcess").value;
+
+
+
+
+
+
+let url='ComboOptions/?structuraProg='+process;
+fetch(url,{
+	mode: 'no-cors',
+  method: 'get'
+}).then(function(result){
+
+return result.text();
+
+}).then(function(result){
+	
+	let unit=document.getElementById("cbUnit").innerHTML=result;
+
+});
+
+
+}
+
+function unitChange(){
+	cbCourse.value=-1;
+
+	let unit=document.getElementById("cbUnit").value;
+
+
+
+
+
+
+let url='ComboOptions/?structuraProg='+unit;
+fetch(url,{
+	mode: 'no-cors',
+  method: 'get'
+}).then(function(result){
+
+return result.text();
+
+}).then(function(result){
+	
+	let unit=document.getElementById("cbCourse").innerHTML=result;
+
+});
+
+}
+
+function courseChange(){}
+
+</script>
+
+{% endblock content %}
+	
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+{% endblock javascripts %}
