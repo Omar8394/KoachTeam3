@@ -4,7 +4,9 @@
 {% block title %}{% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
-{% block stylesheets %}{% endblock stylesheets %}
+{% block stylesheets %}
+
+{% endblock stylesheets %}
 
 {% block content %}
 
@@ -58,8 +60,8 @@
                <ul class="list-group list-group-flush col-md-3">
                   {%for table in tables%}
                   {% if table.mostrar_en_combos == 1 %}
-                  <li class="list-group-item align-items-center">
-                     <div class="form-group">
+                  <li class="list-group-item">
+                     <div class="form-group magic-click">
                         {{table.desc_elemento}}
                      </div>
                   </li>
@@ -126,16 +128,16 @@
    </div>
 </div>
 
-
 {% endblock content %}
 
 {% block javascripts %}
 <script>
-   let app = new Vue({
-      el: '#app',
-      delimiters: ['{$', '$}'],
-      data: {
-         name: 'manuel esta loco',
+   
+      let app = new Vue({
+         el: '#app',
+         delimiters: ['{$', '$}'],
+         data: {
+            name: 'manuel esta loco',
          list:[
             {%for table in tables %}
             {% if table.mostrar_en_combos == 1 %}
@@ -150,6 +152,8 @@
          ]
       }
    })
+
+   
 
 </script>
 
