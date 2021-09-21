@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.fields import DateField
 from ..app.models import Estructuraprograma, TablasConfiguracion, Publico
 
 # Create your models here.
@@ -17,3 +18,4 @@ class MatriculaAlumnos(models.Model):
     fecha_matricula = models.DateField()
     fk_tipo_matricula = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE, related_name='tipo')
     fk_status_matricula = models.ForeignKey(TablasConfiguracion , on_delete=models.CASCADE, related_name='status')
+    fecha_aprobada = models.DateField(null=True)

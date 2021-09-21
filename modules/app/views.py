@@ -25,6 +25,14 @@ def index(request):
     html_template = loader.get_template( 'index.html' )
     return HttpResponse(html_template.render(context, request))
 
+def componentTabla(request, fields, data):
+    context = {
+        "fields": fields,
+        "data": data
+    }
+    html_template = loader.get_template('components/tabla.html')
+    return HttpResponse(html_template.render(context, request))
+
 @login_required(login_url="/login/")
 def tables(request):
     context = {"tables": TablasConfiguracion.objects.all()}
