@@ -1,120 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
-	<title>
-      {% block title %}{% endblock %}
-    </title>
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
-	<meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />
-	<link rel="icon" href="/static/assets/img/icon.png" type="image/x-icon"/>
-	<link rel="canonical" href="">
+		<title>
+			{% block title %}{% endblock %}
+		</title>
 
-	<!-- Fonts and icons -->
-	<script src="/static/assets/js/plugin/webfont/webfont.min.js"></script>
-	<script>
-		WebFont.load({
-			google: {"families":["Lato:300,400,700,900"]},
-			custom: {"families":["Flaticon", "Font Awesome 5 Solid", "Font Awesome 5 Regular", "Font Awesome 5 Brands", "simple-line-icons"], 
-			urls: ['/static/assets/css/fonts.min.css']},
-			active: function() {
-				sessionStorage.fonts = true;
+		<meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />
+		<link rel="icon" href="/static/assets/img/icon.png" type="image/x-icon" />
+		<link rel="canonical" href="">
+
+		<!-- Fonts and icons -->
+		<script src="/static/assets/js/plugin/webfont/webfont.min.js"></script>
+		<script>
+			WebFont.load({
+				google: { "families": ["Lato:300,400,700,900"] },
+				custom: {
+					"families": ["Flaticon", "Font Awesome 5 Solid", "Font Awesome 5 Regular", "Font Awesome 5 Brands", "simple-line-icons"],
+					urls: ['/static/assets/css/fonts.min.css']
+				},
+				active: function () {
+					sessionStorage.fonts = true;
+				}
+			});
+		</script>
+
+		<!-- CSS Files -->
+		<link rel="stylesheet" href="/static/assets/css/bootstrap.min.css">
+		<link rel="stylesheet" href="/static/assets/css/atlantis.min.css">
+
+
+		<!-- Specific Page CSS goes HERE  -->
+		{% block stylesheets %}{% endblock stylesheets %}
+		<style>
+			.list-group-item:hover {
+				transform: scale(1.1);
+				transition: transform 0.1s linear;
+				transition: outline 0.5s linear;
+				outline: 0.5px solid #00000050;
 			}
-		});
-	</script>
 
-	<!-- CSS Files -->
-	<link rel="stylesheet" href="/static/assets/css/bootstrap.min.css">
-	<link rel="stylesheet" href="/static/assets/css/atlantis.min.css">
-
-	
-    <!-- Specific Page CSS goes HERE  -->
-    {% block stylesheets %}{% endblock stylesheets %}
-	<style>
-		.list-group-item:hover {
-			transform: scale(1.1);
-			transition: transform 0.1s linear;
-			transition: outline 0.5s linear;
-			outline: 0.5px solid #00000050;
-		}
-		
-		.list-group-item {
-			position: relative !important;
-			overflow: hidden;
-			outline: 0.2px solid #00000000;
-			cursor: pointer;
-		}
-	
-		.overlay {
-			position: absolute;
-			background: #000;
-			border-radius: 50%;
-			left: 0;
-			top: 0;
-			animation: incremental 0.5s linear infinite;
-			transform: translate(-50%, -50%);
-		}
-	
-		@keyframes incremental {
-			0% {
-				height: 0px;
-				width: 0px;
-				opacity: 0.5;
+			.list-group-item {
+				position: relative !important;
+				overflow: hidden;
+				outline: 0.2px solid #00000000;
+				cursor: pointer;
 			}
-	
-			100% {
-				height: 300px;
-				width: 300px;
-				opacity: 0;
+
+			.overlay {
+				position: absolute;
+				background: #000;
+				border-radius: 50%;
+				left: 0;
+				top: 0;
+				animation: incremental 0.5s linear infinite;
+				transform: translate(-50%, -50%);
 			}
-		}
-	</style>
-</head>
-<body data-background-color="bg3">
-	<div id="app" class="wrapper sidebar_minimize">
 
-        {% include 'includes/navigation.html' %}
+			@keyframes incremental {
+				0% {
+					height: 0px;
+					width: 0px;
+					opacity: 0.5;
+				}
 
-        {% include 'includes/sidebar.html' %}
+				100% {
+					height: 300px;
+					width: 300px;
+					opacity: 0;
+				}
+			}
 
-		<div class="main-panel">
-			
-			{% block content %}{% endblock content %}
+		</style>
+	</head>
 
-			{% include 'includes/footer.html' %}
+	<body data-background-color="bg3">
+		<div id="app" class="wrapper sidebar_minimize">
+
+			{% include 'includes/navigation.html' %}
+
+			{% include 'includes/sidebar.html' %}
+
+			<div class="main-panel">
+
+				{% block content %}{% endblock content %}
+
+				{% include 'includes/footer.html' %}
+
+			</div>
+
 
 		</div>
-       
 
-	</div>
+		{% include 'includes/scripts.html' %}
 
-	{% include 'includes/scripts.html' %}
-	
-    <!-- Specific Page JS goes HERE  -->
-    {% block javascripts %}{% endblock javascripts %}
-	 
-	 <!-- Common JS for all views -->
-	 <script>
-		let magicClicks = document.querySelectorAll("li.list-group-item")
-		const overlay = document.createElement("span")
-		overlay.classList.add("overlay")
+		<!-- Specific Page JS goes HERE  -->
+		{% block javascripts %}{% endblock javascripts %}
 
-		for (const magic of magicClicks) {
-			magic.addEventListener("click", (e) => {
-				e.preventDefault()
-				let x = e.offsetX
-				let y = e.offsetY
-				overlay.style.left = x + "px"
-				overlay.style.top = y + "px"
-				magic.appendChild(overlay)
+		<!-- Common JS for all views -->
+		<script>
+			let magicClicks = document.querySelectorAll("li.list-group-item")
+			const overlay = document.createElement("span")
+			overlay.classList.add("overlay")
 
-				setTimeout(() => {
-					overlay.remove()
-				}, 500)
-			})
-		}
-	</script>
+			for (const magic of magicClicks) {
+				magic.addEventListener("click", (e) => {
+					e.preventDefault()
+					let x = e.offsetX
+					let y = e.offsetY
+					overlay.style.left = x + "px"
+					overlay.style.top = y + "px"
+					magic.appendChild(overlay)
 
-</body>
+					setTimeout(() => {
+						overlay.remove()
+					}, 500)
+				})
+			}
+		</script>
+
+	</body>
+
 </html>

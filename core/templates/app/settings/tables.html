@@ -59,8 +59,8 @@
             <div class="card-body row">
                <ul class="list-group list-group-flush col-md-3">
                   {%for table in tables%}
-                  {% if table.mostrar_en_combos == 1 %}
-                  <li class="list-group-item">
+                  {% if table.mostrar_en_combos == 1 and table.fk_tabla_padre_id == 1 %}
+                  <li class="list-group-item padres" id-tabla="{{table.id_tabla}}">
                      <div class="form-group magic-click">
                         {{table.desc_elemento}}
                      </div>
@@ -68,33 +68,8 @@
                   {% endif %}
                   {% endfor %}
                </ul>
-               <div class="table-responsive col-md-9">
-                  <table class="table table-hover table-striped table-borderless text-center">
-                     <thead>
-                        <tr>
-                           <th>#</th>
-                           <th>Description</th>
-                           <th>Actions</th>
-                        </tr>
-                     </thead>
-                     <tbody>
-                        <tr v-for="elemento in list" :key="elemento.id_tabla">
-                           <th scope="row">1</th>
-                           <td>{$ elemento.descripcion $}</td>
-                           <td>
-                              <button type="button" class="btn btn-icon btn-sm btn-info" data-placement="top"
-                                 title="Tooltip on top" data-toggle="modal" data-target="#newModal">
-                                 <i class="fas fa-edit"></i>
-                              </button>
-                              <button type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="modal"
-                                 data-target="#newModal">
-                                 <i class="fas fa-trash-alt"></i>
-                              </button>
-                           </td>
-
-                        </tr>
-                     </tbody>
-                  </table>
+               <div id="renderContainer" class="col-md-9 p-2 table-responsive">
+                  <h3 class="display-4">Select an element from list</h3>
                </div>
             </div>
             <div class="card-footer row">
@@ -132,28 +107,52 @@
 
 {% block javascripts %}
 <script>
-   
-      let app = new Vue({
-         el: '#app',
-         delimiters: ['{$', '$}'],
-         data: {
-            name: 'manuel esta loco',
-         list:[
-            {%for table in tables %}
-            {% if table.mostrar_en_combos == 1 %}
-            {
-              id:{{table.id_tabla}}, 
-              descripcion:"{{table.desc_elemento}}",
-              lista:{{table.maneja_lista}},
-              padre:{{table.fk_tabla_padre_id}},
+   const renderComponentTabla = (padre, name) => {
+      return fetch("{% url 'component_tabla'%}",
+         {
+            headers: {
+               'Accept': 'application/json',
+               'X-Requested-With': 'XMLHttpRequest',
+               "X-CSRFToken": getCookie('csrftoken')
             },
-            {% endif %}
-            {% endfor %}
-         ]
-      }
-   })
+            mode: 'same-origin',
+            method: 'POST',
+            body: JSON.stringify({
+               data: {
+                  name: name,
+                  padre: padre
+               }
+            }),
+         })
+         .then(async (res) => {
+            result = await res.text()
+            if (result[0] != '<') {
+               result = "<h3 class='display-4'>Selected table has no childs</h3>"
+            }
+            return result
 
-   
+         })
+   }
+   const toggleContentChild = async (idPadre) => {
+      const tablaHijo = document.getElementById(`tablaHijo${idPadre}`)
+      const contenedor = document.getElementById(`contenidoHijo${idPadre}`)
+      if (tablaHijo.hidden) {
+         const result = await renderComponentTabla(idPadre, "tablaConfig")
+         contenedor.innerHTML = result
+      }
+      else{
+         contenedor.innerHTML = ''
+      }
+      tablaHijo.hidden = !tablaHijo.hidden
+   }
+   let listaPadres = document.querySelectorAll("li.list-group-item.padres")
+   for (let padre of listaPadres) {
+      padre.addEventListener("click", async (e) => {
+         const result = await renderComponentTabla(padre.getAttribute("id-tabla"), "tablaConfig")
+         const contenedor = document.getElementById("renderContainer")
+         contenedor.innerHTML = result
+      })
+   }
 
 </script>
 
