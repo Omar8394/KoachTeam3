@@ -34,17 +34,18 @@
 			<div class="page-category">
         <h2>Enrollment</h2>
 		<div class="col-md-12 d-flex justify-content-center" > 
-			<form method="POST" >
+			
+	   <form id="enroll" name="enroll" onsubmit="enviar();return false">
 				{% csrf_token %}
 
 
-			
+		
 
 		<div class="row">
 	   <label>Program</label>
 			   
-		 <select id="program" onchange="programChange()" >
-			<option value="-1" selected>------- </option>
+		 <select id="program" name="program" onchange="programChange()" required >
+			<option value="" selected>      </option>
 
 			 {% for mat in structuraProg %}
 			 <option value="{{mat.idestructuraprogrmas}}"> {{mat}}</option>
@@ -53,47 +54,73 @@
 
 		 </select>
 		</div>
+       <br>
+
 		<div id="listaProcess"  class="row">
 			<label>Process</label>
 					
-			  <select id="cbProcess" onchange="processChange()">
-				 <option value="-1">------- </option>
+			  <select id="cbProcess" name="cbProcess"  onchange="processChange()">
+				<option value="" selected> </option>
+
 	 
 			
 		   
 	 
 			  </select>
 			 </div>
+			 <br>
 
 			 <div class="row" >
 				<label>Unit</label>
 						
-				  <select id="cbUnit" onchange="unitChange()">
-					 <option value="-1">------- </option>
+				  <select id="cbUnit" name="cbUnit" onchange="unitChange()">
+					<option value="" selected> </option>
+
 		 
 					
 			   
 		 
 				  </select>
 				 </div>
+				 <br>
 
 				 <div class="row">
 					<label>Course</label>
 							
-					  <select id="cbCourse" onchange="courseChange()">
-						 <option value="-1">---------</option>
+					  <select id="cbCourse" name="cbCourse" onchange="courseChange()">
+						<option value="" selected>   </option>
+
 			 
 						
 				   
 			 
 					  </select>
 					 </div>
+             <br>
 	
 		<div class="row">
 		<label>Enrollment Type</label>
 			   
-			{{form.fk_tipo_matricula}}
+		<select id="type" name="type" required >
+			<option value="" selected> </option>
+
+
+			 {% for mat in tipoPrograma %}
+			 <option value="{{mat.id_tabla}}"> {{mat}}</option>
+			 {% endfor %}
+      
+
+		 </select>
 		</div>
+      <br>
+         <br>
+
+
+		<div class="row">
+			<input type="submit" value="Save application">
+				   
+			
+			</div>
 	   
 	   
 	   
@@ -111,6 +138,7 @@
 window.addEventListener("load", function(event) {
     console.log("'Todos los recursos terminaron de cargar!");
 	program.value=-1;
+	type.value=-1;
   });
  
 function programChange(){
@@ -200,6 +228,21 @@ return result.text();
 }
 
 function courseChange(){}
+
+
+function enviar(){
+
+	var xhr = new XMLHttpRequest();
+xhr.open("POST", "save/"); 
+xhr.onload = function(event){ 
+    alert("Success, server responded with: " + event.target.response); // raw response
+}; 
+// or onerror, onabort
+var formData = new FormData(document.getElementById("enroll")); 
+xhr.send(formData);
+  
+}
+
 
 </script>
 

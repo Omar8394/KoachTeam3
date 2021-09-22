@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 class TablasConfiguracion(models.Model):
     id_tabla = models.SmallAutoField(primary_key=True)
     desc_elemento = models.CharField(max_length=70, blank=True, null=True)
-    fk_tabla_padre = models.ForeignKey('self', on_delete=models.CASCADE)
+    fk_tabla_padre = models.ForeignKey('self', on_delete=models.CASCADE, default=None, null=True)
     tipo_elemento = models.CharField(max_length=1, blank=True, null=True)
     permite_cambios = models.IntegerField()
     valor_elemento = models.TextField(blank=True, null=True)
@@ -17,14 +17,16 @@ class TablasConfiguracion(models.Model):
         return self.desc_elemento
 
     def obtenerHijos(valor):
-        lista = None
+        
         try:
-            padre = TablasConfiguracion.objects.get(valor_elemento=valor)
-            padre.id_tabla
-            lista = TablasConfiguracion.objects.get(fk_tabla_padre=padre.id_tabla)
+            
+            padre = TablasConfiguracion.objects.filter(valor_elemento=valor)
+           
+            lista = TablasConfiguracion.objects.filter(fk_tabla_padre=padre[0].id_tabla)
+            return lista
+
         except:
             return None
-        return lista
 
 class Contratantes(models.Model):
     idcontratantes = models.SmallAutoField(primary_key=True)

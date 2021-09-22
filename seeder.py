@@ -1,6 +1,8 @@
 from modules.app.models import TablasConfiguracion, Aplicaciones, AplicacionesContratante, Contratantes
 from modules.security.models import ContratantesRol
+from django.core import settings
 #Seeder de configuraciones
+settings.configure()
 
 TablasConfiguracion(id_tabla=1, desc_elemento='Registro padre', fk_tabla_padre_id=1, tipo_elemento='1', permite_cambios=1, valor_elemento='Padre', mostrar_en_combos=0, maneja_lista=1)
 TablasConfiguracion(id_tabla=2, desc_elemento='Rol sistema', fk_tabla_padre_id=1, tipo_elemento='1', permite_cambios=1, valor_elemento='Roles', mostrar_en_combos=1, maneja_lista=1)

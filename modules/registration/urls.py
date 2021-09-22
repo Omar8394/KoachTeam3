@@ -15,5 +15,7 @@ urlpatterns = [
 
     
     path('enrollment/ComboOptions/', views.ComboOptions, name='ComboOptions'  ),
+    path('enrollment/save/', views.save, name='save'  ),
+
 
 ]

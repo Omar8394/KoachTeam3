@@ -1,0 +1,399 @@
+[
+  {
+    "model": "app.TablasConfiguracion",
+    "pk": 1,
+    "fields": {
+      "desc_elemento": "Registro padre",
+      "fk_tabla_padre_id": null,
+      "tipo_elemento": 1,
+      "permite_cambios":1,
+      "valor_elemento":"Padre",
+      "mostrar_en_combos":1,
+      "maneja_lista":1
+
+    }
+  },
+  
+  {
+    "model": "app.TablasConfiguracion",
+    "pk": 2,
+    "fields": {
+      "desc_elemento": "Rol sistema",
+      "fk_tabla_padre_id": null,
+      "tipo_elemento": 1,
+      "permite_cambios":1,
+      "valor_elemento":"Roles",
+      "mostrar_en_combos":1,
+      "maneja_lista":1
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk": 3,
+    "fields": {
+      "desc_elemento": "Situacion cuenta usuario",
+      "fk_tabla_padre_id": null,
+      "tipo_elemento": 1,
+      "permite_cambios":0,
+      "valor_elemento":"Situacion",
+      "mostrar_en_combos":1,
+      "maneja_lista":1
+
+    }
+  },
+
+  {
+    "model": "app.TablasConfiguracion",
+    "pk": 4,
+    "fields": {
+      "desc_elemento": "Preguntas Secretas",
+      "fk_tabla_padre_id": null,
+      "tipo_elemento": 1,
+      "permite_cambios":1,
+      "valor_elemento":"pregSecreta",
+      "mostrar_en_combos":1,
+      "maneja_lista":1
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk": 5,
+    "fields": {
+      "desc_elemento": "Relaciones publico",
+      "fk_tabla_padre_id": null,
+      "tipo_elemento": 1,
+      "permite_cambios":1,
+      "valor_elemento":"Relacion",
+      "mostrar_en_combos":1,
+      "maneja_lista":1
+
+    }
+  },
+
+  {
+    "model": "app.TablasConfiguracion",
+    "pk": 6,
+    "fields": {
+      "desc_elemento": "Tipo matricula",
+      "fk_tabla_padre_id": null,
+      "tipo_elemento": 1,
+      "permite_cambios":1,
+      "valor_elemento":"Tipo matricula",
+      "mostrar_en_combos":1,
+      "maneja_lista":1
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk": 7,
+    "fields": {
+      "desc_elemento": "Situacion Matricula",
+      "fk_tabla_padre_id": null,
+      "tipo_elemento": 1,
+      "permite_cambios":1,
+      "valor_elemento":"Situacion matricula",
+      "mostrar_en_combos":1,
+      "maneja_lista":1
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk": 8,
+    "fields": {
+      "desc_elemento": "Tipo Competencia",
+      "fk_tabla_padre_id": null,
+      "tipo_elemento": 1,
+      "permite_cambios":1,
+      "valor_elemento":"Tipo Competencia",
+      "mostrar_en_combos":1,
+      "maneja_lista":1
+
+    }
+  },
+
+  {
+    "model": "app.TablasConfiguracion",
+    "pk": 9,
+    "fields": {
+      "desc_elemento": "Tipo Actividad",
+      "fk_tabla_padre_id": null,
+      "tipo_elemento": 1,
+      "permite_cambios":1,
+      "valor_elemento":"Tipo Actividad",
+      "mostrar_en_combos":1,
+      "maneja_lista":1
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk": 10,
+    "fields": {
+      "desc_elemento": "Tipo Recurso",
+      "fk_tabla_padre_id": null,
+      "tipo_elemento": 1,
+      "permite_cambios":1,
+      "valor_elemento":"Recurso",
+      "mostrar_en_combos":1,
+      "maneja_lista":1
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk": 11,
+    "fields": {
+      "desc_elemento": "Tipo pregunta",
+      "fk_tabla_padre_id": null,
+      "tipo_elemento": 1,
+      "permite_cambios":1,
+      "valor_elemento":"PregEvalua",
+      "mostrar_en_combos":1,
+      "maneja_lista":1
+
+    }
+  },
+
+  {
+    "model": "app.TablasConfiguracion",
+    "pk": 12,
+    "fields": {
+      "desc_elemento": "Tipo de adiestramiento",
+      "fk_tabla_padre_id": null,
+      "tipo_elemento": 1,
+      "permite_cambios":1,
+      "valor_elemento":"TipoAdiest",
+      "mostrar_en_combos":1,
+      "maneja_lista":1
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk": 13,
+    "fields": {
+      "desc_elemento": "Tipo duracion",
+      "fk_tabla_padre_id": null,
+      "tipo_elemento": 1,
+      "permite_cambios":1,
+      "valor_elemento":"Duracion",
+      "mostrar_en_combos":1,
+      "maneja_lista":1
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk": 14,
+    "fields": {
+      "desc_elemento": "Situacion Plan",
+      "fk_tabla_padre_id": null,
+      "tipo_elemento": 1,
+      "permite_cambios":1,
+      "valor_elemento":"SituPlan",
+      "mostrar_en_combos":1,
+      "maneja_lista":1
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk": 15,
+    "fields": {
+      "desc_elemento": "Ramas",
+      "fk_tabla_padre_id": null,
+      "tipo_elemento": 1,
+      "permite_cambios":1,
+      "valor_elemento":"Rama",
+      "mostrar_en_combos":1,
+      "maneja_lista":1
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk": 16,
+    "fields": {
+      "desc_elemento": "Prioridad",
+      "fk_tabla_padre_id": null,
+      "tipo_elemento": 1,
+      "permite_cambios":1,
+      "valor_elemento":"Prioridad",
+      "mostrar_en_combos":1,
+      "maneja_lista":1
+
+    }
+  },
+
+  {
+    "model": "app.TablasConfiguracion",
+    "pk": 17,
+    "fields": {
+      "desc_elemento": "Nivel Competencia",
+      "fk_tabla_padre_id": null,
+      "tipo_elemento": 1,
+      "permite_cambios":1,
+      "valor_elemento":"NivelComp",
+      "mostrar_en_combos":1,
+      "maneja_lista":1
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk": 18,
+    "fields": {
+      "desc_elemento": "Calificaciones escala",
+      "fk_tabla_padre_id": null,
+      "tipo_elemento": 1,
+      "permite_cambios":1,
+      "valor_elemento":"calif",
+      "mostrar_en_combos":1,
+      "maneja_lista":1
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk": 19,
+    "fields": {
+      "desc_elemento": "Tipos de moneda",
+      "fk_tabla_padre_id": null,
+      "tipo_elemento": 1,
+      "permite_cambios":1,
+      "valor_elemento":"Moneda",
+      "mostrar_en_combos":1,
+      "maneja_lista":1
+
+    }
+  },
+
+  {
+    "model": "app.Contratantes",
+    "pk": 1,
+    "fields": {
+      "siglas": "JC Energy ",
+      "nombre_contratante": "JC Energy Solar, Corp",
+      "apellido_contratante": null,
+      "rif_contratante":"1234",
+      "slogan":null,
+      "codigo_contrato":null,
+      "fecha_contrato":"2021-08-30",
+      "mes_inicio_ejerc_fiscal":1,
+      "direccion":"Austin Texas",
+      "paginas_web":"JC Energy.com'",
+      "correos":"N/A",
+      "telefonnos":"N/A",
+      "nombre_comercial":"JC Energy Solar",
+      "personas_contacto":"",
+      "representante_legal":"Jose"
+
+    }
+  },
+
+  {
+    "model": "security.ContratantesRol",
+    "pk": 1,
+    "fields": {
+      "desc_rol": "Profesores ",
+      "fk_contratante": 2,
+      "valor_rol":"profe"
+
+    }
+  },  
+  {
+    "model": "security.ContratantesRol",
+    "pk": 2,
+    "fields": {
+      "desc_rol": "Alumnos ",
+      "fk_contratante": 2,
+      "valor_rol":"alum"
+
+    }
+  },  
+  {
+    "model": "security.ContratantesRol",
+    "pk": 3,
+    "fields": {
+      "desc_rol": "Asistentes ",
+      "fk_contratante": 2,
+      "valor_rol":"asis"
+
+    }
+  },  
+  {
+    "model": "security.ContratantesRol",
+    "pk":4,
+    "fields": {
+      "desc_rol": "Planificadores ",
+      "fk_contratante": 2,
+      "valor_rol":"planif"
+
+    }
+  },  
+  {
+    "model": "security.ContratantesRol",
+    "pk":5,
+    "fields": {
+      "desc_rol": "Autores ",
+      "fk_contratante": 2,
+      "valor_rol":"autor"
+
+    }
+  },  
+
+  {
+    "model": "security.ContratantesRol",
+    "pk":6,
+    "fields": {
+      "desc_rol": "Administrador ",
+      "fk_contratante": 2,
+      "valor_rol":"admin"
+
+    }
+  },  
+  
+  {
+    "model": "security.ContratantesRol",
+    "pk":7,
+    "fields": {
+      "desc_rol": "Control estudio ",
+      "fk_contratante": 2,
+      "valor_rol":"control"
+
+    }
+  },  
+
+
+
+  {
+    "model": "app.Aplicaciones",
+    "pk":1,
+    "fields": {
+      "desc_aplicaciones": "Sistema Formacion y capacitacion E-Learning",
+      "cod_aplicacion": "KOACH_E-Learning"
+      
+
+    }
+  },  
+
+
+  {
+    "model": "app.AplicacionesContratante",
+    "pk":1,
+    "fields": {
+      "fk_contratante": 2,
+      "fk_aplicacion": 2,
+      "cod_status_apli_contrat":2
+      
+
+    }
+  }
+
+
+
+]
