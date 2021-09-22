@@ -13,6 +13,19 @@ class TablasConfiguracion(models.Model):
     mostrar_en_combos = models.IntegerField(blank=True, null=True)  # Field name made lowercase.
     maneja_lista = models.IntegerField(blank=True, null=True)  # Field name made lowercase.
 
+    def __str__(self):
+        return self.desc_elemento
+
+    def obtenerHijos(valor):
+        lista = None
+        try:
+            padre = TablasConfiguracion.objects.get(valor_elemento=valor)
+            padre.id_tabla
+            lista = TablasConfiguracion.objects.get(fk_tabla_padre=padre.id_tabla)
+        except:
+            return None
+        return lista
+
 class Contratantes(models.Model):
     idcontratantes = models.SmallAutoField(primary_key=True)
     siglas = models.TextField(blank=True, null=True)
@@ -43,6 +56,7 @@ class Publico(models.Model):
     fk_contratante = models.ForeignKey(Contratantes, on_delete=models.CASCADE , default=None, null=True)
     correos = models.TextField()
     telefonos = models.TextField()
+    fecha_registro = models.DateField(null=True)
 
 class Partners(models.Model):
     idpartner = models.AutoField(primary_key=True)
