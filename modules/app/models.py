@@ -59,6 +59,9 @@ class Publico(models.Model):
     correos = models.TextField()
     telefonos = models.TextField()
     fecha_registro = models.DateField(null=True)
+      
+    def __str__(self):
+        return self.nombre +" " +self.apellido
 
 class Partners(models.Model):
     idpartner = models.AutoField(primary_key=True)

@@ -1,0 +1,110 @@
+<form class="form" id="enroll" name="enroll" onsubmit="enviar();return false">
+    {% csrf_token %}    
+  
+<div class="modal-content" onload="Carga()">
+    <div class="modal-header">
+        <h4 style="left: initial;" class="modal-title">Enrollment Details</h4>
+
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    </div>
+    <div class="modal-body">
+        
+            <div class="row">
+                
+                    <div class="col-12">
+                        <div class="">
+                           
+                   
+                 
+                    <div class="form-group">
+                        <label>Program</label>
+                                
+                          <select class="form-control" id="program" name="program" onchange="programChange()" required >
+                             <option value="" selected>      </option>
+                 
+                              {% for mat in structuraProg %}
+                              <option value="{{mat.idestructuraprogrmas}}"> {{mat}}</option>
+                              {% endfor %}
+                       
+                 
+                          </select>
+                         </div>
+                        <br>
+                 
+                         <div id="listaProcess"  class="form-group">
+                             <label>Process</label>
+                                     
+                               <select  class="form-control" id="cbProcess" name="cbProcess"  onchange="processChange()">
+                                 <option value="" selected> </option>
+                 
+                      
+                             
+                            
+                      
+                               </select>
+                              </div>
+                              <br>
+                 
+                              <div class="form-group" >
+                                 <label>Unit</label>
+                                         
+                                   <select class="form-control" id="cbUnit" name="cbUnit" onchange="unitChange()">
+                                     <option value="" selected> </option>
+                 
+                          
+                                     
+                                
+                          
+                                   </select>
+                                  </div>
+                                  <br>
+                 
+                                  <div class="form-group">
+                                     <label>Course</label>
+                                             
+                                       <select class="form-control" id="cbCourse" name="cbCourse" onchange="courseChange()">
+                                         <option value="" selected>   </option>
+                 
+                              
+                                         
+                                    
+                              
+                                       </select>
+                                      </div>
+                              <br>
+                     
+                         <div class="form-group">
+                         <label>Enrollment Type</label>
+                                
+                         <select class="form-control" id="type" name="type" required >
+                             <option value="" selected> </option>
+                 
+                 
+                              {% for mat in tipoPrograma %}
+                              <option value="{{mat.id_tabla}}"> {{mat}}</option>
+                              {% endfor %}
+                       
+                 
+                          </select>
+                         </div>
+                       <br>
+                          <br>
+
+                          
+                      
+                    </div>
+
+
+                </div>
+                
+            
+
+            </div>
+         
+        
+    </div>
+    <div class="modal-footer">
+        <input type="submit"  class="btn btn-default"  value="Save">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+    </div>
+</form>

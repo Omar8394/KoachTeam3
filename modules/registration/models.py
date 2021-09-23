@@ -19,3 +19,4 @@ class MatriculaAlumnos(models.Model):
     fk_tipo_matricula = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE, related_name='tipo', default=None, null=True)
     fk_status_matricula = models.ForeignKey(TablasConfiguracion , on_delete=models.CASCADE, related_name='status', default=None, null=True)
     fecha_aprobada = models.DateField(null=True)
+    origenSolicitud = models.SmallIntegerField(default=0)

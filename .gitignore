@@ -24,3 +24,11 @@ package-lock.json
 staticfiles/*
 !staticfiles/.gitkeep 
 .vscode/symbols.json
+
+#migrations
+modules/app/migrations/
+modules/academic/migrations/
+modules/registration/migrations/
+modules/security/migrations/
+modules/planning/migrations/
+modules/communication/migrations/
