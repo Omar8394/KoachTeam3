@@ -13,6 +13,7 @@ urlpatterns = [
     path('settings/tables', views.tables, name='system_tables'),
     path('settings/scales', views.scales, name='scales'),
     path('components/tabla', views.componentTabla, name='component_tabla'),
+    path('components/lista', views.componentLista, name='component_lista'),
 
     # Matches any html file
     re_path(r'^.*\.*', views.pages, name='pages'),

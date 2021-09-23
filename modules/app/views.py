@@ -9,7 +9,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.template import loader
 from django.http import HttpResponse, JsonResponse
 from django import template
-import json
+import json, math
 from .models import TablasConfiguracion
 from ..academic.models import EscalaCalificacion
 
@@ -26,6 +26,40 @@ def index(request):
 
     html_template = loader.get_template( 'index.html' )
     return HttpResponse(html_template.render(context, request))
+
+def componentLista(request):
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        context = {}
+        data = json.load(request)["data"]
+        if data["name"] == "listaConfig":
+            hijos = TablasConfiguracion.objects.filter(fk_tabla_padre=1, mostrar_en_combos=1)
+            if not hijos:
+                return JsonResponse({"message":"there are no childs"})
+            page = int(data["page"])
+            limit = int(data["limit"])
+            total = len(hijos)
+            lastPage = math.ceil(total/limit)
+            if page > lastPage:
+                return JsonResponse({"message":"some kind of error"})
+            lista=[]
+            last = page * limit
+            begin = last - limit
+            for i in list(hijos.values()):
+                i['pk'] = i['id_tabla']
+                i['descripcion'] = i['desc_elemento']
+                lista.append(i)
+            context = {
+                "list":lista[begin:last],
+                "limit":limit,
+                "lastPage":lastPage,
+                "begin": begin,
+                "last": last,
+                "page": page,
+                "before": page - 1 ,
+                "after": page + 1,
+            }
+        return render(request, 'components/lista.html', context)
+    return
 
 def componentTabla(request):
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':

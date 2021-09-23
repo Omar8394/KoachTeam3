@@ -42,62 +42,60 @@
                      <h2 id="demo" class="card-text mt-2">
                         System tables
                      </h2>
-
                   </div>
                   <div class="form-group col-md-6 d-flex justify-content-end">
-
-                     <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addNewScale"
-                        onclick="sisebana">
-                        Add config <i class="fas fa-plus ml-1"></i>
+                     <button type="button" id="btnAddSetting" class="btn btn-success" data-toggle="modal" disabled data-target="#addNewTable"
+                        onclick="limpiarModal()">
+                        Add setting <i class="fas fa-plus ml-1"></i>
                      </button>
-
                   </div>
-
                </div>
-
             </div>
             <div class="card-body row">
-               <ul class="list-group list-group-flush col-md-3">
-                  {%for table in tables%}
-                  {% if table.mostrar_en_combos == 1 and table.fk_tabla_padre_id == 1 %}
-                  <li class="list-group-item padres" id-tabla="{{table.id_tabla}}">
-                     <div class="form-group magic-click">
-                        {{table.desc_elemento}}
-                     </div>
-                  </li>
-                  {% endif %}
-                  {% endfor %}
-               </ul>
+               <div id="renderList" class="col-md-3">
+                  <p>There aren't data to show</p>
+               </div>
                <div id="renderContainer" class="col-md-9 p-2 table-responsive">
                   <h3 class="display-4">Select an element from list</h3>
                </div>
             </div>
-            <div class="card-footer row">
-               <div class="px-3">
-                  <select class="form-control" id="select-perpage" type="">
-                     <option value="">5</option>
-                     <option value="">10</option>
-                     <option value="">15</option>
-                  </select>
+         </div>
+      </div>
+   </div>
+</div>
+<div class="modal fade" id="addNewTable" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+   aria-hidden="true">
+   <div class="modal-dialog" role="document">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel"><strong>New setting</strong></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <div class="modal-body">
+            <form>
+               <div class="form-row">
+                  <div class="form-group col-12">
+                     <label for="descriptionConfig" class="col-form-label">Description</label>
+                     <input type="text" class="form-control" id="descriptionConfig">
+                  </div>
                </div>
-               <nav aria-label="...">
-                  <ul class="pagination mb-0  justify-content-start">
-                     <li class="page-item">
-                        <a class="page-link" href="#" tabindex="-1">Previous</a>
-                     </li>
-                     <li class="page-item active">
-                        <a class="page-link" href="#">1</a>
-                     </li>
-                     <li class="page-item">
-                        <a class="page-link" href="#">2</a>
-                     </li>
-                     <li class="page-item"><a class="page-link" href="#">3</a></li>
-                     <li class="page-item">
-                        <a class="page-link" href="#">Next</a>
-                     </li>
-                  </ul>
-               </nav>
-            </div>
+               <div class="form-row">
+                  <div class="form-group col-4">
+                     <label for="checkShowCB" class="col-form-label">Show on lists</label>
+                     <input class="form-check-input" type="checkbox" value="" id="checkShowCB">
+                  </div>
+                  <div class="form-group col-4">
+                     <label for="checkChangesCB" class="col-form-label">Allow changes</label>
+                     <input class="form-check-input" type="checkbox" value="" id="checkChangesCB">
+                  </div>
+               </div>
+            </form>
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Back</button>
+            <button type="button" class="btn btn-primary">Save</button>
          </div>
       </div>
    </div>
@@ -107,6 +105,32 @@
 
 {% block javascripts %}
 <script>
+   const renderComponentLista = (name, page, limit) => {
+      return fetch("{% url 'component_lista'%}",
+         {
+            headers: {
+               'Accept': 'application/json',
+               'X-Requested-With': 'XMLHttpRequest',
+               "X-CSRFToken": getCookie('csrftoken')
+            },
+            mode: 'same-origin',
+            method: 'POST',
+            body: JSON.stringify({
+               data: {
+                  name,
+                  page,
+                  limit
+               }
+            }),
+         })
+         .then(async (res) => {
+            result = await res.text()
+            if (result[0] != '<') {
+               result = "<p>There aren't records</p>"
+            }
+            return result
+         })
+   }
    const renderComponentTabla = (padre, name) => {
       return fetch("{% url 'component_tabla'%}",
          {
@@ -140,20 +164,37 @@
          const result = await renderComponentTabla(idPadre, "tablaConfig")
          contenedor.innerHTML = result
       }
-      else{
+      else {
          contenedor.innerHTML = ''
       }
       tablaHijo.hidden = !tablaHijo.hidden
    }
-   let listaPadres = document.querySelectorAll("li.list-group-item.padres")
-   for (let padre of listaPadres) {
-      padre.addEventListener("click", async (e) => {
-         const result = await renderComponentTabla(padre.getAttribute("id-tabla"), "tablaConfig")
-         const contenedor = document.getElementById("renderContainer")
-         contenedor.innerHTML = result
+   const contenedorLista = document.getElementById("renderList")
+   renderComponentLista("listaConfig", 1, 5).then((resultado) => {
+      contenedorLista.innerHTML = resultado
+   })
+   const changePerPage = async () => {
+      const cbLista = document.getElementById("select-perpage")
+      renderComponentLista("listaConfig", 1, cbLista.value).then((resultado) => {
+         contenedorLista.innerHTML = resultado
       })
    }
-
+   const goToPage = (page) => {
+      const cbLista = document.getElementById("select-perpage")
+      renderComponentLista("listaConfig", page, cbLista.value).then((resultado) => {
+         contenedorLista.innerHTML = resultado
+      })
+   }
+   const selectTable = async (idItem) => {
+      const addButton = document.getElementById("btnAddSetting")
+      const result = await renderComponentTabla(idItem, "tablaConfig")
+      const contenedor = document.getElementById("renderContainer")
+      contenedor.innerHTML = result
+      addButton.disabled = false
+   }
+   const limpiarModal = () =>{
+      return
+   }
 </script>
 
 {% endblock javascripts %}
