@@ -35,6 +35,24 @@
 		<!-- Specific Page CSS goes HERE  -->
 		{% block stylesheets %}{% endblock stylesheets %}
 		<style>
+			.content-table-hijo{
+				display: flex;
+				border-radius: .25rem;
+				margin: 10px 2px;
+				padding: 0;
+				align-content: center;
+				justify-content: center;
+				box-shadow: 0px 0px 4px 2px #0003;
+				overflow: hidden;
+			}
+			.table-component > thead{
+				background-color: #0002 !important;
+			}
+			.table-component{
+				margin: 0;
+				border-radius: .25rem;
+				overflow: hidden;
+			}
 			.list-group-item:hover {
 				transform: scale(1.1);
 				transition: transform 0.1s linear;

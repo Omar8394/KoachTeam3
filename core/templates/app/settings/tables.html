@@ -54,7 +54,7 @@
                <div id="renderList" class="col-md-3">
                   <p>There aren't data to show</p>
                </div>
-               <div id="renderContainer" class="col-md-9 p-2 table-responsive">
+               <div id="renderContainer" class="col-md-9 mx-3 table-responsive">
                   <h3 class="display-4">Select an element from list</h3>
                </div>
             </div>
@@ -181,8 +181,8 @@
          })
          .then(async (res) => {
             result = await res.text()
-            if (result[0] != '<') {
-               result = "<h3 class='display-4'>Selected table has no childs</h3>"
+            if (result[0] == '{') {
+               result = `<h3 class='display-4'>${JSON.parse(result).message}</h3>`
             }
             return result
 

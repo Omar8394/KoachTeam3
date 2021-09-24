@@ -1,4 +1,4 @@
-<table class="table table-hover table-striped table-borderless text-center">
+<table class="table table-hover table-component table-borderless text-center">
    <thead>
       <tr>
          {% for field in fields %}
@@ -47,7 +47,9 @@
          </td>
       </tr>
       <tr id="tablaHijo{{row.pk}}" hidden>
-         <td id ="contenidoHijo{{row.pk}}" colspan="{{fields|length}}" class="p-3"></td>
+         <td colspan="{{fields|length}}">
+            <div id ="contenidoHijo{{row.pk}}" class="content-table-hijo"></div>
+         </td>
       </tr>
       {% endfor %}
    </tbody>
