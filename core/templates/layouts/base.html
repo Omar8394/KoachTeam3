@@ -101,23 +101,25 @@
 
 		<!-- Common JS for all views -->
 		<script>
-			let magicClicks = document.querySelectorAll("li.list-group-item")
-			const overlay = document.createElement("span")
-			overlay.classList.add("overlay")
+			function feedbackLista() {
+				let magicClicks = document.querySelectorAll("li.list-group-item.padres")
+				const overlay = document.createElement("span")
+				overlay.classList.add("overlay")
 
-			for (const magic of magicClicks) {
-				magic.addEventListener("click", (e) => {
-					e.preventDefault()
-					let x = e.offsetX
-					let y = e.offsetY
-					overlay.style.left = x + "px"
-					overlay.style.top = y + "px"
-					magic.appendChild(overlay)
+				for (const magic of magicClicks) {
+					magic.addEventListener("click", (e) => {
+						e.preventDefault()
+						let x = e.offsetX
+						let y = e.offsetY
+						overlay.style.left = x + "px"
+						overlay.style.top = y + "px"
+						magic.appendChild(overlay)
 
-					setTimeout(() => {
-						overlay.remove()
-					}, 500)
-				})
+						setTimeout(() => {
+							overlay.remove()
+						}, 500)
+					})
+				}
 			}
 		</script>
 

@@ -44,8 +44,7 @@
                      </h2>
                   </div>
                   <div class="form-group col-md-6 d-flex justify-content-end">
-                     <button type="button" id="btnAddSetting" class="btn btn-success" data-toggle="modal" disabled data-target="#addNewTable"
-                        onclick="limpiarModal()">
+                     <button type="button" id="btnAddSetting" class="btn btn-success" onclick="openAddModal()">
                         Add setting <i class="fas fa-plus ml-1"></i>
                      </button>
                   </div>
@@ -65,7 +64,7 @@
 </div>
 <div class="modal fade" id="addNewTable" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
    aria-hidden="true">
-   <div class="modal-dialog" role="document">
+   <div class="modal-dialog  modal-dialog-centered" role="document">
       <div class="modal-content">
          <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel"><strong>New setting</strong></h5>
@@ -73,30 +72,62 @@
                <span aria-hidden="true">&times;</span>
             </button>
          </div>
-         <div class="modal-body">
-            <form>
+         <form id="formConfig" class="form">
+            <div class="modal-body">
                <div class="form-row">
                   <div class="form-group col-12">
                      <label for="descriptionConfig" class="col-form-label">Description</label>
-                     <input type="text" class="form-control" id="descriptionConfig">
+                     <input type="text" class="form-control" id="descriptionConfig"
+                        placeholder="Enter a description here" required>
+                  </div>
+               </div>
+               <div class="form-row">
+                  <div class="form-group col-12">
+                     <label for="codeConfig" class="col-form-label">Code</label>
+                     <input type="text" class="form-control" id="codeConfig"
+                        placeholder="Enter a code to identify this setting">
+                  </div>
+               </div>
+               <div class="form-row">
+                  <div class="form-group col-12">
+                     <label for="padreConfig" class="col-form-label">Father table</label>
+                     <select class="form-control" name="id-padre" id="padreConfig">
+                        <option value="null" selected disabled>Select a table</option>
+                        {% for table in tables%}
+                        {% if table.mostrar_en_combos == 1 %}
+                        <option value="{{table.id_tabla}}">{{table.desc_elemento}}</option>
+                        {% endif %}
+                        {% endfor %}
+                     </select>
                   </div>
                </div>
                <div class="form-row">
                   <div class="form-group col-4">
-                     <label for="checkShowCB" class="col-form-label">Show on lists</label>
-                     <input class="form-check-input" type="checkbox" value="" id="checkShowCB">
+                     <div class="custom-control custom-checkbox ml-2">
+                        <input type="checkbox" class="custom-control-input" name="checkShowCB" id="checkShowCB">
+                        <label class="custom-control-label" for="checkShowCB">Show on lists</label>
+                     </div>
                   </div>
                   <div class="form-group col-4">
-                     <label for="checkChangesCB" class="col-form-label">Allow changes</label>
-                     <input class="form-check-input" type="checkbox" value="" id="checkChangesCB">
+                     <div class="custom-control custom-checkbox ml-2">
+                        <input type="checkbox" class="custom-control-input" name="checkChangesCB" id="checkChangesCB">
+                        <label class="custom-control-label" for="checkChangesCB">Allow changes</label>
+                     </div>
+                  </div>
+                  <div class="form-group col-4">
+                     <div class="custom-control custom-checkbox ml-2">
+                        <input type="checkbox" class="custom-control-input" name="checkListsCB" id="checkListsCB">
+                        <label class="custom-control-label" for="checkListsCB">Handle lists</label>
+                     </div>
                   </div>
                </div>
-            </form>
-         </div>
-         <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Back</button>
-            <button type="button" class="btn btn-primary">Save</button>
-         </div>
+            </div>
+            <div class="modal-footer">
+               <button type="button" class="btn btn-danger" data-dismiss="modal"><i
+                     class="fas fa-arrow-left mr-2"></i>Back</button>
+               <button type="submit" class="btn btn-primary">Save<i class="fas fa-save ml-2"></i></button>
+            </div>
+         </form>
       </div>
    </div>
 </div>
@@ -105,16 +136,22 @@
 
 {% block javascripts %}
 <script>
+   let selectedId
+   let selectedTable
+   let editmode = false
+   const fetchObject = {
+      headers: {
+         'Accept': 'application/json',
+         'X-Requested-With': 'XMLHttpRequest',
+         "X-CSRFToken": getCookie('csrftoken')
+      },
+      mode: 'same-origin',
+      method: 'POST',
+   }
    const renderComponentLista = (name, page, limit) => {
       return fetch("{% url 'component_lista'%}",
          {
-            headers: {
-               'Accept': 'application/json',
-               'X-Requested-With': 'XMLHttpRequest',
-               "X-CSRFToken": getCookie('csrftoken')
-            },
-            mode: 'same-origin',
-            method: 'POST',
+            ...fetchObject,
             body: JSON.stringify({
                data: {
                   name,
@@ -134,13 +171,7 @@
    const renderComponentTabla = (padre, name) => {
       return fetch("{% url 'component_tabla'%}",
          {
-            headers: {
-               'Accept': 'application/json',
-               'X-Requested-With': 'XMLHttpRequest',
-               "X-CSRFToken": getCookie('csrftoken')
-            },
-            mode: 'same-origin',
-            method: 'POST',
+            ...fetchObject,
             body: JSON.stringify({
                data: {
                   name: name,
@@ -157,6 +188,66 @@
 
          })
    }
+   const clickSave = () => {
+      const checkChangesCB = document.getElementById("checkChangesCB")
+      const checkShowCB = document.getElementById("checkShowCB")
+      const checkListsCB = document.getElementById("checkListsCB")
+      const descriptionConfig = document.getElementById("descriptionConfig")
+      const codeConfig = document.getElementById("codeConfig")
+      const padreConfig = document.getElementById("padreConfig")
+      form = {
+         descripcion: descriptionConfig.value,
+         valorElemento: codeConfig.value,
+         idPadre: padreConfig.value,
+         mostrarEnCombos: checkShowCB.checked,
+         permiteCambios: checkChangesCB.checked,
+         manejaLista: checkListsCB.checked,
+         tipoElemento: padreConfig.value == 1 ? 1 : 0,
+      }
+      if (editmode) {
+         updateConfig(form, selectedId)
+      }
+      else {
+         createConfig(form)
+      }
+   }
+   const createConfig = (form) => {
+      fetch("{% url 'system_tables' %}", {
+         ...fetchObject,
+         body: JSON.stringify({
+            data: form
+         }),
+      })
+         .then((res) => {
+            console.log("create")
+            console.log(res)
+         })
+         .then(() => {
+            renderLista()
+            selectTable(selectedTable)
+            $("#addNewTable").modal("hide")
+         })
+   }
+   const updateConfig = (form, idViejo) => {
+      fetch("{% url 'system_tables' %}", {
+         ...fetchObject,
+         body: JSON.stringify({
+            data: {
+               ...form,
+               idViejo
+            }
+         }),
+      })
+         .then((res) => {
+            console.log("update")
+            console.log(res)
+         })
+         .then(() => {
+            renderLista()
+            selectTable(selectedTable)
+            $("#addNewTable").modal("hide")
+         })
+   }
    const toggleContentChild = async (idPadre) => {
       const tablaHijo = document.getElementById(`tablaHijo${idPadre}`)
       const contenedor = document.getElementById(`contenidoHijo${idPadre}`)
@@ -169,32 +260,90 @@
       }
       tablaHijo.hidden = !tablaHijo.hidden
    }
-   const contenedorLista = document.getElementById("renderList")
-   renderComponentLista("listaConfig", 1, 5).then((resultado) => {
-      contenedorLista.innerHTML = resultado
-   })
+   const renderLista = () => {
+      const contenedorLista = document.getElementById("renderList")
+      renderComponentLista("listaConfig", 1, 5)
+         .then((resultado) => {
+            contenedorLista.innerHTML = resultado
+         })
+         .then(() => {
+
+            feedbackLista()
+         })
+   }
    const changePerPage = async () => {
+      const contenedorLista = document.getElementById("renderList")
       const cbLista = document.getElementById("select-perpage")
       renderComponentLista("listaConfig", 1, cbLista.value).then((resultado) => {
          contenedorLista.innerHTML = resultado
       })
+         .then(() => {
+            feedbackLista()
+         })
    }
    const goToPage = (page) => {
+      const contenedorLista = document.getElementById("renderList")
       const cbLista = document.getElementById("select-perpage")
       renderComponentLista("listaConfig", page, cbLista.value).then((resultado) => {
          contenedorLista.innerHTML = resultado
       })
+         .then(() => {
+            feedbackLista()
+         })
    }
    const selectTable = async (idItem) => {
-      const addButton = document.getElementById("btnAddSetting")
+      selectedId = idItem
+      selectedTable = idItem
+
       const result = await renderComponentTabla(idItem, "tablaConfig")
       const contenedor = document.getElementById("renderContainer")
       contenedor.innerHTML = result
-      addButton.disabled = false
    }
-   const limpiarModal = () =>{
-      return
+   const limpiarModal = () => {
+      document.getElementById("descriptionConfig").value = null
+      document.getElementById("padreConfig").value = null
+      document.getElementById("codeConfig").value = null
+      document.getElementById("checkShowCB").checked = false
+      document.getElementById("checkListsCB").checked = false
+      document.getElementById("checkChangesCB").checked = false
+      editmode = false
    }
+   const openAddModal = (id) => {
+      limpiarModal()
+      $("#addNewTable").modal("show")
+   }
+   const openEditModal = (id) => {
+      selectedId = id
+      fetch("{% url 'system_tables' %}", {
+         ...fetchObject,
+         body: JSON.stringify({
+            data: {
+               idFind: id
+            }
+         }),
+      })
+         .then(async (res) => {
+            limpiarModal()
+            let respuesta = JSON.parse(await res.text())
+            console.log(respuesta.data)
+            document.getElementById("descriptionConfig").value = respuesta.data.desc_elemento
+            document.getElementById("padreConfig").value = respuesta.data.fk_tabla_padre_id
+            document.getElementById("codeConfig").value = respuesta.data.valor_elemento
+            document.getElementById("checkShowCB").checked = respuesta.data.mostrar_en_combos
+            document.getElementById("checkListsCB").checked = respuesta.data.maneja_lista
+            document.getElementById("checkChangesCB").checked = respuesta.data.permite_cambios
+            editmode = true
+         })
+         .then(() => {
+            $("#addNewTable").modal("show")
+         })
+   }
+   renderLista()
+   const formConfig = document.getElementById("formConfig")
+   formConfig.addEventListener("submit", (e) => {
+      e.preventDefault()
+      clickSave()
+   })
 </script>
 
 {% endblock javascripts %}

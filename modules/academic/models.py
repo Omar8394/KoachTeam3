@@ -49,6 +49,7 @@ class Cursos(models.Model):
     codigo_curso = models.CharField(max_length=15, db_collation='utf8mb3_swedish_ci')
     fk_estruc_programa = models.ForeignKey(Estructuraprograma, on_delete=models.CASCADE, default=None, null=True)
     fk_categoria = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE, default=None, null=True)
+    fk_estatus_curso = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE, default=None, null=True, related_name="estatus_curso")
     disponible_desde = models.DateField()
 
     def __str__(self):

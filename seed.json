@@ -271,6 +271,48 @@
 
     }
   },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk": 20,
+    "fields": {
+      "desc_elemento": "Tipos de pregunta frecuente",
+      "fk_tabla_padre_id": 1,
+      "tipo_elemento": 1,
+      "permite_cambios":1,
+      "valor_elemento":"Frecuente",
+      "mostrar_en_combos":1,
+      "maneja_lista":1
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk": 21,
+    "fields": {
+      "desc_elemento": "Estatus matrícula",
+      "fk_tabla_padre_id": 1,
+      "tipo_elemento": 1,
+      "permite_cambios":1,
+      "valor_elemento":"EstMatricula",
+      "mostrar_en_combos":1,
+      "maneja_lista":1
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk": 22,
+    "fields": {
+      "desc_elemento": "Estatus curso",
+      "fk_tabla_padre_id": 1,
+      "tipo_elemento": 1,
+      "permite_cambios":1,
+      "valor_elemento":"EstCurso",
+      "mostrar_en_combos":1,
+      "maneja_lista":1
+
+    }
+  },
 
   {
     "model": "app.Contratantes",

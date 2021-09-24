@@ -69,7 +69,7 @@ def componentTabla(request):
         #aqui comienza la de tabla configuraciones
         if data["name"] == "tablaConfig":
             padre = data["padre"]
-            hijos = TablasConfiguracion.objects.filter(fk_tabla_padre=padre)
+            hijos = TablasConfiguracion.objects.filter(fk_tabla_padre=padre, mostrar_en_combos=1)
             if not hijos:
                 return JsonResponse({"message":"there are no childs"})
             lista = []
@@ -77,6 +77,12 @@ def componentTabla(request):
             #con el fin de llamar a los metodos luego en JS
             for i in list(hijos.values()):
                 i['pk'] = i['id_tabla']
+                if i["maneja_lista"] == 1:
+                    i["manejaLista"] = True
+                    i["crearHijos"] = True
+                if i["permite_cambios"] == 1:
+                    i["editar"] = True
+                    i["eliminable"] = True
                 lista.append(i)
             context = {
                 #aqui el nombre de la columna a mostrar
@@ -91,6 +97,29 @@ def componentTabla(request):
 
 @login_required(login_url="/login/")
 def tables(request):
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        try:
+            context = {}
+            data = json.load(request)["data"]
+            if "idFind" in data:
+                newConfig = TablasConfiguracion.objects.filter(pk=data["idFind"])
+                findConfig = list(newConfig.values())
+                return JsonResponse({"data":findConfig[0]}, safe=False)
+            elif "idViejo" in data:
+                newConfig = TablasConfiguracion.objects.get(pk=data["idViejo"])
+            else:
+                newConfig = TablasConfiguracion()
+            newConfig.desc_elemento=data["descripcion"] 
+            newConfig.tipo_elemento=data["tipoElemento"] 
+            newConfig.permite_cambios=data["permiteCambios"] 
+            newConfig.valor_elemento=data["valorElemento"] 
+            newConfig.mostrar_en_combos=data["mostrarEnCombos"] 
+            newConfig.maneja_lista=data["manejaLista"] 
+            newConfig.fk_tabla_padre_id=data["idPadre"]
+            newConfig.save()
+            return JsonResponse({"message": "perfect"})
+        except:
+            return JsonResponse({"message": "something went wrong"})
     context = {"tables": TablasConfiguracion.objects.all()}
     html_template = (loader.get_template('app/settings/tables.html'))
     return HttpResponse(html_template.render(context, request))
