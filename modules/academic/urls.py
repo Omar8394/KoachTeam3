@@ -8,5 +8,16 @@ from modules.academic import views
 
 urlpatterns = [
    path('', views.index, name='academic'),
+   #Pruebas de sprint 2
+   path('cursos/', views.cursos, name="cursos"),
+   path('modalAddCurso/', views.getModalCursos, name="modalAddCurso"),
+   path('modalAddTopico/', views.getModalTopico, name="modalAddTopico"),
+   path('evaluaciones/', views.evaluaciones, name="evaluaciones"),
+   path('<str:programa>/', views.programa, name="programa"),
+   path('<str:programa>/<str:proceso>/', views.proceso, name="proceso"),
+   path('<str:programa>/<str:proceso>/<str:unidad>/', views.unidad, name="unidad"),
+   path('<str:programa>/<str:proceso>/<str:unidad>/<str:topico>/', views.topico, name="topico"),
+   path('<str:programa>/<str:proceso>/<str:unidad>/<str:topico>/<int:idActividad>/', views.actividad, name="actividad"),
+   #demas paginas
    re_path(r'^.*\.*', views.pages, name='pages'),
 ]

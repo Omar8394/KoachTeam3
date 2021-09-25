@@ -115,8 +115,14 @@ def tables(request):
                 return JsonResponse({"message": "Perfect"})
             except:
                 return JsonResponse({"message": "Error"})
-    context = {"tables": TablasConfiguracion.objects.all()}
+    context = {}
     html_template = (loader.get_template('app/settings/tables.html'))
+    return HttpResponse(html_template.render(context, request))
+
+@login_required(login_url="/login/")
+def getModalSetting(request):
+    context = {"tables": TablasConfiguracion.objects.all()}
+    html_template = (loader.get_template('components/modalAddSetting.html'))
     return HttpResponse(html_template.render(context, request))
 
 @login_required(login_url="/login/")

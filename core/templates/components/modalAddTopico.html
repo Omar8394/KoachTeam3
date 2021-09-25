@@ -1,0 +1,85 @@
+<div class="modal-content">
+   <div class="modal-header">
+      <h5 class="modal-title"><strong>Course</strong></h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+         <span aria-hidden="true">&times;</span>
+      </button>
+   </div>
+   <form id="formTopico" class="form">
+      <div class="modal-body" style="height:400px; overflow-y: scroll;">
+         <div class="form-row">
+            <div class="form-group col-6">
+               <label for="comboCategory" class="col-form-label">Category</label>
+               <select class="form-control" name="comboCategory" id="comboCategory">
+                  <option value="null" selected disabled>Select a category</option>
+               </select>
+            </div>
+            <div class="form-group col-6">
+               <label for="comboProcess" class="col-form-label">Process</label>
+               <select class="form-control" name="comboProcess" id="comboProcess">
+                  <option value="null" selected disabled>Select a process</option>
+               </select>
+            </div>
+         </div>
+         <div class="form-row">
+            <div class="form-group col-6">
+               <label for="titleCourse" class="col-form-label">Title</label>
+               <input type="text" class="form-control" id="titleCourse" placeholder="Enter a title for this course">
+            </div>
+            <div class="form-group col-6">
+               <label for="codeCourse" class="col-form-label">Code</label>
+               <input type="text" class="form-control" id="codeCourse"
+                  placeholder="Enter a code to identify this course">
+            </div>
+         </div>
+         <div class="form-row">
+            <div class="form-group col-12">
+               <label for="descriptionCourse" class="col-form-label">Description</label>
+               <textarea class="form-control" id="descriptionCourse" placeholder="Enter a description here"></textarea>
+            </div>
+         </div>
+         <div class="form-row">
+            <div class="form-group col-6">
+               <label for="tagCourse" class="col-form-label">Tag</label>
+               <input type="text" class="form-control" id="tagCourse"
+                  placeholder="Enter a abbreviation to identify this course">
+            </div>
+            <div class="form-group col-6">
+               <label for="diponibleCourse" class="col-form-label">Available from</label>
+               <input type="date" class="form-control" id="disponibleCourse">
+            </div>
+         </div>
+         <div class="form-row">
+            <div class="form-group col-6">
+               <div class="custom-control custom-checkbox ml-2">
+                  <input type="checkbox" class="custom-control-input" name="checkExpertCB" id="checkExpertCB">
+                  <label class="custom-control-label" for="checkExpertCB">Expert test</label>
+               </div>
+            </div>
+            <div class="form-group col-6">
+               <div class="custom-control custom-checkbox ml-2">
+                  <input type="checkbox" class="custom-control-input" name="checkDurationCB" id="checkDurationCB">
+                  <label class="custom-control-label" for="checkDurationCB">Handle duration</label>
+               </div>
+            </div>
+         </div>
+         <div class="form-row">
+            <div class="form-group col-6">
+               <label for="durationCourse" class="col-form-label">Duration</label>
+               <input type="number" class="form-control" id="durationCourse" placeholder="0">
+            </div>
+            <div class="form-group col-6">
+               <label for="timeCourse" class="col-form-label">Time</label>
+               <select class="form-control" name="timeCourse" id="timeCourse">
+                  <option value="null" selected disabled>Select a type time</option>
+               </select>
+            </div>
+         </div>
+      </div>
+      <div class="modal-footer">
+         <button type="button" class="btn btn-danger" data-dismiss="modal"><i
+               class="fas fa-arrow-left mr-2"></i>Back</button>
+         <button type="submit" class="btn btn-primary">Save<i class="fas fa-save ml-2"></i></button>
+      </div>
+   </form>
+</div>

@@ -13,6 +13,48 @@ def index(request):
     html_template = (loader.get_template('academic/index.html'))
     return HttpResponse(html_template.render(context, request))
 
+
+#PRUEBA
+@login_required(login_url="/login/")
+def cursos(request):
+    context = {}
+    html_template = (loader.get_template('academic/cursos.html'))
+    return HttpResponse(html_template.render(context, request))
+
+@login_required(login_url="/login/")
+def evaluaciones(request):
+    context = {}
+    html_template = (loader.get_template('academic/evaluaciones.html'))
+    return HttpResponse(html_template.render(context, request))
+
+@login_required(login_url="/login/")
+def getModalCursos(request):
+    context = {}
+    html_template = (loader.get_template('components/modalAddCurso.html'))
+    return HttpResponse(html_template.render(context, request))
+
+@login_required(login_url="/login/")
+def getModalTopico(request):
+    context = {}
+    html_template = (loader.get_template('components/modalAddTopico.html'))
+    return HttpResponse(html_template.render(context, request))
+
+@login_required(login_url="/login/")
+def programa(request):
+    return
+@login_required(login_url="/login/")
+def proceso(request):
+    return
+@login_required(login_url="/login/")
+def unidad(request):
+    return
+@login_required(login_url="/login/")
+def topico(request):
+    return
+@login_required(login_url="/login/")
+def actividad(request):
+    return
+
 @login_required(login_url="/login/")
 def pages(request):
     context = {}

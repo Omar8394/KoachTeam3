@@ -13,7 +13,7 @@
 <div class="content">
    <div class="page-inner">
       <div class="page-header">
-         <h4 class="page-title">System tables</h4>
+         <h4 class="page-title">BBDD Course</h4>
          <ul class="breadcrumbs">
             <li class="nav-home">
                <a href="{% url 'home' %}">
@@ -24,13 +24,31 @@
                <i class="flaticon-right-arrow"></i>
             </li>
             <li class="nav-item">
-               <span>Settings</span>
+               <a href="{% url 'academic' %}">Academic</a>
             </li>
             <li class="separator">
                <i class="flaticon-right-arrow"></i>
             </li>
             <li class="nav-item">
-               <a href="{% url 'system_tables' %}">Tables</a>
+               <a href="{% url 'system_tables' %}">Category</a>
+            </li>
+            <li class="separator">
+               <i class="flaticon-right-arrow"></i>
+            </li>
+            <li class="nav-item">
+               <a href="{% url 'system_tables' %}">Program</a>
+            </li>
+            <li class="separator">
+               <i class="flaticon-right-arrow"></i>
+            </li>
+            <li class="nav-item">
+               <a href="{% url 'system_tables' %}">Process</a>
+            </li>
+            <li class="separator">
+               <i class="flaticon-right-arrow"></i>
+            </li>
+            <li class="nav-item">
+               <a href="{% url 'system_tables' %}">BBDD Course</a>
             </li>
          </ul>
       </div>
@@ -40,21 +58,18 @@
                <div class="form-row">
                   <div class="form-group col-md-6">
                      <h2 id="demo" class="card-text mt-2">
-                        System tables
+                        Topics
                      </h2>
                   </div>
                   <div class="form-group col-md-6 d-flex justify-content-end">
                      <button type="button" id="btnAddSetting" class="btn btn-success" onclick="openAddModal()">
-                        Add setting <i class="fas fa-plus ml-1"></i>
+                        Add topic <i class="fas fa-plus ml-1"></i>
                      </button>
                   </div>
                </div>
             </div>
             <div class="card-body row">
-               <div id="renderList" class="col-md-3">
-                  <p>There aren't data to show</p>
-               </div>
-               <div id="renderContainer" class="col-md-8 mx-3 table-responsive">
+               <div id="renderContainer" class="col-md-12 mx-3 table-responsive">
                   <h3 class="display-4">Select an element from list</h3>
                </div>
             </div>
@@ -62,8 +77,10 @@
       </div>
    </div>
 </div>
-<div class="modal fade" id="addNewTable" tabindex="-1" role="dialog" aria-hidden="true">
-   <div id="addNewSettingContent" class="modal-dialog  modal-dialog-centered" role="document">
+<div class="modal fade" id="addNewTopico" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+   aria-hidden="true">
+   <div id="addNewTopicoContent" class="modal-dialog  modal-dialog-centered" role="document">
+
    </div>
 </div>
 
@@ -71,44 +88,25 @@
 
 {% block javascripts %}
 <script>
-   let selectedId = 2
-   let selectedTable = 2
+   let selectedId = 1
    let editmode = false
+
    const renderModal = () => {
-      return fetch("{% url 'modalAddSetting' %}", {
+      return fetch("{% url 'modalAddTopico' %}", {
          ...fetchObject
       })
-      .then(async (res) => {
-         document.getElementById("addNewSettingContent").innerHTML = await res.text()
-      }).then(()=>{
-         const formConfig = document.getElementById("formConfig")
-         formConfig.addEventListener("submit", (e) => {
-            e.preventDefault()
-            clickSave()
-         })
-      })
-   }
-   const renderComponentLista = (name, page, limit) => {
-      return fetch("{% url 'component_lista'%}",
-         {
-            ...fetchObject,
-            body: JSON.stringify({
-               data: {
-                  name,
-                  page,
-                  limit
-               }
-            }),
-         })
          .then(async (res) => {
-            result = await res.text()
-            if (result[0] != '<') {
-               result = "<p>There aren't records</p>"
-            }
-            return result
+            document.getElementById("addNewTopicoContent").innerHTML = await res.text()
+         })
+         .then(() => {
+            const formTopico = document.getElementById("formTopico")
+            formTopico.addEventListener("submit", (e) => {
+               e.preventDefault()
+               clickSave()
+            })
          })
    }
-   const renderComponentTabla = (padre, name) => {
+   const renderComponentTabla = (idPadre, name) => {
       return fetch("{% url 'component_tabla'%}",
          {
             ...fetchObject,
@@ -129,21 +127,7 @@
          })
    }
    const clickSave = () => {
-      const checkChangesCB = document.getElementById("checkChangesCB")
-      const checkShowCB = document.getElementById("checkShowCB")
-      const checkListsCB = document.getElementById("checkListsCB")
-      const descriptionConfig = document.getElementById("descriptionConfig")
-      const codeConfig = document.getElementById("codeConfig")
-      const padreConfig = document.getElementById("padreConfig")
-      form = {
-         descripcion: descriptionConfig.value,
-         valorElemento: codeConfig.value,
-         idPadre: padreConfig.value,
-         mostrarEnCombos: checkShowCB.checked,
-         permiteCambios: checkChangesCB.checked,
-         manejaLista: checkListsCB.checked,
-         tipoElemento: padreConfig.value == 1 ? 1 : 0,
-      }
+      form = {}
       if (editmode) {
          updateConfig(form, selectedId)
       }
@@ -166,8 +150,6 @@
             alerta(1)
          })
          .then(() => {
-            renderLista()
-            selectTable(selectedTable)
             $("#addNewTable").modal("hide")
          })
    }
@@ -189,8 +171,6 @@
             alerta(2)
          })
          .then(() => {
-            renderLista()
-            selectTable(selectedTable)
             $("#addNewTable").modal("hide")
          })
    }
@@ -204,40 +184,25 @@
             }
          }),
       })
-         .then(async(res) => {
+         .then(async (res) => {
             let result = JSON.parse(await res.text())
-            if(result.message === "Error"){
+            if (result.message === "Error") {
                return false
             }
             return true
-         })
-         .then((result) => {
-            renderLista()
-            selectTable(selectedTable)
-            return result
          })
    }
    const toggleContentChild = async (idPadre) => {
       const tablaHijo = document.getElementById(`tablaHijo${idPadre}`)
       const contenedor = document.getElementById(`contenidoHijo${idPadre}`)
       if (tablaHijo.hidden) {
-         const result = await renderComponentTabla(idPadre, "tablaConfig")
+         const result = await renderComponentTabla(idPadre, "tablaActividades")
          contenedor.innerHTML = result
       }
       else {
          contenedor.innerHTML = ''
       }
       tablaHijo.hidden = !tablaHijo.hidden
-   }
-   const renderLista = () => {
-      const contenedorLista = document.getElementById("renderList")
-      renderComponentLista("listaConfig", 1, 5)
-         .then((resultado) => {
-            contenedorLista.innerHTML = resultado
-         })
-         .then(() => {
-            feedbackLista()
-         })
    }
    const changePerPage = async () => {
       const contenedorLista = document.getElementById("renderList")
@@ -259,29 +224,17 @@
             feedbackLista()
          })
    }
-   const selectTable = async (idItem) => {
-      selectedId = idItem
-      selectedTable = idItem
-
-      const result = await renderComponentTabla(idItem, "tablaConfig")
-      const contenedor = document.getElementById("renderContainer")
-      contenedor.innerHTML = result
-   }
    const limpiarModal = () => {
-      document.getElementById("descriptionConfig").value = null
-      document.getElementById("padreConfig").value = null
-      document.getElementById("codeConfig").value = null
-      document.getElementById("checkShowCB").checked = false
-      document.getElementById("checkListsCB").checked = false
-      document.getElementById("checkChangesCB").checked = false
       editmode = false
    }
-
    const openAddModal = (id) => {
-      renderModal().then(()=>{
-         limpiarModal()
-         $("#addNewTable").modal("show")
+      fetch("{% url 'modalAddTopico' %}", {
+         ...fetchObject
       })
+         .then(async (res) => {
+            await renderModal()
+            $("#addNewTopico").modal("show")
+         })
    }
    const openEditModal = (id) => {
       selectedId = id
@@ -297,32 +250,26 @@
             await renderModal()
             limpiarModal()
             let respuesta = JSON.parse(await res.text())
-            document.getElementById("descriptionConfig").value = respuesta.data.desc_elemento
-            document.getElementById("padreConfig").value = respuesta.data.fk_tabla_padre_id
-            document.getElementById("codeConfig").value = respuesta.data.valor_elemento
-            document.getElementById("checkShowCB").checked = respuesta.data.mostrar_en_combos
-            document.getElementById("checkListsCB").checked = respuesta.data.maneja_lista
-            document.getElementById("checkChangesCB").checked = respuesta.data.permite_cambios
             editmode = true
          })
          .then(() => {
             $("#addNewTable").modal("show")
          })
    }
-   const openDeleteModal = async(id)=>{
+   const openDeleteModal = async (id) => {
       const elimino = await alerta(3)
-      if(elimino){
+      if (elimino) {
          const res = await deleteConfig(id)
-         if (res){
+         if (res) {
             alerta(4)
          }
-         else{
+         else {
             alerta(5)
          }
-         
+
       }
    }
-   renderLista()
+
 </script>
 
 {% endblock javascripts %}
