@@ -1,5 +1,6 @@
 from django.db import models
-from ..app.models import TablasConfiguracion
+from django.db.models.fields import SmallIntegerField
+from ..app.models import TablasConfiguracion, Publico
 
 
 class Perfil(models.Model):
@@ -15,3 +16,11 @@ class CompetenciasReq(models.Model):
     fk_perfil = models.ForeignKey(Perfil, on_delete=models.CASCADE, default=None, null=True)
     fk_tipo_competencia = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE, default=None, null=True)
     fk_nivel = models.ForeignKey(TablasConfiguracion, related_name='competencias_nivel', on_delete=models.CASCADE, default=None, null=True)
+
+class CompetenciasAdq(models.Model):
+    idcompetencias_adq = models.AutoField(primary_key=True)
+    periodo = models.CharField(max_length=15)
+    experiencia = models.SmallIntegerField()
+    fk_publico = models.ForeignKey(Publico, on_delete=models.CASCADE, default=None, null=True)
+    fk_competencia = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE, default=None, null=True, related_name="competencia")
+    fk_nivel = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE, default=None, null=True, related_name="nivel")

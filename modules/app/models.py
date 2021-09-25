@@ -112,3 +112,9 @@ class Programascap(models.Model):
     objetivo = models.TextField()
     alcance = models.TextField()
     fecha_apertura = models.DateField()
+
+class PreguntasFrecuentes(models.Model):
+    idpregunta_frecuente = models.AutoField(primary_key=True)
+    texto_pregunta = models.TextField(null=True)
+    texto_respuesta = models.TextField(null=True)
+    fk_tipo_pregunta_frecuente = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE, default=None, null=True)
