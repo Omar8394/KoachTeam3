@@ -92,7 +92,11 @@ def tables(request):
             try:
                 context = {}
                 data = json.load(request)["data"]
-                if "idFind" in data:
+                if "delete" in data:
+                    newConfig = TablasConfiguracion.objects.get(pk=data["id"])
+                    newConfig.delete()
+                    return JsonResponse({"message": "Deleted"})
+                elif "idFind" in data:
                     newConfig = TablasConfiguracion.objects.filter(pk=data["idFind"])
                     findConfig = list(newConfig.values())
                     return JsonResponse({"data":findConfig[0]}, safe=False)
@@ -110,7 +114,7 @@ def tables(request):
                 newConfig.save()
                 return JsonResponse({"message": "Perfect"})
             except:
-                return JsonResponse({"message": "Something went wrong"})
+                return JsonResponse({"message": "Error"})
     context = {"tables": TablasConfiguracion.objects.all()}
     html_template = (loader.get_template('app/settings/tables.html'))
     return HttpResponse(html_template.render(context, request))

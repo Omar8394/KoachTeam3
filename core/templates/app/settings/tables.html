@@ -218,9 +218,12 @@
             data: form
          }),
       })
-         .then((res) => {
-            console.log("create")
-            console.log(res)
+         .then(async (res) => {
+            let result = JSON.parse(await res.text())
+            if (result.message === "Error") {
+               alerta(5)
+            }
+            alerta(1)
          })
          .then(() => {
             renderLista()
@@ -238,14 +241,40 @@
             }
          }),
       })
-         .then((res) => {
-            console.log("update")
-            console.log(res)
+         .then(async (res) => {
+            let result = JSON.parse(await res.text())
+            if (result.message === "Error") {
+               alerta(5)
+            }
+            alerta(2)
          })
          .then(() => {
             renderLista()
             selectTable(selectedTable)
             $("#addNewTable").modal("hide")
+         })
+   }
+   const deleteConfig = (id) => {
+      return fetch("{% url 'system_tables' %}", {
+         ...fetchObject,
+         body: JSON.stringify({
+            data: {
+               delete: true,
+               id
+            }
+         }),
+      })
+         .then(async(res) => {
+            let result = JSON.parse(await res.text())
+            if(result.message === "Error"){
+               return false
+            }
+            return true
+         })
+         .then((result) => {
+            renderLista()
+            selectTable(selectedTable)
+            return result
          })
    }
    const toggleContentChild = async (idPadre) => {
@@ -325,7 +354,6 @@
          .then(async (res) => {
             limpiarModal()
             let respuesta = JSON.parse(await res.text())
-            console.log(respuesta.data)
             document.getElementById("descriptionConfig").value = respuesta.data.desc_elemento
             document.getElementById("padreConfig").value = respuesta.data.fk_tabla_padre_id
             document.getElementById("codeConfig").value = respuesta.data.valor_elemento
@@ -337,6 +365,19 @@
          .then(() => {
             $("#addNewTable").modal("show")
          })
+   }
+   const openDeleteModal = async(id)=>{
+      const elimino = await alerta(3)
+      if(elimino){
+         const res = await deleteConfig(id)
+         if (res){
+            alerta(4)
+         }
+         else{
+            alerta(5)
+         }
+         
+      }
    }
    renderLista()
    const formConfig = document.getElementById("formConfig")

@@ -65,7 +65,7 @@
 				});
 			}
 			if(tipoAlerta === 3){
-				swal({
+				return swal({
 					title: 'Delete?',
 					text: "You won't be able to revert this!",
 					type: 'warning',
@@ -79,23 +79,33 @@
 							className: 'btn btn-danger'
 						}
 					}
-				}).then((Delete) => {
-					if (Delete) {
-						swal({
-							title: 'Deleted!',
-							text: 'Register has been successfully deleted.',
-							type: 'success',
-							buttons : {
-								confirm: {
-									className : 'btn btn-success'
-								}
-							}
-						});
-					} else {
-						swal.close();
-					}
-				});					
+				})					
 			}
+			if(tipoAlerta === 4){
+				swal({
+					title: 'Deleted!',
+					text: 'Register has been successfully deleted.',
+					type: 'success',
+					buttons: {
+						confirm: {
+							className: 'btn btn-success'
+						}
+					}
+				});
+			}
+			if(tipoAlerta === 5){
+				swal({
+					title: 'Error!',
+					text: 'An error has occurred.',
+					type: 'danger',
+					buttons: {
+						confirm: {
+							className: 'btn btn-danger'
+						}
+					}
+				});
+			}
+		}
 		 //FUNCION PARA OBTENER EL CRSFTOKEN DESDE JS EN CASO DE USAR AJAX
 		 function getCookie(name) {
 				let cookieValue = null;
