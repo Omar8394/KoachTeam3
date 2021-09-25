@@ -1,0 +1,366 @@
+<link rel="icon" href="static/assets/img/icon.png" type="image/x-icon" />
+<link rel="canonical" href="">
+
+<!-- Fonts and icons -->
+<script src="static/assets/js/plugin/webfont/webfont.min.js"></script>
+<script>
+    WebFont.load({
+        google: { "families": ["Lato:300,400,700,900"] },
+        custom: {
+            "families": ["Flaticon", "Font Awesome 5 Solid", "Font Awesome 5 Regular", "Font Awesome 5 Brands", "simple-line-icons"],
+            urls: ['/static/assets/css/fonts.min.css']
+        },
+        active: function () {
+            sessionStorage.fonts = true;
+        }
+    });
+</script>
+
+<!-- CSS Files -->
+<link rel="stylesheet" href="static/assets/css/bootstrap.min.css">
+
+
+<script src="static/assets/js/core/jquery.3.2.1.min.js"></script>
+<script src="static/assets/js/core/popper.min.js"></script>
+<script src="static/assets/js/core/bootstrap.min.js"></script>
+<script src="static/assets/js/core/vue.js"></script>
+<script src="static/assets/js/plugin/webfont/webfont.min.js"></script>
+<link rel="stylesheet" href="static/assets/css/atlantis.min.css">
+
+<div class="row">
+    <div class="col-md-5">
+        <div class="panel panel-primary" style="min-height:400px">
+            <div class="panel-heading">
+                <center>Controles</center>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <button class="btn btn-default" style="width:90%;text-align:left;" ng-click="NuevaPregunta(TIPO_PREGUNTA.Texto)"><i class="fa fa-font"></i>&nbsp;&nbsp;Texto</button><br />
+                        <button class="btn btn-default" style="width:90%;text-align:left;" ng-click="NuevaPregunta(TIPO_PREGUNTA.Memo)"><i class="fa fa-font"></i>&nbsp;&nbsp;Memo</button><br />
+                        <div style="height:25px;"></div>
+                        <button class="btn btn-default" style="width:90%;text-align:left;" ng-click="NuevaPregunta(TIPO_PREGUNTA.Numero)"><i class="fa fa-calculator"></i>&nbsp;&nbsp;Número</button>
+                        <button class="btn btn-default" style="width:90%;text-align:left;" ng-click="NuevaPregunta(TIPO_PREGUNTA.NumeroDecimal)"><i class="fa fa-calculator"></i>&nbsp;&nbsp;Número Decimal</button>
+                        <button class="btn btn-default" style="width:90%;text-align:left;" ng-click="NuevaPregunta(TIPO_PREGUNTA.NumeroEntero)">
+                            <img src="~/Content/imagenes/entero.png" style="max-height:12px;" />
+                            &nbsp;&nbsp;Número Entero +
+                        </button>
+                        <div style="height:25px;"></div>
+                        <button class="btn btn-default" style="width:90%;text-align:left;" ng-click="NuevaPregunta(TIPO_PREGUNTA.FechaHora)"><i class="fa fa-calendar"></i>&nbsp;&nbsp;Fecha y Hora</button>
+                        <button class="btn btn-default" style="width:90%;text-align:left;" ng-click="NuevaPregunta(TIPO_PREGUNTA.Fecha)"><i class="fa fa-calendar-o"></i>&nbsp;&nbsp;Fecha</button>
+                        <button class="btn btn-default" style="width:90%;text-align:left;" ng-click="NuevaPregunta(TIPO_PREGUNTA.Hora)"><i class="fa fa-clock-o"></i>&nbsp;&nbsp;Hora</button>
+                        @*<button class="btn btn-default" style="width:90%;text-align:left;" ng-click="NuevaPregunta(TIPO_PREGUNTA.QREtiqueta)"><i class="fa fa-qrcode"></i>&nbsp;&nbsp;QR Etiqueta</button>
+<button class="btn btn-default" style="width:90%;text-align:left;" ng-click="NuevaPregunta(TIPO_PREGUNTA.QREtiquetaLectura)"><i class="fa fa-qrcode"></i>&nbsp;&nbsp;QR Etiqueta Lectura</button>*@
+                        <div style="height:25px;"></div>
+                        <button class="btn btn-default" style="width:90%;text-align:left;" ng-click="NuevaPregunta(TIPO_PREGUNTA.Titulo)"><i class="fa fa-bookmark-o"></i>&nbsp;&nbsp;Título Sección</button>
+                        <button class="btn btn-default" style="width:90%;text-align:left;" ng-click="NuevaPregunta(TIPO_PREGUNTA.RUT)">
+                            <img src="~/Content/imagenes/bandera_chile.jpg" style="max-height:12px;" />
+                            &nbsp;&nbsp;Validador RUT<small>(cl)</small>
+                        </button>
+                        <button class="btn btn-default" style="width:90%;text-align:left;" ng-click="NuevaPregunta(TIPO_PREGUNTA.Tabla)" title="Solo disponible App"><i class="fa fa-table"></i>&nbsp;&nbsp;Tabla<span class="label label-primary pull-right" style="padding:3px;">App</span></button>
+                        <button class="btn btn-default" style="width:90%;text-align:left;" ng-click="NuevaPregunta(TIPO_PREGUNTA.EnviarPDF)"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;Enviar PDF</button>
+                        <button class="btn btn-default" style="width:90%;text-align:left;" ng-click="NuevaPregunta(TIPO_PREGUNTA.Video)"><i class="fa fa-file-video-o"></i>&nbsp;&nbsp;Video</button>
+
+                    </div>
+                    <div class="col-md-6">
+                        <button class="btn btn-default" style="width:90%;text-align:left;" ng-click="NuevaPregunta(TIPO_PREGUNTA.Imagen)"><i class="fa fa-picture-o"></i>&nbsp;&nbsp;Imagen</button>
+                        <button class="btn btn-default" style="width:90%;text-align:left;" ng-click="NuevaPregunta(TIPO_PREGUNTA.Firma)"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Firma</button>
+                        <div style="height:25px;"></div>
+                        <button class="btn btn-default" style="width:90%;text-align:left;" ng-click="NuevaPregunta(TIPO_PREGUNTA.Lista)"><i class="fa fa-bars"></i>&nbsp;&nbsp;Lista de valores</button>
+                        <button class="btn btn-default" style="width:90%;text-align:left;" ng-click="NuevaPregunta(TIPO_PREGUNTA.Checklist)"><i class="fa fa-list-ul"></i>&nbsp;&nbsp;Selección Múltiple</button>
+                        <button class="btn btn-default" style="width:90%;text-align:left;" ng-click="NuevaPregunta(TIPO_PREGUNTA.RadioButton)"><i class="fa fa-dot-circle-o"></i>&nbsp;&nbsp;Selección Única</button>
+                        <div style="height:25px;"></div>
+                        <button class="btn btn-default" style="width:90%;text-align:left;" ng-click="NuevaPregunta(TIPO_PREGUNTA.CodigoBarras)"><i class="fa fa-barcode"></i>&nbsp;&nbsp;Código de barras</button>
+                        <button class="btn btn-default" style="width:90%;text-align:left;" ng-click="NuevaPregunta(TIPO_PREGUNTA.CodigoQR)"><i class="fa fa-qrcode"></i>&nbsp;&nbsp;Código QR</button>
+                        <button class="btn btn-default" style="width:90%;text-align:left;" ng-click="NuevaPregunta(TIPO_PREGUNTA.CarnetIdentidad)"><i class="fa fa fa-address-card-o"></i>&nbsp;&nbsp;Carnet Identidad <small>(cl)</small></button>
+                        <button class="btn btn-default" style="width:90%;text-align:left;" ng-click="NuevaPregunta(TIPO_PREGUNTA.DTEPdf417)"><i class="fa fa-file-code-o"></i>&nbsp;&nbsp;DTE PDF 417 <small>(cl)</small></button>
+                        <div style="height:25px;"></div>
+                        <button class="btn btn-default" style="width:90%;text-align:left;" ng-click="NuevaPregunta(TIPO_PREGUNTA.Email)"><i class="fa fa-envelope"></i>&nbsp;&nbsp;E-mail</button>
+                        <button class="btn btn-default" style="width:90%;text-align:left;" ng-click="NuevaPregunta(TIPO_PREGUNTA.Archivo)"><i class="fa fa-file-archive-o"></i>&nbsp;&nbsp;Archivo</button>
+                        <button class="btn btn-default" style="width:90%;text-align:left;" ng-click="NuevaPregunta(TIPO_PREGUNTA.OCR)"><i class="fa fa-file-code-o"></i>&nbsp;&nbsp;OCR</button>
+                        <button class="btn btn-default" style="width:90%;text-align:left;" ng-click="NuevaPregunta(TIPO_PREGUNTA.URL)"><i class="fa fa-link"></i>&nbsp;&nbsp;URL</button>
+
+                        @*<span class="label label-warning-light pull-right" style="padding:3px;">Web</span><span class="label label-primary pull-right" style="padding:3px;">App</span>
+<button class="btn btn-default" style="width:90%;text-align:left;" ng-click="NuevaPregunta(TIPO_PREGUNTA.Localidad)"><i class="fa fa-map-marker"></i>&nbsp;&nbsp;Localidad</button>
+                        *@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-1"></div>
+
+    <style>
+.panel {
+    margin-bottom: 20px;
+    background-color: #fff;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);
+    box-shadow: 0 1px 1px rgba(0,0,0,.05);
+}
+
+.agile-list {
+    list-style: none;
+    margin: 0;
+}
+
+.agile-list {
+    list-style: none;
+    margin: 0;
+}
+
+.agile-list li.warning-element {
+    border-left: 3px solid #f8ac59;
+}
+
+.agile-list li {
+    background: #FAFAFB;
+    border: 1px solid #e7eaec;
+    margin: 0 0 10px 0;
+    padding: 10px;
+    border-radius: 2px;
+}
+
+ul {
+    display: block;
+    list-style-type: disc;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    padding-inline-start: 40px;
+}
+.panel-primary > .panel-heading {
+    background-color: #1ab394;
+    border-color: #1ab394;
+}
+
+.panel-primary > .panel-heading {
+    background-color: #1ab394;
+    border-color: #1ab394;
+}
+
+.panel-primary > .panel-heading {
+    background-color: #1ab394;
+    border-color: #1ab394;
+}
+
+.panel-primary > .panel-heading {
+    background-color: #1ab394;
+    border-color: #1ab394;
+}
+
+.panel-primary > .panel-heading {
+    background-color: #1ab394;
+    border-color: #1ab394;
+}
+
+
+    </style>
+    <div class="col-md-5">
+        <div class="panel panel-primary" style="min-height:400px">
+            <div class="panel-heading">
+                <center>Formulario</center>
+            </div>
+            <script>
+                var _el;
+
+                var uno;
+                var dos;
+
+                function dragEnd(e) {
+                    // console.log("drag end--------------------");
+
+                    //console.log(uno);
+                    //// console.log(uno.id);
+                    //console.log(_el);
+
+                    $('#todo li').each(function (i) {
+                        //console.log($(this)[0]);
+                        console.log($(this)[0].id + ":" + i);
+
+                        scope.configuraOrden($(this)[0].id, i);
+                        //var partner = i % 2 == 0 ? i + 1 : i - 1
+                        //$(this).attr({
+                        //    id: i,
+                        //    'data-index': i,
+                        //    'data-partner': partner
+                        //})
+                    });urlf
+
+                    //$("button").each(function (btn) {
+                    //    console.log(btn);//Logs each button in the form to your console
+                    //});
+                }
+
+                function dragOver(e) {
+
+                    if (isBefore(_el, e.target)) {
+
+                        if ((e.target.tagName === 'LI') && (_el.id != e.target.id)) {
+                            uno = e.target;
+                            console.log(uno);
+                        }
+
+                        // console.log("A---------------" + e.target.tagName);
+
+                        e.target.parentNode.insertBefore(_el, e.target);
+
+
+                    }
+                    else {
+
+                        if (!e.target.nextElementSibling)
+                            return;
+
+                        if (!e.target.nextElementSibling.tagName)
+                            console.log("undefined");
+
+                        if ((e.target.nextElementSibling.tagName === 'LI') && (_el.id != e.target.nextElementSibling.id)) {
+                            uno = e.target.nextElementSibling;
+                            //  console.log(uno);
+                        }
+
+
+
+                        //   console.log("B---------------" + e.target.nextElementSibling.tagName);
+
+                        e.target.parentNode.insertBefore(_el, e.target.nextElementSibling);
+
+                    }
+
+                    //if (e.target.tagName === 'LI')
+                    //    uno = e.target;
+
+                    //if (e.target.nextSibling.tagName === 'LI')
+                    //    dos = e.target.nextSibling;
+
+
+                }
+
+                function dragStart(e) {
+                    e.dataTransfer.effectAllowed = "move";
+                    e.dataTransfer.setData("text/plain", null); // Thanks to bqlou for their comment.
+                    _el = e.target;
+                }
+
+                function isBefore(el1, el2) {
+                    if (el2.parentNode === el1.parentNode)
+                        for (var cur = el1.previousSibling; cur && cur.nodeType !== 9; cur = cur.previousSibling)
+                            if (cur === el2)
+                                return true;
+                    return false;
+                }
+
+                function handleDragEnd(e) {
+                    // this/e.target is the source node.
+
+                    [].forEach.call(cols, function (col) {
+                        col.classList.remove('over');
+                    });
+                }
+            </script>
+            <div class="panel-body">
+
+
+              
+                <ul class="sortable-list connectList agile-list" id="todo">
+                    <!-- ngRepeat: pregunta in preguntas | orderBy:Orden --><!-- end ngRepeat: pregunta in preguntas | orderBy:Orden --><li class="warning-element ng-binding ng-scope" id="1161" ng-repeat="pregunta in preguntas | orderBy:Orden" ng-show="!pregunta.Eliminado" draggable="true" ondragover="dragOver(event)" ondragstart="dragStart(event)" ondragend="dragEnd(event)" data-posicion="1" data-pregunta="uno" style="">
+                        uno<a title="Subir pregunta" href="" class="pull-right ng-hide" ng-show="$index>0" ng-click="SubirPregunta($index)" style="margin-top:-8px;"><i class="fa fa-2x fa-caret-square-o-up"></i></a>
+                        <br ng-show="pregunta.Descripcion" class="ng-hide">
+                        <small class="ng-binding"></small>
+                        <div class="agile-detail ng-binding">
+                            <a href="#" class="pull-right btn btn-xs btn-white ng-binding">Checklist</a>
+                            <a ng-click="EditarPregunta(pregunta,$index)"><i class="fa fa-edit"></i> Editar</a> &nbsp;
+                            <a ng-click="EliminarPregunta($index)"><i class="fa fa-remove"></i> Eliminar</a>
+                            <br>
+                            <br>
+                            <span class="label label-info ng-binding" ng-show="!pregunta.Repeticion.idPregunta">Repeticiones: 0</span>
+                            <span class="label label-primary ng-binding ng-hide" ng-show="pregunta.Repeticion.idPregunta" ng-click="EliminarGrupoRepeticion(pregunta);">Repetición:  <span ng-show="pregunta.Repeticion.Grupo" class="ng-binding ng-hide"> Grupo: </span> </span>
+                            <span class="label label-warning-light ng-hide" ng-show="pregunta.Requerido">Requerido</span>
+                            <span class="label label-danger ng-hide" ng-show="pregunta.Condicion.idPregunta">Condición</span>
+                            <span class="label label-primary ng-binding ng-hide" ng-show="pregunta.PreguntaRelacionada.idPregunta">Relacionada:  </span>
+                            <a href="" class="pull-right" ng-show="$index<preguntas.length-1" ng-click="BajarPregunta($index)"><i class="fa fa-2x fa-caret-square-o-down"></i></a>
+                            
+                        </div>
+                    </li><!-- end ngRepeat: pregunta in preguntas | orderBy:Orden --><li class="warning-element ng-binding ng-scope" id="2161" ng-repeat="pregunta in preguntas | orderBy:Orden" ng-show="!pregunta.Eliminado" draggable="true" ondragover="dragOver(event)" ondragstart="dragStart(event)" ondragend="dragEnd(event)" data-posicion="3" data-pregunta="Texto">
+                        Texto<a title="Subir pregunta" href="" class="pull-right" ng-show="$index>0" ng-click="SubirPregunta($index)" style="margin-top:-8px;"><i class="fa fa-2x fa-caret-square-o-up"></i></a>
+                        <br ng-show="pregunta.Descripcion" class="ng-hide">
+                        <small class="ng-binding"></small>
+                        <div class="agile-detail ng-binding">
+                            <a href="#" class="pull-right btn btn-xs btn-white ng-binding">Texto</a>
+                            <a ng-click="EditarPregunta(pregunta,$index)"><i class="fa fa-edit"></i> Editar</a> &nbsp;
+                            <a ng-click="EliminarPregunta($index)"><i class="fa fa-remove"></i> Eliminar</a>
+                            <br>
+                            <br>
+                            <span class="label label-info ng-binding" ng-show="!pregunta.Repeticion.idPregunta">Repeticiones: 0</span>
+                            <span class="label label-primary ng-binding ng-hide" ng-show="pregunta.Repeticion.idPregunta" ng-click="EliminarGrupoRepeticion(pregunta);">Repetición:  <span ng-show="pregunta.Repeticion.Grupo" class="ng-binding ng-hide"> Grupo: </span> </span>
+                            <span class="label label-warning-light ng-hide" ng-show="pregunta.Requerido">Requerido</span>
+                            <span class="label label-danger ng-hide" ng-show="pregunta.Condicion.idPregunta">Condición</span>
+                            <span class="label label-primary ng-binding ng-hide" ng-show="pregunta.PreguntaRelacionada.idPregunta">Relacionada:  </span>
+                            <a href="" class="pull-right" ng-show="$index<preguntas.length-1" ng-click="BajarPregunta($index)"><i class="fa fa-2x fa-caret-square-o-down"></i></a>
+                            
+                        </div>
+                    </li><li class="warning-element ng-binding ng-scope" id="2317" ng-repeat="pregunta in preguntas | orderBy:Orden" ng-show="!pregunta.Eliminado" draggable="true" ondragover="dragOver(event)" ondragstart="dragStart(event)" ondragend="dragEnd(event)" data-posicion="4" data-pregunta="dfsd">
+                        dfsd<a title="Subir pregunta" href="" class="pull-right" ng-show="$index>0" ng-click="SubirPregunta($index)" style="margin-top:-8px;"><i class="fa fa-2x fa-caret-square-o-up"></i></a>
+                        <br ng-show="pregunta.Descripcion" class="ng-hide">
+                        <small class="ng-binding"></small>
+                        <div class="agile-detail ng-binding">
+                            <a href="#" class="pull-right btn btn-xs btn-white ng-binding">RadioButton</a>
+                            <a ng-click="EditarPregunta(pregunta,$index)"><i class="fa fa-edit"></i> Editar</a> &nbsp;
+                            <a ng-click="EliminarPregunta($index)"><i class="fa fa-remove"></i> Eliminar</a>
+                            <br>
+                            <br>
+                            <span class="label label-info ng-binding" ng-show="!pregunta.Repeticion.idPregunta">Repeticiones: 0</span>
+                            <span class="label label-primary ng-binding ng-hide" ng-show="pregunta.Repeticion.idPregunta" ng-click="EliminarGrupoRepeticion(pregunta);">Repetición:  <span ng-show="pregunta.Repeticion.Grupo" class="ng-binding ng-hide"> Grupo: </span> </span>
+                            <span class="label label-warning-light ng-hide" ng-show="pregunta.Requerido">Requerido</span>
+                            <span class="label label-danger ng-hide" ng-show="pregunta.Condicion.idPregunta">Condición</span>
+                            <span class="label label-primary ng-binding ng-hide" ng-show="pregunta.PreguntaRelacionada.idPregunta">Relacionada:  </span>
+                            <a href="" class="pull-right ng-hide" ng-show="$index<preguntas.length-1" ng-click="BajarPregunta($index)"><i class="fa fa-2x fa-caret-square-o-down"></i></a>
+                            
+                        </div>
+                    </li><li class="warning-element ng-binding ng-scope" id="2317" ng-repeat="pregunta in preguntas | orderBy:Orden" ng-show="!pregunta.Eliminado" draggable="true" ondragover="dragOver(event)" ondragstart="dragStart(event)" ondragend="dragEnd(event)" data-posicion="4" data-pregunta="dfsd">
+                        dfsd<a title="Subir pregunta" href="" class="pull-right" ng-show="$index>0" ng-click="SubirPregunta($index)" style="margin-top:-8px;"><i class="fa fa-2x fa-caret-square-o-up"></i></a>
+                        <br ng-show="pregunta.Descripcion" class="ng-hide">
+                        <small class="ng-binding"></small>
+                        <div class="agile-detail ng-binding">
+                            <a href="#" class="pull-right btn btn-xs btn-white ng-binding">RadioButton</a>
+                            <a ng-click="EditarPregunta(pregunta,$index)"><i class="fa fa-edit"></i> Editar</a> &nbsp;
+                            <a ng-click="EliminarPregunta($index)"><i class="fa fa-remove"></i> Eliminar</a>
+                            <br>
+                            <br>
+                            <span class="label label-info ng-binding" ng-show="!pregunta.Repeticion.idPregunta">Repeticiones: 0</span>
+                            <span class="label label-primary ng-binding ng-hide" ng-show="pregunta.Repeticion.idPregunta" ng-click="EliminarGrupoRepeticion(pregunta);">Repetición:  <span ng-show="pregunta.Repeticion.Grupo" class="ng-binding ng-hide"> Grupo: </span> </span>
+                            <span class="label label-warning-light ng-hide" ng-show="pregunta.Requerido">Requerido</span>
+                            <span class="label label-danger ng-hide" ng-show="pregunta.Condicion.idPregunta">Condición</span>
+                            <span class="label label-primary ng-binding ng-hide" ng-show="pregunta.PreguntaRelacionada.idPregunta">Relacionada:  </span>
+                            <a href="" class="pull-right ng-hide" ng-show="$index<preguntas.length-1" ng-click="BajarPregunta($index)"><i class="fa fa-2x fa-caret-square-o-down"></i></a>
+                            
+                        </div>
+                    </li><li class="warning-element ng-binding ng-scope" id="1163" ng-repeat="pregunta in preguntas | orderBy:Orden" ng-show="!pregunta.Eliminado" draggable="true" ondragover="dragOver(event)" ondragstart="dragStart(event)" ondragend="dragEnd(event)" data-posicion="2" data-pregunta="tres">
+                        tres<a title="Subir pregunta" href="" class="pull-right" ng-show="$index>0" ng-click="SubirPregunta($index)" style="margin-top:-8px;"><i class="fa fa-2x fa-caret-square-o-up"></i></a>
+                        <br ng-show="pregunta.Descripcion" class="ng-hide">
+                        <small class="ng-binding"></small>
+                        <div class="agile-detail ng-binding">
+                            <a href="#" class="pull-right btn btn-xs btn-white ng-binding">Checklist</a>
+                            <a ng-click="EditarPregunta(pregunta,$index)"><i class="fa fa-edit"></i> Editar</a> &nbsp;
+                            <a ng-click="EliminarPregunta($index)"><i class="fa fa-remove"></i> Eliminar</a>
+                            <br>
+                            <br>
+                            <span class="label label-info ng-binding" ng-show="!pregunta.Repeticion.idPregunta">Repeticiones: 0</span>
+                            <span class="label label-primary ng-binding ng-hide" ng-show="pregunta.Repeticion.idPregunta" ng-click="EliminarGrupoRepeticion(pregunta);">Repetición:  <span ng-show="pregunta.Repeticion.Grupo" class="ng-binding ng-hide"> Grupo: </span> </span>
+                            <span class="label label-warning-light ng-hide" ng-show="pregunta.Requerido">Requerido</span>
+                            <span class="label label-danger ng-hide" ng-show="pregunta.Condicion.idPregunta">Condición</span>
+                            <span class="label label-primary ng-binding ng-hide" ng-show="pregunta.PreguntaRelacionada.idPregunta">Relacionada:  </span>
+                            <a href="" class="pull-right" ng-show="$index<preguntas.length-1" ng-click="BajarPregunta($index)"><i class="fa fa-2x fa-caret-square-o-down"></i></a>
+                            
+                        </div>
+                    </li><!-- end ngRepeat: pregunta in preguntas | orderBy:Orden --><!-- end ngRepeat: pregunta in preguntas | orderBy:Orden -->
+                </ul>
+
+          
+            </div>
+        </div>
+    </div>
+</div>
