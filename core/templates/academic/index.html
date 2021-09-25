@@ -1,0 +1,257 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %}{% endblock %}
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+<style>
+   :root {
+	--clr-neutral-900: hsl(207, 19%, 9%);
+	--clr-neutral-100: hsl(0, 0%, 100%);
+	--clr-accent-400: hsl(147, 90%, 61%);
+}
+*,
+*::after,
+*::before {
+	box-sizing: border-box;
+}
+main {
+	display: grid;
+   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+   gap: 3rem;
+   justify-content:space-evenly;
+   justify-items:center;
+   align-content: center;
+	line-height: 1.6;
+	font-family: sans-serif;
+	min-height: calc(100vh - 64px);
+}
+.card{
+   padding: 3rem 0;
+}
+   .over-title {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      margin-bottom: 20%;
+   }
+
+   .over-title>p {
+      margin: 0;
+      font-size: 0.9rem;
+   }
+
+   .subtitle {
+      font-weight: bold;
+      font-size: 1rem;
+   }
+
+   .card-academic {
+      color: var(--clr-neutral-100);
+      background: rgb(0, 212, 255);
+      /* background: radial-gradient(circle, rgba(0,212,255,1) 0%, rgba(9,9,121,1) 75%, rgba(2,0,36,1) 100%); */
+      background: linear-gradient(0deg, rgba(2, 0, 36, 1) 0%, rgba(9, 9, 121, 1) 22%, rgba(0, 212, 255, 1) 100%);
+      /* background-image: url(../img/pexels-anna-shvets-5231327.jpg); */
+      background-size: cover;
+      max-width: 35ch;
+      border-radius: 0.25rem;
+      box-shadow: 2px 2px 10px #000;
+      overflow: hidden;
+      transition: transform 500ms ease;
+   }
+
+   .card-academic:hover,
+   .card-academic:focus-within {
+      transform: scale(1.04);
+   }
+
+   /* .card-academic::after {
+	position: relative;
+	background: rgba(0, 0, 0, 0.8);
+	max-width: 35ch;
+	border-radius: 1.8%;
+} */
+   .card-academic-body {
+      padding: 15px 0;
+      position: relative;
+      height: 180px;
+      overflow: hidden;
+   }
+
+   .card-academic-content {
+      --padding: 1.5rem;
+      padding: var(--padding);
+      background: linear-gradient(hsl(0 0% 0% / 0), hsl(0 0% 0% / 0.5) 15%, hsl(0 0% 0% / 1));
+   }
+
+   .card-academic-title {
+      margin: 0;
+      position: relative;
+      display: inline-block;
+      max-width: 100%;
+      font-size: 1.7rem;
+   }
+
+   .card-academic-title::after {
+      content: "";
+      position: absolute;
+      height: 2.5px;
+      border-radius: 0 0.25rem 0.25rem 0;
+      left: calc(var(--padding) * -1);
+      bottom: 0;
+      width: calc(100% + var(--padding));
+      background: var(--clr-accent-400);
+      transition: transform 800ms ease;
+      transform-origin: left;
+   }
+
+   @media (hover) {
+      .card-academic-content {
+         transform: translateY(51%);
+         transition: transform 500ms ease;
+      }
+
+      .card-academic:hover .card-academic-content,
+      .card-academic:focus-within .card-academic-content {
+         transform: translateY(0);
+         transition-delay: 550ms;
+      }
+
+      .card-academic:focus-within .card-academic-content {
+         transition-duration: 0ms;
+      }
+
+      .card-academic-content>*:not(.card-academic-title, .over-title) {
+         opacity: 0;
+         transition: opacity 500ms ease;
+         transition-delay: 1000ms;
+      }
+
+      .card-academic:hover>.card-academic-content>*:not(.card-academic-title),
+      .card-academic:focus-within>.card-academic-content>*:not(.card-academic-title) {
+         opacity: 1;
+      }
+
+      .card-academic-title::after {
+         transform: scaleX(0);
+      }
+
+      .card-academic:hover .card-academic-title::after,
+      .card-academic:focus-within .card-academic-title::after {
+         transform: scaleX(1);
+      }
+   }
+
+   .button {
+      text-decoration: none;
+      font-weight: bold;
+      color: var(--clr-neutral-900);
+      background: var(--clr-accent-400);
+      padding: 1rem 1.25rem;
+      border-radius: 0.25rem;
+   }
+
+   .button:hover,
+   .button:focus {
+      background: var(--clr-neutral-100);
+   }
+
+</style>
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="content">
+   <div class="page-inner">
+      <div class="page-header">
+         <h4 class="page-title">Academic</h4>
+         <ul class="breadcrumbs">
+            <li class="nav-home">
+               <a href="{% url 'home' %}">
+                  <i class="flaticon-home"></i>
+               </a>
+            </li>
+            <li class="separator">
+               <i class="flaticon-right-arrow"></i>
+            </li>
+            <li class="nav-item">
+               <a href="{% url 'academic' %}">Academic</a>
+            </li>
+         </ul>
+      </div>
+      <div class="page-category">
+         <div class="card">
+            <main>
+               <div class="card-academic">
+                  <div class="card-academic-content">
+                     <div class="over-title">
+                        <p><span class="subtitle">Fecha</span> Jueves, 16 oct 2021</p>
+                        <p><span class="subtitle">Profesor</span> Jesus Campos</p>
+                        <p><span class="subtitle">Duración</span> 24 Hrs</p>
+                     </div>
+                     <h2 class="card-academic-title">Computadores II</h2>
+                     <p class="card-academic-body">
+                        Materia de la rama de matemáticas, que se basa en la solucion de problemas mediante el uso de
+                        modelos
+                        matemáticos especificos.
+                     </p>
+                     <a href="" class="button">Acceder</a>
+                  </div>
+               </div>
+               <div class="card-academic">
+                  <div class="card-academic-content">
+                     <div class="over-title">
+                        <p><span class="subtitle">Fecha</span> Jueves, 16 oct 2021</p>
+                        <p><span class="subtitle">Profesor</span> Jesus Campos</p>
+                        <p><span class="subtitle">Duración</span> 24 Hrs</p>
+                     </div>
+                     <h2 class="card-academic-title">Computadores II</h2>
+                     <p class="card-academic-body">
+                        Materia de la rama de matemáticas, que se basa en la solucion de problemas mediante el uso de
+                        modelos
+                        matemáticos especificos.
+                     </p>
+                     <a href="" class="button">Acceder</a>
+                  </div>
+               </div>
+               <div class="card-academic">
+                  <div class="card-academic-content">
+                     <div class="over-title">
+                        <p><span class="subtitle">Fecha</span> Jueves, 16 oct 2021</p>
+                        <p><span class="subtitle">Profesor</span> Jesus Campos</p>
+                        <p><span class="subtitle">Duración</span> 24 Hrs</p>
+                     </div>
+                     <h2 class="card-academic-title">Computadores II</h2>
+                     <p class="card-academic-body">
+                        Materia de la rama de matemáticas, que se basa en la solucion de problemas mediante el uso de
+                        modelos
+                        matemáticos especificos.
+                     </p>
+                     <a href="" class="button">Acceder</a>
+                  </div>
+               </div>
+               <div class="card-academic">
+                  <div class="card-academic-content">
+                     <div class="over-title">
+                        <p><span class="subtitle">Fecha</span> Jueves, 16 oct 2021</p>
+                        <p><span class="subtitle">Profesor</span> Jesus Campos</p>
+                        <p><span class="subtitle">Duración</span> 24 Hrs</p>
+                     </div>
+                     <h2 class="card-academic-title">Computadores II</h2>
+                     <p class="card-academic-body">
+                        Materia de la rama de matemáticas, que se basa en la solucion de problemas mediante el uso de
+                        modelos
+                        matemáticos especificos.
+                     </p>
+                     <a href="" class="button">Acceder</a>
+                  </div>
+               </div>
+            </main>
+         </div>
+      </div>
+   </div>
+</div>
+
+{% endblock content %}
+
+{% block javascripts %}
+{% endblock javascripts %}
