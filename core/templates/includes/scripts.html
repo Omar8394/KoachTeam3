@@ -38,6 +38,64 @@
     <script src="/static/assets/js/atlantis.min.js"></script>
 
 	 <script>
+
+	 	// Notificaciones a la hora de crear, editar o eliminar un registro respectivamente. 
+
+	 	function alerta(tipoAlerta){
+			if(tipoAlerta === 1){
+				swal("Well done!", "Register was successfully save!", 
+				{
+					icon : "success",
+					buttons: {
+						confirm: {
+							className : 'btn btn-success'
+						}
+					},
+				});	 
+			}
+			if(tipoAlerta === 2){
+				swal("Well done!", "Register was successfully update!", 
+				 {
+					icon : "success",
+					buttons: {
+						confirm: {
+							className : 'btn btn-success'
+						}
+					},
+				});
+			}
+			if(tipoAlerta === 3){
+				swal({
+					title: 'Delete?',
+					text: "You won't be able to revert this!",
+					type: 'warning',
+					buttons:{
+						confirm: {
+							text : 'Yes, delete it!',
+							className : 'btn btn-success'
+						},
+						cancel: {
+							visible: true,
+							className: 'btn btn-danger'
+						}
+					}
+				}).then((Delete) => {
+					if (Delete) {
+						swal({
+							title: 'Deleted!',
+							text: 'Register has been successfully deleted.',
+							type: 'success',
+							buttons : {
+								confirm: {
+									className : 'btn btn-success'
+								}
+							}
+						});
+					} else {
+						swal.close();
+					}
+				});					
+			}
 		 //FUNCION PARA OBTENER EL CRSFTOKEN DESDE JS EN CASO DE USAR AJAX
 		 function getCookie(name) {
 				let cookieValue = null;
