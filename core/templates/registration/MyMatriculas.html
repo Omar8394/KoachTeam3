@@ -95,6 +95,8 @@
                                     <th>Status </th>
                                     <th>Date of application</th>
                                     <th>Program</th>
+                                    <th>Payment</th>
+
                                     <th></th>
 
                                   
@@ -103,13 +105,17 @@
                             <tbody class="data-cargando">
                                 {% for mat in matriculasList %}
             
-                                <tr style="cursor:pointer;" id="{{mat.idmatricula_alumnos}}"  onclick="showModal(id)" >
+                                <tr style="cursor:pointer;" id="{{mat.idmatricula_alumnos}}"   >
                                     <td ></td>
                                    <td>{{mat.fk_publico}}</td>
                                    <td>{{mat.fk_status_matricula}}</td>
 
                                    <td>{{mat.fecha_matricula}}</td>
                                    <td>{{mat.fk_estruc_programa}}</td>
+                                   <td onclick="showModalPago('{{mat.fk_estruc_programa.idestructuraprogrmas}}' )">
+                                       <span class="fa-credit-card">Payment </span>
+                                   </td>
+
 
 
 
@@ -288,14 +294,290 @@ function reload(){
 </script>
 
 
+
 <!--Buscar Personas DB Modal-->
-<div class="modal fade" tabindex="-1" role="dialog" id="AdministrarMatricula">
-    <div class="modal-dialog" role="document" id="modalContent">
+<div class="modal fade" tabindex="-1" role="dialog" id="PayMatricula">
+    <div class="modal-dialog modal-lg" role="document" id="modalContent">
      
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 
 <!-- /.modal -->
+
+
+<!--Buscar Personas DB Modal-->
+<div class="modal fade" tabindex="-1" role="dialog" id="PayMatriculaPaypal">
+    <div class="modal-dialog modal-lg" role="document" id="modalContentPaypal">
+     
+        
+      
+  <div class="modal-content" onload="Carga()">
+    <div class="modal-header">
+        <h4 style="left: initial;" class="modal-title">Enrollment Details</h4>
+
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    </div>
+    <div class="modal-body">
+        
+            <div class="row">
+                
+                    <div class="col-12">
+                        
+                           
+                   
+                 
+                    <div class="form-group">
+                        <div >
+                            <div class="">
+                                <div class="">
+                
+                                   <div id="smart-button-container">
+                  <div style="text-align: center;">
+                  
+                
+                       <div id="smart-button-container">
+                  <div style="text-align: center;">
+                    <div id="paypal-button-container"></div>
+                  </div>
+                </div>
+                
+                
+                         
+                
+                                    <center>
+                                     <input type="hidden" id="dato" value= "{{ precio }}"/>
+                                        <p><strong> Datos </strong></p>
+                                    </center>
+                                    <div class="clearfix"></div>
+                                    </div>
+                            </div>
+                        
+                        
+                        </div>
+                        
+                
+                
+                   
+                    </div>			            
+                  </div>
+
+
+                    </div>
+                     
+                       
+                      
+                    </div>
+
+
+                
+                
+            
+
+            </div>
+         
+        
+    </div>
+    <div class="modal-footer">
+      
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    </div>
+
+
+    </div>
+</div>
+
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+
+<!-- /.modal -->
+
+ 
+
+<script>
+    
+    var matricula=0;
+    function showModalPago(id){
+        matricula=id;
+    
+    
+    let url='ModalPay/?matricula='+id;
+    fetch(url,{
+        mode: 'no-cors',
+      method: 'get'
+    }).then(function(result){
+    
+    return result.text();
+    
+    }).then(function(result){
+        
+        let unit=document.getElementById("modalContent").innerHTML=result;
+    
+    });
+        $("#PayMatricula").modal("show");
+        
+        matricula=id;
+    
+    
+    let url2='GetPrice/?matricula='+id;
+    fetch(url2,{
+        mode: 'no-cors',
+      method: 'get'
+    }).then(function(result){
+    
+    return result.text();
+    
+    }).then(function(result){
+        
+        let unit2=result;
+        precio(unit2);
+    
+    });
+        
+        
+
+       
+      
+    }
+    
+    function showModalPaypal(id){
+        matricula=id;
+    
+    
+
+       $("#PayMatriculaPaypal").modal("show");
+      // initPayPalButton();
+    
+       
+      
+    }
+    
+    
+    
+    
+    </script>
+    
+    
+    <script>
+    
+    
+    function enviardt(a){
+     //function enviar(a){
+        un.value=g1;
+     cant.value=g2; 
+         if (a==1)
+        {
+            
+     location.href = "{%url 'ModalPayDetail'%}" ;
+        } 
+        
+        else if(a==2)
+        {
+    
+    location.href = "{%url 'ModalPayDetail2'%}" ;
+        } 
+    
+    
+    }
+    
+    
+    
+    </script>
+    
+    
+<script>
+
+
+    function enviarST(){
+    
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "updateEnrollment/"); 
+    xhr.onload = function(event){ 
+    alert("Success, server responded with: " + event.target.response); // raw response
+    location.href = "" ;
+    }; 
+    // or onerror, onabort
+    var formData = new FormData(document.getElementById("enroll")); 
+    formData.append('id', matricula);
+    xhr.send(formData);
+    
+    
+    
+    
+    }
+    
+    
+    
+    </script>
+    
+     <script src="https://www.paypal.com/sdk/js?client-id=sb&enable-funding=venmo&currency=USD" data-sdk-integration-source="button-factory"></script>
+      <script>
+      var cantidad = document.getElementById("dato");
+      alert (cantidad);
+      alert (dato.value);
+      var cc = dato.value;
+
+      function precio(usd){
+          cc=usd;
+      
+
+      }
+        function initPayPalButton() {
+          paypal.Buttons({
+            style: {
+              shape: 'pill',
+              color: 'black',
+              layout: 'vertical',
+              label: 'pay',
+              
+            },
+            
+    
+            createOrder: function(data, actions) {
+              return actions.order.create({
+                purchase_units: [{"amount":{"currency_code":"USD","value":cc}}]
+              });
+            },
+    
+            onApprove: function(data, actions) {
+              return actions.order.capture().then(function(orderData) {
+                
+                // Full available details
+               // console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
+                
+               // console.log(orderData.status);
+                console.log(orderData.payer.email_address);
+                console.log(orderData.payer.payer_id);
+                
+                console.log(orderData.purchase_units[0].payments.captures[0].status);
+                // []
+               console.log(orderData.purchase_units[0].payments.captures[0].id);
+               console.log(orderData.purchase_units[0].payments.captures[0].final_capture);
+               console.log(orderData.purchase_units[0].payments.captures[0].amount.value);
+               console.log(orderData.purchase_units[0].payments.captures[0].amount.currency_code);
+                
+                
+    
+                // Show a success message within this page, e.g.
+                const element = document.getElementById('paypal-button-container');
+                element.innerHTML = '';
+                element.innerHTML = '<h3>Thank you for your payment!</h3>';
+    
+                // Or go to another URL:  actions.redirect('thank_you.html');
+                
+              });
+            },
+    
+            onError: function(err) {
+              console.log(err);
+            }
+          }).render('#paypal-button-container');
+        }
+        initPayPalButton();
+      </script>
+    
+
+    
 {% endblock content %}
 	
 <!-- Specific Page JS goes HERE  -->

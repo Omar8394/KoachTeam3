@@ -14,6 +14,12 @@ urlpatterns = [
     path('enrollment/', views.enrollment, name='enrollment'  ),
     path('EnrollmentList/', views.MatriculacionAdmin, name='EnrollmentList'  ),
     path('ManagePersons/', views.PublicoAdmin, name='ManagePersons'  ),
+    path('MyEnrollments/', views.MyEnrollments, name='MyEnrollments'  ),
+    path('Courses/', views.Courses, name='Courses'  ),
+
+
+    path('Payments/', views.Pay, name='ManagePay'  ),
+
     
 
     #metods
@@ -29,6 +35,10 @@ urlpatterns = [
 
     path('EnrollmentList/updateEnrollment/', views.updateEnrollment, name='update'  ),
 
+    path('MyEnrollments/ModalPay/', views.ModalPay, name='ModalPay'  ),
+    path('MyEnrollments/ModalPayDetail/', views.ModalPayDetail, name='ModalPayDetail'  ),
+    path('MyEnrollments/ModalPayDetail2/', views.ModalPayDetail2, name='ModalPayDetail2'  ),
+    path('MyEnrollments/GetPrice/', views.GetPrice, name='GetPrice'  ),
 
 
 ]

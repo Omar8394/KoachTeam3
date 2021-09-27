@@ -32,3 +32,4 @@ modules/registration/migrations/
 modules/security/migrations/
 modules/planning/migrations/
 modules/communication/migrations/
+modules/app/migrations/0003_auto_20210922_1556.py
