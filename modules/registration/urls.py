@@ -11,13 +11,18 @@ from modules.registration import views
 
 urlpatterns = [
     #views
+    #guardar matricula
     path('enrollment/', views.enrollment, name='enrollment'  ),
+    #lista de matriculas admin
     path('EnrollmentList/', views.MatriculacionAdmin, name='EnrollmentList'  ),
+    # lista publico admin
     path('ManagePersons/', views.PublicoAdmin, name='ManagePersons'  ),
+    # Mis matriculas
     path('MyEnrollments/', views.MyEnrollments, name='MyEnrollments'  ),
+    #Lista cursos
     path('Courses/', views.Courses, name='Courses'  ),
 
-
+    #pagos
     path('Payments/', views.Pay, name='ManagePay'  ),
 
     

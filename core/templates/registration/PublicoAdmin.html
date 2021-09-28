@@ -134,6 +134,8 @@
                                    <td>  
                                     <form id="PersonaForm" name="PersonaForm" action="{% url 'EnrollmentList'%}" onsubmit=" return ManagePersonas('{{person.idpublico}}')" method="POST">
                                         {% csrf_token %}
+                                        <input type="hidden" value="0" id="idPersona"
+                                        name="idPersona">
                                         
 
                                <a  href="javascript:void(0);" onclick="sendForm('{{person.idpublico}}')" id="{{person.idpublico}}" ><i class="fa fa-tasks"></i> Manage Enrollments</a>
@@ -243,16 +245,18 @@ var Persona=0;
 function sendForm(id){
     Persona=id;
 
+    
    
     //$(this).append('<input type="hidden" name="idPersona" id="idPersona" value="value"  /> ');
-    //(document.getElementById("idPersona")).value=Persona;
+    document.getElementById('idPersona').value=Persona;
+    alert(document.getElementById('idPersona').value)
+
     document.getElementById("PersonaForm").submit();
 
 }
 
 $('#PersonaForm').submit(function(eventObj) {
-    $(this).append('<input type="hidden" name="idPersona" id="idPersona" value="12"  /> ');
-    return true;
+  
 });
 function ManagePersonas(id){
     Persona=id;

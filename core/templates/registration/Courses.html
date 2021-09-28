@@ -103,7 +103,7 @@
                             <tbody class="data-cargando">
                                 {% for mat in cursos %}
             
-                                <tr style="cursor:pointer;" id="{{mat.idmatricula_alumnos}}"  onclick="showModal(id)" >
+                                <tr style="cursor:pointer;" id="{{mat.idmatricula_alumnos}}"  onclick="" >
                                     <td ></td>
                                    <td>{{mat}}</td>
                                    <td>{{mat.peso_creditos}}</td>
@@ -123,29 +123,7 @@
                             </tbody>
                         </table>
 
-                        {% comment "Optional note" %}
-                        
-                        <div class="pagination" style="text-align: center;">
-                            <span class="step-links" style="display:table;
-                            margin:0 auto; ">
-                                {% if matriculasList.has_previous %}
-                                    <a href="?page=1">&laquo; first</a>
-                                    <a href="?page={{ matriculasList.previous_page_number }}">previous</a>
-                                {% endif %}
-                        
-                                <span class="current">
-                                    Page {{ matriculasList.number }} of {{ matriculasList.paginator.num_pages }}.
-                                </span>
-                        
-                                {% if matriculasList.has_next %}
-                                    <a href="?page={{ matriculasList.next_page_number }}">next</a>
-                                    <span class="fa-fast-forward"></span>
-                                    <a  href="?page={{ matriculasList.paginator.num_pages }}">last &raquo;</a>
-                                {% endif %}
-                            </span>
-                        </div>
-
-                       {% endcomment %}
+                     
                        
 
                         <nav aria-label="Page navigation example">

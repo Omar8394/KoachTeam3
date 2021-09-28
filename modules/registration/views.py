@@ -17,12 +17,6 @@ from modules.registration.models import PreciosFormacion
 
 # Create your views here.
 
-def ComboOptions(request):
-    structuraProg=request.GET.get("structuraProg")
-    subEstructuraProg=Estructuraprograma.objects.filter(fk_estructura_padre=structuraProg)
-    return render(request, 'registration/ComboOptions.html', {'subEstructuraProg':subEstructuraProg})
-    
- 
 
 
 @login_required(login_url="/login/")
@@ -56,12 +50,12 @@ def ManageEnrollments(request):
         
       
         idPersona=request.POST.get('idPersona') 
-
+        print(idPersona + "ssss")
         matriculaList=matriculaList.filter(fk_publico=idPersona)
 
         fechaInicial=request.POST.get('fechaInicial') 
 
-       
+        
         fechaFinal=request.POST.get('fechaFinal') 
         print(fechaFinal)
         print(fechaFinal)
@@ -121,13 +115,54 @@ def MatriculacionAdmin(request):
 
     msg = None
     matriculaList=MatriculaAlumnos.objects.all()
+    fechaF=None
+    fechaI=None
+
+    is_cookie_set = 0
+   
+    if 'fechaInicial' in request.session and 'fechaFinal' or request.session: 
+        fechaF = request.session['fechaFinal']
+        fechaI = request.session['fechaInicial']
+        
+        is_cookie_set = 1
+
+   
+
+    if request.method == "GET":
+      
+
+      if request.GET.get('page')==None:
+        is_cookie_set = 0
+        request.session['fechaInicial']=None
+        request.session['fechaFinal']=None
+        fechaF=None
+        fechaI=None
+
+      
+      
+      if (is_cookie_set == 1): 
+          if fechaI!=None:
+
+           dateI=parse_datetime(fechaI+' 00:00:00-00')
+          
+         
+           matriculaList=matriculaList.filter(fecha_matricula__gte=dateI)
+          if fechaI!=fechaF:
+
+           dateF=parse_datetime(fechaF+' 00:00:00-00')
+          
+          
+           matriculaList=matriculaList.filter(fecha_matricula__lte=dateF)
+
 
 
     if request.method == "POST":
         
-        print(request.POST)
-        
-        print(request.POST.get('idPersona'))
+        if (is_cookie_set == 1): 
+          
+          request.session['fechaInicial']=None
+          request.session['fechaFinal']=None
+       
 
         fechaInicial=request.POST.get('fechaInicial') 
 
@@ -135,18 +170,25 @@ def MatriculacionAdmin(request):
         fechaFinal=request.POST.get('fechaFinal') 
         idPersona=request.POST.get('idPersona') 
 
-       # matriculaList=matriculaList.filter(fk_publico=idPersona)
-        print(fechaFinal)
-        print(fechaFinal)
+        if idPersona!=None and idPersona!="":
+         matriculaList=matriculaList.filter(fk_publico=idPersona)
+        
         if fechaInicial!=None and fechaInicial!="":
           dateI=parse_datetime(fechaInicial+' 00:00:00-00')
-
+          fechaI=fechaInicial
+          request.session['fechaInicial'] = fechaI
+          
           matriculaList=matriculaList.filter(fecha_matricula__gte=dateI)
         if fechaFinal!=None and fechaFinal!="":
           dateF=parse_datetime(fechaFinal+' 00:00:00-00')
-          print(dateF)
+          fechaF=fechaFinal
+          request.session['fechaFinal'] = fechaF
+          
           matriculaList=matriculaList.filter(fecha_matricula__lte=dateF)
+          
 
+        
+          
 
 
 
@@ -167,7 +209,7 @@ def MatriculacionAdmin(request):
     html_template = (loader.get_template('registration/MatriculacionAdmin.html'))
 
    # return HttpResponse(html_template.render(context, request))
-    return render(request, 'registration/MatriculacionAdmin.html', {'msg':msg,'matriculasList': page_obj})
+    return render(request, 'registration/MatriculacionAdmin.html', {'msg':msg,'matriculasList': page_obj,'FechaInicial':fechaI,'FechaFinal':fechaF})
 
 
 
@@ -228,8 +270,46 @@ def MyEnrollments(request):
     return render(request, 'registration/MyMatriculas.html', {'msg':msg,'matriculasList': page_obj})
 
 
+@login_required(login_url="/login/")
+def Courses(request):
+   programa=None
+   Unidad=[]
+   Cursos=[]
+   Proceso=[]
+
+   programa=Estructuraprograma.objects.filter(fk_estructura_padre=None)
+   for prog in programa:
+      print(prog.idestructuraprogrmas)
+      pro =Estructuraprograma.objects.filter(fk_estructura_padre=prog.idestructuraprogrmas)
+      print(pro)
+
+      for p in pro:
+       Proceso.append(p) 
+
+
+   for procc in Proceso:
+      unit =Estructuraprograma.objects.filter(fk_estructura_padre=procc.idestructuraprogrmas)
+      for u in unit:
+       Unidad.append(u)     
+
+   for Unid in Unidad:
+      Course =Estructuraprograma.objects.filter(fk_estructura_padre=Unid.idestructuraprogrmas)
+      for c in Course:
+       Cursos.append(c)    
+
+   return render(request, 'registration/Courses.html', {"cursos": Cursos, })
+
+
+
 
 #parciales
+def ComboOptions(request):
+    structuraProg=request.GET.get("structuraProg")
+    subEstructuraProg=Estructuraprograma.objects.filter(fk_estructura_padre=structuraProg)
+    return render(request, 'registration/ComboOptions.html', {'subEstructuraProg':subEstructuraProg})
+    
+ 
+
 @login_required(login_url="/login/")
 def MatriculacionAdminModal(request):
   
@@ -256,7 +336,38 @@ def MatriculacionAddModal(request):
 
     return render(request, 'components/modalAddMatricula.html',{'structuraProg':structuraProg, 'tipoPrograma':tipoPrograma})
 
+@login_required(login_url="/login/")
+def ModalPay(request):
+  if request.method == "GET":
+   id=request.GET.get('matricula')
+   print (id)
+   estructura=Estructuraprograma.objects.get( pk=id  )
 
+   listaPrecio=PreciosFormacion.objects.filter(fk_estruc_programa=estructura)
+   listaPrecio=listaPrecio.last()
+  
+
+  return render(request, 'components/modalpay.html',{'precio':listaPrecio,})
+
+@login_required(login_url="/login/")
+def ModalPayDetail(request):
+  
+    # idU=request.POST.get('un')
+    # idC=request.POST.get('cant')
+    idU="12"
+    idC="24"
+    structuraProg=""
+    tipoPrograma=""
+
+    return render(request, 'components/modalpaydetail.html',{'idU':idU, 'idC':idC})
+
+@login_required(login_url="/login/")
+def ModalPayDetail2(request):
+  
+    structuraProg=""
+    tipoPrograma=""
+
+    return render(request, 'components/modalpaydetail2.html',{'structuraProg':structuraProg, 'tipoPrograma':tipoPrograma})
 
 
 #metod
@@ -376,18 +487,6 @@ def Pay(request):
   return render(request, 'registration/Pyments.html', {"doc_et": doc_et, "msg" : msg,'structuraProg':structuraProg, 'tipoPrograma':tipoPrograma})
 
 
-@login_required(login_url="/login/")
-def ModalPay(request):
-  if request.method == "GET":
-   id=request.GET.get('matricula')
-   print (id)
-   estructura=Estructuraprograma.objects.get( pk=id  )
-
-   listaPrecio=PreciosFormacion.objects.filter(fk_estruc_programa=estructura)
-   listaPrecio=listaPrecio.last()
-  
-
-  return render(request, 'components/modalpay.html',{'precio':listaPrecio,})
 
 @login_required(login_url="/login/")
 def GetPrice(request):
@@ -402,55 +501,5 @@ def GetPrice(request):
 
   return HttpResponse(precio)
 
-@login_required(login_url="/login/")
-def Courses(request):
-   programa=None
-   Unidad=[]
-   Cursos=[]
-   Proceso=[]
-
-   programa=Estructuraprograma.objects.filter(fk_estructura_padre=None)
-   for prog in programa:
-      print(prog.idestructuraprogrmas)
-      pro =Estructuraprograma.objects.filter(fk_estructura_padre=prog.idestructuraprogrmas)
-      print(pro)
-
-      for p in pro:
-       Proceso.append(p) 
-
-
-   for procc in Proceso:
-      unit =Estructuraprograma.objects.filter(fk_estructura_padre=procc.idestructuraprogrmas)
-      for u in unit:
-       Unidad.append(u)     
-
-   for Unid in Unidad:
-      Course =Estructuraprograma.objects.filter(fk_estructura_padre=Unid.idestructuraprogrmas)
-      for c in Course:
-       Cursos.append(c)    
-
-   return render(request, 'registration/Courses.html', {"cursos": Cursos, })
-
-
-
    
 
-@login_required(login_url="/login/")
-def ModalPayDetail(request):
-  
-    # idU=request.POST.get('un')
-    # idC=request.POST.get('cant')
-    idU="12"
-    idC="24"
-    structuraProg=""
-    tipoPrograma=""
-
-    return render(request, 'components/modalpaydetail.html',{'idU':idU, 'idC':idC})
-
-@login_required(login_url="/login/")
-def ModalPayDetail2(request):
-  
-    structuraProg=""
-    tipoPrograma=""
-
-    return render(request, 'components/modalpaydetail2.html',{'structuraProg':structuraProg, 'tipoPrograma':tipoPrograma})

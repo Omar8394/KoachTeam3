@@ -113,7 +113,7 @@
                                    <td>{{mat.fecha_matricula}}</td>
                                    <td>{{mat.fk_estruc_programa}}</td>
                                    <td onclick="showModalPago('{{mat.fk_estruc_programa.idestructuraprogrmas}}' )">
-                                       <span class="fa-credit-card">Payment </span>
+                                       <span class="fas fa-credit-card">Payment </span>
                                    </td>
 
 
@@ -272,7 +272,7 @@ function enviar(){
 var xhr = new XMLHttpRequest();
 xhr.open("POST", "updateEnrollment/"); 
 xhr.onload = function(event){ 
-alert("Success, server responded with: " + event.target.response); // raw response
+alerta("Success, server responded with: " + event.target.response); // raw response
 location.href = "" ;
 }; 
 // or onerror, onabort
