@@ -13,11 +13,11 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-       # migrations.AddField(
-       #     model_name='publico',
-      #      name='user',
-     #       field=models.OneToOneField(default=None, null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
-       # ),
+           migrations.AddField(
+           model_name='publico',
+           name='user',
+           field=models.OneToOneField(default=None, null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
+        ),
         migrations.AlterField(
             model_name='estructuraprograma',
             name='fk_estructura_padre',
