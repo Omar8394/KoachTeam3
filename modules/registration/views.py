@@ -120,7 +120,7 @@ def MatriculacionAdmin(request):
 
     is_cookie_set = 0
    
-    if 'fechaInicial' in request.session and 'fechaFinal' or request.session: 
+    if 'fechaInicial' in request.session or 'fechaFinal' in request.session: 
         fechaF = request.session['fechaFinal']
         fechaI = request.session['fechaInicial']
         
@@ -147,7 +147,7 @@ def MatriculacionAdmin(request):
           
          
            matriculaList=matriculaList.filter(fecha_matricula__gte=dateI)
-          if fechaI!=fechaF:
+          if fechaF!=fechaF:
 
            dateF=parse_datetime(fechaF+' 00:00:00-00')
           
