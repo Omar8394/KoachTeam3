@@ -4,13 +4,14 @@ from django.template import loader
 from django.http import HttpResponse, JsonResponse
 from django import template
 import json
-from ..app.models import TablasConfiguracion
+from ..app.models import TablasConfiguracion, Estructuraprograma
 
 # Create your views here.
 @login_required(login_url="/login/")
 def index(request):
     
-    context = {}
+    categorias = TablasConfiguracion.obtenerHijos("CatPrograma")
+    context = {"categorias" : categorias}
     #Vista del gestor
     html_template = (loader.get_template('academic/gestor.html'))
     #Vista del profesor
@@ -66,9 +67,34 @@ def getModalCategorias(request):
 
 @login_required(login_url="/login/")
 def getModalProgramas(request):
-    context = {}
-    html_template = (loader.get_template('components/modalAddPrograma.html'))
-    return HttpResponse(html_template.render(context, request))
+    if request.method == "POST":
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            context = {}
+            try:
+                if request.body:
+                    data = json.load(request)
+                    if data["method"] == "Delete":
+                        programa = Estructuraprograma.objects.get(pk=data["id"])
+                        programa.delete()
+                        return JsonResponse({"message":"Deleted"})
+                    elif data["method"] == "Update":
+                        programa = Estructuraprograma.objects.get(pk=data["id"])
+                    elif data["method"] == "Create":
+                        programa = Estructuraprograma()
+                        programa.valor_elemento = "PROGRAM"
+                        programa.fk_estructura_padre_id=1
+                    programa.descripcion = data["data"]["descriptionProgram"]
+                    programa.fk_categoria_id = data["data"]["categoryProgram"]
+                    programa.peso_creditos = data["data"]["creditos"]
+                    programa.save()
+                    return JsonResponse({"message":"Perfect"})
+                else:
+                    categorias = TablasConfiguracion.obtenerHijos(valor="CatPrograma")
+                    context = {"categorias": categorias}
+                    html_template = (loader.get_template('components/modalAddPrograma.html'))
+                    return HttpResponse(html_template.render(context, request))
+            except:
+                return JsonResponse({"message":"error"})
 
 @login_required(login_url="/login/")
 def getModalProcesos(request):
@@ -89,8 +115,8 @@ def getModalTopico(request):
     return HttpResponse(html_template.render(context, request))
 
 @login_required(login_url="/login/")
-def programa(request):
-    return
+def programa(request, programa):
+    return JsonResponse({"message":programa})
 @login_required(login_url="/login/")
 def proceso(request):
     return

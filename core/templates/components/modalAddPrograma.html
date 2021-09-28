@@ -1,78 +1,37 @@
 <div class="modal-content">
    <div class="modal-header">
-      <h5 class="modal-title"><strong>Course</strong></h5>
+      <h5 class="modal-title">Program</h5>
       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
          <span aria-hidden="true">&times;</span>
       </button>
    </div>
-   <form id="formCurso" class="form">
-      <div class="modal-body" style="height:400px; overflow-y: scroll;">
+   <form id="formPrograma" class="form">
+      <div class="modal-body">
          <div class="form-row">
-            <div class="form-group col-6">
-               <label for="comboCategory" class="col-form-label">Category</label>
-               <select class="form-control" name="comboCategory" id="comboCategory">
-                  <option value="null" selected disabled>Select a category</option>
+            <div class="form-group col-12">
+               <label for="categoryProgram" class="col-form-label">Category</label>
+               <select class="form-control" name="categoryProgram" id="categoryProgram" required>
+                  <option value="null" disabled selected>Select a category</option>
+                  {% for item in categorias %}
+                  {%if item.mostrar_en_combos == 1%}
+                  <option value="{{item.id_tabla}}">{{item.desc_elemento}}</option>
+                  {%endif%}
+                  {% endfor%}
                </select>
-            </div>
-            <div class="form-group col-6">
-               <label for="comboProcess" class="col-form-label">Process</label>
-               <select class="form-control" name="comboProcess" id="comboProcess">
-                  <option value="null" selected disabled>Select a process</option>
-               </select>
-            </div>
-         </div>
-         <div class="form-row">
-            <div class="form-group col-6">
-               <label for="titleCourse" class="col-form-label">Title</label>
-               <input type="text" class="form-control" id="titleCourse" placeholder="Enter a title for this course">
-            </div>
-            <div class="form-group col-6">
-               <label for="codeCourse" class="col-form-label">Code</label>
-               <input type="text" class="form-control" id="codeCourse"
-                  placeholder="Enter a code to identify this course">
             </div>
          </div>
          <div class="form-row">
             <div class="form-group col-12">
-               <label for="descriptionCourse" class="col-form-label">Description</label>
-               <textarea class="form-control" id="descriptionCourse" placeholder="Enter a description here"></textarea>
+               <label for="descriptionProgram" class="col-form-label">Title</label>
+               <input type="text" class="form-control" name="descriptionProgram" id="descriptionProgram"
+                  placeholder="Enter a title" required>
             </div>
          </div>
          <div class="form-row">
-            <div class="form-group col-6">
-               <label for="tagCourse" class="col-form-label">Tag</label>
-               <input type="text" class="form-control" id="tagCourse"
-                  placeholder="Enter a abbreviation to identify this course">
-            </div>
-            <div class="form-group col-6">
-               <label for="diponibleCourse" class="col-form-label">Available from</label>
-               <input type="date" class="form-control" id="disponibleCourse">
-            </div>
-         </div>
-         <div class="form-row">
-            <div class="form-group col-6">
-               <div class="custom-control custom-checkbox ml-2">
-                  <input type="checkbox" class="custom-control-input" name="checkExpertCB" id="checkExpertCB">
-                  <label class="custom-control-label" for="checkExpertCB">Expert test</label>
-               </div>
-            </div>
-            <div class="form-group col-6">
-               <div class="custom-control custom-checkbox ml-2">
-                  <input type="checkbox" class="custom-control-input" name="checkDurationCB" id="checkDurationCB">
-                  <label class="custom-control-label" for="checkDurationCB">Handle duration</label>
-               </div>
-            </div>
-         </div>
-         <div class="form-row">
-            <div class="form-group col-6">
-               <label for="durationCourse" class="col-form-label">Duration</label>
-               <input type="number" class="form-control" id="durationCourse" placeholder="0">
-            </div>
-            <div class="form-group col-6">
-               <label for="timeCourse" class="col-form-label">Time</label>
-               <select class="form-control" name="timeCourse" id="timeCourse">
-                  <option value="null" selected disabled>Select a type time</option>
-               </select>
+            <div class="form-group col-12">
+               <label for="creditos" class="col-form-label">Credits</label>
+               <input type="number" class="form-control" name="creditos" id="creditos"
+                  placeholder="1" required>
             </div>
          </div>
       </div>
