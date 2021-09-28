@@ -313,6 +313,48 @@
 
     }
   },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk": 23,
+    "fields": {
+      "desc_elemento": "Categorias",
+      "fk_tabla_padre_id": 1,
+      "tipo_elemento": 1,
+      "permite_cambios":1,
+      "valor_elemento":"CatPrograma",
+      "mostrar_en_combos":1,
+      "maneja_lista":1
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk": 24,
+    "fields": {
+      "desc_elemento": "Design",
+      "fk_tabla_padre_id": 23,
+      "tipo_elemento": 0,
+      "permite_cambios":1,
+      "valor_elemento":null,
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk": 25,
+    "fields": {
+      "desc_elemento": "Data science",
+      "fk_tabla_padre_id": 23,
+      "tipo_elemento": 0,
+      "permite_cambios":1,
+      "valor_elemento":null,
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
 
   {
     "model": "app.Contratantes",

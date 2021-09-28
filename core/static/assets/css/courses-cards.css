@@ -1,0 +1,195 @@
+:root {
+	--clr-neutral-900: hsl(207, 19%, 9%);
+	--clr-neutral-100: hsl(0, 0%, 100%);
+	--clr-accent-400: hsl(147, 90%, 61%);
+}
+*,
+*::after,
+*::before {
+	box-sizing: border-box;
+}
+.section-header{
+   display: flex;
+   align-items: center;
+   justify-content: flex-start;
+   gap: 1rem;
+}
+.section-title{
+   font-size: 3rem;
+   font-weight: bold;
+}
+.cards-container{
+   margin: 2rem;
+   padding: 1rem;
+	display: grid;
+   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+   gap: 3rem;
+   justify-content:space-evenly;
+   justify-items:center;
+   align-items: center;
+	line-height: 1.6;
+	font-family: sans-serif;
+}
+.add-btn{
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   box-shadow: 0px 0px 10px 2px #fff2;
+}
+.btn-xl{
+   width: 5rem !important;
+   height: 5rem !important;
+   font-size: 2.5rem;
+}
+.btn-lg{
+   width: 3rem !important;
+   height: 3rem !important;
+   font-size: 1.5rem;
+}
+   .over-title {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      margin-bottom: 10%;
+   }
+
+   .over-title>p {
+      margin: 0;
+      font-size: 0.9rem;
+   }
+
+   .subtitle {
+      font-weight: bold;
+      font-size: 1rem;
+   }
+
+   .card-academic {
+      margin: 0;
+      color: var(--clr-neutral-100);
+      background: rgb(0, 212, 255);
+      background: linear-gradient(0deg, rgba(2, 0, 36, 1) 0%, rgba(9, 9, 121, 1) 22%, rgba(0, 212, 255, 1) 100%);
+      background-size: cover;
+      max-width: 35ch;
+      border-radius: 0.25rem;
+      box-shadow: 2px 2px 10px #000;
+      overflow: hidden;
+      transition: transform 500ms ease;
+      height: 380px;
+   }
+   .card-new {
+      color: var(--clr-neutral-100);
+      background: #1A2035;
+      height: 380px;
+      background-size: cover;
+      max-width: 35ch;
+      border-radius: 0.25rem;
+      box-shadow: 2px 2px 10px #000;
+      overflow: hidden;
+      transition: transform 500ms ease;
+   }
+
+   .card-academic:hover,
+   .card-academic:focus-within,
+   .card-new:hover,
+   .card-new:focus-within,
+   .add-btn:hover {
+      transform: scale(1.04);
+   }
+   .card-academic-body {
+      padding: 15px 0;
+      position: relative;
+      height: 130px;
+      overflow: hidden;
+   }
+
+   .card-new-content {
+      --padding: 1.5rem;
+      padding: var(--padding);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(hsl(0 0% 0% / 0), hsl(0 0% 0% / 0.3) 75%, hsl(0 0% 0% / 1));
+      height: 100%;
+   }
+   .card-academic-content {
+      --padding: 1.5rem;
+      padding: var(--padding);
+      background: linear-gradient(hsl(0 0% 0% / 0), hsl(0 0% 0% / 0.5) 15%, hsl(0 0% 0% / 1));
+   }
+
+   .card-academic-title {
+      margin: 0;
+      position: relative;
+      display: inline-block;
+      max-width: 100%;
+      font-size: 1.7rem;
+   }
+   .card-new-title {
+      margin: 0;
+      text-align: center;
+      position: relative;
+      display: inline-block;
+      max-width: 100%;
+      font-size: 2.5rem;
+   }
+   .card-new-body{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      width: 100%;
+      font-size: 2.5rem;
+   }
+
+   .card-academic-title::after {
+      content: "";
+      position: absolute;
+      height: 2.5px;
+      border-radius: 0 0.25rem 0.25rem 0;
+      left: calc(var(--padding) * -1);
+      bottom: 0;
+      width: calc(100% + var(--padding));
+      background: var(--clr-accent-400);
+      transition: transform 800ms ease;
+      transform-origin: left;
+   }
+   .button{
+      display: block;
+   }
+
+   @media (hover) {
+      .card-academic-content {
+         transform: translateY(50%);
+         transition: transform 500ms ease;
+      }
+
+      .card-academic:hover .card-academic-content,
+      .card-academic:focus-within .card-academic-content {
+         transform: translateY(0);
+         transition-delay: 550ms;
+      }
+
+      .card-academic:focus-within .card-academic-content {
+         transition-duration: 0ms;
+      }
+
+      .card-academic-content>*:not(.card-academic-title, .over-title) {
+         opacity: 0;
+         transition: opacity 500ms ease;
+         transition-delay: 1000ms;
+      }
+
+      .card-academic:hover>.card-academic-content>*:not(.card-academic-title),
+      .card-academic:focus-within>.card-academic-content>*:not(.card-academic-title) {
+         opacity: 1;
+      }
+
+      .card-academic-title::after {
+         transform: scaleX(0);
+      }
+
+      .card-academic:hover .card-academic-title::after,
+      .card-academic:focus-within .card-academic-title::after {
+         transform: scaleX(1);
+      }
+   }

@@ -1,0 +1,17 @@
+.modal-body{
+   max-height: 80vh;
+   overflow-y: auto;
+}
+.modal-header{
+   background: #1a2035;
+   color: #fff;
+}
+
+.modal-title{
+   font-size: 1.2rem !important;
+   font-weight: bold;
+}
+
+.close{
+   color:#fff;
+}

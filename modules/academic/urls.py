@@ -10,6 +10,9 @@ urlpatterns = [
    path('', views.index, name='academic'),
    #Pruebas de sprint 2
    path('cursos/', views.cursos, name="cursos"),
+   path('modalAddCategoria/', views.getModalCategorias, name="modalAddCategoria"),
+   path('modalAddPrograma/', views.getModalProgramas, name="modalAddPrograma"),
+   path('modalAddProceso/', views.getModalProcesos, name="modalAddProceso"),
    path('modalAddCurso/', views.getModalCursos, name="modalAddCurso"),
    path('modalAddTopico/', views.getModalTopico, name="modalAddTopico"),
    path('evaluaciones/', views.evaluaciones, name="evaluaciones"),

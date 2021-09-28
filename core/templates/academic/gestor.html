@@ -1,0 +1,214 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}{% endblock %}
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="content">
+   <div class="page-inner animated fadeInRight">
+      <div class="page-header">
+         <h4 class="page-title">Academic</h4>
+         <ul class="breadcrumbs">
+            <li class="nav-home">
+               <a href="{% url 'home' %}">
+                  <i class="flaticon-home"></i>
+               </a>
+            </li>
+            <li class="separator">
+               <i class="flaticon-right-arrow"></i>
+            </li>
+            <li class="nav-item">
+               <a href="{% url 'academic' %}">Academic</a>
+            </li>
+         </ul>
+      </div>
+      <div class="page-category">
+         <div class="card">
+            <div class="card-header">
+               <h2>Programs</h2>
+               <div class="form-group">
+                  <div class="input-icon">
+                     <input type="text" class="form-control" placeholder="Search for...">
+                     <span class="input-icon-addon">
+                        <i class="fa fa-search"></i>
+                     </span>
+                  </div>
+               </div>
+            </div>
+            <main class="card-body">
+               <section>
+                  <div class="section-header">
+                     <h3 class="section-title">New category</h3>
+                     <div onclick="openAddCategory()" class="btn btn-icon btn-success btn-round add-btn btn-lg">
+                        <i class="fas fa-plus"></i>
+                     </div>
+                  </div>
+                  <div class="cards-container">
+                     <div class="card-new">
+                        <div class="card-new-content">
+                           <h2 class="card-new-title">Add new program</h2>
+                           <div class="card-new-body">
+                              <div onclick="openAddProgram()" class="btn btn-icon btn-success btn-round add-btn btn-xl">
+                                 <i class="fas fa-plus"></i>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </section>
+               <section>
+                  <div class="section-header">
+                     <h3 class="section-title">Science</h3>
+                  </div>
+                  <div class="cards-container">
+                     <div class="card-academic">
+                        <div class="card-academic-content">
+                           <div class="over-title">
+                              <p><span class="subtitle">Fecha</span> Jueves, 16 oct 2021</p>
+                              <p><span class="subtitle">Profesor</span> Jesus Campos</p>
+                              <p><span class="subtitle">Duración</span> 24 Hrs</p>
+                           </div>
+                           <h2 class="card-academic-title">Computadores II</h2>
+                           <p class="card-academic-body">
+                              Materia de la rama de matemáticas, que se basa en la solucion de problemas mediante el uso
+                              de
+                              modelos
+                              matemáticos especificos. y otras cosas mas si gustas
+                           </p>
+                           <a href="" class="button btn btn-primary">Acceder</a>
+                        </div>
+                     </div>
+                     <div class="card-academic">
+                        <div class="card-academic-content">
+                           <div class="over-title">
+                              <p><span class="subtitle">Fecha</span> Jueves, 16 oct 2021</p>
+                              <p><span class="subtitle">Profesor</span> Jesus Campos</p>
+                              <p><span class="subtitle">Duración</span> 24 Hrs</p>
+                           </div>
+                           <h2 class="card-academic-title">Computadores II</h2>
+                           <p class="card-academic-body">
+                              Materia de la rama de matemáticas, que se basa en la solucion de problemas mediante el uso
+                              de
+                              modelos
+                              matemáticos especificos.
+                           </p>
+                           <a href="" class="button btn btn-primary">Acceder</a>
+                        </div>
+                     </div>
+                  </div>
+               </section>
+               <section>
+                  <div class="section-header">
+                     <h3 class="section-title">New program</h3>
+                  </div>
+                  <div class="cards-container">
+                     <div class="card-academic">
+                        <div class="card-academic-content">
+                           <div class="over-title">
+                              <p><span class="subtitle">Fecha</span> Jueves, 16 oct 2021</p>
+                              <p><span class="subtitle">Profesor</span> Jesus Campos</p>
+                              <p><span class="subtitle">Duración</span> 24 Hrs</p>
+                           </div>
+                           <h2 class="card-academic-title">Computadores II</h2>
+                           <p class="card-academic-body">
+                              Materia de la rama de matemáticas, que se basa en la solucion de problemas mediante el uso
+                              de
+                              modelos
+                              matemáticos especificos.
+                           </p>
+                           <a href="" class="button btn btn-primary">Acceder</a>
+                        </div>
+                     </div>
+                  </div>
+               </section>
+            </main>
+         </div>
+      </div>
+   </div>
+</div>
+<div class="modal fade" id="addNewModal" tabindex="-1" role="dialog" aria-hidden="true">
+   <div id="addNewModalContent" class="modal-dialog  modal-dialog-centered" role="document">
+
+   </div>
+</div>
+{% endblock content %}
+
+{% block javascripts %}
+<script>
+   let editmode = false
+   const updateModel = (url, method, data, id) => {
+      return fetch(url, {
+         ...fetchObject,
+         body: JSON.stringify({
+            method,
+            data,
+            id
+         })
+      })
+   }
+   const clickSave = (formElement, url) => {
+      const formData = new FormData(formElement);
+      const data = {}
+      for (var [key, value] of formData.entries()) {
+         data[key] = value
+      }
+      if (editmode) {
+         return updateModel(url, "Update", data, idSeleted)
+            .then(async(res) => {
+               const text = JSON.parse(await res.text())
+               if(text.message == "error") alerta(5)
+               else alerta(2)
+            })
+         }
+         else {
+            return updateModel(url, "Create", data, null)
+            .then(async(res) => {
+               const text = JSON.parse(await res.text())
+               if(text.message == "error") alerta(5)
+               else alerta(1)
+            })
+      }
+   }
+   const openAddProgram = () => {
+      fetch("{% url 'modalAddPrograma'%}", {
+         ...fetchObject,
+      })
+         .then(async (res) => {
+            document.getElementById("addNewModalContent").innerHTML = await res.text()
+         })
+         .then(() => {
+            $("#addNewModal").modal("show")
+            const formPrograma = document.getElementById("formPrograma")
+            formPrograma.addEventListener("submit", (e) => {
+               e.preventDefault()
+               clickSave(formPrograma, "{% url 'modalAddPrograma' %}")
+                  .then(() => {
+                     $("#addNewModal").modal("hide")
+                  })
+            })
+         })
+   }
+   const openAddCategory = () => {
+      fetch("{% url 'modalAddCategoria'%}", {
+         ...fetchObject,
+      })
+         .then(async (res) => {
+            document.getElementById("addNewModalContent").innerHTML = await res.text()
+         })
+         .then(() => {
+            $("#addNewModal").modal("show")
+            const formCategoria = document.getElementById("formCategoria")
+            formCategoria.addEventListener("submit", (e) => {
+               e.preventDefault()
+               clickSave(formCategoria, "{% url 'modalAddCategoria'%}")
+                  .then(() => {
+                     $("#addNewModal").modal("hide")
+                  })
+            })
+         })
+   }
+</script>
+{% endblock javascripts %}
