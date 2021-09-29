@@ -30,65 +30,21 @@
             <div class="card-header">
                <h2>Programs</h2>
                <div class="form-group">
-                  <div class="input-icon">
-                     <input type="text" class="form-control" placeholder="Search for...">
-                     <span class="input-icon-addon">
-                        <i class="fa fa-search"></i>
-                     </span>
+                  <div class="input-group">
+                     <input id="txtSearch" type="text" class="form-control" placeholder="Search for...">
+                     <div class="input-group-append">
+                        <span id="clearBtn" class="btn btn-danger">
+                           <i class="fa fa-broom"></i>
+                        </span>
+                        <span id="searchBtn" class="btn btn-primary">
+                           <i class="fa fa-search"></i>
+                        </span>
+                     </div>
                   </div>
                </div>
             </div>
-            <main class="card-body">
-               <section>
-                  <div class="section-header">
-                     <h3 class="section-title">New category</h3>
-                     <div onclick="openAddCategory()" class="btn btn-icon btn-success btn-round add-btn btn-lg">
-                        <i class="fas fa-plus"></i>
-                     </div>
-                  </div>
-                  <div class="cards-container">
-                     <div class="card-new">
-                        <div class="card-new-content">
-                           <h2 class="card-new-title">Add new program</h2>
-                           <div class="card-new-body">
-                              <div onclick="openAddProgram()" class="btn btn-icon btn-success btn-round add-btn btn-xl">
-                                 <i class="fas fa-plus"></i>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-               </section>
-               {% for categoria in categorias%}
-               {% if categoria.estructuraprograma_set.all%}
-               <section>
-                  <div class="section-header">
-                     <h3 class="section-title">{{categoria.desc_elemento}}</h3>
-                  </div>
-                  <div class="cards-container">
-                     {% for programa in categoria.estructuraprograma_set.all%}
-                     {%if programa.valor_elemento == 'PROGRAM'%}
-                     <div class="card-academic">
-                        <div class="card-academic-content">
-                           <div class="over-title">
-                              <p><span class="subtitle">Fecha</span> Jueves, 16 oct 2021</p>
-                              <p><span class="subtitle">Profesor</span> Jesus Campos</p>
-                           </div>
-                           <h2 class="card-academic-title">{{programa.descripcion}}</h2>
-                           <p class="card-academic-body">
-                              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Tempora et incidunt repellendus
-                              libero voluptates ab cum, exercitationem cumque atque ea adipisci temporibus, voluptatibus
-                              necessitatibus similique? Omnis natus eius enim explicabo!
-                           </p>
-                           <a href="{% url 'programa' programa=programa.url%}" class="button btn btn-primary">Acceder</a>
-                        </div>
-                     </div>
-                     {%endif%}
-                     {% endfor %}
-                  </div>
-               </section>
-               {% endif%}
-               {% endfor %}
+            <main class="card-body is-loading-lg">
+               
             </main>
          </div>
       </div>
@@ -104,6 +60,22 @@
 {% block javascripts %}
 <script>
    let editmode = false
+   let query = ""
+   const renderContent = ()=>{
+      document.querySelector("main.card-body").classList.add("is-loading")
+      fetch("{% url 'contenidoProgramas'%}", {
+         ...fetchObject,
+         body: JSON.stringify({
+            query
+         })
+      })
+      .then(async(res)=>{
+         result = await res.text()
+         document.querySelector("main.card-body").classList.remove("is-loading")
+         document.querySelector("main.card-body").innerHTML = result
+      })
+   }
+   renderContent()
    const updateModel = (url, method, data, id) => {
       return fetch(url, {
          ...fetchObject,
@@ -175,5 +147,29 @@
             })
          })
    }
+   const searchFor = (text) =>{
+      let output = text.trim()
+      if(output.length > 20) return
+      query = output
+      renderContent()
+   }
+   
+   const searchBar = document.querySelector('#txtSearch')
+   const clearBtn = document.querySelector('#clearBtn')
+   const searchBtn = document.querySelector('#searchBtn')
+   
+   clearBtn.addEventListener('click', ()=>{
+      searchBar.value = ""
+      query = ""
+      searchFor("")
+   })
+   searchBtn.addEventListener('click', ()=>{
+      searchFor(searchBar.value)
+   })
+   searchBar.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+         searchFor(searchBar.value)
+      }
+   });
 </script>
 {% endblock javascripts %}

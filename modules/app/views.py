@@ -5,6 +5,7 @@ from django.template import loader
 from django.http import HttpResponse, JsonResponse
 from django import template
 import json, math
+from django.core.paginator import Paginator
 from .models import TablasConfiguracion
 from ..academic.models import EscalaCalificacion
 
@@ -23,6 +24,8 @@ def componentLista(request):
         data = json.load(request)["data"]
         if data["name"] == "listaConfig":
             hijos = TablasConfiguracion.objects.filter(fk_tabla_padre=1, mostrar_en_combos=1)
+            if data["query"] != "" and data["query"] != None:
+                hijos = hijos.filter(desc_elemento__icontains=data["query"])
             if not hijos:
                 return JsonResponse({"message":"there are no childs"})
             page = int(data["page"])
@@ -47,6 +50,7 @@ def componentLista(request):
                 "page": page,
                 "before": page - 1 ,
                 "after": page + 1,
+                "query": data["query"]
             }
         return render(request, 'components/lista.html', context)
     return
@@ -63,6 +67,8 @@ def componentTabla(request):
             if not hijos:
                 return JsonResponse({"message":"There are no childs"})
             lista = []
+            limit = None
+            page = None
             #en este bucle les paso la pk de cada elemento 
             #con el fin de llamar a los metodos luego en JS
             for i in list(hijos.values()):
@@ -74,12 +80,19 @@ def componentTabla(request):
                     i["editar"] = True
                     i["eliminable"] = True
                 lista.append(i)
+            if data["page"] != None and data["page"] != "":
+                paginator = Paginator(lista, data["limit"])
+                lista = paginator.get_page(data["page"])
+                page = data["page"]
+                limit = data["limit"]
             context = {
                 #aqui el nombre de la columna a mostrar
                 "fields": ["Description", "Actions"],
                 #aqui ponemos el nombre de la columna de la BBDD
                 "keys": ["desc_elemento"],
                 "data": lista,
+                "page": page,
+                "limit": limit,
             }
         #if data["name"] == "El nombre de tu tabla"
         return render(request,'components/tabla.html', context)

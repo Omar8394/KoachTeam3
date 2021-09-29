@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.db.models import query
 from django.shortcuts import render
 from django.template import loader
 from django.http import HttpResponse, JsonResponse
@@ -10,8 +11,7 @@ from ..app.models import TablasConfiguracion, Estructuraprograma
 @login_required(login_url="/login/")
 def index(request):
     
-    categorias = TablasConfiguracion.obtenerHijos("CatPrograma")
-    context = {"categorias" : categorias}
+    context = {}
     #Vista del gestor
     html_template = (loader.get_template('academic/gestor.html'))
     #Vista del profesor
@@ -84,6 +84,7 @@ def getModalProgramas(request):
                         programa.valor_elemento = "PROGRAM"
                         programa.fk_estructura_padre_id=1
                     programa.descripcion = data["data"]["descriptionProgram"]
+                    programa.url = data["data"]["urlProgram"]
                     programa.fk_categoria_id = data["data"]["categoryProgram"]
                     programa.peso_creditos = data["data"]["creditos"]
                     programa.save()
@@ -95,6 +96,34 @@ def getModalProgramas(request):
                     return HttpResponse(html_template.render(context, request))
             except:
                 return JsonResponse({"message":"error"})
+
+@login_required(login_url="/login/")
+def getContentProgramas(request):
+    if request.method == "POST":
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            context = {}
+            if request.body:
+                data = json.load(request)    
+                lista = {}
+                edit=True
+                delete=True
+                categorias = TablasConfiguracion.obtenerHijos("CatPrograma")
+                if data["query"] == "" or data["query"] == None:
+                    for categoria in categorias:
+                        lista[categoria.desc_elemento]=categoria.estructuraprograma_set.all().filter(valor_elemento="PROGRAM")
+                else:
+                    categorias = categorias.filter(desc_elemento__icontains=data["query"])
+                    for categoria in categorias:
+                        lista[categoria.desc_elemento]=categoria.estructuraprograma_set.all().filter(valor_elemento="PROGRAM", descripcion__icontains=data["query"])
+                context = {"data" : lista, "edit": edit, "delete":delete, "query":data["query"]}
+                html_template = (loader.get_template('academic/contenidoProgramas.html'))
+                return HttpResponse(html_template.render(context, request))
+
+@login_required(login_url="/login/")
+def getContentProcesos(request):
+    context = {}
+    html_template = (loader.get_template('components/contenidoProcesos.html'))
+    return HttpResponse(html_template.render(context, request))
 
 @login_required(login_url="/login/")
 def getModalProcesos(request):

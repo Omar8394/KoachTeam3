@@ -50,10 +50,10 @@
                </div>
             </div>
             <div class="card-body row">
-               <div id="renderList" class="col-md-3">
+               <div id="renderList" class="col-md-3 is-loading-lg">
                   <p>There aren't data to show</p>
                </div>
-               <div id="renderContainer" class="col-md-8 mx-3 table-responsive">
+               <div id="renderContainer" class="col-md-8 mx-3 table-responsive is-loading-lg">
                   <h3 class="display-4">Select an element from list</h3>
                </div>
             </div>
@@ -73,48 +73,81 @@
    let selectedId = 2
    let selectedTable = 2
    let editmode = false
+   let queryList = ""
+   let lastLimitList = 5
+   let lastLimitTable = 5
+   const searchFor = (text) => {
+      let output = text.trim()
+      if (output.length > 20) return
+      queryList = output
+      renderLista()
+   }
    const renderModal = () => {
       return fetch("{% url 'modalAddSetting' %}", {
          ...fetchObject
       })
-      .then(async (res) => {
-         document.getElementById("addNewSettingContent").innerHTML = await res.text()
-      }).then(()=>{
-         const formConfig = document.getElementById("formConfig")
-         formConfig.addEventListener("submit", (e) => {
-            e.preventDefault()
-            clickSave()
+         .then(async (res) => {
+            document.getElementById("addNewSettingContent").innerHTML = await res.text()
+         }).then(() => {
+            const formConfig = document.getElementById("formConfig")
+            formConfig.addEventListener("submit", (e) => {
+               e.preventDefault()
+               clickSave()
+            })
          })
-      })
    }
-   const renderComponentLista = (name, page, limit) => {
+   const addEventos = () => {
+      const searchBar = document.querySelector('#txtSearch')
+      const clearBtn = document.querySelector('#clearBtn')
+      const searchBtn = document.querySelector('#searchBtn')
+
+      clearBtn.addEventListener('click', () => {
+         searchBar.value = ""
+         query = ""
+         searchFor("")
+      })
+      searchBtn.addEventListener('click', () => {
+         searchFor(searchBar.value)
+      })
+      searchBar.addEventListener('keypress', (e) => {
+         if (e.key === 'Enter') {
+            searchFor(searchBar.value)
+         }
+      });
+   }
+   const renderComponentLista = (name, page, limit, query) => {
+      document.querySelector("#renderList").classList.add("is-loading")
       return fetch("{% url 'component_lista'%}",
-         {
+      {
             ...fetchObject,
             body: JSON.stringify({
                data: {
                   name,
                   page,
-                  limit
+                  limit,
+                  query
                }
             }),
          })
          .then(async (res) => {
             result = await res.text()
+            document.querySelector("#renderList").classList.remove("is-loading")
             if (result[0] != '<') {
                result = "<p>There aren't records</p>"
             }
             return result
          })
-   }
-   const renderComponentTabla = (padre, name) => {
+      }
+   const renderComponentTabla = (padre, name, page, limit) => {
       return fetch("{% url 'component_tabla'%}",
          {
             ...fetchObject,
             body: JSON.stringify({
                data: {
-                  name: name,
-                  padre: padre
+                  name,
+                  padre,
+                  page,
+                  limit
                }
             }),
          })
@@ -203,9 +236,9 @@
             }
          }),
       })
-         .then(async(res) => {
+         .then(async (res) => {
             let result = JSON.parse(await res.text())
-            if(result.message === "Error"){
+            if (result.message === "Error") {
                return false
             }
             return true
@@ -220,7 +253,7 @@
       const tablaHijo = document.getElementById(`tablaHijo${idPadre}`)
       const contenedor = document.getElementById(`contenidoHijo${idPadre}`)
       if (tablaHijo.hidden) {
-         const result = await renderComponentTabla(idPadre, "tablaConfig")
+         const result = await renderComponentTabla(idPadre, "tablaConfig", null, null)
          contenedor.innerHTML = result
       }
       else {
@@ -230,40 +263,59 @@
    }
    const renderLista = () => {
       const contenedorLista = document.getElementById("renderList")
-      renderComponentLista("listaConfig", 1, 5)
+      renderComponentLista("listaConfig", 1, lastLimitList, queryList)
          .then((resultado) => {
             contenedorLista.innerHTML = resultado
          })
          .then(() => {
             feedbackLista()
+            addEventos()
+
          })
    }
    const changePerPage = async () => {
       const contenedorLista = document.getElementById("renderList")
       const cbLista = document.getElementById("select-perpage")
-      renderComponentLista("listaConfig", 1, cbLista.value).then((resultado) => {
+      lastLimitList = cbLista.value
+      renderComponentLista("listaConfig", 1, lastLimitList, queryList).then((resultado) => {
          contenedorLista.innerHTML = resultado
       })
          .then(() => {
             feedbackLista()
+            addEventos()
          })
+   }
+   const changePerTable = async () => {
+      const cbTable = document.getElementById("select-pertable")
+      lastLimitTable = cbTable.value
+      const result = await renderComponentTabla(selectedTable, "tablaConfig", 1, lastLimitTable)
+      const contenedor = document.getElementById("renderContainer")
+      contenedor.innerHTML = result
    }
    const goToPage = (page) => {
       const contenedorLista = document.getElementById("renderList")
       const cbLista = document.getElementById("select-perpage")
-      renderComponentLista("listaConfig", page, cbLista.value).then((resultado) => {
+      renderComponentLista("listaConfig", page, lastLimitList, queryList).then((resultado) => {
          contenedorLista.innerHTML = resultado
       })
          .then(() => {
             feedbackLista()
+            addEventos()
          })
    }
+   const goToTable = async (pageTable) => {
+      const result = await renderComponentTabla(selectedTable, "tablaConfig", pageTable, lastLimitTable)
+      const contenedor = document.getElementById("renderContainer")
+      contenedor.innerHTML = result
+   }
    const selectTable = async (idItem) => {
+      document.getElementById("renderList").classList.add("is-loading")
       selectedId = idItem
       selectedTable = idItem
-
-      const result = await renderComponentTabla(idItem, "tablaConfig")
+      
+      const result = await renderComponentTabla(idItem, "tablaConfig", 1, lastLimitTable)
       const contenedor = document.getElementById("renderContainer")
+      document.getElementById("renderList").classList.remove("is-loading")
       contenedor.innerHTML = result
    }
    const limpiarModal = () => {
@@ -277,7 +329,7 @@
    }
 
    const openAddModal = (id) => {
-      renderModal().then(()=>{
+      renderModal().then(() => {
          limpiarModal()
          $("#addNewTable").modal("show")
       })
@@ -308,17 +360,17 @@
             $("#addNewTable").modal("show")
          })
    }
-   const openDeleteModal = async(id)=>{
+   const openDeleteModal = async (id) => {
       const elimino = await alerta(3)
-      if(elimino){
+      if (elimino) {
          const res = await deleteConfig(id)
-         if (res){
+         if (res) {
             alerta(4)
          }
-         else{
+         else {
             alerta(5)
          }
-         
+
       }
    }
    renderLista()

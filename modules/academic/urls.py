@@ -10,12 +10,17 @@ urlpatterns = [
    path('', views.index, name='academic'),
    #Pruebas de sprint 2
    path('cursos/', views.cursos, name="cursos"),
+   #contenidos AJAX
+   path('contenidoProgramas/', views.getContentProgramas, name="contenidoProgramas"),
+   path('contenidoProcesos/', views.getContentProcesos, name="contenidoProcesos"),
+   #modales
    path('modalAddCategoria/', views.getModalCategorias, name="modalAddCategoria"),
    path('modalAddPrograma/', views.getModalProgramas, name="modalAddPrograma"),
    path('modalAddProceso/', views.getModalProcesos, name="modalAddProceso"),
    path('modalAddCurso/', views.getModalCursos, name="modalAddCurso"),
    path('modalAddTopico/', views.getModalTopico, name="modalAddTopico"),
    path('evaluaciones/', views.evaluaciones, name="evaluaciones"),
+   #urls serias
    path('<str:programa>/', views.programa, name="programa"),
    path('<str:programa>/<str:proceso>/', views.proceso, name="proceso"),
    path('<str:programa>/<str:proceso>/<str:unidad>/', views.unidad, name="unidad"),
