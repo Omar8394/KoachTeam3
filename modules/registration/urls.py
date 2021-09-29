@@ -29,16 +29,23 @@ urlpatterns = [
 
     #metods
     path('enrollment/ComboOptions/', views.ComboOptions, name='ComboOptions'  ),
-    path('ManagePersons/ComboOptions/', views.ComboOptions, name='ComboOptions'  ),
-
-    path('EnrollmentList/MatriculacionAdminModal/', views.MatriculacionAdminModal, name='ModalAdmin'  ),
-    path('ManagePersons/MatriculacionAddModal/', views.MatriculacionAddModal, name='ModalAdd'  ),
-
-
     path('enrollment/save/', views.save, name='save'  ),
+
+
+    path('ManagePersons/ComboOptions/', views.ComboOptions, name='ComboOptions'  ),
+    path('ManagePersons/MatriculacionAddModal/', views.MatriculacionAddModal, name='ModalAdd'  ),
     path('ManagePersons/save/', views.ManagePersonSave, name='ManagePersonSave'  ),
 
+
+
+    path('EnrollmentList/MatriculacionAdminModal/', views.MatriculacionAdminModal, name='ModalAdmin'  ),
     path('EnrollmentList/updateEnrollment/', views.updateEnrollment, name='update'  ),
+
+    path('EnrollmentList/ModalPublico/', views.ModalPublico, name='ModalPublico'  ),
+
+
+
+
 
     path('MyEnrollments/ModalPay/', views.ModalPay, name='ModalPay'  ),
     path('MyEnrollments/ModalPayDetail/', views.ModalPayDetail, name='ModalPayDetail'  ),

@@ -14,7 +14,7 @@ from modules.app import Methods
 from django.core.paginator import Paginator
 from django.utils.dateparse import parse_datetime
 from modules.registration.models import PreciosFormacion
-
+from django.db.models import Q
 # Create your views here.
 
 
@@ -110,6 +110,7 @@ def PublicoAdmin(request):
     return render(request, 'registration/PublicoAdmin.html', context)
 
 
+
 @login_required(login_url="/login/")
 def MatriculacionAdmin(request):
 
@@ -117,12 +118,31 @@ def MatriculacionAdmin(request):
     matriculaList=MatriculaAlumnos.objects.all()
     fechaF=None
     fechaI=None
+    idPersona=None
+    personaBuscarNombre=None
+
+
+    publico=Publico.objects.all()
+    paginatorP = Paginator(publico, 1)
+    
+    
+    
+    
+    publicoObject = paginatorP.get_page(1)
+    numeroPaginas=publicoObject.paginator.num_pages
+
+    del publicoObject
+    del paginatorP
+    del publico
+
+    
 
     is_cookie_set = 0
    
-    if 'fechaInicial' in request.session or 'fechaFinal' in request.session: 
+    if 'fechaInicial' in request.session or 'fechaFinal' in request.session or 'idPersona' in request.session: 
         fechaF = request.session['fechaFinal']
         fechaI = request.session['fechaInicial']
+        idPersona=request.session['idPersona']
         
         is_cookie_set = 1
 
@@ -135,8 +155,10 @@ def MatriculacionAdmin(request):
         is_cookie_set = 0
         request.session['fechaInicial']=None
         request.session['fechaFinal']=None
+        request.session['idPersona']=None
         fechaF=None
         fechaI=None
+        idPersona=None
 
       
       
@@ -147,12 +169,16 @@ def MatriculacionAdmin(request):
           
          
            matriculaList=matriculaList.filter(fecha_matricula__gte=dateI)
-          if fechaF!=fechaF:
+          if fechaF!=None:
 
            dateF=parse_datetime(fechaF+' 00:00:00-00')
           
           
            matriculaList=matriculaList.filter(fecha_matricula__lte=dateF)
+          
+          if idPersona!=None:
+           matriculaList=matriculaList.filter(fk_publico=idPersona)
+
 
 
 
@@ -162,16 +188,21 @@ def MatriculacionAdmin(request):
           
           request.session['fechaInicial']=None
           request.session['fechaFinal']=None
+          request.session['idPersona']=None
        
 
         fechaInicial=request.POST.get('fechaInicial') 
+        
 
        
         fechaFinal=request.POST.get('fechaFinal') 
-        idPersona=request.POST.get('idPersona') 
+        idPersona=request.POST.get('PersonId') 
+        
 
         if idPersona!=None and idPersona!="":
          matriculaList=matriculaList.filter(fk_publico=idPersona)
+         request.session['idPersona'] = idPersona
+
         
         if fechaInicial!=None and fechaInicial!="":
           dateI=parse_datetime(fechaInicial+' 00:00:00-00')
@@ -199,7 +230,11 @@ def MatriculacionAdmin(request):
     
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-
+    
+    if idPersona!=None:
+     personaBuscarNombre=Publico.objects.get(pk=idPersona)
+    else:
+      personaBuscarNombre=""
  
             
     context = { 'msg':msg,'matriculasList': matriculaList}
@@ -209,7 +244,7 @@ def MatriculacionAdmin(request):
     html_template = (loader.get_template('registration/MatriculacionAdmin.html'))
 
    # return HttpResponse(html_template.render(context, request))
-    return render(request, 'registration/MatriculacionAdmin.html', {'msg':msg,'matriculasList': page_obj,'FechaInicial':fechaI,'FechaFinal':fechaF})
+    return render(request, 'registration/MatriculacionAdmin.html', {'msg':msg,'matriculasList': page_obj,'FechaInicial':fechaI,'FechaFinal':fechaF, 'publicoObject':numeroPaginas,'idPersona':idPersona,'personaBuscarNombre':personaBuscarNombre})
 
 
 
@@ -368,6 +403,79 @@ def ModalPayDetail2(request):
     tipoPrograma=""
 
     return render(request, 'components/modalpaydetail2.html',{'structuraProg':structuraProg, 'tipoPrograma':tipoPrograma})
+
+
+def ModalPublico(request):
+  
+
+    
+    msg = None
+    publicoObject=Publico.objects.all()
+     
+
+
+    personaBuscar=None
+    
+
+   
+    is_cookie_set = 0
+   
+    if 'personaBuscar' in request.session : 
+        personaBuscar = request.session['personaBuscar']
+        
+        
+        is_cookie_set = 1
+
+    if request.method == "GET":
+      
+
+      if request.GET.get('page')==None:
+        is_cookie_set = 0
+        request.session['personaBuscar']=None
+        
+        personaBuscar=None
+        
+
+      
+      
+    if (is_cookie_set == 1): 
+          if personaBuscar!=None:
+
+           
+          
+         
+           publicoObject=publicoObject.filter(Q(nombre__contains=personaBuscar) | Q(apellido__contains=personaBuscar))
+          
+
+    
+    
+    if request.method == "POST":
+     if (is_cookie_set == 1): 
+          
+          request.session['fechaInicial']=None
+          request.session['fechaFinal']=None
+     personaBuscar = request.POST.get('nombreBuscar')
+     publicoObject=publicoObject.filter(Q(nombre__contains=personaBuscar) | Q(apellido__contains=personaBuscar) )
+     
+     request.session['personaBuscar'] = personaBuscar
+
+
+    paginator = Paginator(publicoObject, 1)
+    
+    
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    if personaBuscar==None:
+      personaBuscar=""
+    context = { 'msg':msg,'publicoObject':page_obj ,'personaBuscar':personaBuscar}
+   # context['segment'] = 'index'
+
+  
+    html_template = (loader.get_template('registration/PublicoAdmin.html'))
+
+   # return HttpResponse(html_template.render(context, request))
+    return render(request, 'components/modalPublico.html', context)
 
 
 #metod

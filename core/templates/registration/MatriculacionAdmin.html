@@ -39,7 +39,7 @@
                     <i class="glyphicon glyphicon-search"></i> Filter
                    
                 </button>
-                <div class="dropdown-menu">
+                <div class="dropdown-menu" id="drop1">
                     <div class="panel">
                         <div class="panel-body">
                             <form id="buscar" name="buscar" method="POST" action=".">
@@ -47,6 +47,19 @@
                                  
                             <table style="width:100%">
                            
+                                <tr>
+                                    <td>Person</td>
+                                    <td></td>
+                                    <td>
+                                        <input  class="form-control" type="text" readonly id="Person" name="Person" value="{{personaBuscarNombre}}" >
+                                        <input   type="hidden" readonly id="PersonId" name="PersonId" value="{{idPersona}}" >
+
+                                    </td>
+                                    <td>
+                                     <a href="javascript:void(0);"  onclick="modalBuscarPersona()">   <span class="fas fa-search">     </span></a> 
+                                    </td>
+                                    
+                                </tr>
                                 <tr>
                                     <td>Initial Date</td>
                                     <td></td>
@@ -233,8 +246,183 @@
 
 
 <script>
+    var paginaActual=1;
+    var numPaginas="{{ publicoObject}}";
+
+    function setNumPages(value){
+
+        numPaginas=value;
+    }
+
+
+    function openmen(){
+        alert(1);
+        $('#drop1').dropdown()
+   $("#panelBuscar").dropdown('toggle') ;
+      //  $('#drop1').addClass('open'); 
+      $("#panelBuscar").dropdown('dispose')
+    }
+
+function SelectPersona(nombre, id){
+$("#BuscarPersonaModal").modal("toggle");
+
+Person.value=nombre;
+PersonId.value=id;
+
+
+}
+function BuscarPersonaPost(){
+	
+
+    let url='ModalPublico/';
+    let formData = new FormData(); 
+    formData.append("nombreBuscar", nombreBuscar.value);
+
+
+    fetch(url,{
+        headers: {
+						'Accept': 'application/json',
+						'X-Requested-With': 'XMLHttpRequest',
+						"X-CSRFToken": getCookie('csrftoken')
+					},
+					mode: 'same-origin',
+					method: 'POST',
+                    body:formData
+    }).then(function(result){
+    
+    return result.text();
+    
+    }).then(function(result){
+        
+        let unit=document.getElementById("modalContentPersona").innerHTML=result;
+    
+    });
+        $("#BuscarPersonaModal").modal("show");
+        
+      
+    }
+
+
+
+function modalNext(){
+    
+
+    paginaActual=paginaActual+1;
+    let url='ModalPublico/'+"?page="+paginaActual.toString();
+    fetch(url,{
+        mode: 'no-cors',
+      method: 'get'
+    }).then(function(result){
+    
+    return result.text();
+    
+    }).then(function(result){
+        
+        let unit=document.getElementById("modalContentPersona").innerHTML=result;
+    
+    });
+        $("#BuscarPersonaModal").modal("show");
+        
+      
+    }
+
+    
+function modalPrevius(){
+    
+  paginaActual=paginaActual-1;
+
+    let url='ModalPublico/'+"?page="+paginaActual.toString();
+    fetch(url,{
+        mode: 'no-cors',
+      method: 'get'
+    }).then(function(result){
+    
+    return result.text();
+    
+    }).then(function(result){
+        
+        let unit=document.getElementById("modalContentPersona").innerHTML=result;
+    
+    });
+        $("#BuscarPersonaModal").modal("show");
+        
+      
+    }
+    
+function modalLast(){
+    paginaActual=numPaginas;
+ 
+
+    let url='ModalPublico/'+"?page="+numPaginas.toString();
+    fetch(url,{
+        mode: 'no-cors',
+      method: 'get'
+    }).then(function(result){
+    
+    return result.text();
+    
+    }).then(function(result){
+        
+        let unit=document.getElementById("modalContentPersona").innerHTML=result;
+    
+    });
+        $("#BuscarPersonaModal").modal("show");
+        
+      
+    }
+    
+function modalFirst(){
+    paginaActual=1;
+
+
+    let url='ModalPublico/'+"?page=1";
+    fetch(url,{
+        mode: 'no-cors',
+      method: 'get'
+    }).then(function(result){
+    
+    return result.text();
+    
+    }).then(function(result){
+        
+        let unit=document.getElementById("modalContentPersona").innerHTML=result;
+    
+    });
+        $("#BuscarPersonaModal").modal("show");
+        
+      
+    }
+    
+
+
+</script>
+
+<script>
 
 var matricula=0;
+function modalBuscarPersona(){
+    
+
+
+let url='ModalPublico/';
+fetch(url,{
+	mode: 'no-cors',
+  method: 'get'
+}).then(function(result){
+
+return result.text();
+
+}).then(function(result){
+	
+	let unit=document.getElementById("modalContentPersona").innerHTML=result;
+
+});
+    $("#BuscarPersonaModal").modal("show");
+    
+  
+}
+
+
 function showModal(id){
     matricula=id;
 
@@ -291,6 +479,15 @@ function reload(){
 <!--Buscar Personas DB Modal-->
 <div class="modal fade" tabindex="-1" role="dialog" id="AdministrarMatricula">
     <div class="modal-dialog" role="document" id="modalContent">
+     
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+
+<!-- /.modal -->
+
+<!--Buscar Personas DB Modal-->
+<div class="modal fade" tabindex="-1" role="dialog" id="BuscarPersonaModal">
+    <div class="modal-dialog" role="document" id="modalContentPersona">
      
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
