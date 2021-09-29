@@ -140,9 +140,79 @@ def getModalSetting(request):
 
 @login_required(login_url="/login/")
 def scales(request):
-    context = {"escalas": EscalaCalificacion.objects.all()}
+    if request.method == "POST":
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            try:
+                context = {}
+                data = json.load(request)["data"]
+                if "delete" in data:
+                    newScaleGe = EscalaEvaluacion.objects.get(pk=data["id"])
+                    newScaleGe.delete()
+                    return JsonResponse({"message": "Deleted"})
+                elif "idFind" in data:
+                    newScaleGe = EscalaEvaluacion.objects.filter(pk=data["idFind"])
+                    findScaleGe = list(newScaleGe.values())
+                    return JsonResponse({"data":findScaleGe[0]}, safe=False)
+                elif "idViejo" in data:
+                    newScaleGe = EscalaEvaluacion.objects.get(pk=data["idViejo"])
+                else:
+                    newScaleGe = EscalaEvaluacion()
+                    newScaleGe.desc_escala=data["descripcion"] 
+                    newScaleGe.maxima_puntuacion=data["maxScore"] 
+                    newScaleGe.save()
+                    return JsonResponse({"message": "Perfect"})
+                  
+            except:
+                return JsonResponse({"message": "Error"})
+                
+    context = {}
     html_template = (loader.get_template('app/settings/scales.html'))
     return HttpResponse(html_template.render(context, request))
+
+@login_required(login_url="/login/")
+def scalesPa(request):
+    if request.method == "POST":
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            try:
+                context = {}
+                data = json.load(request)["data"]
+                if "delete" in data:
+                    newScalePa = EscalaCalificacion.objects.get(pk=data["id"])
+                    newScalePa.delete()
+                    return JsonResponse({"message": "Deleted"})
+                elif "idFind" in data:
+                    newScalePa = EscalaCalificacion.objects.filter(pk=data["idFind"])
+                    findScalePa = list(newScalePa.values())
+                    return JsonResponse({"data":findScalePa[0]}, safe=False)
+                elif "idViejo" in data:
+                    newScalePa = EscalaCalificacion.objects.get(pk=data["idViejo"])
+                else:
+                    newScalePa = EscalaCalificacion()
+                    newScalePa.desc_calificacion=data["descCalificacion"] 
+                    newScalePa.puntos_maximo=data["maxPoints"] 
+                    newScalePa.fk_calificacion=data["fkCalificacion"] 
+                    newScalePa.save()
+                    return JsonResponse({"message": "Perfect"})
+                  
+            except:
+                return JsonResponse({"message": "Error"})
+                
+    context = {}
+    html_template = (loader.get_template('app/settings/scales.html'))
+    return HttpResponse(html_template.render(context, request))
+    # return render(request, 'app/settings/scales.html', context)
+
+@login_required(login_url="/login/")
+def scalesGeAddModal(request): 
+
+    return render(request, 'components/modalAddScaleGe.html')
+
+@login_required(login_url="/login/")
+def scalesPaAddModal(request):
+
+    return render(request, 'components/modalAddScalePa.html')
+
+
 
 @login_required(login_url="/login/")
 def pages(request):

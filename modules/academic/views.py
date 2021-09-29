@@ -33,6 +33,41 @@ def evaluaciones(request):
     return HttpResponse(html_template.render(context, request))
 
 @login_required(login_url="/login/")
+def test(request):
+    if request.method == "POST":
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            try:
+                context = {}
+                data = json.load(request)["data"]
+                if "delete" in data:
+                    test = ActividadEvaluaciones.objects.get(pk=data["id"])
+                    test.delete()
+                    return JsonResponse({"message": "Deleted"})
+                elif "idFind" in data:
+                    test = ActividadEvaluaciones.objects.filter(pk=data["idFind"])
+                    findTest = list(test.values())
+                    return JsonResponse({"data":findTest[0]}, safe=False)
+                elif "idViejo" in data:
+                    test = ActividadEvaluaciones.objects.get(pk=data["idViejo"])
+                else:
+                    test = ActividadEvaluaciones()
+                    test.titulo.data = data[""]
+                    test.fk_curso_actividad.data = data[""]
+                    test.nro_repeticiones.data = data[""]
+                    test.duracion.data = data[""]
+                    test.fk_tipo_duracion.data = data[""]
+                    test.fk_escala_calificacion.data = data[""]
+                    test.calificacion_aprobar .data = data[""]
+                    test.save()
+                return JsonResponse({"message": "Perfect"})      
+            except:
+                return JsonResponse({"message": "Error"})
+                
+    context = {}
+    html_template = (loader.get_template('academic/evaluaciones.html'))
+    return HttpResponse(html_template.render(context, request))
+
+@login_required(login_url="/login/")
 def getModalCategorias(request):
     if request.method == "POST":
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':

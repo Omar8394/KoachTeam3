@@ -8,7 +8,7 @@
 {% block content %}
 
 	<div class="content">
-		<div class="page-inner">
+		<div class="page-inner animated fadeInRight">
 			<div class="page-header">
 				<h4 class="page-title">Scales</h4>
 				<ul class="breadcrumbs">
@@ -43,7 +43,7 @@
                             </div>
                             <div class="form-group col-md-6 d-flex justify-content-end">
                                
-                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addNewScale" onclick="abrir">
+                                <button type="button" class="btn btn-success" onclick="openAddModalScaleGe()">
                                     Add scale <i class="fas fa-plus ml-1"></i>
                                 </button>
     
@@ -52,50 +52,10 @@
                         </div>
 						
 					</div>
-					<div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-hover table-striped table-borderless text-center">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Table heading</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <th scope="row">1</th>
-                                        <td>Table cell</td>
-                                        <td>
-                                            <button type="button" class="btn btn-icon btn-sm btn-info"  data-placement="top" title="Tooltip on top" data-toggle="modal" data-target="#newModal">
-                                                <i class="fas fa-edit"></i>
-                                           </button>
-                                           <button type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="modal" data-target="#newModal">
-                                               <i class="fas fa-trash-alt"></i>
-                                           </button>       
-                                        </td>
-                                      
-                                    </tr>
-                                </tbody>
-                            </table>
+					<div class="card-body" id="tabSca">
+                        <div class="table-responsive" id="renderContainer">
+                           
                         </div>
-						<ul class="list-group list-group-flush">
-							<li class="list-group-item align-items-center">
-								<div class="form-group col-md-10">
-                                    asdadasdasdsadad
-                                </div>
-
-						
-								<div class="form-group col-md-2 d-flex justify-content-end">
-                                    <button type="button" class="btn btn-icon btn-round btn-info"  data-placement="top" title="Tooltip on top" data-toggle="modal" data-target="#newModal">
-                                         <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-icon btn-round btn-danger ml-1" data-toggle="modal" data-target="#newModal">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>                                 
-								</div>	
-							</li>												
-						</ul>
 					</div>
                     <div class="card-footer">
                         <nav aria-label="...">
@@ -121,49 +81,366 @@
 		</div>
 	</div>
 
-  <!-- Modal -->
-    <div class="modal fade" id="addNewScale" tabindex="-1" role="dialog" aria-hidden="true">
-    	<div class="modal-dialog modal-dialog-centered" role="document">
-    		<div class="modal-content">
-    			<div class="modal-header">
-    				<h4 class="modal-title mt-1">New scale</h4>
-    				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-    					<span aria-hidden="true">&times;</span>
-    				</button>
-    			</div>
-    			<div class="modal-body">
-    				<form action="">
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label for="min_score">Min score</label>
-								<input type="text" class="form-control" id="min_score" placeholder="Enter number">
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="max_score">Max score</label>
-                                <input type="text" class="form-control" id="max_score" placeholder="Enter number">
-                            </div>
-                        </div>
-                        <div class="form-row justify-content-center">
-                            <div class="form-group col-md-6">
-                                <label for="min_approve">Minimun to approve</label>
-								<input type="text" class="form-control" id="min_approve" placeholder="Enter number">	
-                            </div>
-                        </div>                                         
-                    </form>
-    			</div>
-    			<div class="modal-footer">
-    				<button type="button" class="btn btn-primary">Save<i class="fas fa-save ml-2"></i></button>
-    			</div>
-    		</div>
-    	</div>
+    <!--Modals-->
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="addNewScaleGe">
+        <div class="modal-dialog modal-dialog-centered" role="document" id="modalContentGe">
+        
+            
+        </div><!-- /.modal-dialog -->
     </div>
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="addNewScalePa">
+        <div class="modal-dialog modal-dialog-centered" role="document" id="modalContentPa">
+        
+            
+        </div><!-- /.modal-dialog -->
+    </div>
+
+   
+
 {% endblock content %}
 	
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
     <script>    
-        const abrir = () =>{
-            $('#addNewScale').modal(show)
+
+        // Variables
+
+        let editmode = false
+        let selectedId = ""
+        let scaleType = false
+
+        // Modal Escala general
+
+        const renderModalScaleGe = () => {
+           return fetch("{% url 'modalScaleGeAdd' %}", {
+              ...fetchObject
+           })
+           .then(async (res) => {
+              document.getElementById("modalContentGe").innerHTML = await res.text()
+           }).then(()=>{
+                const formScaleGe = document.getElementById("scaleGe")
+                formScaleGe.addEventListener("submit", (e) => {
+                    e.preventDefault()
+                    clickSave()
+              })
+           })
         }
+
+        const openAddModalScaleGe = () => {
+            renderModalScaleGe().then(()=>{
+                scaleType = false
+                editmode = false
+                $("#addNewScaleGe").modal("show")
+            })
+        }
+ 
+        const clickSave = () => {
+            if (scaleType === false) {
+                const description = document.getElementById("desc_escala")
+                const maxScore = document.getElementById("max_score")
+          
+                form = {
+                 descripcion: description.value,
+                 maxScore: maxScore.value,
+                
+                }
+                if (editmode) {
+                    updateScaleGe(form, selectedId)
+                }
+                else {
+                    createScaleGe(form)
+                }           
+            }
+            else {
+                const descCalificacion = document.getElementById("desc_calificacion")
+                const maxPoints = document.getElementById("max_score")
+                const fkCalificacion = document.getElementById("fk_calificacion")
+          
+                form = {
+                 descCalificacion: descCalificacion.value,
+                 maxPoints: maxPoints.value,
+                 fkCalificacion: fkCalificacion.value
+                
+                }
+                if (editmode) {
+                    updateScalePa(form, selectedId)
+                }
+                else {
+                    createScalePa(form)
+                }   
+            }
+        }
+
+        const createScaleGe = (form) => {
+            fetch("{% url 'scales' %}", {
+               ...fetchObject,
+               body: JSON.stringify({
+                  data: form
+               }),
+            })
+            .then(async (res) => {
+               let result = JSON.parse(await res.text())
+               if (result.message === "Error") {
+                  alerta(5)
+               }
+               alerta(1)
+            })
+            .then(() => {
+
+                renderTable()
+               $("#addNewScaleGe").modal("hide");
+            })
+        }
+
+        const openEditModal = (id) => {
+            selectedId = id
+            fetch("{% url 'scales' %}", {
+               ...fetchObject,
+               body: JSON.stringify({
+                  data: {
+                     idFind: id
+                  }
+               }),
+            })
+            .then(async (res) => {
+                await renderModalScaleGe()
+            
+                let respuesta = JSON.parse(await res.text())
+                document.getElementById("desc_escala").value = respuesta.data.desc_escala
+                document.getElementById("max_score").value = respuesta.data.maxima_puntuacion
+              
+                editmode = true
+            })
+            .then(() => {
+               $("#addNewScaleGe").modal("show")
+            })
+        }
+
+        const updateScaleGe = (form, idViejo) => {
+            fetch("{% url 'scales' %}", {
+               ...fetchObject,
+               body: JSON.stringify({
+                  data: {
+                    ...form,
+                    idViejo
+                  }
+               }),
+            })
+            .then(async (res) => {
+               let result = JSON.parse(await res.text())
+               if (result.message === "Error") {
+                  alerta(5)
+               }
+               alerta(2)
+            })
+            .then(() => {
+
+               renderTable()
+               $("#addNewScaleGe").modal("hide");
+            })
+        }
+
+        const openDeleteModal = async(id)=>{
+           const elimino = await alerta(3)
+           if(elimino){
+                const res = await deleteScaleGe(id)
+                if (res){
+                   alerta(4)
+                }
+                else{
+                    alerta(5)
+                }
+            }
+        }
+
+        const deleteScaleGe = (id) => {
+           return fetch("{% url 'scales' %}", {
+              ...fetchObject,
+              body: JSON.stringify({
+                 data: {
+                    delete: true,
+                    id
+                 }
+              }),
+           })
+            .then(async(res) => {
+               let result = JSON.parse(await res.text())
+               if(result.message === "Error"){
+                  return false
+               }
+               return true
+            })
+            .then((result) => {
+               renderTable()
+               return result
+            })
+        }
+  
+
+
+        // Modal escala particular
+
+        
+        const renderModalScalePa = () => {
+           return fetch("{% url 'modalScalePaAdd' %}", {
+              ...fetchObject
+           })
+           .then(async (res) => {
+              document.getElementById("modalContentPa").innerHTML = await res.text()
+           }).then(()=>{
+                const formScalePa = document.getElementById("scalePa")
+                formScalePa.addEventListener("submit", (e) => {
+                    e.preventDefault()
+                    clickSave()
+              })
+           })
+        }
+
+        const openAddModal = () => {
+           renderModalScalePa().then(()=>{
+              scaleType = true
+              $("#addNewScalePa").modal("show")
+           })
+        }
+
+        const createScalePa = (form) => {
+            fetch("{% url 'scalesPa' %}", {
+               ...fetchObject,
+               body: JSON.stringify({
+                  data: form
+               }),
+            })
+            .then(async (res) => {
+               let result = JSON.parse(await res.text())
+               if (result.message === "Error") {
+                  alerta(5)
+               }
+               alerta(1)
+            })
+            .then(() => {
+
+               renderTable()
+               $("#addNewScalePa").modal("hide");
+            })
+        }
+
+        
+        // const openDeleteModal = async(id)=>{
+        //    const elimino = await alerta(3)
+        //    if(elimino){
+        //         const res = await deleteScalePa(id)
+        //         if (res){
+        //            alerta(4)
+        //         }
+        //         else{
+        //             alerta(5)
+        //         }
+        //     }
+        // }
+
+        const deleteScalePa = (id) => {
+           return fetch("{% url 'scalesPa' %}", {
+              ...fetchObject,
+              body: JSON.stringify({
+                 data: {
+                    delete: true,
+                    id
+                 }
+              }),
+           })
+            .then(async(res) => {
+               let result = JSON.parse(await res.text())
+               if(result.message === "Error"){
+                  return false
+               }
+               return true
+            })
+            .then((result) => {
+               renderTable()
+               return result
+            })
+        }
+ 
+
+        // Renderizar tablas
+
+        
+     
+        const renderComponentTabla = async (name) => {
+            return await fetch("{% url 'component_tabla'%}",
+                {
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        "X-CSRFToken": getCookie('csrftoken')
+                    },
+                    mode: 'same-origin',
+                    method: 'POST',
+                    body: JSON.stringify({
+                        data: {
+                            name: name,
+                        }
+                    }),
+                })
+                .then(async (res) => {
+                    result = await res.text()
+                    if (result[0] != '<') {
+                        console.log(result)
+                        result = "<h3 class='display-4'>There are no items</h3>"
+                    }
+                    return result
+                })
+        }
+
+        const renderComponentTablaHijos = async (name, idScalesPa) => {
+            return await fetch("{% url 'component_tabla'%}",
+                {
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        "X-CSRFToken": getCookie('csrftoken')
+                    },
+                    mode: 'same-origin',
+                    method: 'POST',
+                    body: JSON.stringify({
+                        data: {
+                            name: name, 
+                                  idScalesPa
+                        }
+                    }),
+                })
+                .then(async (res) => {
+                    result = await res.text()
+                    if (result[0] != '<') {
+                        console.log(result)
+                        result = "<h3 class='display-4'>There are no items</h3>"
+                    }
+                    return result
+                })
+        }
+
+        const toggleContentChild = async (queso) => {
+           const tablaHijo = document.getElementById(`tablaHijo${queso}`)
+           const contenedor = document.getElementById(`contenidoHijo${queso}`)
+           if (tablaHijo.hidden) {
+              const result = await renderComponentTablaHijos("tablaScalesPa", queso)
+              contenedor.innerHTML = result
+           }
+           else{
+              contenedor.innerHTML = ''
+           }
+           tablaHijo.hidden = !tablaHijo.hidden
+        }
+
+        const renderTable = async() => {
+            const result = await renderComponentTabla("tablaScales")
+                const contenedor = document.getElementById("renderContainer")
+                contenedor.innerHTML = result
+        }
+        renderTable()
+
     </script>
+
 {% endblock javascripts %}

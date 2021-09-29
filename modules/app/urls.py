@@ -12,7 +12,13 @@ urlpatterns = [
     path('', views.index, name='home'),
     path('modalAddSetting/', views.getModalSetting, name="modalAddSetting"),
     path('settings/tables', views.tables, name='system_tables'),
+
+     # Scales
     path('settings/scales', views.scales, name='scales'),
+    path('settings/scales/scalesPa', views.scalesPa, name='scalesPa'),
+    path('settings/scales/scalesGeAddModal/', views.scalesGeAddModal, name='modalScaleGeAdd'),
+    path('settings/scales/scalesPaAddModal/', views.scalesPaAddModal, name='modalScalePaAdd'),
+
     path('components/tabla', views.componentTabla, name='component_tabla'),
     path('components/lista', views.componentLista, name='component_lista'),
 

@@ -1,0 +1,31 @@
+<form class="form" id="scaleGe" name="scaleGe">
+    {% csrf_token %}    
+  
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 style="left: initial;" class="modal-title">New scale</h4>
+
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body">
+            <div class="form-row">
+            </div>
+        
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="desc_escala">Description</label>
+                    <input type="text" name="desc_escala" class="form-control" id="desc_escala" placeholder="Enter a description">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="max_score">Max score</label>
+                    <input type="text" name="max_score" class="form-control" id="max_score" placeholder="Enter a number">
+                </div>
+            </div>   
+         
+        
+         </div>
+        <div class="modal-footer">
+            <button type="submit" value="Submit" class="btn btn-primary">Save<i class="fas fa-save ml-2"></i></button>
+        </div>
+    </div><!-- /.modal-content -->
+</form>
