@@ -13,13 +13,14 @@
    <tbody>
       {% for row in data %}
       <tr>
-         {% for key,value in row.items %}
-            {% for llave in keys%}
+         {% for llave in keys%}
+            {% for key,value in row.items %}
                {% if llave == key %}
                   <td>{{value}}</td>
                {% endif %}
             {% endfor %}
          {% endfor %}
+         {% if 'Actions' in fields %}
          <td>
             <div class="btn-group" role="group">
                {% if row.crearHijos == True %}
