@@ -1,0 +1,118 @@
+<form class="form" id="enroll" name="enroll" onsubmit="enviar();return false">
+    {% csrf_token %}    
+  
+<div class="modal-content" onload="Carga()">
+    <div class="modal-header">
+        <h4 style="left: initial;" class="modal-title">Person Search</h4>
+
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    </div>
+    <div class="modal-body">
+        <table style="width:70%">
+                           
+          <form id="modalBusqueda" name="modalBusqueda"> 
+            <tr>
+                <td>Names</td>
+                <td></td>
+                <td>
+                    <input id="nombreBuscar" name="nombreBuscar"  type="text" class="form-control" value='{{personaBuscar}}' >
+                </td>
+                <td>
+                    <a href="javascript:void(0);"  onclick="BuscarPersonaPost()">   <span class="fas fa-search">     </span></a> 
+                   </td>
+            </tr>
+        </form>
+        </table>
+        <table class="table table-striped table-hover">
+
+            <thead>
+
+                <tr>
+                    <th style="width: 65px;"></th>
+                   
+                    <th>Names</th>
+                    <th>Date of Registration</th>
+                    <th></th>
+
+                  
+
+                  
+                </tr>
+            </thead>
+            <tbody class="data-cargando">
+                {% for person in publicoObject %}
+
+                <tr style="cursor:pointer;"  >
+                    <td ></td>
+                   <td>{{person}}</td>
+                   <td>{{person.fecha_registro}}</td>
+                   <td>
+                    <a href="javascript:void(0);"  onclick="SelectPersona('{{person}}', '{{person.idpublico}}')">   <span class="fas fa-check ">     </span></a> 
+                       
+                   </td>
+
+
+                   
+
+
+
+                    <td>
+                     
+                   
+                    </td>
+                </tr>
+
+                {% endfor %}
+            </tbody>
+        </table>
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+            {% if publicoObject.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="javascript:void(0);" onclick="modalFirst()">&laquo; First</a>
+
+               </li>
+                <li class="page-item">
+                  
+
+                <a class="page-link" href="javascript:void(0);" onclick="modalPrevius()">Previous</a>
+              </li>
+            {% else %}
+                <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+              </li>
+            {% endif %}
+    
+           
+    
+            {% if publicoObject.has_next %}
+                <li class="page-item">
+                <a class="page-link" href="javascript:void(0);" onclick="modalNext()">Next</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="javascript:void(0);" onclick="modalLast()">Last &raquo;</a>
+              </li>
+
+            {% else %}
+                <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Next</a>
+              </li>
+            {% endif %}
+          </ul>
+        </nav>
+
+        
+    </div>
+    <div class="modal-footer">
+      
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    </div>
+</form>
+
+<script>
+
+
+
+
+
+</script>

@@ -1,17 +1,163 @@
 from django.contrib.auth.decorators import login_required
+from django.db.models import query
 from django.shortcuts import render
 from django.template import loader
 from django.http import HttpResponse, JsonResponse
 from django import template
+import json
+from ..app.models import TablasConfiguracion, Estructuraprograma
 
 # Create your views here.
 @login_required(login_url="/login/")
 def index(request):
     
     context = {}
-
-    html_template = (loader.get_template('academic/index.html'))
+    #Vista del gestor
+    html_template = (loader.get_template('academic/gestor.html'))
+    #Vista del profesor
+    #html_template = (loader.get_template('academic/index.html'))
     return HttpResponse(html_template.render(context, request))
+
+
+#PRUEBA
+@login_required(login_url="/login/")
+def cursos(request):
+    context = {}
+    html_template = (loader.get_template('academic/cursos.html'))
+    return HttpResponse(html_template.render(context, request))
+
+@login_required(login_url="/login/")
+def evaluaciones(request):
+    context = {}
+    html_template = (loader.get_template('academic/evaluaciones.html'))
+    return HttpResponse(html_template.render(context, request))
+
+@login_required(login_url="/login/")
+def getModalCategorias(request):
+    if request.method == "POST":
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            context = {}
+            try:
+                if request.body:
+                    data = json.load(request)
+                    config = TablasConfiguracion.objects.filter(valor_elemento="CatPrograma")
+                    padre = list(config.values())[0]
+                    if data["method"] == "Delete":
+                        category = TablasConfiguracion.objects.get(id_tabla=data["id"])
+                        category.delete()
+                        return JsonResponse({"message":"Deleted"})
+                    elif data["method"] == "Update":
+                        category = TablasConfiguracion.objects.get(id_tabla=data["id"])
+                    elif data["method"] == "Create":
+                        category = TablasConfiguracion()
+                        category.tipo_elemento=0 
+                        category.permite_cambios=1
+                        category.valor_elemento=None
+                        category.mostrar_en_combos=1
+                        category.maneja_lista=0
+                        category.fk_tabla_padre_id=padre["id_tabla"]
+                    category.desc_elemento = data["data"]["descriptionCat"]
+                    category.save()
+                    return JsonResponse({"message":"Perfect"})
+                else:
+                    html_template = (loader.get_template('components/modalAddCategoria.html'))
+                    return HttpResponse(html_template.render(context, request))
+            except:
+                return JsonResponse({"message":"error"})
+
+@login_required(login_url="/login/")
+def getModalProgramas(request):
+    if request.method == "POST":
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            context = {}
+            try:
+                if request.body:
+                    data = json.load(request)
+                    if data["method"] == "Delete":
+                        programa = Estructuraprograma.objects.get(pk=data["id"])
+                        programa.delete()
+                        return JsonResponse({"message":"Deleted"})
+                    elif data["method"] == "Update":
+                        programa = Estructuraprograma.objects.get(pk=data["id"])
+                    elif data["method"] == "Create":
+                        programa = Estructuraprograma()
+                        programa.valor_elemento = "PROGRAM"
+                        programa.fk_estructura_padre_id=1
+                    programa.descripcion = data["data"]["descriptionProgram"]
+                    programa.url = data["data"]["urlProgram"]
+                    programa.fk_categoria_id = data["data"]["categoryProgram"]
+                    programa.peso_creditos = data["data"]["creditos"]
+                    programa.save()
+                    return JsonResponse({"message":"Perfect"})
+                else:
+                    categorias = TablasConfiguracion.obtenerHijos(valor="CatPrograma")
+                    context = {"categorias": categorias}
+                    html_template = (loader.get_template('components/modalAddPrograma.html'))
+                    return HttpResponse(html_template.render(context, request))
+            except:
+                return JsonResponse({"message":"error"})
+
+@login_required(login_url="/login/")
+def getContentProgramas(request):
+    if request.method == "POST":
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            context = {}
+            if request.body:
+                data = json.load(request)    
+                lista = {}
+                edit=True
+                delete=True
+                categorias = TablasConfiguracion.obtenerHijos("CatPrograma")
+                if data["query"] == "" or data["query"] == None:
+                    for categoria in categorias:
+                        lista[categoria.desc_elemento]=categoria.estructuraprograma_set.all().filter(valor_elemento="PROGRAM")
+                else:
+                    categorias = categorias.filter(desc_elemento__icontains=data["query"])
+                    for categoria in categorias:
+                        lista[categoria.desc_elemento]=categoria.estructuraprograma_set.all().filter(valor_elemento="PROGRAM", descripcion__icontains=data["query"])
+                context = {"data" : lista, "edit": edit, "delete":delete, "query":data["query"]}
+                html_template = (loader.get_template('academic/contenidoProgramas.html'))
+                return HttpResponse(html_template.render(context, request))
+
+@login_required(login_url="/login/")
+def getContentProcesos(request):
+    context = {}
+    html_template = (loader.get_template('components/contenidoProcesos.html'))
+    return HttpResponse(html_template.render(context, request))
+
+@login_required(login_url="/login/")
+def getModalProcesos(request):
+    context = {}
+    html_template = (loader.get_template('components/modalAddProceso.html'))
+    return HttpResponse(html_template.render(context, request))
+
+@login_required(login_url="/login/")
+def getModalCursos(request):
+    context = {}
+    html_template = (loader.get_template('components/modalAddCurso.html'))
+    return HttpResponse(html_template.render(context, request))
+
+@login_required(login_url="/login/")
+def getModalTopico(request):
+    context = {}
+    html_template = (loader.get_template('components/modalAddTopico.html'))
+    return HttpResponse(html_template.render(context, request))
+
+@login_required(login_url="/login/")
+def programa(request, programa):
+    return JsonResponse({"message":programa})
+@login_required(login_url="/login/")
+def proceso(request):
+    return
+@login_required(login_url="/login/")
+def unidad(request):
+    return
+@login_required(login_url="/login/")
+def topico(request):
+    return
+@login_required(login_url="/login/")
+def actividad(request):
+    return
 
 @login_required(login_url="/login/")
 def pages(request):

@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models.fields import DateField
 from ..app.models import Estructuraprograma, TablasConfiguracion, Publico
+import datetime
 
 # Create your models here.
 class PreciosFormacion(models.Model):
@@ -8,7 +9,11 @@ class PreciosFormacion(models.Model):
     fk_estruc_programa = models.ForeignKey(Estructuraprograma, on_delete=models.CASCADE, default=None, null=True)
     fecha_registro = models.DateField()
     precio = models.DecimalField(max_digits=11, decimal_places=2)
+    PorcentajeDescuento = models.DecimalField(max_digits=3, decimal_places=2, default=None, null=True)
+
     fk_tipo_moneda = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE,  default=None, null=True)
+    fecha_habilitado = models.DateField(default=None, null=True)
+
 
 
 class MatriculaAlumnos(models.Model):

@@ -54,3 +54,62 @@
       {% endfor %}
    </tbody>
 </table>
+{% if page%}
+<div class="row col-12 d-flex justify-content-between align-items-end">
+
+   <div class="col-4 m-2 form-group">
+      <label class="form-label" for="select-perpage">Items per page</label>
+      <select class="form-control" onchange="changePerTable()" id="select-pertable" type="">
+         <option value="5" {% if limit == '5' %} selected {% endif %}>5</option>
+         <option value="10" {% if limit == '10' %} selected {% endif %}>10</option>
+         <option value="15" {% if limit == '15' %} selected {% endif %}>15</option>
+      </select>
+   </div>
+   <nav class="col-6 m-2" aria-label="Page navigation example">
+      <ul class="pagination justify-content-end">
+         {% if data.has_previous %}
+         <li class="page-item">
+            <a class="page-link" onclick="goToTable(1)" href="#">&laquo; First</a>
+            
+         </li>
+         <li class="page-item">
+            
+            
+            <a class="page-link" href="#" onclick="goToTable('{{ data.previous_page_number }}')"><i class="fas fa-arrow-left"></i></a>
+         </li>
+         {% endif %}
+         
+         {% if data.number|add:'-4' > 1 %}
+         <li class="page-item"><a class="page-link" onclick="goToTable(`{{ data.number|add:'-5' }}`)" href="#">&hellip;</a></li>
+         {% endif %}
+         
+         {% for i in data.paginator.page_range %}
+         {% if data.number == i %}
+         <li class="page-item active" aria-current="page">
+            <span class="page-link">
+               {{ i }}
+               <span class="sr-only">(current)</span>
+            </span>
+         </li>
+         {% elif i > data.number|add:'-5' and i < data.number|add:'5' %} <li class="page-item"><a
+            class="page-link" onclick="goToTable('{{i}}')" href="#">{{ i }}</a></li>
+            {% endif %}
+            {% endfor %}
+            
+            {% if data.paginator.num_pages > data.number|add:'4' %}
+            <li class="page-item"><a class="page-link" onclick="goToTable(`{{ data.number|add:'5' }}`)" href="#">&hellip;</a></li>
+            {% endif %}
+   
+            {% if data.has_next %}
+            <li class="page-item">
+               <a class="page-link" onclick="goToTable('{{ data.next_page_number }}')" href="#"><i class="fas fa-arrow-right"></i></a>
+            </li>
+            <li class="page-item">
+               <a class="page-link" onclick="goToTable('{{ data.paginator.num_pages }}')" href="#">Last &raquo;</a>
+            </li>
+            
+            {% endif %}
+         </ul>
+      </nav>
+   {% endif %}
+</div>

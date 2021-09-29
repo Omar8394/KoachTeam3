@@ -137,24 +137,26 @@
 
 window.addEventListener("load", function(event) {
     console.log("'Todos los recursos terminaron de cargar!");
-	program.value=-1;
-	type.value=-1;
+	program.value='';
+	type.value='';
   });
  
 function programChange(){
 	
-	cbProcess.value=-1;
-	cbCourse.value=-1;
-	cbUnit.value=-1;
+	cbProcess.value='';
+	cbCourse.value='';
+	cbUnit.value=-'';
+	let proceso=document.getElementById("cbProcess").innerHTML="";
+	let unidad=document.getElementById("cbUnit").innerHTML="";
+	let curso=document.getElementById("cbCourse").innerHTML="";
                
 let program=document.getElementById("program").value;
 
 
-if (program<=0)
+if (program=='')
 {
-	
-//let listaProcess=document.getElementById("listaProcess");
-////listaProcess.style.visibility=false;
+	return;
+
 }
 
 let url='ComboOptions/?structuraProg='+program;
@@ -174,8 +176,10 @@ return result.text();
 }
 
 function processChange(){
-	cbUnit.value=-1;
-	cbCourse.value=-1;
+	cbUnit.value='';
+	cbCourse.value='';
+	let unidad=document.getElementById("cbUnit").innerHTML="";
+	let curso=document.getElementById("cbCourse").innerHTML='';
 
 	let process=document.getElementById("cbProcess").value;
 
@@ -202,7 +206,8 @@ return result.text();
 }
 
 function unitChange(){
-	cbCourse.value=-1;
+	cbCourse.value='';
+	let curso=document.getElementById("cbCourse").innerHTML='';
 
 	let unit=document.getElementById("cbUnit").value;
 
@@ -235,7 +240,9 @@ function enviar(){
 	var xhr = new XMLHttpRequest();
 xhr.open("POST", "save/"); 
 xhr.onload = function(event){ 
-    alert("Success, server responded with: " + event.target.response); // raw response
+alerta(1); // raw response
+
+   // alert("Success, server responded with: " + event.target.response); // raw response
 }; 
 // or onerror, onabort
 var formData = new FormData(document.getElementById("enroll")); 

@@ -1,0 +1,51 @@
+<div class="modal-content">
+   <div class="modal-header">
+      <h5 class="modal-title">Program</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+         <span aria-hidden="true">&times;</span>
+      </button>
+   </div>
+   <form id="formPrograma" class="form">
+      <div class="modal-body">
+         <div class="form-row">
+            <div class="form-group col-12">
+               <label for="categoryProgram" class="col-form-label">Category</label>
+               <select class="form-control" name="categoryProgram" id="categoryProgram" required>
+                  <option value="null" disabled selected>Select a category</option>
+                  {% for item in categorias %}
+                  {%if item.mostrar_en_combos == 1%}
+                  <option value="{{item.id_tabla}}">{{item.desc_elemento}}</option>
+                  {%endif%}
+                  {% endfor%}
+               </select>
+            </div>
+         </div>
+         <div class="form-row">
+            <div class="form-group col-12">
+               <label for="descriptionProgram" class="col-form-label">Title</label>
+               <input type="text" class="form-control" name="descriptionProgram" id="descriptionProgram"
+                  placeholder="Enter a title" required>
+            </div>
+         </div>
+         <div class="form-row">
+            <div class="form-group col-12">
+               <label for="urlProgram" class="col-form-label">URL</label>
+               <input type="text" class="form-control" name="urlProgram" id="urlProgram"
+                  placeholder="Enter a valid URL" required>
+            </div>
+         </div>
+         <div class="form-row">
+            <div class="form-group col-12">
+               <label for="creditos" class="col-form-label">Credits</label>
+               <input type="number" class="form-control" name="creditos" id="creditos"
+                  placeholder="1" required>
+            </div>
+         </div>
+      </div>
+      <div class="modal-footer">
+         <button type="button" class="btn btn-danger" data-dismiss="modal"><i
+               class="fas fa-arrow-left mr-2"></i>Back</button>
+         <button type="submit" class="btn btn-primary">Save<i class="fas fa-save ml-2"></i></button>
+      </div>
+   </form>
+</div>

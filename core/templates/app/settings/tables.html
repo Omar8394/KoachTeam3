@@ -1,5 +1,4 @@
 {% extends "layouts/base.html" %}
-{% load static %}
 
 {% block title %}{% endblock %}
 
@@ -11,7 +10,7 @@
 {% block content %}
 
 <div class="content">
-   <div class="page-inner">
+   <div class="page-inner animated fadeInRight">
       <div class="page-header">
          <h4 class="page-title">System tables</h4>
          <ul class="breadcrumbs">
@@ -51,10 +50,10 @@
                </div>
             </div>
             <div class="card-body row">
-               <div id="renderList" class="col-md-3">
+               <div id="renderList" class="col-md-3 is-loading-lg">
                   <p>There aren't data to show</p>
                </div>
-               <div id="renderContainer" class="col-md-8 mx-3 table-responsive">
+               <div id="renderContainer" class="col-md-8 mx-3 table-responsive is-loading-lg">
                   <h3 class="display-4">Select an element from list</h3>
                </div>
             </div>
@@ -62,73 +61,8 @@
       </div>
    </div>
 </div>
-<div class="modal fade" id="addNewTable" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-   aria-hidden="true">
-   <div class="modal-dialog  modal-dialog-centered" role="document">
-      <div class="modal-content">
-         <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel"><strong>New setting</strong></h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-               <span aria-hidden="true">&times;</span>
-            </button>
-         </div>
-         <form id="formConfig" class="form">
-            <div class="modal-body">
-               <div class="form-row">
-                  <div class="form-group col-12">
-                     <label for="descriptionConfig" class="col-form-label">Description</label>
-                     <input type="text" class="form-control" id="descriptionConfig"
-                        placeholder="Enter a description here" required>
-                  </div>
-               </div>
-               <div class="form-row">
-                  <div class="form-group col-12">
-                     <label for="codeConfig" class="col-form-label">Code</label>
-                     <input type="text" class="form-control" id="codeConfig"
-                        placeholder="Enter a code to identify this setting">
-                  </div>
-               </div>
-               <div class="form-row">
-                  <div class="form-group col-12">
-                     <label for="padreConfig" class="col-form-label">Father table</label>
-                     <select class="form-control" name="id-padre" id="padreConfig">
-                        <option value="null" selected disabled>Select a table</option>
-                        {% for table in tables%}
-                        {% if table.mostrar_en_combos == 1 %}
-                        <option value="{{table.id_tabla}}">{{table.desc_elemento}}</option>
-                        {% endif %}
-                        {% endfor %}
-                     </select>
-                  </div>
-               </div>
-               <div class="form-row">
-                  <div class="form-group col-4">
-                     <div class="custom-control custom-checkbox ml-2">
-                        <input type="checkbox" class="custom-control-input" name="checkShowCB" id="checkShowCB">
-                        <label class="custom-control-label" for="checkShowCB">Show on lists</label>
-                     </div>
-                  </div>
-                  <div class="form-group col-4">
-                     <div class="custom-control custom-checkbox ml-2">
-                        <input type="checkbox" class="custom-control-input" name="checkChangesCB" id="checkChangesCB">
-                        <label class="custom-control-label" for="checkChangesCB">Allow changes</label>
-                     </div>
-                  </div>
-                  <div class="form-group col-4">
-                     <div class="custom-control custom-checkbox ml-2">
-                        <input type="checkbox" class="custom-control-input" name="checkListsCB" id="checkListsCB">
-                        <label class="custom-control-label" for="checkListsCB">Handle lists</label>
-                     </div>
-                  </div>
-               </div>
-            </div>
-            <div class="modal-footer">
-               <button type="button" class="btn btn-danger" data-dismiss="modal"><i
-                     class="fas fa-arrow-left mr-2"></i>Back</button>
-               <button type="submit" class="btn btn-primary">Save<i class="fas fa-save ml-2"></i></button>
-            </div>
-         </form>
-      </div>
+<div class="modal fade" id="addNewTable" tabindex="-1" role="dialog" aria-hidden="true">
+   <div id="addNewSettingContent" class="modal-dialog  modal-dialog-centered" role="document">
    </div>
 </div>
 
@@ -136,46 +70,84 @@
 
 {% block javascripts %}
 <script>
-   let selectedId
-   let selectedTable
+   let selectedId = 2
+   let selectedTable = 2
    let editmode = false
-   const fetchObject = {
-      headers: {
-         'Accept': 'application/json',
-         'X-Requested-With': 'XMLHttpRequest',
-         "X-CSRFToken": getCookie('csrftoken')
-      },
-      mode: 'same-origin',
-      method: 'POST',
+   let queryList = ""
+   let lastLimitList = 5
+   let lastLimitTable = 5
+   const searchFor = (text) => {
+      let output = text.trim()
+      if (output.length > 20) return
+      queryList = output
+      renderLista()
    }
-   const renderComponentLista = (name, page, limit) => {
+   const renderModal = () => {
+      return fetch("{% url 'modalAddSetting' %}", {
+         ...fetchObject
+      })
+         .then(async (res) => {
+            document.getElementById("addNewSettingContent").innerHTML = await res.text()
+         }).then(() => {
+            const formConfig = document.getElementById("formConfig")
+            formConfig.addEventListener("submit", (e) => {
+               e.preventDefault()
+               clickSave()
+            })
+         })
+   }
+   const addEventos = () => {
+      const searchBar = document.querySelector('#txtSearch')
+      const clearBtn = document.querySelector('#clearBtn')
+      const searchBtn = document.querySelector('#searchBtn')
+
+      clearBtn.addEventListener('click', () => {
+         searchBar.value = ""
+         query = ""
+         searchFor("")
+      })
+      searchBtn.addEventListener('click', () => {
+         searchFor(searchBar.value)
+      })
+      searchBar.addEventListener('keypress', (e) => {
+         if (e.key === 'Enter') {
+            searchFor(searchBar.value)
+         }
+      });
+   }
+   const renderComponentLista = (name, page, limit, query) => {
+      document.querySelector("#renderList").classList.add("is-loading")
       return fetch("{% url 'component_lista'%}",
-         {
+      {
             ...fetchObject,
             body: JSON.stringify({
                data: {
                   name,
                   page,
-                  limit
+                  limit,
+                  query
                }
             }),
          })
          .then(async (res) => {
             result = await res.text()
+            document.querySelector("#renderList").classList.remove("is-loading")
             if (result[0] != '<') {
                result = "<p>There aren't records</p>"
             }
             return result
          })
-   }
-   const renderComponentTabla = (padre, name) => {
+      }
+   const renderComponentTabla = (padre, name, page, limit) => {
       return fetch("{% url 'component_tabla'%}",
          {
             ...fetchObject,
             body: JSON.stringify({
                data: {
-                  name: name,
-                  padre: padre
+                  name,
+                  padre,
+                  page,
+                  limit
                }
             }),
          })
@@ -218,9 +190,12 @@
             data: form
          }),
       })
-         .then((res) => {
-            console.log("create")
-            console.log(res)
+         .then(async (res) => {
+            let result = JSON.parse(await res.text())
+            if (result.message === "Error") {
+               alerta(5)
+            }
+            alerta(1)
          })
          .then(() => {
             renderLista()
@@ -238,9 +213,12 @@
             }
          }),
       })
-         .then((res) => {
-            console.log("update")
-            console.log(res)
+         .then(async (res) => {
+            let result = JSON.parse(await res.text())
+            if (result.message === "Error") {
+               alerta(5)
+            }
+            alerta(2)
          })
          .then(() => {
             renderLista()
@@ -248,11 +226,34 @@
             $("#addNewTable").modal("hide")
          })
    }
+   const deleteConfig = (id) => {
+      return fetch("{% url 'system_tables' %}", {
+         ...fetchObject,
+         body: JSON.stringify({
+            data: {
+               delete: true,
+               id
+            }
+         }),
+      })
+         .then(async (res) => {
+            let result = JSON.parse(await res.text())
+            if (result.message === "Error") {
+               return false
+            }
+            return true
+         })
+         .then((result) => {
+            renderLista()
+            selectTable(selectedTable)
+            return result
+         })
+   }
    const toggleContentChild = async (idPadre) => {
       const tablaHijo = document.getElementById(`tablaHijo${idPadre}`)
       const contenedor = document.getElementById(`contenidoHijo${idPadre}`)
       if (tablaHijo.hidden) {
-         const result = await renderComponentTabla(idPadre, "tablaConfig")
+         const result = await renderComponentTabla(idPadre, "tablaConfig", null, null)
          contenedor.innerHTML = result
       }
       else {
@@ -262,41 +263,59 @@
    }
    const renderLista = () => {
       const contenedorLista = document.getElementById("renderList")
-      renderComponentLista("listaConfig", 1, 5)
+      renderComponentLista("listaConfig", 1, lastLimitList, queryList)
          .then((resultado) => {
             contenedorLista.innerHTML = resultado
          })
          .then(() => {
-
             feedbackLista()
+            addEventos()
+
          })
    }
    const changePerPage = async () => {
       const contenedorLista = document.getElementById("renderList")
       const cbLista = document.getElementById("select-perpage")
-      renderComponentLista("listaConfig", 1, cbLista.value).then((resultado) => {
+      lastLimitList = cbLista.value
+      renderComponentLista("listaConfig", 1, lastLimitList, queryList).then((resultado) => {
          contenedorLista.innerHTML = resultado
       })
          .then(() => {
             feedbackLista()
+            addEventos()
          })
+   }
+   const changePerTable = async () => {
+      const cbTable = document.getElementById("select-pertable")
+      lastLimitTable = cbTable.value
+      const result = await renderComponentTabla(selectedTable, "tablaConfig", 1, lastLimitTable)
+      const contenedor = document.getElementById("renderContainer")
+      contenedor.innerHTML = result
    }
    const goToPage = (page) => {
       const contenedorLista = document.getElementById("renderList")
       const cbLista = document.getElementById("select-perpage")
-      renderComponentLista("listaConfig", page, cbLista.value).then((resultado) => {
+      renderComponentLista("listaConfig", page, lastLimitList, queryList).then((resultado) => {
          contenedorLista.innerHTML = resultado
       })
          .then(() => {
             feedbackLista()
+            addEventos()
          })
    }
+   const goToTable = async (pageTable) => {
+      const result = await renderComponentTabla(selectedTable, "tablaConfig", pageTable, lastLimitTable)
+      const contenedor = document.getElementById("renderContainer")
+      contenedor.innerHTML = result
+   }
    const selectTable = async (idItem) => {
+      document.getElementById("renderList").classList.add("is-loading")
       selectedId = idItem
       selectedTable = idItem
-
-      const result = await renderComponentTabla(idItem, "tablaConfig")
+      
+      const result = await renderComponentTabla(idItem, "tablaConfig", 1, lastLimitTable)
       const contenedor = document.getElementById("renderContainer")
+      document.getElementById("renderList").classList.remove("is-loading")
       contenedor.innerHTML = result
    }
    const limpiarModal = () => {
@@ -308,9 +327,12 @@
       document.getElementById("checkChangesCB").checked = false
       editmode = false
    }
+
    const openAddModal = (id) => {
-      limpiarModal()
-      $("#addNewTable").modal("show")
+      renderModal().then(() => {
+         limpiarModal()
+         $("#addNewTable").modal("show")
+      })
    }
    const openEditModal = (id) => {
       selectedId = id
@@ -323,9 +345,9 @@
          }),
       })
          .then(async (res) => {
+            await renderModal()
             limpiarModal()
             let respuesta = JSON.parse(await res.text())
-            console.log(respuesta.data)
             document.getElementById("descriptionConfig").value = respuesta.data.desc_elemento
             document.getElementById("padreConfig").value = respuesta.data.fk_tabla_padre_id
             document.getElementById("codeConfig").value = respuesta.data.valor_elemento
@@ -338,12 +360,20 @@
             $("#addNewTable").modal("show")
          })
    }
+   const openDeleteModal = async (id) => {
+      const elimino = await alerta(3)
+      if (elimino) {
+         const res = await deleteConfig(id)
+         if (res) {
+            alerta(4)
+         }
+         else {
+            alerta(5)
+         }
+
+      }
+   }
    renderLista()
-   const formConfig = document.getElementById("formConfig")
-   formConfig.addEventListener("submit", (e) => {
-      e.preventDefault()
-      clickSave()
-   })
 </script>
 
 {% endblock javascripts %}

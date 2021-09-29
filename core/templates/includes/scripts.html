@@ -4,6 +4,7 @@
 	<script src="/static/assets/js/core/popper.min.js"></script>
 	<script src="/static/assets/js/core/bootstrap.min.js"></script>
 	<script src="/static/assets/js/core/vue.js"></script>
+	<script src="/static/assets/js/core/sortable.js"></script>
 
 	<!-- jQuery UI -->
 	<script src="/static/assets/js/plugin/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
@@ -65,10 +66,11 @@
 				});
 			}
 			if(tipoAlerta === 3){
-				swal({
+				return swal({
 					title: 'Delete?',
 					text: "You won't be able to revert this!",
 					type: 'warning',
+					icon: "warning",
 					buttons:{
 						confirm: {
 							text : 'Yes, delete it!',
@@ -79,23 +81,34 @@
 							className: 'btn btn-danger'
 						}
 					}
-				}).then((Delete) => {
-					if (Delete) {
-						swal({
-							title: 'Deleted!',
-							text: 'Register has been successfully deleted.',
-							type: 'success',
-							buttons : {
-								confirm: {
-									className : 'btn btn-success'
-								}
-							}
-						});
-					} else {
-						swal.close();
-					}
-				});					
+				})					
 			}
+			if(tipoAlerta === 4){
+				swal({
+					title: 'Deleted!',
+					text: 'Register has been successfully deleted.',
+					type: 'success',
+					icon: 'success',
+					buttons: {
+						confirm: {
+							className: 'btn btn-success'
+						}
+					}
+				});
+			}
+			if(tipoAlerta === 5){
+				swal({
+					title: 'Error!',
+					text: 'An error has occurred.',
+					icon: 'error',
+					buttons: {
+						confirm: {
+							className: 'btn btn-danger'
+						}
+					}
+				});
+			}
+		}
 		 //FUNCION PARA OBTENER EL CRSFTOKEN DESDE JS EN CASO DE USAR AJAX
 		 function getCookie(name) {
 				let cookieValue = null;
@@ -112,6 +125,16 @@
 				}
 				return cookieValue;
 			}
+
+			const fetchObject = {
+					headers: {
+						'Accept': 'application/json',
+						'X-Requested-With': 'XMLHttpRequest',
+						"X-CSRFToken": getCookie('csrftoken')
+					},
+					mode: 'same-origin',
+					method: 'POST',
+				}	
 	 </script>
 
     

@@ -1,0 +1,84 @@
+<form class="form" id="enroll" name="enroll" onsubmit="enviar(1);return false">
+    {% csrf_token %}    
+  
+<div class="modal-content" onload="">
+    <div class="modal-header">
+        <h4 style="left: initial;" class="modal-title">Pay Details</h4>
+
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    </div>
+    <div class="modal-body">
+        
+     <div class="row">
+            
+                <div class="col-6">
+
+                 <form  id="enroll" name="enroll" onsubmit="enviar(1);return false">
+            
+            
+             
+             <div class="card bg-light mb-3" style="max-width: 18rem;">
+  <div class="card-header">Paypal</div>
+  <div class="card-body">
+    <h5 class="card-title">Payment with PayPal</h5>
+    <p class="card-text">A service that allows you to pay, send money and accept payments without having to enter your financial details continuously.</p>
+    <input type="hidden" id="un"/>
+    <input type="hidden" id="cant"/>
+    
+     <button type="submit" class="btn btn-lg btn-default" onclick="showModalPaypal(1)"  data-dismiss="modal">Pay
+     {% comment %} <a href="{%url 'ModalPayDetail'%}" class="s">****</a> {% endcomment %}
+     </button>
+
+
+  
+               {% comment %} <button id='submit' type="submit" class="btn btn-primary">Send comment!</button>
+     {% endcomment %}
+    </form>
+
+                    
+ 
+       
+
+  </div>
+</div>
+                           
+                </div>
+
+                {% comment %} <div class="col-4">
+
+                    <div class="card bg-light mb-3" style="max-width: 18rem;">
+  <div class="card-header">Other</div>
+  <div class="card-body">
+    <h5 class="card-title">Light card title</h5>
+    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+     <button type="button" class="btn btn-lg btn-default" data-dismiss="modal">Pay</button>
+  </div>
+</div>
+                           
+                </div> {% endcomment %}
+
+                <div class="col-6">
+
+                    <div class="card bg-light mb-3" style="max-width: 18rem;">
+  <div class="card-header">transfer or deposit</div>
+  <div class="card-body">
+    <h5 class="card-title">Deferred payment</h5>
+    <p class="card-text">Deposit involves money being "deposited" into a bank account or credit box, while a transfer is a transfer of funds from one account to another.</p>
+     <button type="button" class="btn btn-lg btn-default" onclick="showModalPaypal(2)" data-dismiss="modal">Pay</button>
+
+       
+
+  </div>
+</div>
+                           
+                </div>
+                 
+         
+        
+    </div>
+    <div class="modal-footer">
+        {% comment %} <input type="submit"  class="btn btn-default"  value="Save Changes"> {% endcomment %}
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+    </div>
+</form>
+

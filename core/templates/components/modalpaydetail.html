@@ -1,0 +1,198 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}{% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+	<div class="content">
+		<div class="page-inner">
+			<div class="page-header">
+				<h4 class="page-title">Starter page</h4>
+				<ul class="breadcrumbs">
+					<li class="nav-home">
+						<a href="index.html">
+							<i class="flaticon-home"></i>
+						</a>
+					</li>
+					<li class="separator">
+						<i class="flaticon-right-arrow"></i>
+					</li>
+					<li class="nav-item">
+						<span>Module Pay PayPal</span>
+					</li>
+					<li class="separator">
+						<i class="flaticon-right-arrow"></i>
+					</li>
+					<li class="nav-item">
+						<a href="#">Page 1</a>
+					</li>
+				</ul>
+			</div>
+			<div class="page-category">
+        <h2>Pay </h2>
+		<div > 
+
+			{% comment %} <div class="dropdown" id="panelBuscar">
+                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    <i class="glyphicon glyphicon-search"></i> Filter
+                   
+                </button>
+
+                <div class="dropdown-menu">
+                    <div class="panel">
+                        <div class="panel-body">
+                        
+                            <table style="width:100%">
+                           
+                               
+                               
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+
+                                        <a class="btn btn-primary">Buscar</a>
+                                        &nbsp;
+                                        <a class="btn btn-default" >Limpiar</a>
+
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div> {% endcomment %}
+
+            <div class="wrapper wrapper-content animated fadeInRight">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-content">
+
+                       <div id="smart-button-container">
+      <div style="text-align: center;">
+      
+
+           <div id="smart-button-container">
+      <div style="text-align: center;">
+        <div id="paypal-button-container"></div>
+      </div>
+    </div>
+ 
+
+             
+
+                        <center>
+                         <input type="hidden" id="dato" value= "{{ idC }}"/>
+                            <p><strong> Datos </strong></p>
+                        </center>
+                        <div class="clearfix"></div>
+                        </div>
+                </div>
+            
+            
+            </div>
+            
+
+
+	   
+		</div>			            
+      </div>
+		</div>
+	</div>
+
+
+ 
+
+<script>
+
+
+function enviarST(){
+
+var xhr = new XMLHttpRequest();
+xhr.open("POST", "updateEnrollment/"); 
+xhr.onload = function(event){ 
+alert("Success, server responded with: " + event.target.response); // raw response
+location.href = "" ;
+}; 
+// or onerror, onabort
+var formData = new FormData(document.getElementById("enroll")); 
+formData.append('id', matricula);
+xhr.send(formData);
+
+
+
+
+}
+
+
+
+</script>
+
+ <script src="https://www.paypal.com/sdk/js?client-id=sb&enable-funding=venmo&currency=USD" data-sdk-integration-source="button-factory"></script>
+  <script>
+  var cantidad = document.getElementById("dato");
+  alert (cantidad);
+  alert (dato.value);
+  var cc = dato.value;
+    function initPayPalButton() {
+      paypal.Buttons({
+        style: {
+          shape: 'pill',
+          color: 'black',
+          layout: 'vertical',
+          label: 'pay',
+          
+        },
+        
+
+        createOrder: function(data, actions) {
+          return actions.order.create({
+            purchase_units: [{"amount":{"currency_code":"USD","value":cc}}]
+          });
+        },
+
+        onApprove: function(data, actions) {
+          return actions.order.capture().then(function(orderData) {
+            
+            // Full available details
+           // console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
+            
+           // console.log(orderData.status);
+            console.log(orderData.payer.email_address);
+            console.log(orderData.payer.payer_id);
+            
+            console.log(orderData.purchase_units[0].payments.captures[0].status);
+            // []
+           console.log(orderData.purchase_units[0].payments.captures[0].id);
+           console.log(orderData.purchase_units[0].payments.captures[0].final_capture);
+           console.log(orderData.purchase_units[0].payments.captures[0].amount.value);
+           console.log(orderData.purchase_units[0].payments.captures[0].amount.currency_code);
+            
+            
+
+            // Show a success message within this page, e.g.
+            const element = document.getElementById('paypal-button-container');
+            element.innerHTML = '';
+            element.innerHTML = '<h3>Thank you for your payment!</h3>';
+
+            // Or go to another URL:  actions.redirect('thank_you.html');
+            
+          });
+        },
+
+        onError: function(err) {
+          console.log(err);
+        }
+      }).render('#paypal-button-container');
+    }
+    initPayPalButton();
+  </script>
+
+{% endblock content %}
+	
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+{% endblock javascripts %}

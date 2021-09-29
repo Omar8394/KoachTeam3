@@ -34,6 +34,8 @@ class ActividadEvaluaciones(models.Model):
     titulo = models.TextField()
     fk_curso_actividad = models.SmallIntegerField(null=True)
     nro_repeticiones = models.IntegerField(blank=True, null=True)
+    duracion = models.DecimalField(max_digits=5, decimal_places=2, null=True)
+    fk_tipo_duracion = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE, default=None, null=True, related_name="actividad_tipo_duracion")
     fk_escala_calificacion = models.ForeignKey(EscalaCalificacion, on_delete=models.CASCADE,  default=None, null=True)
     calificacion_aprobar = models.IntegerField()
 

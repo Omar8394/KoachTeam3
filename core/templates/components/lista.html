@@ -1,11 +1,16 @@
 <div class="row col-12">
-   <div class="row col-12 m-2 form-group">
-      <label class="form-label" for="select-perpage">Items per page</label>
-      <select class="form-control" onchange="changePerPage()" id="select-perpage" type="">
-         <option value="5" {% if limit == 5 %} selected {% endif %}>5</option>
-         <option value="10" {% if limit == 10 %} selected {% endif %}>10</option>
-         <option value="15" {% if limit == 15 %} selected {% endif %}>15</option>
-      </select>
+   <div class="form-group col-12">
+      <div class="input-group">
+         <input id="txtSearch" type="text" value="{%if query%}{{query}}{%endif%}" class="form-control" placeholder="Search for...">
+         <div class="input-group-append">
+            <span id="clearBtn" class="btn btn-danger">
+               <i class="fa fa-broom"></i>
+            </span>
+            <span id="searchBtn" class="btn btn-primary">
+               <i class="fa fa-search"></i>
+            </span>
+         </div>
+      </div>
    </div>
    <ul class="list-group list-group-flush col-12">
       {%for item in list%}
@@ -16,13 +21,21 @@
       </li>
       {% endfor %}
    </ul>
+   <div class="row col-12 m-2 form-group">
+      <label class="form-label" for="select-perpage">Items per page</label>
+      <select class="form-control" onchange="changePerPage()" id="select-perpage" type="">
+         <option value="5" {% if limit == 5 %} selected {% endif %}>5</option>
+         <option value="10" {% if limit == 10 %} selected {% endif %}>10</option>
+         <option value="15" {% if limit == 15 %} selected {% endif %}>15</option>
+      </select>
+   </div>
 </div>
-<div class="row col-12">
-   <nav class="row col-12 m-2" aria-label="...">
+<div class="row col-12 d-flex justify-content-center">
+   <nav class="row col-12 m-2 d-flex justify-content-center" aria-label="...">
       <ul class="pagination mb-0 d-flex justify-content-center">
          {% if page > 1%}
          <li class="page-item">
-            <a class="page-link" onclick="goToPage('{{before}}')" href="#" tabindex="-1">Previous</a>
+            <a class="page-link" onclick="goToPage('{{before}}')" href="#" tabindex="-1"><i class="fas fa-arrow-left"></i></a>
          </li>
          {% endif %}
          <li class="page-item active">
@@ -30,7 +43,7 @@
          </li>
          {% if page < lastPage%}
          <li class="page-item">
-            <a class="page-link" onclick="goToPage('{{after}}')" href="#">Next</a>
+            <a class="page-link" onclick="goToPage('{{after}}')" href="#"><i class="fas fa-arrow-right"></i></a>
          </li>
          {% endif %}
       </ul>

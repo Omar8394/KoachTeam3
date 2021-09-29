@@ -35,7 +35,7 @@
         <h2>Enrollment Applications</h2>
 		<div > 
 			<div class="dropdown" id="panelBuscar">
-                <button   class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                     <i class="glyphicon glyphicon-search"></i> Filter
                    
                 </button>
@@ -48,31 +48,17 @@
                             <table style="width:100%">
                            
                                 <tr>
-                                    <td>Initial Date for Registration</td>
+                                    <td>Initial Date</td>
                                     <td></td>
                                     <td>
                                         <input id="fechaInicial" name="fechaInicial" type="date" class="form-control" >
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>Final Date for Registration</td>
+                                    <td>Final Date</td>
                                     <td></td>
                                     <td>
-                                        <input id="fechaFinal" name="fechaFinal"  type="date" class="form-control" >
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Name</td>
-                                    <td></td>
-                                    <td>
-                                        <input id="name" name="name"  type="text" class="form-control" >
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Id Numer</td>
-                                    <td></td>
-                                    <td>
-                                        <input id="fechaFinal" name="fechaFinal"  type="text" class="form-control" >
+                                        <input id="fechaFinal" name="fechaFinal" id type="date" class="form-control" >
                                     </td>
                                 </tr>
                                
@@ -93,11 +79,10 @@
                         </div>
                     </div>
                 </div>
-                </div>
 
             </div>
 
-            <div class=" animated fadeInRight">
+            <div class="animated fadeInRight">
                 <div class="ibox float-e-margins">
                     <div class="ibox-content">
                         <table class="table table-striped table-hover">
@@ -106,9 +91,9 @@
                                 <tr>
                                     <th style="width: 65px;"></th>
                                    
-                                    <th>Names</th>
-                                    <th>Date of Registration</th>
-                                    <th></th>
+                                    <th>Description</th>
+                                    <th>Credits </th>
+                                    <th>Price</th>
                                     
                                     <th></th>
 
@@ -116,33 +101,15 @@
                                 </tr>
                             </thead>
                             <tbody class="data-cargando">
-                                {% for person in publicoObject %}
+                                {% for mat in cursos %}
             
-                                <tr style="cursor:pointer;"  >
+                                <tr style="cursor:pointer;" id="{{mat.idmatricula_alumnos}}"  onclick="" >
                                     <td ></td>
-                                   <td>{{person}}</td>
-                                   <td>{{person.fecha_registro}}</td>
+                                   <td>{{mat}}</td>
+                                   <td>{{mat.peso_creditos}}</td>
 
-                                   <td> 
-                                       
-
-                                        <a href="javascript:void(0);"  id="{{person.idpublico}}"  onclick="showModal(id)" ><i class="fa fa-plus"></i> Add Enrollment</a>
-
-                                    
-                                
-                                </td>
-                                   <td>  
-                                    <form id="PersonaForm" name="PersonaForm" action="{% url 'EnrollmentList'%}" onsubmit=" return ManagePersonas('{{person.idpublico}}')" method="POST">
-                                        {% csrf_token %}
-                                        <input type="hidden" value="0" id="idPersona"
-                                        name="idPersona">
-                                        
-
-                               <a  href="javascript:void(0);" onclick="sendForm('{{person.idpublico}}')" id="{{person.idpublico}}" ><i class="fa fa-tasks"></i> Manage Enrollments</a>
-
-                                       </form>
-                                       
-                                </td>
+                                   <td></td>
+                                   
 
 
 
@@ -155,10 +122,13 @@
                                 {% endfor %}
                             </tbody>
                         </table>
+
+                     
                        
+
                         <nav aria-label="Page navigation example">
                             <ul class="pagination justify-content-center">
-                            {% if publicoObject.has_previous %}
+                            {% if matriculasList.has_previous %}
                             <li class="page-item">
                                 <a class="page-link" href="?page=1">&laquo; First</a>
 
@@ -166,7 +136,7 @@
                                 <li class="page-item">
                                   
 
-                                <a class="page-link" href="?page={{ publicoObject.previous_page_number }}">Previous</a>
+                                <a class="page-link" href="?page={{ matriculasList.previous_page_number }}">Previous</a>
                               </li>
                             {% else %}
                                 <li class="page-item disabled">
@@ -174,33 +144,33 @@
                               </li>
                             {% endif %}
                     
-                            {% if publicoObject.number|add:'-4' > 1 %}
-                                <li class="page-item"><a class="page-link" href="?page={{ publicoObject.number|add:'-5' }}">&hellip;</a></li>
+                            {% if matriculasList.number|add:'-4' > 1 %}
+                                <li class="page-item"><a class="page-link" href="?page={{ matriculasList.number|add:'-5' }}">&hellip;</a></li>
                             {% endif %}
                     
-                            {% for i in publicoObject.paginator.page_range %}
-                                {% if publicoObject.number == i %}
+                            {% for i in matriculasList.paginator.page_range %}
+                                {% if matriculasList.number == i %}
                                     <li class="page-item active" aria-current="page">
                                   <span class="page-link">
                                     {{ i }}
                                     <span class="sr-only">(current)</span>
                                   </span>
                                 </li>
-                                {% elif i > publicoObject.number|add:'-5' and i < publicoObject.number|add:'5' %}
+                                {% elif i > matriculasList.number|add:'-5' and i < matriculasList.number|add:'5' %}
                                      <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
                                 {% endif %}
                             {% endfor %}
                     
-                            {% if publicoObject.paginator.num_pages > publicoObject.number|add:'4' %}
-                               <li class="page-item"><a class="page-link" href="?page={{ publicoObject.number|add:'5' }}">&hellip;</a></li>
+                            {% if matriculasList.paginator.num_pages > matriculasList.number|add:'4' %}
+                               <li class="page-item"><a class="page-link" href="?page={{ matriculasList.number|add:'5' }}">&hellip;</a></li>
                             {% endif %}
                     
-                            {% if publicoObject.has_next %}
+                            {% if matriculasList.has_next %}
                                 <li class="page-item">
-                                <a class="page-link" href="?page={{ publicoObject.next_page_number }}">Next</a>
+                                <a class="page-link" href="?page={{ matriculasList.next_page_number }}">Next</a>
                               </li>
                               <li class="page-item">
-                                <a class="page-link" href="?page={{ publicoObject.paginator.num_pages }}">Last &raquo;</a>
+                                <a class="page-link" href="?page={{ matriculasList.paginator.num_pages }}">Last &raquo;</a>
                               </li>
 
                             {% else %}
@@ -210,6 +180,7 @@
                             {% endif %}
                           </ul>
                         </nav>
+
                         <div class="clearfix"></div>
             
                     </div>
@@ -240,40 +211,20 @@
 
 
 <script>
-var Persona=0;
 
-function sendForm(id){
-    Persona=id;
-
-    
-   
-    //$(this).append('<input type="hidden" name="idPersona" id="idPersona" value="value"  /> ');
-    document.getElementById('idPersona').value=Persona;
-    alert(document.getElementById('idPersona').value)
-
-    document.getElementById("PersonaForm").submit();
-
-}
-
-$('#PersonaForm').submit(function(eventObj) {
-  
-});
-function ManagePersonas(id){
-    Persona=id;
-    
-
-
-
-}
-
-
+var matricula=0;
 function showModal(id){
-    Persona=id;
-    
+    matricula=id;
 
-let url='MatriculacionAddModal/';
+
+
+
+
+
+let url='MatriculacionAdminModal/?matricula='+id;
 fetch(url,{
-	
+	mode: 'no-cors',
+  method: 'get'
 }).then(function(result){
 
 return result.text();
@@ -288,139 +239,34 @@ return result.text();
   
 }
 
-
 function enviar(){
 
 var xhr = new XMLHttpRequest();
-xhr.open("POST", "save/"); 
+xhr.open("POST", "updateEnrollment/"); 
 xhr.onload = function(event){ 
 alert("Success, server responded with: " + event.target.response); // raw response
-$("#AdministrarMatricula").modal('toggle');
-
+location.href = "" ;
 }; 
 // or onerror, onabort
 var formData = new FormData(document.getElementById("enroll")); 
-formData.append('id', Persona);
-
+formData.append('id', matricula);
 xhr.send(formData);
+
+
+
 
 }
 
+function reload(){
+
+    window.location.href="{% url 'EnrollmentList'%}";
+}
 
 
 </script>
 
 
-
-<script>
-
-
-    window.addEventListener("load", function(event) {
-        console.log("'Todos los recursos terminaron de cargar!");
-        program.value=-1;
-        type.value=-1;
-      });
-     
-    function programChange(){
-        
-        cbProcess.value=-1;
-        cbCourse.value=-1;
-        cbUnit.value=-1;
-                   
-    let program=document.getElementById("program").value;
-    
-    
-    if (program<=0)
-    {
-        
-    //let listaProcess=document.getElementById("listaProcess");
-    ////listaProcess.style.visibility=false;
-    }
-    
-    let url='ComboOptions/?structuraProg='+program;
-    fetch(url,{
-        mode: 'no-cors',
-      method: 'get'
-    }).then(function(result){
-    
-    return result.text();
-    
-    }).then(function(result){
-        
-        let cbProcess=document.getElementById("cbProcess").innerHTML=result;
-    
-    });
-    
-    }
-    
-    function processChange(){
-        cbUnit.value=-1;
-        cbCourse.value=-1;
-    
-        let process=document.getElementById("cbProcess").value;
-    
-    
-    
-    
-    
-    
-    let url='ComboOptions/?structuraProg='+process;
-    fetch(url,{
-        mode: 'no-cors',
-      method: 'get'
-    }).then(function(result){
-    
-    return result.text();
-    
-    }).then(function(result){
-        
-        let unit=document.getElementById("cbUnit").innerHTML=result;
-    
-    });
-    
-    
-    }
-    
-    function unitChange(){
-        cbCourse.value=-1;
-    
-        let unit=document.getElementById("cbUnit").value;
-    
-    
-    
-    
-    
-    
-    let url='ComboOptions/?structuraProg='+unit;
-    fetch(url,{
-        mode: 'no-cors',
-      method: 'get'
-    }).then(function(result){
-    
-    return result.text();
-    
-    }).then(function(result){
-        
-        let unit=document.getElementById("cbCourse").innerHTML=result;
-    
-    });
-    
-    }
-    
-    function courseChange(){}
-    
-    
-function reload(){
-
-window.location.href="{% url 'EnrollmentList'%}";
-}
-    
-    
-    </script>
-
-
-
-<!--  Modal-->
+<!--Buscar Personas DB Modal-->
 <div class="modal fade" tabindex="-1" role="dialog" id="AdministrarMatricula">
     <div class="modal-dialog" role="document" id="modalContent">
      

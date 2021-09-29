@@ -1,0 +1,61 @@
+{% if query%}
+resultados para "{{query}}"
+{% else %}
+<section>
+   <div class="section-header">
+      <h3 class="section-title">New category</h3>
+      <div onclick="openAddCategory()" class="btn btn-icon btn-success btn-round add-btn btn-lg">
+         <i class="fas fa-plus"></i>
+      </div>
+   </div>
+   <div class="cards-container">
+      <div class="card-new">
+         <div class="card-new-content">
+            <h2 class="card-new-title">Add new program</h2>
+            <div class="card-new-body">
+               <div onclick="openAddProgram()" class="btn btn-icon btn-success btn-round add-btn btn-xl">
+                  <i class="fas fa-plus"></i>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</section>
+{% endif%}
+{% for key, value in data.items%}
+{% if value%}
+<section>
+   <div class="section-header">
+      <h3 class="section-title">{{key}}</h3>
+   </div>
+   <div class="cards-container">
+      {% for programa in value %}
+      {%if programa.valor_elemento == 'PROGRAM'%}
+      <div class="card-academic">
+         <div class="card-academic-content">
+            <div class="over-title">
+               <p><span class="subtitle">Fecha</span> Jueves, 16 oct 2021</p>
+               <p><span class="subtitle">Profesor</span> Jesus Campos</p>
+            </div>
+            <h2 class="card-academic-title">{{programa.descripcion}}</h2>
+            <p class="card-academic-body">
+               Lorem ipsum dolor sit, amet consectetur adipisicing elit. Tempora et incidunt repellendus
+               libero voluptates ab cum, exercitationem
+            </p>
+            <div class="btn-group" role="group">
+               {%if edit%}
+               <a href="#" onclick="openEditProgram('{{programa.pk}}')" class="button btn btn-primary"><i class="fas fa-edit"></i></a>
+               {%endif%}
+               <a href="{% url 'programa' programa=programa.url%}" class="button btn btn-success"><strong>Acceder</strong></a>
+               {%if delete%}
+               <a href="#" onclick="openDeleteProgram('{{programa.pk}}')" class="button btn btn-danger"><i class="fas fa-trash-alt"></i></a>
+               {%endif%}
+            </div>
+         </div>
+      </div>
+      {%endif%}
+      {% endfor %}
+   </div>
+</section>
+{% endif%}
+{% endfor %}
