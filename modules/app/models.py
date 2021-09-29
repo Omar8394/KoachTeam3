@@ -26,6 +26,7 @@ class TablasConfiguracion(models.Model):
             return lista
 
         except:
+            print("hubo un error al obtener los valores de la tabla padre, valor=", valor)
             return None
 
 class Contratantes(models.Model):
@@ -51,14 +52,16 @@ class Publico(models.Model):
     nombre = models.CharField(db_column='Nombre', max_length=45)  # Field name made lowercase.
     apellido = models.CharField(db_column='Apellido', max_length=45)  # Field name made lowercase.
     direccion = models.TextField()
-    user = models.OneToOneField(User, on_delete=models.CASCADE , default=None, null=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, default=None, null=True)
     procedencia = models.CharField(max_length=1)
     docto_identidad = models.TextField()
-    fk_ciudad = models.SmallIntegerField()
-    fk_contratante = models.ForeignKey(Contratantes, on_delete=models.CASCADE , default=None, null=True)
+    fk_ciudad = models.SmallIntegerField(null=True)
+    fk_contratante = models.ForeignKey(Contratantes, on_delete=models.CASCADE, default=None, null=True)
     correos = models.TextField()
     telefonos = models.TextField()
-    fecha_registro = models.DateField(null=True)
+    cuenta_telegram = models.CharField(max_length=45, null=True) #telegram id or null
+    cuenta_whatsapp = models.CharField(max_length=20, null=True)# whatsapp number or null
+    fecha_registro = models.DateField(auto_now_add=True, null=True)
       
     def __str__(self):
         return self.nombre +" " +self.apellido

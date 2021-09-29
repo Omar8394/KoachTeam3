@@ -11,7 +11,8 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.forms.utils import ErrorList
 from django.http import HttpResponse
-from .forms import LoginForm, SignUpForm, ResetPasswordForm
+from .forms import LoginForm, SignUpForm, ResetPasswordForm, LandingPage
+from modules.app.models import TablasConfiguracion
 
 def login_view(request):
     form = LoginForm(request.POST or None)
@@ -80,3 +81,25 @@ def forgot_password(request):
 
     return render(request, "security/passwordReset.html", {"form": form, "msg" : msg, "success" : success })
 
+def lang_page(request):
+    form = LandingPage(request.POST or None)
+    msg = None
+    success = False
+    tipo_telefono = None
+    if request.method == "POST":
+            if form.is_valid():
+                print(form)
+                form.save()
+                success = True
+                msg = "tu solicitud ha sido enviada."
+            else:
+                print(form)
+                tipo_telefono = TablasConfiguracion.obtenerHijos("tipTelefono")
+                msg = 'Error validating the form'
+    else:
+        tipo_telefono = TablasConfiguracion.obtenerHijos("tipTelefono")
+        form = LandingPage()
+        print("tipo Telefono:", tipo_telefono)
+
+    return render(request, "security/landPage.html", {"form": form, "msg": msg, 'success': success,
+                                                      "tipoTelefono": tipo_telefono})

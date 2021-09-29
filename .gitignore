@@ -32,3 +32,5 @@ modules/registration/migrations/
 modules/security/migrations/
 modules/planning/migrations/
 modules/communication/migrations/
+core/db.py
+.idea/

@@ -1,0 +1,184 @@
+
+{% extends "layouts/baseLogin.html" %}
+
+{% block title %} Access Request Form {% endblock title %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+<!-- Specific JS goes HERE -->
+{% block javascripts %}{% endblock javascripts %}
+
+{% block content %}
+
+    <div class="col-md-12">
+        <img src="/static/assets/img/JC-Energy-Logo-Full.png" class="navbar-brand mt-5">
+    </div>
+
+    <div class="card text-white">
+    <div class="card-header bg-dark2"  >
+    <script language="JavaScript">
+        {% if msg %}
+        swal("Error", '{{ msg }}', "error");
+         {% endif %}
+    </script>
+          {% if msg %}
+                            <span class="text-danger">{{ msg | safe }}</span>
+                        {% else %}
+                            <span style="color: white">
+                              <h2 class="h2">Access Request Form</h2>
+                            </span>
+                        {% endif %}
+
+    </div>
+
+    <script language="JavaScript">
+        function getPhoneAndEmail(event) {
+            //event.preventDefault();
+            let tipo_telefono = document.getElementById("cb_tipo_telefono");
+            let tipo_telefono_opt = document.getElementById("cb_tipo_telefono_opt");
+            let telefonos = {
+                "telefonoPrincipal": document.getElementById("telefonos_pri").value,
+                "tipoTPrincipal": tipo_telefono.options[tipo_telefono.selectedIndex].value,
+                 "telefonoAlternativo": document.getElementById("telefonos_opt").value,
+                "tipoTAlternativo": tipo_telefono_opt.options[tipo_telefono_opt.selectedIndex].value,
+            };
+            let emails = {
+                "emailPrincipal": document.getElementById("email_pri").value,
+                "emailAlternativo": document.getElementById("email_alternativo").value
+            };
+            document.getElementById("telefonos").value = JSON.stringify(telefonos);
+            document.getElementById("correos").value= JSON.stringify(emails);
+            document.getElementById("cuenta_telegram").value=document.getElementById("telegram").checked;
+            document.getElementById("cuenta_whatsapp").value=document.getElementById("whatsapp").checked;
+            return true;
+        }
+    </script>
+    <div class="card-body">
+        <form  method="post" id="lanpageform" role="form" onsubmit="return getPhoneAndEmail();">
+            {% csrf_token %}
+            <div id="primerafase">
+                <span class="h3 text-dark" style="text-align: left;">Personal Information.</span>
+                <div class="form-row">
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="nombre">First Name</label>
+                            <input  type="text" class="form-control" id="nombre" name="nombre" pattern="[A-Za-z]{1,45}" maxlength="45"  required/>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="apellido">Last Name</label>
+                            <input  type="text" class="form-control" id="apellido" name="apellido" pattern="[A-Za-z]{1,45}" maxlength="45"  required/>
+                        </div>
+                    </div>
+                </div>
+                <span class="h3 text-dark" style="text-align: left;">Identity and Emails.</span>
+                <div class="form-row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="docto_identidad">ID card:</label>
+                            <input  type="number" class="form-control" id="docto_identidad" name="docto_identidad"  maxlength="10"  required/>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="email_pri">Primary Email:</label>
+                            <input  type="email" class="form-control" id="email_pri" name="email_pri" maxlength="50"  required/>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="email_alternativo">Alternate Email(optional):</label>
+                            <input  type="email" class="form-control" id="email_alternativo" name="email_alternativo" maxlength="50" />
+                        </div>
+                    </div>
+                </div>
+                <span class="h3 text-dark" style="text-align: left;">Location.</span>
+                <div class="form-row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="direccion">Address</label>
+                            <input  type="text" class="form-control" id="direccion" name="direccion"  maxlength="200"  required/>
+                        </div>
+                    </div>
+                </div>
+                <span class="h3 text-dark tex">Phone Numbers</span>
+                <div class="form-row">
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label for="telefonos_pri">Primary Phone</label>
+                            <input  type="number" class="form-control" id="telefonos_pri" name="telefonos_pri" maxlength="13"  required/>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="cb_tipo_telefono">Phone Type</label>
+                            <select id="cb_tipo_telefono" name="cb_tipo_telefono" class="form-control">
+                                 {% if tipoTelefono is not None %}
+                                     {% for tipo in tipoTelefono %}
+                                        <option value="{{ tipo.id_tabla }}">{{ tipo.desc_elemento }}</option>
+                                     {% endfor %}
+
+                                {% endif %}
+
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            <div class="form-row">
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label for="telefonos_opt">Alternate Phone</label>
+                            <input  type="number" class="form-control" id="telefonos_opt" name="telefonos_opt" maxlength="13"/>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="cb_tipo_telefono_opt">Phone Type</label>
+                            <select id="cb_tipo_telefono_opt" name="cb_tipo_telefono_opt" class="form-control">
+                                 {% if tipoTelefono is not None %}
+                                     {% for tipo in tipoTelefono %}
+                                        <option value="{{ tipo.id_tabla }}">{{ tipo.desc_elemento }}</option>
+                                     {% endfor %}
+
+                                {% endif %}
+
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <span class="h3 text-dark tex">Social Accounts</span>
+                 <div class="form-group form-check">
+
+  </div>
+  <div class="form-group">
+      <div class="custom-control custom-checkbox ml-2">
+                                    <input type="checkbox" class="custom-control-input" name="telegram" id="telegram">
+                                    <label class="custom-control-label" for="telegram">Telegram Account</label>
+                                </div>
+      <div class="custom-control custom-checkbox ml-2">
+                                    <input type="checkbox" class="custom-control-input" name="whatsapp" id="whatsapp">
+                                    <label class="custom-control-label"  for="whatsapp">WhatsApp Account</label>
+                                </div>
+  </div>
+            </div>
+            <div class="form-group row mt-2">
+                            <div class="col-3 offset-4">
+                                <button type="submit" class="btn bg-dark2 btn-block btn-md" style="color: white">Submit</button>
+                                &nbsp; &nbsp;
+                            </div>
+                        </div>
+        <input type="hidden" id="correos" name="correos" value="asdX">
+            <input type="hidden" name="telefonos" id="telefonos" value="asdX">
+            <input type="hidden" name="cuenta_telegram" id="cuenta_telegram" value="false">
+            <input type="hidden" name="cuenta_whatsapp" id="cuenta_whatsapp" value="false">
+        </form>
+    </div>
+    <div class="card-footer bg-dark2">
+        <div class="h5">© Copyright 2021 | JC Energy | ALL RIGHTS RESERVED.</div>
+    </div>
+</div>
+
+{% endblock content %}
+

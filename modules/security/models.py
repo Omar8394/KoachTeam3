@@ -25,7 +25,5 @@ class LogSeguridad(models.Model):
     idlog_seguridad = models.AutoField(primary_key=True)
     fk_cta_usuario = models.SmallIntegerField()
     fecha_transaccion = models.DateField()  # Field name made lowercase.
-    hora_transac = models.DateField()
     fk_tipo_operacion = models.SmallIntegerField()
-    desc_operacion = models.TextField()
     valor_dato = models.TextField(blank=True, null=True)
