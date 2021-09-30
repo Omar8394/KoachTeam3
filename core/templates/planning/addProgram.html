@@ -1,0 +1,124 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Dashboard {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="content">
+		<div class="page-inner">
+			<div class="page-header">
+				<h4 class="page-title">Programs</h4>
+				<ul class="breadcrumbs">
+					<li class="nav-home">
+						<a href="{% url 'home' %}">
+							<i class="flaticon-home"></i>
+						</a>
+					</li>
+					<li class="separator">
+						<i class="flaticon-right-arrow"></i>
+					</li>
+					<li class="nav-item">
+						<span>Planning</span>
+					</li>
+					<li class="separator">
+						<i class="flaticon-right-arrow"></i>
+					</li>
+					<li class="nav-item">
+						<a href="{% url 'showProgram' %}">Program</a>
+					</li>
+					<li class="separator">
+						<i class="flaticon-right-arrow"></i>
+					</li>
+					<li class="nav-item">
+						<a href="#">Add</a>
+					</li>
+				</ul>
+			</div>
+			<div class="page-category">
+           	 	<div class="card">
+					<div class="card-header">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <h2 class="card-text mt-2">
+                                   New program
+                                </h2>
+                            </div>
+                        </div>
+					</div>
+					<div class="card-body">
+                        <form method="post" action="">
+            
+                            {% csrf_token %}
+            
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+            
+                                        <div class="form-group">
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">
+                                                        <i class="icon-user"></i>
+                                                    </span>
+                                                </div>
+                                                {{ form.desc_programas }}
+                                            </div>
+                                        </div>
+                                        
+            
+                                        <div class="form-group">
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">
+                                                        <i class="icon-envelope mr-3"></i>Objective
+                                                    </span>
+                                                </div>
+                                                {{ form.objetivo }}  
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">
+                                                        <i class="icon-envelope mr-3"></i>Reach
+                                                    </span>
+                                                </div>
+                                                {{ form.alcance }}  
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">
+                                                        <i class="icon-envelope mr-3"></i>Date
+                                                    </span>
+                                                </div>
+                                                {{ form.fecha_apertura }}  
+                                            </div>
+                                        </div>
+            
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-action">
+                                <button type="submit" class="btn bg-dark2 btn-lg btn-block" style="color: white">Submit</button>
+                            </div>
+                        </form>
+					</div>
+				</div>        
+      		</div>
+		</div>
+	</div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+
+{% endblock javascripts %}

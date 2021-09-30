@@ -85,12 +85,22 @@
 								<span class="caret"></span>
 							</a>
 							<div class="collapse" id="submenuPlanning">
-								<ul class="nav nav-collapse">					
+								<ul class="nav nav-collapse">						
 									<li>
-										<a href="fas fa-calendar-alt">
-											<span class="sub-item">Page 1</span>
+										<a href="{% url 'showProfilage' %}">
+											<span class="sub-item">Profiles</span>
 										</a>
-									</li>
+									</li>				
+									<li>
+										<a href="{% url 'showCompetence' %}">
+											<span class="sub-item">Competences</span>
+										</a>
+									</li>		
+									<li>
+										<a href="{% url 'showCompetenceAdq' %}">
+											<span class="sub-item">My Competences</span>
+										</a>
+									</li>	
 								</ul>
 							</div>
 						</li>
