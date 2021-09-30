@@ -1,5 +1,5 @@
 .modal-body{
-   max-height: 80vh;
+   max-height: 80vh !important;
    overflow-y: auto;
 }
 .modal-header{
@@ -11,7 +11,6 @@
    font-size: 1.2rem !important;
    font-weight: bold;
 }
-
 .close{
    color:#fff;
 }

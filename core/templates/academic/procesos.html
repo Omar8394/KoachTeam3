@@ -23,12 +23,18 @@
             <li class="nav-item">
                <a href="{% url 'academic' %}">Academic</a>
             </li>
+            <li class="separator">
+               <i class="flaticon-right-arrow"></i>
+            </li>
+            <li class="nav-item">
+               <a href="{% url 'programa' programa.url %}">{{programa.descripcion}}</a>
+            </li>
          </ul>
       </div>
       <div class="page-category">
          <div class="card">
             <div class="card-header">
-               <h2>Programs</h2>
+               <h2>{{programa.descripcion}}</h2>
                <div class="form-group">
                   <div class="input-group">
                      <input id="txtSearch" type="text" class="form-control" placeholder="Search for...">
@@ -44,7 +50,7 @@
                </div>
             </div>
             <main class="card-body is-loading-lg">
-               
+
             </main>
          </div>
       </div>
@@ -62,19 +68,20 @@
    let editmode = false
    let query = ""
    let selectedId = ""
-   const renderContent = ()=>{
+   const renderContent = () => {
       document.querySelector("main.card-body").classList.add("is-loading")
-      fetch("{% url 'contenidoProgramas'%}", {
+      fetch("{% url 'contenidoProcesos'%}", {
          ...fetchObject,
          body: JSON.stringify({
+            url:"{{programa.url}}",
             query
          })
       })
-      .then(async(res)=>{
-         result = await res.text()
-         document.querySelector("main.card-body").classList.remove("is-loading")
-         document.querySelector("main.card-body").innerHTML = result
-      })
+         .then(async (res) => {
+            result = await res.text()
+            document.querySelector("main.card-body").classList.remove("is-loading")
+            document.querySelector("main.card-body").innerHTML = result
+         })
    }
    renderContent()
    const updateModel = (url, method, data, id) => {
@@ -110,33 +117,33 @@
             })
       }
    }
-   const openDeleteProgram = async (id) =>{
+   const openDeleteProcess = async (id) => {
       const elimino = await alerta(3)
-      if(elimino){
-         fetch("{% url 'modalAddPrograma'%}", {
+      if (elimino) {
+         fetch("{% url 'modalAddProceso'%}", {
             ...fetchObject,
             body: JSON.stringify({
                method: "Delete",
                id
             })
          })
-         .then(async (res) => {
-            const text = JSON.parse(await res.text())
-            if (text.message == "error") alerta(5)
-            else alerta(4)
-         })
-         .then(()=>{
-            renderContent()
-         })
+            .then(async (res) => {
+               const text = JSON.parse(await res.text())
+               if (text.message == "error") alerta(5)
+               else alerta(4)
+            })
+            .then(() => {
+               renderContent()
+            })
       }
    }
-   const openEditProgram = (id) =>{
+   const openEditProcess = (id) => {
       editmode = true
       idSeleted = id
-      fetch("{% url 'modalAddPrograma'%}", {
+      fetch("{% url 'modalAddProceso'%}", {
          ...fetchObject,
          body: JSON.stringify({
-            method:"Find",
+            method: "Find",
             id
          })
       })
@@ -145,10 +152,10 @@
          })
          .then(() => {
             $("#addNewModal").modal("show")
-            const formPrograma = document.getElementById("formPrograma")
-            formPrograma.addEventListener("submit", (e) => {
+            const formProceso = document.getElementById("formProceso")
+            formProceso.addEventListener("submit", (e) => {
                e.preventDefault()
-               clickSave(formPrograma, "{% url 'modalAddPrograma' %}")
+               clickSave(formProceso, "{% url 'modalAddProceso' %}")
                   .then(() => {
                      $("#addNewModal").modal("hide")
                      renderContent()
@@ -156,9 +163,9 @@
             })
          })
    }
-   const openAddProgram = () => {
+   const openAddProcess = () => {
       editmode = false
-      fetch("{% url 'modalAddPrograma'%}", {
+      fetch("{% url 'modalAddProceso'%}", {
          ...fetchObject,
       })
          .then(async (res) => {
@@ -166,10 +173,10 @@
          })
          .then(() => {
             $("#addNewModal").modal("show")
-            const formPrograma = document.getElementById("formPrograma")
-            formPrograma.addEventListener("submit", (e) => {
+            const formProceso = document.getElementById("formProceso")
+            formProceso.addEventListener("submit", (e) => {
                e.preventDefault()
-               clickSave(formPrograma, "{% url 'modalAddPrograma' %}")
+               clickSave(formProceso, "{% url 'modalAddProceso' %}")
                   .then(() => {
                      $("#addNewModal").modal("hide")
                      renderContent()
@@ -197,23 +204,23 @@
             })
          })
    }
-   const searchFor = (text) =>{
+   const searchFor = (text) => {
       let output = text.trim()
-      if(output.length > 20) return
+      if (output.length > 20) return
       query = output
       renderContent()
    }
-   
+
    const searchBar = document.querySelector('#txtSearch')
    const clearBtn = document.querySelector('#clearBtn')
    const searchBtn = document.querySelector('#searchBtn')
-   
-   clearBtn.addEventListener('click', ()=>{
+
+   clearBtn.addEventListener('click', () => {
       searchBar.value = ""
       query = ""
       searchFor("")
    })
-   searchBtn.addEventListener('click', ()=>{
+   searchBtn.addEventListener('click', () => {
       searchFor(searchBar.value)
    })
    searchBar.addEventListener('keypress', (e) => {
