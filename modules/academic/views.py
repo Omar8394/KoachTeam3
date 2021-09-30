@@ -209,7 +209,7 @@ def getModalProcesos(request):
                 proceso.fk_estructura_padre_id=data["data"]["padreProcess"]
                 proceso.descripcion = data["data"]["descriptionProcess"]
                 proceso.url = data["data"]["urlProcess"]
-                proceso.fk_categoria_id = Estructuraprograma.objects.get(pk=data["data"]["categoryProgram"]).fk_categoria_id
+                proceso.fk_categoria_id = Estructuraprograma.objects.get(pk=data["data"]["padreProcess"]).fk_categoria_id
                 proceso.peso_creditos = data["data"]["creditos"]
                 proceso.save()
                 return JsonResponse({"message":"Perfect"})
