@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+	<title>
+      {% block title %}Helping{% endblock %}
+    </title>
+
+	<meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />
+	<link rel="icon" href="/static/assets/img/icon.png" type="image/x-icon"/>
+	<link rel="canonical" href="">
+
+	<!-- Fonts and icons -->
+	<script src="/static/assets/js/plugin/webfont/webfont.min.js"></script>
+	<!-- SCROOLL REVEAL JS LIBRARY CDN -->
+	<script src="/static/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="/static/assets/js/plugin/scrollRevel/scrollReveal.js"></script>
+	<script>
+		WebFont.load({
+			google: {"families":["Lato:300,400,700,900"]},
+			custom: {"families":["Flaticon", "Font Awesome 5 Solid", "Font Awesome 5 Regular", "Font Awesome 5 Brands", "simple-line-icons"], 
+			urls: ['/static/assets/css/fonts.min.css']},
+			active: function() {
+				sessionStorage.fonts = true;
+			}
+		});
+	</script>
+
+	<!-- CSS Files -->
+	<link rel="stylesheet" href="/static/assets/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/static/assets/css/atlantis.min.css">
+
+
+    <!-- Specific Page CSS goes HERE  -->
+    {% block stylesheets %}
+	<style>
+		.content{
+          background: url(/static/help-style/hepl_Imag/img_fond.jpg);
+		  width: 100%;
+		}
+
+	</style>
+	
+	{% endblock stylesheets %}
+
+</head>
+<body style="background-color: #dde2e1;">
+	<div class="wrapper sidebar_minimize">
+
+        
+        {% include 'help/navigationHelping.html' %}
+
+		<div class="main-panel">
+			
+            {% include 'help/sidebarHelping.html' %}  
+
+
+			{% block content %} 
+			 
+            <div class="content" >
+				<div class="page-inner">
+					<div class="page-category animated fadeInRight">
+
+					
+                        <div class="row" id="a1" >
+
+							<section class="col-md-8 bg-primary">
+								<h1>scrollReveal.js</h1>
+							</section>
+	
+							<article class="col-md-4 bg-success" >
+                                       <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis, aliquam placeat? At, dolorum reprehenderit fugiat soluta aliquid voluptas molestias similique quas hic itaque ab officia, tenetur quisquam ex, aut iste minus recusandae quidem? Temporibus cupiditate expedita repellat sequi eligendi rem incidunt pariatur voluptatem.</p>
+							</article>
+
+						</div>
+						<div class="row mt-4" id="a2">
+
+							<section class="col-md-8 bg-primary"data-scroll-reveal="enter right">
+                                   col-1
+							</section>
+	
+							<article class="col-md-4 bg-warning">
+                                       <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis, aliquam placeat? At, dolorum reprehenderit fugiat soluta aliquid voluptas molestias similique quas hic itaque ab officia, tenetur quisquam ex, aut iste minus recusandae quidem? Temporibus cupiditate expedita repellat sequi eligendi rem incidunt pariatur voluptatem.</p>
+							</article>
+						</div>
+
+						<div class="row mt-4" id="a3">
+
+							<section class="col-md-8 bg-primary">
+                                   col-1
+							</section>
+	
+							<article class="col-md-4 bg-default">
+                                       <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis, aliquam placeat? At, dolorum reprehenderit fugiat soluta aliquid voluptas molestias similique quas hic itaque ab officia, tenetur quisquam ex, aut iste minus recusandae quidem? Temporibus cupiditate expedita repellat sequi eligendi rem incidunt pariatur voluptatem.</p>
+							</article>
+						</div>
+
+						<div class="row mt-4" id="b1">
+
+							<section class="col-md-8 bg-primary">
+                                   col-1
+							</section>
+	
+							<article class="col-md-4 bg-secondary">
+                                       <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis, aliquam placeat? At, dolorum reprehenderit fugiat soluta aliquid voluptas molestias similique quas hic itaque ab officia, tenetur quisquam ex, aut iste minus recusandae quidem? Temporibus cupiditate expedita repellat sequi eligendi rem incidunt pariatur voluptatem.</p>
+							</article>
+						</div>
+
+						<div class="row mt-4" id="b2">
+
+							<section class="col-md-8 bg-primary">
+                                   col-1
+							</section>
+	
+							<article class="col-md-4 bg-secondary">
+                                       <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis, aliquam placeat? At, dolorum reprehenderit fugiat soluta aliquid voluptas molestias similique quas hic itaque ab officia, tenetur quisquam ex, aut iste minus recusandae quidem? Temporibus cupiditate expedita repellat sequi eligendi rem incidunt pariatur voluptatem.</p>
+							</article>
+						</div>
+
+						<div class="row mt-4" id="c1">
+
+							<section class="col-md-4 bg-primary">
+                                  <h1>Imagen</h1>
+								  <div class="container">
+									  <img src="/static/help-style/hepl_Imag/image1.png" style="width: 100%;">
+								  </div>
+							</section>
+	
+							<article class="col-md-8 bg-secondary">
+                                       <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis, aliquam placeat? At, dolorum reprehenderit fugiat soluta aliquid voluptas molestias similique quas hic itaque ab officia, tenetur quisquam ex, aut iste minus recusandae quidem? Temporibus cupiditate expedita repellat sequi eligendi rem incidunt pariatur voluptatem.</p>
+							</article>
+						</div>
+
+						<div class="row mt-4" id="d1">
+
+							<section class="col-md-8 bg-primary">
+                                   col-1
+							</section>
+	
+							<article class="col-md-4 bg-secondary">
+                                       <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis, aliquam placeat? At, dolorum reprehenderit fugiat soluta aliquid voluptas molestias similique quas hic itaque ab officia, tenetur quisquam ex, aut iste minus recusandae quidem? Temporibus cupiditate expedita repellat sequi eligendi rem incidunt pariatur voluptatem.</p>
+							</article>
+						</div>
+
+						
+				</div>
+				</div>
+			</div>
+			   
+			{% endblock content %}
+
+			
+
+		</div>
+       
+
+	</div>
+
+	{% include 'includes/scripts.html' %}
+
+    <!-- Specific Page JS goes HERE  -->
+
+	<script>
+	  window.scrollReveal = new scrollReveal();
+
+          
+	  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+		anchor.addEventListener('click', function (e) {
+		  e.preventDefault();
+  
+		  document.querySelector(this.getAttribute('href')).scrollIntoView({
+			behavior: 'smooth'
+		  });
+		});
+	  });
+	  </script>
+    {% block javascripts %}{% endblock javascripts %}
+
+</body>
+</html>

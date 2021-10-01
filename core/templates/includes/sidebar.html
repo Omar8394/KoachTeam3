@@ -1,140 +1,296 @@
-		<!-- Sidebar -->
-		<div class="sidebar sidebar-style-2" data-background-color="dark">	
-			<div class="sidebar-wrapper scrollbar scrollbar-inner">
-				<div class="sidebar-content">
+<!-- Sidebar -->
+<div class="sidebar sidebar-style-2" data-background-color="dark">
+	<div class="sidebar-wrapper scrollbar scrollbar-inner">
+		<div class="sidebar-content">
 
-				{% if request.user.is_authenticated %}	
-				
-					<ul class="nav nav-primary">
-						<li class="nav-item {% if 'index' in segment %} active {% endif %}">
-							<a  href="index.html"  aria-expanded="false">
-								<i class="fas fa-home"></i>
-								<p>Dashboard</p>
-							</a>
-						</li>
-						<li class="nav-section">
-							<span class="sidebar-mini-icon">
-								<i class="fa fa-ellipsis-h"></i>
-							</span>
-							<h4 class="text-section">Modules</h4>
-						</li>
+			{% if request.user.is_authenticated %}
 
-						<li class="nav-item {% if 'courses' in segment %} active {% endif %}">
-							<a data-toggle="collapse" href="#submenuCourses">
-								<i class="fas fa-chalkboard-teacher"></i>
-								<p>Courses</p>
-								<span class="caret"></span>
-							</a>
-							<div class="collapse" id="submenuCourses">
-								<ul class="nav nav-collapse">					
-									<li>
-										<a href="courses.html">
-											<span class="sub-item">My courses</span>
-										</a>
-									</li>
-									<li>
-										<a href="blank.html">
-											<span class="sub-item">Test page</span>
-										</a>
-									</li>
-								</ul>
-							</div>
-						</li>
+			<ul class="nav nav-primary">
+				<li class="nav-item {% if 'index' in segment %} active {% endif %}">
+					<a href="index.html" aria-expanded="false">
+						<i class="fas fa-home"></i>
+						<p>Dashboard</p>
+					</a>
+				</li>
+				<li class="nav-section">
+					<span class="sidebar-mini-icon">
+						<i class="fa fa-ellipsis-h"></i>
+					</span>
+					<h4 class="text-section">Modules</h4>
+				</li>
 
 
-						<li class="nav-item {% if 'Exams' in segment %} active {% endif %}">
-							<a data-toggle="collapse" href="#submenuExams">
-								<i class="fas fa-tasks"></i>
-								<p>Exams</p>
-								<span class="caret"></span>
-							</a>
-							<div class="collapse" id="submenuExams">
-								<ul class="nav nav-collapse">					
-									<li>
-										<a href="">
-											<span class="sub-item">Page 1</span>
-										</a>
-									</li>
-								</ul>
-							</div>
-						</li>
+				<li class="nav-item {% if 'Registration' in segment %} active {% endif %}">
+					<a data-toggle="collapse" href="#submenuRegistration">
+						<i class="fas fa-university"></i>
+						<p>Registration</p>
+						<span class="caret"></span>
+					</a>
+					<div class="collapse" id="submenuRegistration">
+						<ul class="nav nav-collapse">
+							<li>
+								<a href="{% url 'ManagePersons' %}">
+									<span class="sub-item">Manage Persons</span>
+								</a>
+							</li>
+
+							<li>
+								<a href="{% url 'enrollment' %}">
+									<span class="sub-item">maricula</span>
+								</a>
+							</li>
+
+							<li>
+								<a href="{% url 'EnrollmentList' %}">
+								   <span class="sub-item">EnrollmentList</span>
+								</a>
+						    </li>
+
+
+							<li>
+								<a href="#">
+									<span class="sub-item">atricula</span>
+								</a>
+							</li>
+
+
+						</ul>
+					</div>
+				</li>
+
+
+				<li class="nav-item {% if 'carrer' in segment %} active {% endif %}">
+					<a data-toggle="collapse" href="#submenuPlanning">
+						<i class="fas fa-university"></i>
+						<p>Planning</p>
+						<span class="caret"></span>
+					</a>
+					<div class="collapse" id="submenuPlanning">
+						<ul class="nav nav-collapse">
+							<li>
+								<a href="fas fa-calendar-alt">
+									<span class="sub-item">Page 1</span>
+								</a>
+							</li>
+
+							<li>
+								<a href="#">
+									<span class="sub-item">maricula</span>
+								</a>
+							</li>
+
+							<li class=" {% if 'Planning' in segment %} active {% endif %}">
+								<a data-toggle="collapse" href="#id1">
+
+									<span class="sub-item">Profilages</span>
+									<span class="caret"></span>
+								</a>
+								<div class="collapse" id="id1">
+									<ul class="nav nav-collapse">
+
+										<li class="nav-item">
+											<a href="{% url 'showCompetence' %}">
+												<span class="sub-item">Prueba1</span>
+											</a>
+										</li>
+
+
+										<li class="nav-item">
+											<a href="#">
+												<span class="sub-item">atricula</span>
+											</a>
+										</li>
+
+
+									</ul>
+								</div>
+							</li>
+
+
+						</ul>
+					</div>
+				</li>
+
+
+
+				<li class="nav-item {% if 'Academic' in segment %} active {% endif %}">
+					<a data-toggle="collapse" href="#submenuAcademic">
+						<i class="fas fa-chalkboard-teacher"></i>
+						<p>Academic</p>
+						<span class="caret"></span>
+					</a>
+					<div class="collapse" id="submenuAcademic">
+						<ul class="nav nav-collapse">
+
+							<li class="{% if '#ProgI' in segment %} active {% endif %}">
+								<a data-toggle="collapse" href="#submenuProgI">
 								
+									<p class="sub-item" id="ProgI">Programic I</p>
+									<span class="caret"></span>
+								</a>
+								<div class="collapse" id="submenuProgI">
+									<ul class="nav nav-collapse">
 
-						<li class="nav-item {% if 'Payments' in segment %} active {% endif %}">
-							<a data-toggle="collapse" href="#submenuPayments">
-								<i class="fas fa-money-check-alt"></i>
-								<p>Payments</p>
-								<span class="caret"></span>
-							</a>
-							<div class="collapse" id="submenuPayments">
-								<ul class="nav nav-collapse">					
-									<li>
-										<a href="">
-											<span class="sub-item">Page 1</span>
-										</a>
-									</li>
-								</ul>
-							</div>
-						</li>
+									  <li>
+								            <a href="#">
+									          <span class="sub-item">Unidad I</span>
+								            </a>
+							            </li>
+							            <li>
+								             <a href="#">
+									           <span class="sub-item">Unidad II</span>
+								            </a>
+							            </li>
+
+									</ul>
+								</div>
+							</li>
+
+							<li class="{% if '#ProgII' in segment %} active {% endif %}">
+								<a data-toggle="collapse" href="#submenuProgII">
 								
+									<p class="sub-item" id="ProgII">Programic II</p>
+									<span class="caret"></span>
+								</a>
+								<div class="collapse" id="submenuProgII">
+									<ul class="nav nav-collapse">
 
-						<li class="nav-item {% if 'carrer' in segment %} active {% endif %}">
-							<a data-toggle="collapse" href="#submenuPlanning">
-								<i class="fas fa-university"></i>
-								<p>Planning</p>
-								<span class="caret"></span>
-							</a>
-							<div class="collapse" id="submenuPlanning">
-								<ul class="nav nav-collapse">						
-									<li>
-										<a href="{% url 'showProfilage' %}">
-											<span class="sub-item">Profiles</span>
-										</a>
-									</li>				
-									<li>
-										<a href="{% url 'showCompetence' %}">
-											<span class="sub-item">Competences</span>
-										</a>
-									</li>		
-									<li>
-										<a href="{% url 'showCompetenceAdq' %}">
-											<span class="sub-item">My Competences</span>
-										</a>
-									</li>	
-								</ul>
-							</div>
-						</li>
+									     <li>
+								            <a href="#">
+									          <span class="sub-item">Unidad I</span>
+								            </a>
+							            </li>
+							            <li>
+								             <a href="#">
+									           <span class="sub-item">Unidad II</span>
+								            </a>
+							            </li>
+
+									</ul>
+								</div>
+							</li>
+
+							<li class="{% if '#ProgIII' in segment %} active {% endif %}">
+								<a data-toggle="collapse" href="#submenuProgIII">
+								
+									<p class="sub-item" id="ProgIII">Programic III</p>
+									<span class="caret"></span>
+								</a>
+								<div class="collapse" id="submenuProgIII">
+									<ul class="nav nav-collapse">
+
+									    <li>
+								            <a href="#">
+									          <span class="sub-item">Unidad I</span>
+								            </a>
+							            </li>
+							            <li>
+								             <a href="#">
+									           <span class="sub-item">Unidad II</span>
+								            </a>
+							            </li>
+
+									</ul>
+								</div>
+							</li>
+
+						</ul>
+					</div>
+				</li>
 
 
-						<li class="nav-item {% if 'calendar' in segment %} active {% endif %}">
-							<a href="#">
-								<i class="fas fa-calendar-alt"></i>
-								<p>Calendar</p>
-							</a>
-						</li>
 
 
-						<li class="nav-item {% if 'help' in segment %} active {% endif %}">
-							<a data-toggle="collapse" href="#submenuHelp">
-								<i class="fas fa-info-circle"></i>
-								<p>Help</p>
-								<span class="caret"></span>
-							</a>
-							<div class="collapse" id="submenuHelp">
-								<ul class="nav nav-collapse">					
-									<li>
-										<a href="carrer.html">
-											<span class="sub-item">Page 1</span>
-										</a>
-									</li>
-								</ul>
-							</div>
-						</li>																			
-					</ul>
-				{% else %}
-				{% endif %}	
-				</div>
-			</div>
+				<li class="nav-item {% if 'courses' in segment %} active {% endif %}">
+					<a data-toggle="collapse" href="#submenuCourses">
+						<i class="fas fa-chalkboard-teacher"></i>
+						<p>Courses</p>
+						<span class="caret"></span>
+					</a>
+					<div class="collapse" id="submenuCourses">
+						<ul class="nav nav-collapse">
+							<li>
+								<a href="#">
+									<span class="sub-item">My courses</span>
+								</a>
+							</li>
+							<li>
+								<a href="#">
+									<span class="sub-item">Test page</span>
+								</a>
+							</li>
+						</ul>
+					</div>
+				</li>
+
+
+				<li class="nav-item {% if 'Exams' in segment %} active {% endif %}">
+					<a data-toggle="collapse" href="#submenuExams">
+						<i class="fas fa-tasks"></i>
+						<p>Exams</p>
+						<span class="caret"></span>
+					</a>
+					<div class="collapse" id="submenuExams">
+						<ul class="nav nav-collapse">
+							<li>
+								<a href="#">
+									<span class="sub-item">Page 1</span>
+								</a>
+							</li>
+						</ul>
+					</div>
+				</li>
+
+
+				<li class="nav-item {% if 'Payments' in segment %} active {% endif %}">
+					<a data-toggle="collapse" href="#submenuPayments">
+						<i class="fas fa-money-check-alt"></i>
+						<p>Payments</p>
+						<span class="caret"></span>
+					</a>
+					<div class="collapse" id="submenuPayments">
+						<ul class="nav nav-collapse">
+							<li>
+								<a href="{% url 'ManagePay' %}">
+									<span class="sub-item">Manage Pay</span>
+								</a>
+							</li>
+							<li>
+								<a href="#">
+									<span class="sub-item">Manage Pay</span>
+								</a>
+							</li>
+							<li>
+								<a href="#">
+									<span class="sub-item">page 2</span>
+								</a>
+							</li>
+							
+						</ul>
+					</div>
+				</li>
+
+
+				<li class="nav-item {% if 'calendar' in segment %} active {% endif %}">
+					<a href="#">
+						<i class="fas fa-calendar-alt"></i>
+						<p>Calendar</p>
+					</a>
+				</li>
+
+
+				<li class="nav-item {% if 'help' in segment %} active {% endif %}">
+					<a  href="#"  aria-expanded="false" id="help">
+					   <i class="fas fa-info-circle"></i>
+					   <p>Help</p>
+					</a>
+			    </li>
+
+
+			</ul>
+			{% else %}
+			{% endif %}
 		</div>
-        <!-- End Sidebar -->
-        
+	</div>
+</div>
+<!-- End Sidebar -->

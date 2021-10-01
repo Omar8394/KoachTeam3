@@ -1,0 +1,74 @@
+
+       
+    #col-1{
+        background: rgba(167, 102, 4, 0);
+        color: lightgray;
+        
+    }
+
+    #col-2{
+        background: rgb(29, 29, 56);
+        color: black;
+    }
+
+    #cabecera{
+        background:rgb(121, 7, 70);
+        border: 1px solid  rgb(29, 29, 56);
+        text-align:justify;
+        color: #5664e2;
+        
+       
+    }
+
+   
+    
+    #piedepage{
+       background: rgb(121, 7, 70);
+       color: lightgray;
+      
+ 
+    }
+      
+  
+   
+   
+   
+    .btmItem{
+        width: 200px;
+        max-height: 50px;
+        background: rgb(66, 66, 75);
+        color: rgb(237, 240, 243);
+        padding: 8px;
+   
+        font-size: 20px;
+        border: .1px solid rgb(230, 219, 222);
+        border-radius: 10px;
+   
+    }
+
+
+    .containerCol-2{
+        width: 550px;
+        margin: auto;
+        background: rgb(244, 242, 247);
+
+    }
+
+    #clasimg{
+        width: 100%;
+		
+    }
+
+   
+  
+   
+   
+  
+   
+ 
+   
+  
+   
+ 
+
+  

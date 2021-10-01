@@ -1,0 +1,154 @@
+	
+		<!-- Sidebar -->
+		<div class="sidebar sidebar-style-2">	
+			<div class="sidebar-wrapper scrollbar scrollbar-inner">
+			   <div class="sidebar-content">
+
+				    {% if request.user.is_authenticated %}	
+				
+					<ul class="nav ">
+						<li class="nav-item {% if 'index' in segment %} active {% endif %}">
+							<a  href="index.html"  aria-expanded="false">
+								<i class="fas fa-home"></i>
+								<p>Dashboard</p>
+							</a>
+						</li>
+						<li class="nav-section">
+							<span class="sidebar-mini-icon">
+								<i class="fa fa-ellipsis-h"></i>
+							</span>
+							<h4 class="text-section">Modules Helping</h4>
+						</li>
+
+						<li class="nav-item {% if 'Security' in segment %} active {% endif %}">
+							<a data-toggle="collapse" href="#submenuSecurity">
+								<i class="fa fa-unlock-alt" aria-hidden="true"></i>
+								<p>Security</p>
+								<span class="caret"></span>
+							</a>
+							<div class="collapse" id="submenuSecurity">
+								<ul class="nav nav-collapse">					
+									<li>
+										<a href="#a1">
+											<span class="sub-item">Register</span>
+										</a>
+									</li>
+									<li>
+										<a href="#a2">
+											<span class="sub-item">Password</span>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</li>
+
+
+						<li class="nav-item {% if 'Academic' in segment %} active {% endif %}">
+							<a data-toggle="collapse" href="#submenuAcademic">
+								<i class="fas fa-tasks"></i>
+								<p>Academic</p>
+								<span class="caret"></span>
+							</a>
+							<div class="collapse" id="submenuAcademic">
+								<ul class="nav nav-collapse">					
+									<li>
+										<a href="#b1">
+											<span class="sub-item">Page 1</span>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</li>
+								
+
+						<li class="nav-item {% if 'Comunication' in segment %} active {% endif %}">
+							<a data-toggle="collapse" href="#submenuComunication">
+								<i class="fas fa-money-check-alt"></i>
+								<p>Comunication</p>
+								<span class="caret"></span>
+							</a>
+							<div class="collapse" id="submenuComunication">
+								<ul class="nav nav-collapse">					
+									<li>
+										<a href="#c1">
+											<span class="sub-item">Page 1</span>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</li>
+								
+
+						<li class="nav-item {% if 'Planning' in segment %} active {% endif %}">
+							<a data-toggle="collapse" href="#submenuPlanning">
+								<i class="fas fa-university"></i>
+								<p>Planning</p>
+								<span class="caret"></span>
+							</a>
+							<div class="collapse" id="submenuPlanning">
+							<ul class="nav nav-collapse">						
+							  
+													
+									<li>
+										<a href="#d1">
+											<span class="sub-item">Competences</span>
+										</a>
+									</li>		
+									<li>
+										<a href="#d2">
+											<span class="sub-item">My Competences</span>
+										</a>
+									</li>	
+									<li>
+										<a href="#d3">
+											<span class="sub-item">Programs</span>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</li>
+
+
+						<li class="nav-item {% if 'calendar' in segment %} active {% endif %}">
+							<a data-toggle="collapse" href="#submenuCalendar">
+								<i class="fas fa-calendar-alt"></i>
+								<p>Calendar</p>
+								<span class="caret"></span>
+							</a>
+							<div class="collapse" id="submenuCalendar">
+								<ul class="nav nav-collapse">			
+                                     <li>
+									    <a href="#b2">
+											<span class="sub-item"> Security help </span>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</li>
+
+
+						<li class="nav-item {% if 'Page' in segment %} active {% endif %}">
+							<a data-toggle="collapse" href="#submenuPage">
+								<i class="fas fa-info-circle"></i>
+								<p>Page</p>
+								<span class="caret"></span>
+							</a>
+							<div class="collapse" id="submenuPage">
+								<ul class="nav nav-collapse">			
+                                     <li>
+									    <a href="#">
+											<span class="sub-item"> help I </span>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</li>																			
+					</ul>
+				        {% else %} 
+					
+				        {% endif %}	
+			   </div>
+			</div>
+		</div>
+        <!-- End Sidebar -->
+        
