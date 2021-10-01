@@ -9,6 +9,9 @@
 
 	<div class="content">
 		<div class="page-inner">
+
+
+
 			<div class="page-header">
 				<h4 class="page-title">Starter page</h4>
 				<ul class="breadcrumbs">
@@ -31,8 +34,12 @@
 					</li>
 				</ul>
 			</div>
+
+
+
 			<div class="page-category">
         <h2>Enrollment Applications</h2>
+       
 		<div > 
 			<div class="dropdown" id="panelBuscar">
                 <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -43,7 +50,7 @@
                     <div class="panel">
                         <div class="panel-body">
                             <form id="buscar" name="buscar" method="POST" action=".">
-				{% csrf_token %}
+                          {% csrf_token %}
                                  
                             <table style="width:100%">
                            
@@ -58,6 +65,46 @@
                                     <td>
                                      <a href="javascript:void(0);"  onclick="modalBuscarPersona()">   <span class="fas fa-search">     </span></a> 
                                     </td>
+                                    
+                                </tr>
+                                <tr>
+                                    <td>Enrollment Status</td>
+                                    <td></td>
+                                    <td>
+                                        
+                                        <select id="idStatus" name="idStatus"   class="form-control" >
+                                            <option value="" selected> </option>
+                                
+                                
+                                             {% for mat in status %}
+                                             <option value="{{mat.id_tabla}}"  {% if mat.id_tabla == selectedStatus  %} selected {% endif %} > {{mat}}</option>
+                                             {% endfor %}
+                                      
+                                
+                                         </select>
+                                    </td>
+
+                          
+                                   
+                                    
+                                </tr>
+                                <tr>
+                                    <td>Enrollment Type</td>
+                                    <td></td>
+                                    <td>
+                                        <select  id="idTipo" name="idTipo"   class="form-control">
+                                            <option value="" selected> </option>
+                                
+                                
+                                             {% for mat in types%}
+                                             
+                                             <option value="{{mat.id_tabla}}"  {% if mat.id_tabla == selectedType  %} selected {% endif %}> {{mat}}</option>
+                                             {% endfor %}
+                                      
+                                
+                                         </select>
+                                    </td>
+                                  
                                     
                                 </tr>
                                 <tr>
@@ -239,8 +286,13 @@
 
 
 	   
-		</div>			            
-      </div>
+		</div>	
+        
+        
+          </div>
+
+
+
 		</div>
 	</div>
 
@@ -256,11 +308,7 @@
 
 
     function openmen(){
-        alert(1);
-        $('#drop1').dropdown()
-   $("#panelBuscar").dropdown('toggle') ;
-      //  $('#drop1').addClass('open'); 
-      $("#panelBuscar").dropdown('dispose')
+        
     }
 
 function SelectPersona(nombre, id){
@@ -268,6 +316,8 @@ $("#BuscarPersonaModal").modal("toggle");
 
 Person.value=nombre;
 PersonId.value=id;
+
+
 
 
 }
@@ -397,6 +447,8 @@ function modalFirst(){
 
 </script>
 
+
+
 <script>
 
 var matricula=0;
@@ -431,7 +483,7 @@ function showModal(id){
 
 
 
-let url='MatriculacionAdminModal/?matricula='+id;
+let url='MatriculacionAdminModal/?matricula='+id+'&admin=1';
 fetch(url,{
 	mode: 'no-cors',
   method: 'get'

@@ -9,7 +9,11 @@
 
 	<div class="content">
 		<div class="page-inner">
+
+
+            
 			<div class="page-header">
+
 				<h4 class="page-title">Starter page</h4>
 				<ul class="breadcrumbs">
 					<li class="nav-home">
@@ -31,7 +35,11 @@
 					</li>
 				</ul>
 			</div>
+
+
+
 			<div class="page-category">
+
         <h2>Enrollment Applications</h2>
 		<div > 
 			<div class="dropdown" id="panelBuscar">
@@ -39,26 +47,67 @@
                     <i class="glyphicon glyphicon-search"></i> Filter
                    
                 </button>
-                <div class="dropdown-menu">
+                <div class="dropdown-menu" id="drop1">
                     <div class="panel">
                         <div class="panel-body">
                             <form id="buscar" name="buscar" method="POST" action=".">
-				{% csrf_token %}
+                          {% csrf_token %}
                                  
                             <table style="width:100%">
                            
+                           
+                                <tr>
+                                    <td>Enrollment Status</td>
+                                    <td></td>
+                                    <td>
+                                        
+                                        <select id="idStatus" name="idStatus"   class="form-control" >
+                                            <option value="" selected> </option>
+                                
+                                
+                                             {% for mat in status %}
+                                             <option value="{{mat.id_tabla}}"  {% if mat.id_tabla == selectedStatus  %} selected {% endif %} > {{mat}}</option>
+                                             {% endfor %}
+                                      
+                                
+                                         </select>
+                                    </td>
+
+                          
+                                   
+                                    
+                                </tr>
+                                <tr>
+                                    <td>Enrollment Type</td>
+                                    <td></td>
+                                    <td>
+                                        <select  id="idTipo" name="idTipo"   class="form-control">
+                                            <option value="" selected> </option>
+                                
+                                
+                                             {% for mat in types%}
+                                             
+                                             <option value="{{mat.id_tabla}}"  {% if mat.id_tabla == selectedType  %} selected {% endif %}> {{mat}}</option>
+                                             {% endfor %}
+                                      
+                                
+                                         </select>
+                                    </td>
+                                  
+                                    
+                                </tr>
                                 <tr>
                                     <td>Initial Date</td>
                                     <td></td>
                                     <td>
-                                        <input id="fechaInicial" name="fechaInicial" type="date" class="form-control" >
+                                        <input id="fechaInicial" name="fechaInicial" value="{{FechaInicial}}" type="date" class="form-control" >
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>Final Date</td>
                                     <td></td>
                                     <td>
-                                        <input id="fechaFinal" name="fechaFinal" id type="date" class="form-control" >
+                                        <input id="fechaFinal" name="fechaFinal" value={{FechaFinal}} id type="date" class="form-control" >
                                     </td>
                                 </tr>
                                
@@ -79,145 +128,143 @@
                         </div>
                     </div>
                 </div>
+                   
+                </div>
 
-            </div>
+           
+             <div class="animated fadeInRight">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-content">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                
+                                    <tr>
+                                        <th style="width: 65px;"></th>
+                                       
+                                        <th>Applicant</th>
+                                        <th>Status </th>
+                                        <th>Date of application</th>
+                                        <th>Program</th>
+                                        <th>Payment</th>
+                                        <th></th>
 
-            <div class="animated fadeInRight">
-                <div class="ibox float-e-margins">
-                    <div class="ibox-content">
-                        <table class="table table-striped table-hover">
-                            <thead>
-            
-                                <tr>
-                                    <th style="width: 65px;"></th>
-                                   
-                                    <th>Applicant</th>
-                                    <th>Status </th>
-                                    <th>Date of application</th>
-                                    <th>Program</th>
-                                    <th>Payment</th>
-
-                                    <th></th>
-
-                                  
-                                </tr>
-                            </thead>
-                            <tbody class="data-cargando">
-                                {% for mat in matriculasList %}
-            
-                                <tr style="cursor:pointer;" id="{{mat.idmatricula_alumnos}}"   >
-                                    <td ></td>
-                                   <td>{{mat.fk_publico}}</td>
-                                   <td>{{mat.fk_status_matricula}}</td>
-
-                                   <td>{{mat.fecha_matricula}}</td>
-                                   <td>{{mat.fk_estruc_programa}}</td>
-                                   <td onclick="showModalPago('{{mat.fk_estruc_programa.idestructuraprogrmas}}' )">
-                                       <span class="fas fa-credit-card">Payment </span>
-                                   </td>
-
-
-
-
-                                    <td>
-                                     
-                                   
+    
+                                        <th></th>
+    
+                                      
+                                    </tr>
+                                </thead>
+                                <tbody class="data-cargando">
+                                    {% for mat in matriculasList %}
+                
+                                    <tr style="cursor:pointer;" id="{{mat.idmatricula_alumnos}}"   >
+                                        <td ></td>
+                                       <td>{{mat.fk_publico}}</td>
+                                       <td>{{mat.fk_status_matricula}}</td>
+    
+                                       <td>{{mat.fecha_matricula}}</td>
+                                       <td>{{mat.fk_estruc_programa}}</td>
+                                       <td onclick="showModalPago('{{mat.fk_estruc_programa.idestructuraprogrmas}}' )">
+                                           <span class="fas fa-credit-card">Payment </span>
+                                       </td>
+                                       <td onclick="showModalPago('{{mat.fk_estruc_programa.idmatricula_alumnos}}' )">
+                                        <span class="fas fa-edit"> Editar </span>
                                     </td>
-                                </tr>
-
-                                {% endfor %}
-                            </tbody>
-                        </table>
-
-                        {% comment "Optional note" %}
+    
+    
+    
+    
+                                        <td>
+                                         
+                                       
+                                        </td>
+                                    </tr>
+    
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+    
                         
-                        <div class="pagination" style="text-align: center;">
-                            <span class="step-links" style="display:table;
-                            margin:0 auto; ">
+                           
+    
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination justify-content-center">
                                 {% if matriculasList.has_previous %}
-                                    <a href="?page=1">&laquo; first</a>
-                                    <a href="?page={{ matriculasList.previous_page_number }}">previous</a>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=1">&laquo; First</a>
+    
+                                   </li>
+                                    <li class="page-item">
+                                      
+    
+                                    <a class="page-link" href="?page={{ matriculasList.previous_page_number }}">Previous</a>
+                                  </li>
+                                {% else %}
+                                    <li class="page-item disabled">
+                                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                                  </li>
                                 {% endif %}
                         
-                                <span class="current">
-                                    Page {{ matriculasList.number }} of {{ matriculasList.paginator.num_pages }}.
-                                </span>
+                                {% if matriculasList.number|add:'-4' > 1 %}
+                                    <li class="page-item"><a class="page-link" href="?page={{ matriculasList.number|add:'-5' }}">&hellip;</a></li>
+                                {% endif %}
+                        
+                                {% for i in matriculasList.paginator.page_range %}
+                                    {% if matriculasList.number == i %}
+                                        <li class="page-item active" aria-current="page">
+                                      <span class="page-link">
+                                        {{ i }}
+                                        <span class="sr-only">(current)</span>
+                                      </span>
+                                    </li>
+                                    {% elif i > matriculasList.number|add:'-5' and i < matriculasList.number|add:'5' %}
+                                         <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                                    {% endif %}
+                                {% endfor %}
+                        
+                                {% if matriculasList.paginator.num_pages > matriculasList.number|add:'4' %}
+                                   <li class="page-item"><a class="page-link" href="?page={{ matriculasList.number|add:'5' }}">&hellip;</a></li>
+                                {% endif %}
                         
                                 {% if matriculasList.has_next %}
-                                    <a href="?page={{ matriculasList.next_page_number }}">next</a>
-                                    <span class="fa-fast-forward"></span>
-                                    <a  href="?page={{ matriculasList.paginator.num_pages }}">last &raquo;</a>
+                                    <li class="page-item">
+                                    <a class="page-link" href="?page={{ matriculasList.next_page_number }}">Next</a>
+                                  </li>
+                                  <li class="page-item">
+                                    <a class="page-link" href="?page={{ matriculasList.paginator.num_pages }}">Last &raquo;</a>
+                                  </li>
+    
+                                {% else %}
+                                    <li class="page-item disabled">
+                                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Next</a>
+                                  </li>
                                 {% endif %}
-                            </span>
+                              </ul>
+                            </nav>
+    
+                         
+                
                         </div>
-
-                       {% endcomment %}
-                       
-
-                        <nav aria-label="Page navigation example">
-                            <ul class="pagination justify-content-center">
-                            {% if matriculasList.has_previous %}
-                            <li class="page-item">
-                                <a class="page-link" href="?page=1">&laquo; First</a>
-
-                               </li>
-                                <li class="page-item">
-                                  
-
-                                <a class="page-link" href="?page={{ matriculasList.previous_page_number }}">Previous</a>
-                              </li>
-                            {% else %}
-                                <li class="page-item disabled">
-                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-                              </li>
-                            {% endif %}
-                    
-                            {% if matriculasList.number|add:'-4' > 1 %}
-                                <li class="page-item"><a class="page-link" href="?page={{ matriculasList.number|add:'-5' }}">&hellip;</a></li>
-                            {% endif %}
-                    
-                            {% for i in matriculasList.paginator.page_range %}
-                                {% if matriculasList.number == i %}
-                                    <li class="page-item active" aria-current="page">
-                                  <span class="page-link">
-                                    {{ i }}
-                                    <span class="sr-only">(current)</span>
-                                  </span>
-                                </li>
-                                {% elif i > matriculasList.number|add:'-5' and i < matriculasList.number|add:'5' %}
-                                     <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
-                                {% endif %}
-                            {% endfor %}
-                    
-                            {% if matriculasList.paginator.num_pages > matriculasList.number|add:'4' %}
-                               <li class="page-item"><a class="page-link" href="?page={{ matriculasList.number|add:'5' }}">&hellip;</a></li>
-                            {% endif %}
-                    
-                            {% if matriculasList.has_next %}
-                                <li class="page-item">
-                                <a class="page-link" href="?page={{ matriculasList.next_page_number }}">Next</a>
-                              </li>
-                              <li class="page-item">
-                                <a class="page-link" href="?page={{ matriculasList.paginator.num_pages }}">Last &raquo;</a>
-                              </li>
-
-                            {% else %}
-                                <li class="page-item disabled">
-                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Next</a>
-                              </li>
-                            {% endif %}
-                          </ul>
-                        </nav>
-
-                        <div class="clearfix"></div>
-            
                     </div>
+                
+                
                 </div>
-            
-            
-            </div>
-            
+           
 
+
+
+
+
+
+
+
+
+
+
+
+
+            
+        </div>
 
 
 
@@ -233,14 +280,45 @@
 
 	   
 		</div>			            
-      </div>
-		</div>
+      
+     </div>
 	</div>
+	
+
+	
 
 
 <script>
 
 var matricula=0;
+
+
+function showModalMatricula(id){
+    matricula=id;
+
+
+
+
+
+
+let url="{% url 'ModalAdmin'%}"+'?matricula='+id+'&admin=0';
+fetch(url,{
+	mode: 'no-cors',
+  method: 'get'
+}).then(function(result){
+
+return result.text();
+
+}).then(function(result){
+	
+	let unit=document.getElementById("modalContentMatricula").innerHTML=result;
+
+});
+    $("#AdministrarMatricula").modal("show");
+    
+  
+}
+
 function showModal(id){
     matricula=id;
 
@@ -287,12 +365,20 @@ xhr.send(formData);
 
 function reload(){
 
-    window.location.href="{% url 'EnrollmentList'%}";
+    window.location.href="{% url 'MyEnrollments'%}";
 }
 
 
 </script>
 
+<!--Buscar Personas DB Modal-->
+<div class="modal fade" tabindex="-1" role="dialog" id="AdministrarMatricula">
+    <div class="modal-dialog" role="document" id="modalContentMatricula">
+     
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+
+<!-- /.modal -->
 
 
 <!--Buscar Personas DB Modal-->
@@ -388,7 +474,8 @@ function reload(){
 
 
         </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
+    
+
 
 <!-- /.modal -->
 
@@ -513,8 +600,7 @@ function reload(){
      <script src="https://www.paypal.com/sdk/js?client-id=sb&enable-funding=venmo&currency=USD" data-sdk-integration-source="button-factory"></script>
       <script>
       var cantidad = document.getElementById("dato");
-      alert (cantidad);
-      alert (dato.value);
+      
       var cc = dato.value;
 
       function precio(usd){

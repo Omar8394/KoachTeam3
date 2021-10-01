@@ -93,7 +93,10 @@
                                    
                                     <th>Description</th>
                                     <th>Credits </th>
-                                    <th>Price</th>
+                                    <th></th>
+                                    <th></th>
+
+                                    <th>Prices & Discounts</th>
                                     
                                     <th></th>
 
@@ -101,14 +104,58 @@
                                 </tr>
                             </thead>
                             <tbody class="data-cargando">
-                                {% for mat in cursos %}
+                                {% for mat in structuras %}
             
                                 <tr style="cursor:pointer;" id="{{mat.idmatricula_alumnos}}"  onclick="" >
                                     <td ></td>
                                    <td>{{mat}}</td>
                                    <td>{{mat.peso_creditos}}</td>
 
-                                   <td></td>
+                                   <td>
+                                       {%if mat.valor_elemento == 'Curso'   %}
+                                       <td> 
+
+                                        Price:
+                                       </td>
+                                       
+
+                                       <td >
+                              
+
+                                        <input type="number" id="{{mat.idestructuraprogrmas}}" name="{{mat.idestructuraprogrmas}}"  value="{{mat.precio}}" >
+
+                                        <a href="#" onclick="savePrice('{{mat.idestructuraprogrmas}}')">  <span class="fas fa-save"> </span>   </a>  
+                                       
+
+                                       </td>
+                                      
+                                       <td></td>
+                                       {% else %}
+                                       <td>
+                                        Original Price: {{mat.precio}} 
+
+
+                                       </td>
+                                       <td>
+                                        Discount Amount: 
+                                        <input type="number" id="{{mat.idestructuraprogrmas}}" onchange="calcularDescuento('{{mat.idestructuraprogrmas}}','{{mat.precio}}')" name="{{mat.idestructuraprogrmas}}"  step="0.01" max="100" min="0" value="{{mat.descuento}}" >
+                                       
+                                        <a href="#" onclick="saveDiscount('{{mat.idestructuraprogrmas}}')">  <span class="fas fa-save"> </span>   </a>  
+                                        
+
+
+                                       </td>
+                                       <td>
+                                           Price After Discount
+                                        <input type="text" id="D{{mat.idestructuraprogrmas}}"   readonly value="{{mat.amountDiscount}}" >
+
+                                       </td>
+
+
+                                       {% endif%} 
+
+
+                                   </td>
                                    
 
 
@@ -128,7 +175,7 @@
 
                         <nav aria-label="Page navigation example">
                             <ul class="pagination justify-content-center">
-                            {% if matriculasList.has_previous %}
+                            {% if structuras.has_previous %}
                             <li class="page-item">
                                 <a class="page-link" href="?page=1">&laquo; First</a>
 
@@ -136,7 +183,7 @@
                                 <li class="page-item">
                                   
 
-                                <a class="page-link" href="?page={{ matriculasList.previous_page_number }}">Previous</a>
+                                <a class="page-link" href="?page={{ structuras.previous_page_number }}">Previous</a>
                               </li>
                             {% else %}
                                 <li class="page-item disabled">
@@ -144,33 +191,33 @@
                               </li>
                             {% endif %}
                     
-                            {% if matriculasList.number|add:'-4' > 1 %}
-                                <li class="page-item"><a class="page-link" href="?page={{ matriculasList.number|add:'-5' }}">&hellip;</a></li>
+                            {% if structuras.number|add:'-4' > 1 %}
+                                <li class="page-item"><a class="page-link" href="?page={{ structuras.number|add:'-5' }}">&hellip;</a></li>
                             {% endif %}
                     
-                            {% for i in matriculasList.paginator.page_range %}
-                                {% if matriculasList.number == i %}
+                            {% for i in structuras.paginator.page_range %}
+                                {% if structuras.number == i %}
                                     <li class="page-item active" aria-current="page">
                                   <span class="page-link">
                                     {{ i }}
                                     <span class="sr-only">(current)</span>
                                   </span>
                                 </li>
-                                {% elif i > matriculasList.number|add:'-5' and i < matriculasList.number|add:'5' %}
+                                {% elif i > structuras.number|add:'-5' and i < structuras.number|add:'5' %}
                                      <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
                                 {% endif %}
                             {% endfor %}
                     
-                            {% if matriculasList.paginator.num_pages > matriculasList.number|add:'4' %}
-                               <li class="page-item"><a class="page-link" href="?page={{ matriculasList.number|add:'5' }}">&hellip;</a></li>
+                            {% if structuras.paginator.num_pages > structuras.number|add:'4' %}
+                               <li class="page-item"><a class="page-link" href="?page={{ structuras.number|add:'5' }}">&hellip;</a></li>
                             {% endif %}
                     
-                            {% if matriculasList.has_next %}
+                            {% if structuras.has_next %}
                                 <li class="page-item">
-                                <a class="page-link" href="?page={{ matriculasList.next_page_number }}">Next</a>
+                                <a class="page-link" href="?page={{ structuras.next_page_number }}">Next</a>
                               </li>
                               <li class="page-item">
-                                <a class="page-link" href="?page={{ matriculasList.paginator.num_pages }}">Last &raquo;</a>
+                                <a class="page-link" href="?page={{ structuras.paginator.num_pages }}">Last &raquo;</a>
                               </li>
 
                             {% else %}
@@ -213,6 +260,89 @@
 <script>
 
 var matricula=0;
+
+function calcularDescuento(id, prices){
+var nombre="D"+id;
+var price= prices;
+var discount=document.getElementById(id).value;
+var total=discount*0.01;
+var nuevoPrecio=price-(total*price);
+discount=document.getElementById(nombre).value=nuevoPrecio;
+
+}
+
+function saveDiscount(id){
+
+
+
+
+let url="{% url 'saveDiscount'%}";
+    let formData = new FormData(); 
+    formData.append("porcentaje", document.getElementById(id).value );
+    formData.append("idEstructura", id );
+
+
+
+    fetch(url,{
+        headers: {
+						'Accept': 'application/json',
+						'X-Requested-With': 'XMLHttpRequest',
+						"X-CSRFToken": getCookie('csrftoken')
+					},
+					mode: 'same-origin',
+					method: 'POST',
+                    body:formData
+    }).then(function(result){
+    
+    return result.text();
+    
+    }).then(function(result){
+        
+        alerta(1);
+    
+    });
+        
+        
+      
+    }
+
+
+    function savePrice(id){
+
+
+
+
+let url="{% url 'savePrices'%}";
+    let formData = new FormData(); 
+    formData.append("precio", document.getElementById(id).value );
+    formData.append("idEstructura", id );
+
+
+
+    fetch(url,{
+        headers: {
+						'Accept': 'application/json',
+						'X-Requested-With': 'XMLHttpRequest',
+						"X-CSRFToken": getCookie('csrftoken')
+					},
+					mode: 'same-origin',
+					method: 'POST',
+                    body:formData
+    }).then(function(result){
+    
+    return result.text();
+    
+    }).then(function(result){
+        
+        alerta(1);
+    
+    });
+        
+        
+      
+    }
+
+
 function showModal(id){
     matricula=id;
 

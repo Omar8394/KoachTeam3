@@ -20,7 +20,12 @@ urlpatterns = [
     # Mis matriculas
     path('MyEnrollments/', views.MyEnrollments, name='MyEnrollments'  ),
     #Lista cursos
-    path('Courses/', views.Courses, name='Courses'  ),
+    path('ManagePrices/', views.ManagePrices, name='ManagePrices'  ),
+
+
+
+
+
 
     #pagos
     path('Payments/', views.Pay, name='ManagePay'  ),
@@ -30,6 +35,11 @@ urlpatterns = [
     #metods
     path('enrollment/ComboOptions/', views.ComboOptions, name='ComboOptions'  ),
     path('enrollment/save/', views.save, name='save'  ),
+
+    path('ManagePrices/saveDiscount/', views.saveDiscount, name='saveDiscount'  ),
+    path('ManagePrices/savePrices/', views.savePrices, name='savePrices'  ),
+
+
 
 
     path('ManagePersons/ComboOptions/', views.ComboOptions, name='ComboOptions'  ),
