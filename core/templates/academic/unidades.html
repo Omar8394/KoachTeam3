@@ -1,0 +1,272 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %}{% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+
+{% endblock stylesheets %}
+
+{% block content %}
+
+<div class="content">
+   <div class="page-inner animated fadeInRight">
+      <div class="page-header">
+         <h4 class="page-title">Academic</h4>
+         <ul class="breadcrumbs">
+            <li class="nav-home">
+               <a href="{% url 'home' %}">
+                  <i class="flaticon-home"></i>
+               </a>
+            </li>
+            <li class="separator">
+               <i class="flaticon-right-arrow"></i>
+            </li>
+            <li class="nav-item">
+               <a href="{% url 'academic' %}">Academic</a>
+            </li>
+            <li class="separator">
+               <i class="flaticon-right-arrow"></i>
+            </li>
+            <li class="nav-item">
+               <a href="{% url 'programa' programa.url %}">{{programa.descripcion}}</a>
+            </li>
+            <li class="separator">
+               <i class="flaticon-right-arrow"></i>
+            </li>
+            <li class="nav-item">
+               <a href="{% url 'proceso' programa=programa.url proceso=proceso.url %}">{{proceso.descripcion}}</a>
+            </li>
+         </ul>
+      </div>
+      <div class="page-category">
+         <div class="card">
+            <div class="card-header">
+               <h2>{{proceso.descripcion}}</h2>
+               <div class="form-group">
+                  <div class="input-group">
+                     <input id="txtSearch" type="text" class="form-control" placeholder="Search for...">
+                     <div class="input-group-append">
+                        <span id="clearBtn" class="btn btn-danger">
+                           <i class="fa fa-broom"></i>
+                        </span>
+                        <span id="searchBtn" class="btn btn-primary">
+                           <i class="fa fa-search"></i>
+                        </span>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <main class="card-body is-loading-lg">
+
+            </main>
+         </div>
+      </div>
+   </div>
+</div>
+<div class="modal fade" id="addNewModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+   aria-hidden="true">
+   <div id="addNewModalContent" class="modal-dialog  modal-dialog-centered" role="document">
+
+   </div>
+</div>
+
+{% endblock content %}
+
+{% block javascripts %}
+<script>
+   let editmode = false
+   let query = ""
+   let selectedId = ""
+   const changeProgram = async()=>{
+      const comboPrograma = document.getElementById("programUnit")
+      const comboProceso = document.getElementById("padreUnit")
+      let idPrograma = comboPrograma.value
+      comboProceso.innerHTML = await renderCombo(idPrograma, "Select a process")
+   }
+   const renderCombo = (id, valor)=>{
+      return fetch("{% url 'contenidoCombo'%}", {
+         ...fetchObject,
+         body:JSON.stringify({
+            id,
+            valor
+         })
+      })
+      .then(async (res)=>{
+         result = await res.text()
+         return result
+      })
+   }
+   const renderContent = () => {
+      document.querySelector("main.card-body").classList.add("is-loading")
+      fetch("{% url 'contenidoUnidades'%}", {
+         ...fetchObject,
+         body: JSON.stringify({
+            url: "{{programa.url}}",
+            urlProceso:"{{proceso.url}}",
+            query
+         })
+      })
+         .then(async (res) => {
+            result = await res.text()
+            document.querySelector("main.card-body").classList.remove("is-loading")
+            document.querySelector("main.card-body").innerHTML = result
+         })
+   }
+   renderContent()
+   const updateModel = (url, method, data, id) => {
+      return fetch(url, {
+         ...fetchObject,
+         body: JSON.stringify({
+            method,
+            data,
+            id
+         })
+      })
+   }
+   const clickSave = (formElement, url) => {
+      const formData = new FormData(formElement);
+      const data = {}
+      for (var [key, value] of formData.entries()) {
+         data[key] = value
+      }
+      if (editmode) {
+         return updateModel(url, "Update", data, idSeleted)
+            .then(async (res) => {
+               const text = JSON.parse(await res.text())
+               if (text.message == "error") alerta(5)
+               else alerta(2)
+            })
+      }
+      else {
+         return updateModel(url, "Create", data, null)
+            .then(async (res) => {
+               const text = JSON.parse(await res.text())
+               if (text.message == "error") alerta(5)
+               else alerta(1)
+            })
+      }
+   }
+   const openDeleteUnits = async (id) => {
+      const elimino = await alerta(3)
+      if (elimino) {
+         fetch("{% url 'modalAddUnidad'%}", {
+            ...fetchObject,
+            body: JSON.stringify({
+               method: "Delete",
+               id
+            })
+         })
+            .then(async (res) => {
+               const text = JSON.parse(await res.text())
+               if (text.message == "error") alerta(5)
+               else alerta(4)
+            })
+            .then(() => {
+               renderContent()
+            })
+      }
+   }
+   const openEditUnits = (id) => {
+      editmode = true
+      idSeleted = id
+      fetch("{% url 'modalAddUnidad'%}", {
+         ...fetchObject,
+         body: JSON.stringify({
+            method: "Find",
+            id
+         })
+      })
+         .then(async (res) => {
+            document.getElementById("addNewModalContent").innerHTML = await res.text()
+            const comboPrograma = document.getElementById("programUnit")
+            let idPrograma = comboPrograma.value
+            const comboProceso = document.getElementById("padreUnit")
+            let idProceso = comboProceso.value
+            comboProceso.innerHTML = await renderCombo(idPrograma, "Select a process")
+            comboProceso.value = idProceso
+         })
+         .then(() => {
+            $("#addNewModal").modal("show")
+            const formUnidad = document.getElementById("formUnidad")
+            formUnidad.addEventListener("submit", (e) => {
+               e.preventDefault()
+               clickSave(formUnidad, "{% url 'modalAddUnidad' %}")
+                  .then(() => {
+                     $("#addNewModal").modal("hide")
+                     renderContent()
+                  })
+            })
+         })
+   }
+   const openAddUnits = () => {
+      editmode = false
+      fetch("{% url 'modalAddUnidad'%}", {
+         ...fetchObject,
+      })
+         .then(async (res) => {
+            document.getElementById("addNewModalContent").innerHTML = await res.text()
+            const comboProceso = document.getElementById("padreUnit")
+            comboProceso.innerHTML = await renderCombo(null, "Select a process")
+            comboProceso.value = null
+         })
+         .then(() => {
+            $("#addNewModal").modal("show")
+            const formUnidad = document.getElementById("formUnidad")
+            formUnidad.addEventListener("submit", (e) => {
+               e.preventDefault()
+               clickSave(formUnidad, "{% url 'modalAddUnidad' %}")
+                  .then(() => {
+                     $("#addNewModal").modal("hide")
+                     renderContent()
+                  })
+            })
+         })
+   }
+   const openAddCategory = () => {
+      fetch("{% url 'modalAddCategoria'%}", {
+         ...fetchObject,
+      })
+         .then(async (res) => {
+            document.getElementById("addNewModalContent").innerHTML = await res.text()
+         })
+         .then(() => {
+            $("#addNewModal").modal("show")
+            const formCategoria = document.getElementById("formCategoria")
+            formCategoria.addEventListener("submit", (e) => {
+               e.preventDefault()
+               clickSave(formCategoria, "{% url 'modalAddCategoria'%}")
+                  .then(() => {
+                     $("#addNewModal").modal("hide")
+                     renderContent()
+                  })
+            })
+         })
+   }
+   const searchFor = (text) => {
+      let output = text.trim()
+      if (output.length > 20) return
+      query = output
+      renderContent()
+   }
+
+   const searchBar = document.querySelector('#txtSearch')
+   const clearBtn = document.querySelector('#clearBtn')
+   const searchBtn = document.querySelector('#searchBtn')
+
+   clearBtn.addEventListener('click', () => {
+      searchBar.value = ""
+      query = ""
+      searchFor("")
+   })
+   searchBtn.addEventListener('click', () => {
+      searchFor(searchBar.value)
+   })
+   searchBar.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+         searchFor(searchBar.value)
+      }
+   });
+</script>
+{% endblock javascripts %}

@@ -1,0 +1,60 @@
+<div class="modal-content">
+   <div class="modal-header">
+      <h5 class="modal-title">Unit</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+         <span aria-hidden="true">&times;</span>
+      </button>
+   </div>
+   <form id="formUnidad" class="form">
+      <div class="modal-body">
+         <div class="form-row">
+            <div class="form-group col-12">
+               <label for="programUnit" class="col-form-label">Program</label>
+               <select class="form-control" name="programUnit" id="programUnit" onchange="changeProgram()" required>
+                  <option value="null" disabled {% if not modeloPadre %}selected{% endif %}>Select a program</option>
+                  {% for item in programs %}
+                  <option value="{{item.pk}}" {% if modeloPadre %}{% if modeloPadre.fk_estructura_padre_id == item.pk %}selected{% endif %}{% endif %}>{{item.descripcion}}</option>
+                  {% endfor%}
+               </select>
+            </div>
+         </div>
+         <div class="form-row">
+            <div class="form-group col-12">
+               <label for="padreUnit" class="col-form-label">Process</label>
+               <select class="form-control" name="padreUnit" id="padreUnit" required>
+                  <option value="null" disabled {% if not modelo %}selected{% endif %}>Select a process</option>
+                  {% for item in processes %}
+                  <option value="{{item.pk}}" {% if modelo %}{% if modelo.fk_estructura_padre_id == item.pk %}selected{%endif %}{% endif %}>{{item.descripcion}}</option>
+                  {% endfor%}
+               </select>
+            </div>
+         </div>
+         <div class="form-row">
+            <div class="form-group col-12">
+               <label for="descriptionUnit" class="col-form-label">Title</label>
+               <input type="text" class="form-control" name="descriptionUnit" id="descriptionUnit"
+                  placeholder="Enter a title" required value="{% if modelo %}{{ modelo.descripcion }}{% endif %}">
+            </div>
+         </div>
+         <div class="form-row">
+            <div class="form-group col-12">
+               <label for="urlUnit" class="col-form-label">URL</label>
+               <input type="text" class="form-control" name="urlUnit" id="urlUnit" placeholder="Enter a valid URL"
+                  required value="{% if modelo %}{{ modelo.url }}{% endif %}">
+            </div>
+         </div>
+         <div class="form-row">
+            <div class="form-group col-12">
+               <label for="creditos" class="col-form-label">Credits</label>
+               <input type="number" class="form-control" name="creditos" id="creditos" placeholder="1" required
+                  value="{% if modelo %}{{ modelo.peso_creditos }}{% endif %}">
+            </div>
+         </div>
+      </div>
+      <div class="modal-footer">
+         <button type="button" class="btn btn-danger" data-dismiss="modal"><i
+               class="fas fa-arrow-left mr-2"></i>Back</button>
+         <button type="submit" class="btn btn-primary">Save<i class="fas fa-save ml-2"></i></button>
+      </div>
+   </form>
+</div>
