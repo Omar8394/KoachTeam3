@@ -8,6 +8,7 @@ from django.urls import reverse
 from django import template
 import json
 from ..app.models import TablasConfiguracion, Estructuraprograma
+from .models import ActividadEvaluaciones
 
 # Create your views here.
 @login_required(login_url="/login/")
@@ -70,40 +71,6 @@ def test(request):
     return HttpResponse(html_template.render(context, request))
 
 @login_required(login_url="/login/")
-def getModalCategorias(request):
-    if request.method == "POST":
-        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            context = {}
-            try:
-                if request.body:
-                    data = json.load(request)
-                    config = TablasConfiguracion.objects.filter(valor_elemento="CatPrograma")
-                    padre = list(config.values())[0]
-                    if data["method"] == "Delete":
-                        category = TablasConfiguracion.objects.get(id_tabla=data["id"])
-                        category.delete()
-                        return JsonResponse({"message":"Deleted"})
-                    elif data["method"] == "Update":
-                        category = TablasConfiguracion.objects.get(id_tabla=data["id"])
-                    elif data["method"] == "Create":
-                        category = TablasConfiguracion()
-                        category.tipo_elemento=0 
-                        category.permite_cambios=1
-                        category.valor_elemento=None
-                        category.mostrar_en_combos=1
-                        category.maneja_lista=0
-                        category.fk_tabla_padre_id=padre["id_tabla"]
-                    category.desc_elemento = data["data"]["descriptionCat"]
-                    category.save()
-                    return JsonResponse({"message":"Perfect"})
-                else:
-                    html_template = (loader.get_template('components/modalAddCategoria.html'))
-                    return HttpResponse(html_template.render(context, request))
-            except:
-                return JsonResponse({"message":"error"})
-
-
-@login_required(login_url="/login/")
 def getContentProgramas(request):
     if request.method == "POST":
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
@@ -144,6 +111,58 @@ def getContentProcesos(request):
                 return HttpResponse(html_template.render(context, request))
 
 @login_required(login_url="/login/")
+def getContentUnidades(request):
+    if request.method == "POST":
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            context = {}
+            if request.body:
+                data = json.load(request)    
+                edit=True
+                delete=True
+                programa=Estructuraprograma.objects.get(valor_elemento="Programa", url=data["url"])
+                proceso=Estructuraprograma.objects.get(valor_elemento="Proceso", url=data["urlProceso"])
+                if data["query"] == "" or data["query"] == None:
+                    lista = proceso.estructuraprograma_set.all()
+                else:
+                    lista = proceso.estructuraprograma_set.all().filter(valor_elemento="Unidad", descripcion__icontains=data["query"])
+                context = {"data":lista, "programa":programa, "proceso":proceso ,"edit": edit, "delete":delete, "query":data["query"]}
+                html_template = (loader.get_template('academic/contenidoUnidades.html'))
+                return HttpResponse(html_template.render(context, request))
+
+@login_required(login_url="/login/")
+def getModalCategorias(request):
+    if request.method == "POST":
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            context = {}
+            try:
+                if request.body:
+                    data = json.load(request)
+                    config = TablasConfiguracion.objects.filter(valor_elemento="CatPrograma")
+                    padre = list(config.values())[0]
+                    if data["method"] == "Delete":
+                        category = TablasConfiguracion.objects.get(id_tabla=data["id"])
+                        category.delete()
+                        return JsonResponse({"message":"Deleted"})
+                    elif data["method"] == "Update":
+                        category = TablasConfiguracion.objects.get(id_tabla=data["id"])
+                    elif data["method"] == "Create":
+                        category = TablasConfiguracion()
+                        category.tipo_elemento=0 
+                        category.permite_cambios=1
+                        category.valor_elemento=None
+                        category.mostrar_en_combos=1
+                        category.maneja_lista=0
+                        category.fk_tabla_padre_id=padre["id_tabla"]
+                    category.desc_elemento = data["data"]["descriptionCat"]
+                    category.save()
+                    return JsonResponse({"message":"Perfect"})
+                else:
+                    html_template = (loader.get_template('components/modalAddCategoria.html'))
+                    return HttpResponse(html_template.render(context, request))
+            except:
+                return JsonResponse({"message":"error"})
+
+@login_required(login_url="/login/")
 def getModalProgramas(request):
     if request.method == "POST":
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
@@ -167,7 +186,7 @@ def getModalProgramas(request):
                     elif data["method"] == "Create":
                         programa = Estructuraprograma()
                         programa.valor_elemento = "Programa"
-                        programa.fk_estructura_padre_id=1
+                        programa.fk_estructura_padre_id=None
                     programa.descripcion = data["data"]["descriptionProgram"]
                     programa.url = data["data"]["urlProgram"]
                     programa.fk_categoria_id = data["data"]["categoryProgram"]
@@ -188,35 +207,77 @@ def getModalProcesos(request):
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             context = {}
             modelo = {}
-            # try:
-            if request.body:
-                data = json.load(request)
-                if data["method"] == "Find":
-                    modelo = Estructuraprograma.objects.get(pk=data["id"])    
+            try:
+                if request.body:
+                    data = json.load(request)
+                    if data["method"] == "Find":
+                        modelo = Estructuraprograma.objects.get(pk=data["id"])    
+                        programs = Estructuraprograma.objects.filter(valor_elemento="Programa")
+                        context = {"programs": programs, "modelo": modelo}
+                        html_template = (loader.get_template('components/modalAddProceso.html'))
+                        return HttpResponse(html_template.render(context, request))
+                    elif data["method"] == "Delete":
+                        proceso = Estructuraprograma.objects.get(pk=data["id"])
+                        proceso.delete()
+                        return JsonResponse({"message":"Deleted"})
+                    elif data["method"] == "Update":
+                        proceso = Estructuraprograma.objects.get(pk=data["id"])
+                    elif data["method"] == "Create":
+                        proceso = Estructuraprograma()
+                        proceso.valor_elemento = "Proceso"
+                    proceso.fk_estructura_padre_id=data["data"]["padreProcess"]
+                    proceso.descripcion = data["data"]["descriptionProcess"]
+                    proceso.url = data["data"]["urlProcess"]
+                    proceso.fk_categoria_id = Estructuraprograma.objects.get(pk=data["data"]["padreProcess"]).fk_categoria_id
+                    proceso.peso_creditos = data["data"]["creditos"]
+                    proceso.save()
+                    return JsonResponse({"message":"Perfect"})
+                else:
                     programs = Estructuraprograma.objects.filter(valor_elemento="Programa")
                     context = {"programs": programs, "modelo": modelo}
                     html_template = (loader.get_template('components/modalAddProceso.html'))
                     return HttpResponse(html_template.render(context, request))
+            except:
+                return JsonResponse({"message":"error"})
+
+@login_required(login_url="/login/")
+def getModalUnidades(request):
+    if request.method == "POST":
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            context = {}
+            modelo = {}
+            # try:
+            if request.body:
+                data = json.load(request)
+                if data["method"] == "Find":
+                    modelo = Estructuraprograma.objects.get(pk=data["id"])
+                    modeloPadre = Estructuraprograma.objects.get(pk=modelo.fk_estructura_padre_id)
+                    programs = Estructuraprograma.objects.filter(valor_elemento="Programa")
+                    processes = Estructuraprograma.objects.filter(valor_elemento="Proceso")
+                    context = {"programs": programs, "processes":processes, "modelo": modelo, "modeloPadre": modeloPadre}
+                    html_template = (loader.get_template('components/modalAddUnidad.html'))
+                    return HttpResponse(html_template.render(context, request))
                 elif data["method"] == "Delete":
-                    proceso = Estructuraprograma.objects.get(pk=data["id"])
-                    proceso.delete()
+                    unidad = Estructuraprograma.objects.get(pk=data["id"])
+                    unidad.delete()
                     return JsonResponse({"message":"Deleted"})
                 elif data["method"] == "Update":
-                    proceso = Estructuraprograma.objects.get(pk=data["id"])
+                    unidad = Estructuraprograma.objects.get(pk=data["id"])
                 elif data["method"] == "Create":
-                    proceso = Estructuraprograma()
-                    proceso.valor_elemento = "Proceso"
-                proceso.fk_estructura_padre_id=data["data"]["padreProcess"]
-                proceso.descripcion = data["data"]["descriptionProcess"]
-                proceso.url = data["data"]["urlProcess"]
-                proceso.fk_categoria_id = Estructuraprograma.objects.get(pk=data["data"]["padreProcess"]).fk_categoria_id
-                proceso.peso_creditos = data["data"]["creditos"]
-                proceso.save()
+                    unidad = Estructuraprograma()
+                    unidad.valor_elemento = "Unidad"
+                unidad.fk_estructura_padre_id=data["data"]["padreUnit"]
+                unidad.descripcion = data["data"]["descriptionUnit"]
+                unidad.url = data["data"]["urlUnit"]
+                unidad.fk_categoria_id = Estructuraprograma.objects.get(pk=data["data"]["padreUnit"]).fk_categoria_id
+                unidad.peso_creditos = data["data"]["creditos"]
+                unidad.save()
                 return JsonResponse({"message":"Perfect"})
             else:
                 programs = Estructuraprograma.objects.filter(valor_elemento="Programa")
-                context = {"programs": programs, "modelo": modelo}
-                html_template = (loader.get_template('components/modalAddProceso.html'))
+                processes = Estructuraprograma.objects.filter(valor_elemento="Proceso")
+                context = {"programs": programs, "processes":processes, "modelo": modelo}
+                html_template = (loader.get_template('components/modalAddUnidad.html'))
                 return HttpResponse(html_template.render(context, request))
             # except:
             #     return JsonResponse({"message":"error"})
@@ -245,8 +306,15 @@ def programa(request, programa):
     # return render(request, 'academic/procesos.html', context)
     # return HttpResponseRedirect(reverse('programa', args=(programa,)))
 @login_required(login_url="/login/")
-def proceso(request):
-    return
+def proceso(request, programa, proceso):
+    program = Estructuraprograma.objects.get(url=programa)
+    process = Estructuraprograma.objects.get(url=proceso)
+    context = {"programa" : program, "proceso":process}
+    #Vista del gestor
+
+    html_template = (loader.get_template('academic/unidades.html'))
+    #Vista del profesor
+    return HttpResponse(html_template.render(context, request))
 @login_required(login_url="/login/")
 def unidad(request):
     return
@@ -257,6 +325,25 @@ def topico(request):
 def actividad(request):
     return
 
+@login_required(login_url="/login/")
+def getComboContent(request):
+    if request.method == "POST":
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            context = {}
+            try:
+                if request.body:
+                    data=json.load(request)
+                    if data["id"] == "null" or data["id"] == None:
+                        hijos=None
+                    else:
+                        padre = Estructuraprograma.objects.get(pk=data["id"])
+                        hijos = padre.estructuraprograma_set.all()
+                    context = {"subEstructuraProg":hijos, "valor":data["valor"]}
+                    html_template = (loader.get_template('registration/ComboOptions.html'))
+                    return HttpResponse(html_template.render(context, request))
+            except:
+                return JsonResponse({"message":"error"})
+    
 @login_required(login_url="/login/")
 def pages(request):
     context = {}

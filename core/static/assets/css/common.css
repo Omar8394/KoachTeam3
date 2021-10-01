@@ -1,5 +1,7 @@
+
 .modal-body{
-   max-height: 80vh !important;
+   position: relative;
+   max-height: 65vh !important;
    overflow-y: auto;
 }
 .modal-header{

@@ -1,8 +1,8 @@
 
 
- 			<option value="" selected> </option>
-
-
+<option value="null" selected disabled>{{valor}}</option>
+{% if subEstructuraProg %}
 {% for mat in subEstructuraProg %}
 <option value="{{mat.idestructuraprogrmas}}"> {{mat}}</option>
 {% endfor %}
+{% endif %}

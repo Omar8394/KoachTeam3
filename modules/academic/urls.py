@@ -13,10 +13,13 @@ urlpatterns = [
    #contenidos AJAX
    path('contenidoProgramas/', views.getContentProgramas, name="contenidoProgramas"),
    path('contenidoProcesos/', views.getContentProcesos, name="contenidoProcesos"),
+   path('contenidoUnidades/', views.getContentUnidades, name="contenidoUnidades"),
+   path('comboOption/', views.getComboContent, name="contenidoCombo"),
    #modales
    path('modalAddCategoria/', views.getModalCategorias, name="modalAddCategoria"),
    path('modalAddPrograma/', views.getModalProgramas, name="modalAddPrograma"),
    path('modalAddProceso/', views.getModalProcesos, name="modalAddProceso"),
+   path('modalAddUnidad/', views.getModalUnidades, name="modalAddUnidad"),
    path('modalAddCurso/', views.getModalCursos, name="modalAddCurso"),
    path('modalAddTopico/', views.getModalTopico, name="modalAddTopico"),
    path('evaluaciones/', views.evaluaciones, name="evaluaciones"),
