@@ -9,13 +9,13 @@ def helpSecurity(request):
     context = {}
     context['segment'] = 'help'
 
-    return render(request,'help/helpSecurity.htm', , context)
+    return render(request,'help/helpSecurity.htm', context)
 
 def myHelp(request):
     context = {}
     context['segment'] = 'help'
 
-    return render(request,'help/myhelp.htm',context)
+    return render(request,'help/myhelp.htm', context)
 
 
 
