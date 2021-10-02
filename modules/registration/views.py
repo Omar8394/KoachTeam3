@@ -35,13 +35,11 @@ def enrollment(request):
 
 
             
-    context = {}
-    context['segment'] = 'registration'
 
     html_template = loader.get_template( 'registration/Matriculacion.html' )
 
     #return HttpResponse(html_template.render(context, request))
-    return render(request, 'registration/Matriculacion.html', {"form": form, "msg" : msg,'structuraProg':structuraProg, 'tipoPrograma':tipoPrograma})
+    return render(request, 'registration/Matriculacion.html', {"form": form, "msg" : msg,'structuraProg':structuraProg, 'tipoPrograma':tipoPrograma, 'segment':'registration'})
 
 @login_required(login_url="/login/")
 def ManageEnrollments(request):
@@ -303,7 +301,7 @@ def MatriculacionAdmin(request):
     
     
    # return HttpResponse(html_template.render(context, request))
-    return render(request, 'registration/MatriculacionAdmin.html', {'msg':msg,'matriculasList': page_obj,'FechaInicial':fechaI,'FechaFinal':fechaF, 'publicoObject':numeroPaginas,'idPersona':idPersona,'personaBuscarNombre':personaBuscarNombre, 'selectedStatus':idStatus,'selectedType':idTipo ,'status':status,'types':types} )
+    return render(request, 'registration/MatriculacionAdmin.html', {'msg':msg,'matriculasList': page_obj,'FechaInicial':fechaI,'FechaFinal':fechaF, 'publicoObject':numeroPaginas,'idPersona':idPersona,'personaBuscarNombre':personaBuscarNombre, 'selectedStatus':idStatus,'selectedType':idTipo ,'status':status,'types':types, 'segment':'registration'} )
 
 
 
@@ -470,7 +468,7 @@ def MyEnrollments(request):
      idStatus=int(idStatus)
     if idTipo!=None and idTipo!="":
      idTipo=int(idTipo)
-    return render(request, 'registration/MyMatriculas.html', {'msg':msg,'matriculasList': page_obj,'FechaInicial':fechaI,'FechaFinal':fechaF, 'selectedStatus':idStatus,'selectedType':idTipo ,'status':status,'types':types} )
+    return render(request, 'registration/MyMatriculas.html', {'msg':msg,'matriculasList': page_obj,'FechaInicial':fechaI,'FechaFinal':fechaF, 'selectedStatus':idStatus,'selectedType':idTipo ,'status':status,'types':types, 'segment':'registration'} )
 
     return render(request, 'registration/MyMatriculas.html', {'msg':msg,'matriculasList': page_obj})
 
@@ -525,7 +523,7 @@ def ManagePrices(request):
    page_number = request.GET.get('page')
    page_obj = paginator.get_page(page_number)
    
-   return render(request, 'registration/Courses.html', {"structuras": page_obj, })
+   return render(request, 'registration/Courses.html', {"structuras": page_obj, 'segment':'registration' })
 
 
 
