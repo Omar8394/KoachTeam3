@@ -87,7 +87,6 @@ def getContentProgramas(request):
                     for categoria in categorias:
                         lista[categoria.desc_elemento]=categoria.estructuraprograma_set.all().filter(valor_elemento="Programa")
                 else:
-                    categorias = categorias.filter(desc_elemento__icontains=data["query"])
                     for categoria in categorias:
                         lista[categoria.desc_elemento]=categoria.estructuraprograma_set.all().filter(valor_elemento="Programa", descripcion__icontains=data["query"])
                 context = {"data" : lista, "edit": edit, "delete":delete, "query":data["query"]}
