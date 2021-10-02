@@ -1,0 +1,275 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %}{% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+
+{% endblock stylesheets %}
+
+{% block content %}
+
+<div class="content">
+   <div class="page-inner animated fadeInRight">
+      <div class="page-header">
+         <h4 class="page-title">BBDD Course</h4>
+         <ul class="breadcrumbs">
+            <li class="nav-home">
+               <a href="{% url 'home' %}">
+                  <i class="flaticon-home"></i>
+               </a>
+            </li>
+            <li class="separator">
+               <i class="flaticon-right-arrow"></i>
+            </li>
+            <li class="nav-item">
+               <a href="{% url 'academic' %}">Academic</a>
+            </li>
+            <li class="separator">
+               <i class="flaticon-right-arrow"></i>
+            </li>
+            <li class="nav-item">
+               <a href="{% url 'system_tables' %}">Category</a>
+            </li>
+            <li class="separator">
+               <i class="flaticon-right-arrow"></i>
+            </li>
+            <li class="nav-item">
+               <a href="{% url 'system_tables' %}">Program</a>
+            </li>
+            <li class="separator">
+               <i class="flaticon-right-arrow"></i>
+            </li>
+            <li class="nav-item">
+               <a href="{% url 'system_tables' %}">Process</a>
+            </li>
+            <li class="separator">
+               <i class="flaticon-right-arrow"></i>
+            </li>
+            <li class="nav-item">
+               <a href="{% url 'system_tables' %}">BBDD Course</a>
+            </li>
+         </ul>
+      </div>
+      <div class="page-category">
+         <div class="card">
+            <div class="card-header">
+               <div class="form-row">
+                  <div class="form-group col-md-6">
+                     <h2 id="demo" class="card-text mt-2">
+                        Topics
+                     </h2>
+                  </div>
+                  <div class="form-group col-md-6 d-flex justify-content-end">
+                     <button type="button" id="btnAddSetting" class="btn btn-success" onclick="openAddModal()">
+                        Add topic <i class="fas fa-plus ml-1"></i>
+                     </button>
+                  </div>
+               </div>
+            </div>
+            <div class="card-body row">
+               <div id="renderContainer" class="col-md-12 mx-3 table-responsive">
+                  <h3 class="display-4">Select an element from list</h3>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+<div class="modal fade" id="addNewTopico" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+   aria-hidden="true">
+   <div id="addNewTopicoContent" class="modal-dialog  modal-dialog-centered" role="document">
+
+   </div>
+</div>
+
+{% endblock content %}
+
+{% block javascripts %}
+<script>
+   let selectedId = 1
+   let editmode = false
+
+   const renderModal = () => {
+      return fetch("{% url 'modalAddTopico' %}", {
+         ...fetchObject
+      })
+         .then(async (res) => {
+            document.getElementById("addNewTopicoContent").innerHTML = await res.text()
+         })
+         .then(() => {
+            const formTopico = document.getElementById("formTopico")
+            formTopico.addEventListener("submit", (e) => {
+               e.preventDefault()
+               clickSave()
+            })
+         })
+   }
+   const renderComponentTabla = (idPadre, name) => {
+      return fetch("{% url 'component_tabla'%}",
+         {
+            ...fetchObject,
+            body: JSON.stringify({
+               data: {
+                  name: name,
+                  padre: padre
+               }
+            }),
+         })
+         .then(async (res) => {
+            result = await res.text()
+            if (result[0] == '{') {
+               result = `<h3 class='display-4'>${JSON.parse(result).message}</h3>`
+            }
+            return result
+
+         })
+   }
+   const clickSave = () => {
+      form = {}
+      if (editmode) {
+         updateConfig(form, selectedId)
+      }
+      else {
+         createConfig(form)
+      }
+   }
+   const createConfig = (form) => {
+      fetch("{% url 'system_tables' %}", {
+         ...fetchObject,
+         body: JSON.stringify({
+            data: form
+         }),
+      })
+         .then(async (res) => {
+            let result = JSON.parse(await res.text())
+            if (result.message === "Error") {
+               alerta(5)
+            }
+            alerta(1)
+         })
+         .then(() => {
+            $("#addNewTable").modal("hide")
+         })
+   }
+   const updateConfig = (form, idViejo) => {
+      fetch("{% url 'system_tables' %}", {
+         ...fetchObject,
+         body: JSON.stringify({
+            data: {
+               ...form,
+               idViejo
+            }
+         }),
+      })
+         .then(async (res) => {
+            let result = JSON.parse(await res.text())
+            if (result.message === "Error") {
+               alerta(5)
+            }
+            alerta(2)
+         })
+         .then(() => {
+            $("#addNewTable").modal("hide")
+         })
+   }
+   const deleteConfig = (id) => {
+      return fetch("{% url 'system_tables' %}", {
+         ...fetchObject,
+         body: JSON.stringify({
+            data: {
+               delete: true,
+               id
+            }
+         }),
+      })
+         .then(async (res) => {
+            let result = JSON.parse(await res.text())
+            if (result.message === "Error") {
+               return false
+            }
+            return true
+         })
+   }
+   const toggleContentChild = async (idPadre) => {
+      const tablaHijo = document.getElementById(`tablaHijo${idPadre}`)
+      const contenedor = document.getElementById(`contenidoHijo${idPadre}`)
+      if (tablaHijo.hidden) {
+         const result = await renderComponentTabla(idPadre, "tablaActividades")
+         contenedor.innerHTML = result
+      }
+      else {
+         contenedor.innerHTML = ''
+      }
+      tablaHijo.hidden = !tablaHijo.hidden
+   }
+   const changePerPage = async () => {
+      const contenedorLista = document.getElementById("renderList")
+      const cbLista = document.getElementById("select-perpage")
+      renderComponentLista("listaConfig", 1, cbLista.value).then((resultado) => {
+         contenedorLista.innerHTML = resultado
+      })
+         .then(() => {
+            feedbackLista()
+         })
+   }
+   const goToPage = (page) => {
+      const contenedorLista = document.getElementById("renderList")
+      const cbLista = document.getElementById("select-perpage")
+      renderComponentLista("listaConfig", page, cbLista.value).then((resultado) => {
+         contenedorLista.innerHTML = resultado
+      })
+         .then(() => {
+            feedbackLista()
+         })
+   }
+   const limpiarModal = () => {
+      editmode = false
+   }
+   const openAddModal = (id) => {
+      fetch("{% url 'modalAddTopico' %}", {
+         ...fetchObject
+      })
+         .then(async (res) => {
+            await renderModal()
+            $("#addNewTopico").modal("show")
+         })
+   }
+   const openEditModal = (id) => {
+      selectedId = id
+      fetch("{% url 'system_tables' %}", {
+         ...fetchObject,
+         body: JSON.stringify({
+            data: {
+               idFind: id
+            }
+         }),
+      })
+         .then(async (res) => {
+            await renderModal()
+            limpiarModal()
+            let respuesta = JSON.parse(await res.text())
+            editmode = true
+         })
+         .then(() => {
+            $("#addNewTable").modal("show")
+         })
+   }
+   const openDeleteModal = async (id) => {
+      const elimino = await alerta(3)
+      if (elimino) {
+         const res = await deleteConfig(id)
+         if (res) {
+            alerta(4)
+         }
+         else {
+            alerta(5)
+         }
+
+      }
+   }
+
+</script>
+
+{% endblock javascripts %}

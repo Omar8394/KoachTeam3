@@ -476,6 +476,88 @@
       
 
     }
+  },
+
+  {
+    "model": "app.Estructuraprograma",
+    "pk":1,
+    "fields": {
+      "descripcion":"System engineer",
+      "valor_elemento":"Programa",
+      "url":"system_eng",
+      "peso_creditos":"2",
+      "fk_categoria":"24"
+    }
+  },
+  {
+    "model": "app.Estructuraprograma",
+    "pk":2,
+    "fields": {
+      "descripcion":"Industrial engineer",
+      "valor_elemento":"Programa",
+      "url":"indust_eng",
+      "peso_creditos":"2",
+      "fk_categoria":"24"
+    }
+  },
+  {
+    "model": "app.Estructuraprograma",
+    "pk":3,
+    "fields": {
+      "descripcion":"Agronomic engineer",
+      "valor_elemento":"Programa",
+      "url":"agro_eng",
+      "peso_creditos":"2",
+      "fk_categoria":"25"
+    }
+  },
+  {
+    "model": "app.Estructuraprograma",
+    "pk":4,
+    "fields": {
+      "descripcion":"Web developer",
+      "valor_elemento":"Proceso",
+      "url":"web_dev",
+      "peso_creditos":"2",
+      "fk_categoria":"24",
+      "fk_estructura_padre":"1"
+    }
+  },
+  {
+    "model": "app.Estructuraprograma",
+    "pk":5,
+    "fields": {
+      "descripcion":"Frontend developer",
+      "valor_elemento":"Unidad",
+      "url":"front_dev",
+      "peso_creditos":"2",
+      "fk_categoria":"24",
+      "fk_estructura_padre":"4"
+    }
+  },
+  {
+    "model": "app.Estructuraprograma",
+    "pk":6,
+    "fields": {
+      "descripcion":"VPS",
+      "valor_elemento":"Proceso",
+      "url":"vps_admin",
+      "peso_creditos":"2",
+      "fk_categoria":"24",
+      "fk_estructura_padre":"1"
+    }
+  },
+  {
+    "model": "app.Estructuraprograma",
+    "pk":7,
+    "fields": {
+      "descripcion":"Ubuntu server",
+      "valor_elemento":"Unidad",
+      "url":"ubuntu_server",
+      "peso_creditos":"2",
+      "fk_categoria":"24",
+      "fk_estructura_padre":"6"
+    }
   }
 
 
