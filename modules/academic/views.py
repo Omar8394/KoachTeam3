@@ -15,6 +15,7 @@ from .models import ActividadEvaluaciones
 def index(request):
     
     context = {}
+    context['segment'] = 'academic'
     #Vista del gestor
     html_template = (loader.get_template('academic/gestor.html'))
     #Vista del profesor
@@ -32,6 +33,7 @@ def cursos(request):
 @login_required(login_url="/login/")
 def evaluaciones(request):
     context = {}
+    context['segment'] = 'academic'
     html_template = (loader.get_template('academic/evaluaciones.html'))
     return HttpResponse(html_template.render(context, request))
 
@@ -358,6 +360,7 @@ def getModalTopico(request):
 def programa(request, programa):
     program = Estructuraprograma.objects.get(url=programa)
     context = {"programa" : program}
+    context['segment'] = 'academic'
     #Vista del gestor
     html_template = (loader.get_template('academic/procesos.html'))
     #Vista del profesor

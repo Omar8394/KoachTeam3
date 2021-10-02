@@ -43,24 +43,30 @@ def show(request):
     search_query = request.GET.get('search_box', "")
     plan = Perfil.objects.all()
     # print(plan.__class__.__name__)
+    context = {}
+    context['segment'] = 'planning'
 
     if(search_query):
 
         plan = plan.filter(deescripcion__startswith=search_query) 
 
-    return render(request,"planning/show.html",{'plan':paginas(request, plan), 'search':search_query}) 
+    return render(request,"planning/show.html",{'plan':paginas(request, plan), 'search':search_query}, context) 
 
 def showCompetences(request):  
     search_query = request.GET.get('search_box', "")
     competencia = CompetenciasReq.objects.all()  
+    context = {}
+    context['segment'] = 'planning'
 
     if(search_query):
         competencia = competencia.filter(desc_competencia__startswith=search_query) 
 
-    return render(request,"planning/showCompetence.html",{'competencia':paginas(request, competencia), 'search':search_query}) 
+    return render(request,"planning/showCompetence.html",{'competencia':paginas(request, competencia), 'search':search_query}, context) 
 
 def showCompetencesAdq(request):  
     search_query = request.GET.get('search_box', "")
+    context = {}
+    context['segment'] = 'planning'
 
     if not request.user.is_staff:
         competencia = CompetenciasAdq.objects.filter(fk_publico= Publico.objects.get(user = request.user))
@@ -71,11 +77,13 @@ def showCompetencesAdq(request):
 
         competencia = competencia.filter(periodo__startswith=search_query) 
 
-    return render(request,"planning/showCompetenceAdq.html",{'competencia':paginas(request, competencia), 'search':search_query}) 
+    return render(request,"planning/showCompetenceAdq.html",{'competencia':paginas(request, competencia), 'search':search_query}, context) 
 
 def showProgram(request):  
     program = Programascap.objects.all()  
-    return render(request,"planning/showProgram.html",{'programs':program}) 
+    context = {}
+    context['segment'] = 'planning'
+    return render(request,"planning/showProgram.html",{'programs':program}, context) 
 
 def addCompetence(request):  
     if request.method == "POST":  

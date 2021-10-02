@@ -36,7 +36,7 @@ def enrollment(request):
 
             
     context = {}
-   # context['segment'] = 'index'
+    context['segment'] = 'registration'
 
     html_template = loader.get_template( 'registration/Matriculacion.html' )
 
@@ -104,7 +104,7 @@ def PublicoAdmin(request):
 
             
     context = { 'msg':msg, 'publicoObject':page_obj}
-   # context['segment'] = 'index'
+    context['segment'] = 'registration'
 
   
     html_template = (loader.get_template('registration/PublicoAdmin.html'))
@@ -295,7 +295,7 @@ def MatriculacionAdmin(request):
      idTipo=int(idTipo)
             
     context = { 'msg':msg,'matriculasList': matriculaList}
-   # context['segment'] = 'index'
+    context['segment'] = 'registration'
 
     
     html_template = (loader.get_template('registration/MatriculacionAdmin.html'))
@@ -326,6 +326,11 @@ def MyEnrollments(request):
     idTipo=None
 
     personaBuscarNombre=None
+    
+    context = {}
+    context['segment'] = 'registration'
+
+
 
 
     
@@ -1115,7 +1120,9 @@ def updateEnrollment(request):
 @login_required(login_url="/login/")
 def Pay(request):
     
-       
+  context = {}
+  context['segment'] = 'registration'
+
   msg = None
   
   structuraProg = ""
