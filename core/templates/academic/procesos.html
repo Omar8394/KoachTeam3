@@ -184,26 +184,7 @@
             })
          })
    }
-   const openAddCategory = () => {
-      fetch("{% url 'modalAddCategoria'%}", {
-         ...fetchObject,
-      })
-         .then(async (res) => {
-            document.getElementById("addNewModalContent").innerHTML = await res.text()
-         })
-         .then(() => {
-            $("#addNewModal").modal("show")
-            const formCategoria = document.getElementById("formCategoria")
-            formCategoria.addEventListener("submit", (e) => {
-               e.preventDefault()
-               clickSave(formCategoria, "{% url 'modalAddCategoria'%}")
-                  .then(() => {
-                     $("#addNewModal").modal("hide")
-                     renderContent()
-                  })
-            })
-         })
-   }
+   
    const searchFor = (text) => {
       let output = text.trim()
       if (output.length > 20) return

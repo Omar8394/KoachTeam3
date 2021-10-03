@@ -1,0 +1,17 @@
+	<!-- Sweet Alert -->
+	<script src="/static/assets/js/plugin/sweetalert/sweetalert.min.js"></script>
+    
+    {% if messages %}
+
+        {% for message in messages %}
+
+            <script>swal({
+                title:"{% if message.level == 40 %}Ups!{% elif message.level == 30 %}Alert!{% elif message.level == 20 %}Good Job!{% endif %}",
+                text: "{{ message }}",
+                icon: "{% if message.level == 40 %}warning{% elif message.level == 30 %}error{% elif message.level == 20 %}success{% endif %}",
+                button: "Ok",})
+            </script> 
+
+        {% endfor %}
+
+    {% endif %}

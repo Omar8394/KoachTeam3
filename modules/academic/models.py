@@ -14,7 +14,7 @@ class TipoRecursos(models.Model):
 class EscalaEvaluacion(models.Model):
     idescala_evaluacion = models.SmallAutoField(primary_key=True)
     desc_escala = models.TextField()
-    maxima_puntuacion = models.DecimalField(max_digits=5, decimal_places=2)
+    maxima_puntuacion = models.DecimalField(max_digits=6, decimal_places=2)
 
     def __str__(self):
         return self.desc_escala
@@ -52,14 +52,12 @@ class EvaluacionesPreguntas(models.Model):
 
 class Cursos(models.Model):
     idcurso = models.SmallAutoField(primary_key=True)
-    desc_curso = models.TextField(db_collation='utf8mb3_swedish_ci')
     abrev_curso = models.CharField(max_length=7, db_collation='utf8mb3_swedish_ci')
     codigo_curso = models.CharField(max_length=15, db_collation='utf8mb3_swedish_ci')
     disponible_desde = models.DateField(null=True)
     duracion = models.DecimalField(max_digits=5, decimal_places=2, null=True)
     tipo_evaluacion = models.BooleanField(null=True)
-    fk_estruc_programa = models.ForeignKey(Estructuraprograma, on_delete=models.CASCADE, default=None, null=True)
-    fk_categoria = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE, default=None, null=True)
+    fk_estruc_programa = models.OneToOneField(Estructuraprograma, on_delete=models.CASCADE, default=None, null=True)
     fk_estatus_curso = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE, default=None, null=True, related_name="estatus_curso")
     fk_tipo_duracion = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE, default=None, null=True, related_name="tipo_duracion")
 

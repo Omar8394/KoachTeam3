@@ -14,7 +14,7 @@
         <img src="/static/assets/img/JC-Energy-Logo-Full.png" class="navbar-brand mt-5">
     </div>
 
-    <div class="card text-white">
+    <div class="card text-white border border-dark">
     <div class="card-header bg-dark2"  >
     <script language="JavaScript">
         {% if msg %}
@@ -25,7 +25,7 @@
                             <span class="text-danger">{{ msg | safe }}</span>
                         {% else %}
                             <span style="color: white">
-                              <h2 class="h2">Access Request Form</h2>
+                              <h2 class="h2">{% block titulo %}Access Request Form{% endblock %}</h2>
                             </span>
                         {% endif %}
 
@@ -50,6 +50,13 @@
             document.getElementById("correos").value= JSON.stringify(emails);
             document.getElementById("cuenta_telegram").value=document.getElementById("telegram").checked;
             document.getElementById("cuenta_whatsapp").value=document.getElementById("whatsapp").checked;
+            document.getElementById("email_user").value=emails.emailPrincipal;
+            let pass1 =document.getElementById("password1");
+            let pass2 =document.getElementById("password2");
+            if(pass1!==pass2){
+                swal("Error","the password and the confirmation password must be the same","error");
+                return false;
+            }
             return true;
         }
     </script>
@@ -99,7 +106,7 @@
                     <div class="col-md-12">
                         <div class="form-group">
                             <label for="direccion">Address</label>
-                            <input  type="text" class="form-control" id="direccion" name="direccion"  maxlength="200"  required/>
+                            <input  type="text" class="form-control" id="direcc••••••••••ion" name="direccion"  maxlength="200"  required/>
                         </div>
                     </div>
                 </div>
@@ -163,6 +170,13 @@
                                 </div>
   </div>
             </div>
+        <div id="segundafase">
+
+              {% block registrofull %}
+
+                  {% endblock registrofull %}
+
+        </div>
             <div class="form-group row mt-2">
                             <div class="col-3 offset-4">
                                 <button type="submit" class="btn bg-dark2 btn-block btn-md" style="color: white">Submit</button>
@@ -173,6 +187,7 @@
             <input type="hidden" name="telefonos" id="telefonos" value="asdX">
             <input type="hidden" name="cuenta_telegram" id="cuenta_telegram" value="false">
             <input type="hidden" name="cuenta_whatsapp" id="cuenta_whatsapp" value="false">
+            <input type="hidden" name="email" id="email_user" value="asdX">
         </form>
     </div>
     <div class="card-footer bg-dark2">

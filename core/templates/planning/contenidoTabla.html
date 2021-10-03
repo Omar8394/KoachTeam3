@@ -1,0 +1,30 @@
+
+    <thead id="tablaHead">
+        <tr>
+            {% for key, value in keys.items %}
+                <th id={{ key }} class={% if key == orden %}descendiente{% endif %}>{{ value }}</th>
+            {% endfor %}
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>  
+        {% for p in plan %}  
+            <tr>  
+                {% for key, value in keys.items %}
+                    <td>{{ p|get_attr:key }}</td>
+                {% endfor %}
+                
+                {% for key, value in keys.items %}
+                    {% if forloop.first %}
+                        <td>  
+                            <a href="{% url urlEdit p|get_attr:key %}" class="btn btn-icon btn-sm btn-info"><i class="fas fa-edit align-middle mt-1"></i></a>  
+                            <button onclick="eliminar({{  p|get_attr:key }})" class="btn btn-icon btn-sm btn-danger ml-1" ><i class="fas fa-trash-alt"></i></button>
+                        </td>  
+                    {% endif %}
+                {% endfor %}
+            </tr>  
+            {% empty %}
+                <tr><td colspan="100%"><h2>No matching records found</h2></td></tr> 
+        {% endfor %} 
+        <tr><td>{{ plan }}</td></tr> 
+    </tbody>  

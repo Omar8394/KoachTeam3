@@ -12,7 +12,7 @@
             <h4 class="page-title">Create test</h4>
             <ul class="breadcrumbs">
                <li class="nav-home">
-                  <a href="index.html">
+                  <a href="{% url 'home' %}">
                      <i class="flaticon-home"></i>
                   </a>
                </li>
@@ -20,13 +20,13 @@
                   <i class="flaticon-right-arrow"></i>
                </li>
                <li class="nav-item">
-                  <span>Module name</span>
+                  <a href="{% url 'academic' %}">Academic</a>
                </li>
                <li class="separator">
                   <i class="flaticon-right-arrow"></i>
                </li>
                <li class="nav-item">
-                  <a href="#">Page 1</a>
+                  <a href="#">Create test</a>
                </li>
             </ul>
          </div>

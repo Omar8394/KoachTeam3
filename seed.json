@@ -301,6 +301,62 @@
   },
   {
     "model": "app.TablasConfiguracion",
+    "pk": 31,
+    "fields": {
+      "desc_elemento": "Revision",
+      "fk_tabla_padre_id": 21,
+      "tipo_elemento": 1,
+      "permite_cambios":1,
+      "valor_elemento":"EstatusRevision",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk": 30,
+    "fields": {
+      "desc_elemento": "Cancelled",
+      "fk_tabla_padre_id": 21,
+      "tipo_elemento": 1,
+      "permite_cambios":1,
+      "valor_elemento":"EstatusCancelado",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk": 28,
+    "fields": {
+      "desc_elemento": "Waiting for payment",
+      "fk_tabla_padre_id": 21,
+      "tipo_elemento": 1,
+      "permite_cambios":1,
+      "valor_elemento":"EstatusEspera",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk": 29,
+    "fields": {
+      "desc_elemento": "Approved",
+      "fk_tabla_padre_id": 21,
+      "tipo_elemento": 1,
+      "permite_cambios":1,
+      "valor_elemento":"EstatusAprovado",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
     "pk": 22,
     "fields": {
       "desc_elemento": "Estatus curso",
@@ -356,6 +412,196 @@
     }
   },
 
+  {
+    "model": "app.TablasConfiguracion",
+    "pk": 26,
+    "fields": {
+      "desc_elemento": "Pay",
+      "fk_tabla_padre_id": 6,
+      "tipo_elemento": 1,
+      "permite_cambios":1,
+      "valor_elemento":"MatriculaPaga",
+      "mostrar_en_combos":1,
+      "maneja_lista":1
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk": 27,
+    "fields": {
+      "desc_elemento": "Scholarship",
+      "fk_tabla_padre_id": 6,
+      "tipo_elemento": 1,
+      "permite_cambios":1,
+      "valor_elemento":"MatriculaBeca",
+      "mostrar_en_combos":1,
+      "maneja_lista":1
+
+    }
+  },
+
+  {
+    "model": "app.TablasConfiguracion",
+    "pk": 100,
+    "fields": {
+      "desc_elemento": "Payment Status",
+      "fk_tabla_padre_id": 1,
+      "tipo_elemento": 0,
+      "permite_cambios":0,
+      "valor_elemento":"PayStatus",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk": 101,
+    "fields": {
+      "desc_elemento": "Confirmed",
+      "fk_tabla_padre_id": 100,
+      "tipo_elemento": 0,
+      "permite_cambios":0,
+      "valor_elemento":"payConfirm",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk": 102,
+    "fields": {
+      "desc_elemento": "Waiting for Confirmation",
+      "fk_tabla_padre_id": 100,
+      "tipo_elemento": 0,
+      "permite_cambios":0,
+      "valor_elemento":"payWait",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk": 103,
+    "fields": {
+      "desc_elemento": "Payment Rejected",
+      "fk_tabla_padre_id": 100,
+      "tipo_elemento": 0,
+      "permite_cambios":0,
+      "valor_elemento":"payRejected",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "fields": {
+      "desc_elemento": "Days",
+      "fk_tabla_padre_id": 13,
+      "tipo_elemento": 0,
+      "permite_cambios":1,
+      "valor_elemento":"",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "fields": {
+      "desc_elemento": "Minutes",
+      "fk_tabla_padre_id": 13,
+      "tipo_elemento": 0,
+      "permite_cambios":1,
+      "valor_elemento":"",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "fields": {
+      "desc_elemento": "Hours",
+      "fk_tabla_padre_id": 13,
+      "tipo_elemento": 0,
+      "permite_cambios":1,
+      "valor_elemento":"",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
+   {
+    "model": "app.TablasConfiguracion",
+    "fields": {
+      "desc_elemento": "Approved",
+      "fk_tabla_padre_id": 18,
+      "tipo_elemento": 0,
+      "permite_cambios":1,
+      "valor_elemento":"",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
+   {
+    "model": "app.TablasConfiguracion",
+    "fields": {
+      "desc_elemento": "Reprobate",
+      "fk_tabla_padre_id": 18,
+      "tipo_elemento": 0,
+      "permite_cambios":1,
+      "valor_elemento":"",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
+   {
+    "model": "app.TablasConfiguracion",
+    "fields": {
+      "desc_elemento": "Repair",
+      "fk_tabla_padre_id": 18,
+      "tipo_elemento": 0,
+      "permite_cambios":1,
+      "valor_elemento":"",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "fields": {
+      "desc_elemento": "Open",
+      "fk_tabla_padre_id": 22,
+      "tipo_elemento": 0,
+      "permite_cambios":1,
+      "valor_elemento":"",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "fields": {
+      "desc_elemento": "Close",
+      "fk_tabla_padre_id": 22,
+      "tipo_elemento": 0,
+      "permite_cambios":1,
+      "valor_elemento":"",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
+  
   {
     "model": "app.Contratantes",
     "pk": 1,
@@ -476,8 +722,401 @@
       
 
     }
+  },
+
+  {
+    "model": "app.Estructuraprograma",
+    "pk":1,
+    "fields": {
+      "descripcion":"System engineer",
+      "resumen":"Complete program to adquire knowledge about all kind of systems and network",
+      "valor_elemento":"Programa",
+      "url":"system_eng",
+      "peso_creditos":"2",
+      "fk_categoria":"24"
+    }
+  },
+  {
+    "model": "app.Estructuraprograma",
+    "pk":2,
+    "fields": {
+      "descripcion":"Industrial engineer",
+      "resumen":"Complete program to adquire knowledge about all kind of industrial processes and procedures",
+      "valor_elemento":"Programa",
+      "url":"indust_eng",
+      "peso_creditos":"2",
+      "fk_categoria":"24"
+    }
+  },
+  {
+    "model": "app.Estructuraprograma",
+    "pk":3,
+    "fields": {
+      "descripcion":"Agronomic engineer",
+      "resumen":"Complete program to adquire knowledge about ground, farm animals, botanic topics and more",
+      "valor_elemento":"Programa",
+      "url":"agro_eng",
+      "peso_creditos":"2",
+      "fk_categoria":"25"
+    }
+  },
+  {
+    "model": "app.Estructuraprograma",
+    "pk":4,
+    "fields": {
+      "descripcion":"Web developer",
+      "resumen":"Required process to be an web developer capable to develop frontend and backend, client and server",
+      "valor_elemento":"Proceso",
+      "url":"web_dev",
+      "peso_creditos":"2",
+      "fk_categoria":"24",
+      "fk_estructura_padre":"1"
+    }
+  },
+  {
+    "model": "app.Estructuraprograma",
+    "pk":5,
+    "fields": {
+      "descripcion":"Frontend developer",
+      "resumen":"Unit in order to built client side of web, ui and ux",
+      "valor_elemento":"Unidad",
+      "url":"front_dev",
+      "peso_creditos":"2",
+      "fk_categoria":"24",
+      "fk_estructura_padre":"4"
+    }
+  },
+  {
+    "model": "app.Estructuraprograma",
+    "pk":6,
+    "fields": {
+      "descripcion":"VPS",
+      "resumen":"Required process to have a full understanding of Virtual servers and their use",
+      "valor_elemento":"Proceso",
+      "url":"vps_admin",
+      "peso_creditos":"2",
+      "fk_categoria":"24",
+      "fk_estructura_padre":"1"
+    }
+  },
+  {
+    "model": "app.Estructuraprograma",
+    "pk":7,
+    "fields": {
+      "descripcion":"Ubuntu server",
+      "resumen":"Unit to learn deeply about Ubuntu server and this linux distro unique features",
+      "valor_elemento":"Unidad",
+      "url":"ubuntu_server",
+      "peso_creditos":"2",
+      "fk_categoria":"24",
+      "fk_estructura_padre":"6"
+    }
+  },
+  {
+    "model": "app.Estructuraprograma",
+    "pk":8,
+    "fields": {
+      "descripcion":"Distro",
+      "resumen":"Course oriented to know how to interact with Ubuntu server distro",
+      "valor_elemento":"Curso",
+      "url":"ubuntu_distro",
+      "peso_creditos":"1",
+      "fk_categoria":"24",
+      "fk_estructura_padre":"7"
+    }
+
+  },
+  {
+    "model": "app.Estructuraprograma",
+    "pk":9,
+    "fields": {
+      "descripcion":"CSS",
+      "resumen":"Make u the best designer of visuals for client with this course",
+      "valor_elemento":"Curso",
+      "url":"css_dev",
+      "peso_creditos":"1",
+      "fk_categoria":"24",
+      "fk_estructura_padre":"5"
+    }
+
+  },
+  {
+    "model": "academic.Cursos",
+    "fields": {
+      "abrev_curso":"css",
+      "codigo_curso":"d001",
+      "disponible_desde":"2021-10-04",
+      "fk_estruc_programa_id":9,
+      "tipo_evaluacion":"1"
+    }
+
+  },
+
+  {
+    "model": "registration.PreciosFormacion",
+    "pk":1,
+    "fields": {
+    
+      "precio":null,
+      "PorcentajeDescuento":null,
+   
+      "fecha_registro":"2021-09-24",
+      "fecha_habilitado":"2021-09-24",
+      "fk_tipo_moneda":null,
+
+      "fk_estruc_programa":"1"
+    }
+  },
+  {
+    "model": "registration.PreciosFormacion",
+    "pk":2,
+    "fields": {
+      
+      "precio":null,
+      "PorcentajeDescuento":null,
+     
+      "fecha_registro":"2021-09-24",
+      "fecha_habilitado":"2021-09-24",
+      "fk_tipo_moneda":null,
+
+      "fk_estruc_programa":"2"
+    }
+  },
+  {
+    "model": "registration.PreciosFormacion",
+    "pk":3,
+    "fields": {
+      
+      "precio":null,
+      "PorcentajeDescuento":null,
+   
+      "fecha_registro":"2021-09-24",
+      "fecha_habilitado":"2021-09-24",
+      "fk_tipo_moneda":null,
+
+      "fk_estruc_programa":"3"
+    }
+  },
+  {
+    "model": "registration.PreciosFormacion",
+    "pk":4,
+    "fields": {
+      
+      "precio":null,
+      "PorcentajeDescuento":null,
+      
+      "fecha_registro":"2021-09-24",
+      "fecha_habilitado":"2021-09-24",
+      "fk_tipo_moneda":null,
+
+      "fk_estruc_programa":"4"
+    }
+  },
+  {
+    "model": "registration.PreciosFormacion",
+    "pk":5,
+    "fields": {
+   
+      "precio":null,
+      "PorcentajeDescuento":null,
+      
+      "fecha_registro":"2021-09-24",
+      "fecha_habilitado":"2021-09-24",
+      "fk_tipo_moneda":null,
+
+      "fk_estruc_programa":"5"
+    }
+  },
+  {
+    "model": "registration.PreciosFormacion",
+    "pk":6,
+    "fields": {
+      
+      "precio":null,
+      "PorcentajeDescuento":null,
+      
+      "fecha_registro":"2021-09-24",
+      "fecha_habilitado":"2021-09-24",
+      "fk_tipo_moneda":null,
+
+      "fk_estruc_programa":"6"
+    }
+  },
+  {
+    "model": "registration.PreciosFormacion",
+    "pk":7,
+    "fields": {
+      
+      "precio":null,
+      "PorcentajeDescuento":null,
+     
+      "fecha_registro":"2021-09-24",
+      "fecha_habilitado":"2021-09-24",
+      "fk_tipo_moneda":null,
+
+      "fk_estruc_programa":"7"
+    }
+  },
+  {
+    "model": "registration.PreciosFormacion",
+    "pk":8,
+    "fields": {
+      
+      "precio":null,
+      "PorcentajeDescuento":null,
+      
+      "fecha_registro":"2021-09-24",
+      "fecha_habilitado":"2021-09-24",
+      "fk_tipo_moneda":null,
+
+      "fk_estruc_programa":"8"
+    }
+  },
+  {
+    "model": "registration.PreciosFormacion",
+    "pk":9,
+    "fields": {
+      
+      "precio":null,
+      "PorcentajeDescuento":null,
+      
+      "fecha_registro":"2021-09-24",
+      "fecha_habilitado":"2021-09-24",
+      "fk_tipo_moneda":null,
+
+      "fk_estruc_programa":"9"
+    }
+  },
+  {
+    "model": "app.tablasconfiguracion",
+    "pk": 44,
+    "fields": {
+      "desc_elemento": "Medicine",
+      "fk_tabla_padre": 15,
+      "tipo_elemento": "0",
+      "permite_cambios": 1,
+      "valor_elemento": null,
+      "mostrar_en_combos": 1,
+      "maneja_lista": 0
+    }
+  },
+  {
+    "model": "app.tablasconfiguracion",
+    "pk": 45,
+    "fields": {
+      "desc_elemento": "Engineering",
+      "fk_tabla_padre": 15,
+      "tipo_elemento": "0",
+      "permite_cambios": 1,
+      "valor_elemento": null,
+      "mostrar_en_combos": 1,
+      "maneja_lista": 0
+    }
+  },
+  {
+    "model": "app.tablasconfiguracion",
+    "pk": 46,
+    "fields": {
+      "desc_elemento": "Science",
+      "fk_tabla_padre": 15,
+      "tipo_elemento": "0",
+      "permite_cambios": 1,
+      "valor_elemento": null,
+      "mostrar_en_combos": 1,
+      "maneja_lista": 0
+    }
+  },
+  {
+    "model": "app.tablasconfiguracion",
+    "pk": 47,
+    "fields": {
+      "desc_elemento": "Administration",
+      "fk_tabla_padre": 15,
+      "tipo_elemento": "0",
+      "permite_cambios": 1,
+      "valor_elemento": null,
+      "mostrar_en_combos": 1,
+      "maneja_lista": 0
+    }
+  },
+  {
+    "model": "app.tablasconfiguracion",
+    "pk": 48,
+    "fields": {
+      "desc_elemento": "Moral",
+      "fk_tabla_padre": 8,
+      "tipo_elemento": "0",
+      "permite_cambios": 1,
+      "valor_elemento": null,
+      "mostrar_en_combos": 1,
+      "maneja_lista": 0
+    }
+  },
+  {
+    "model": "app.tablasconfiguracion",
+    "pk": 49,
+    "fields": {
+      "desc_elemento": "Physical",
+      "fk_tabla_padre": 8,
+      "tipo_elemento": "0",
+      "permite_cambios": 1,
+      "valor_elemento": null,
+      "mostrar_en_combos": 1,
+      "maneja_lista": 0
+    }
+  },
+ 
+{
+  "model": "app.tablasconfiguracion",
+  "pk": 33,
+  "fields": {
+    "desc_elemento": "Low",
+    "fk_tabla_padre": 17,
+    "tipo_elemento": "0",
+    "permite_cambios": 1,
+    "valor_elemento": null,
+    "mostrar_en_combos": 1,
+    "maneja_lista": 0
   }
-
-
+},
+{
+  "model": "app.tablasconfiguracion",
+  "pk": 34,
+  "fields": {
+    "desc_elemento": "Middle",
+    "fk_tabla_padre": 17,
+    "tipo_elemento": "0",
+    "permite_cambios": 1,
+    "valor_elemento": null,
+    "mostrar_en_combos": 1,
+    "maneja_lista": 0
+  }
+},
+{
+  "model": "app.tablasconfiguracion",
+  "pk": 35,
+  "fields": {
+    "desc_elemento": "High",
+    "fk_tabla_padre": 17,
+    "tipo_elemento": "0",
+    "permite_cambios": 1,
+    "valor_elemento": null,
+    "mostrar_en_combos": 1,
+    "maneja_lista": 0
+  }
+},
+{
+  "model": "app.tablasconfiguracion",
+  "pk": 32,
+  "fields": {
+    "desc_elemento": "Logic",
+    "fk_tabla_padre": 8,
+    "tipo_elemento": "0",
+    "permite_cambios": 1,
+    "valor_elemento": null,
+    "mostrar_en_combos": 1,
+    "maneja_lista": 0
+  }
+}
 
 ]

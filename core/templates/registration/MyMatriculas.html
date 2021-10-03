@@ -14,18 +14,18 @@
             
 			<div class="page-header">
 
-				<h4 class="page-title">Starter page</h4>
+				<h4 class="page-title">Enrollment Applications</h4>
 				<ul class="breadcrumbs">
 					<li class="nav-home">
-						<a href="index.html">
-							<i class="flaticon-home"></i>
-						</a>
+						<a href="{% url 'home' %}">
+                            <i class="flaticon-home"></i>
+                        </a>
 					</li>
 					<li class="separator">
 						<i class="flaticon-right-arrow"></i>
 					</li>
 					<li class="nav-item">
-						<span>Module name</span>
+						<span>Registration</span>
 					</li>
 					<li class="separator">
 						<i class="flaticon-right-arrow"></i>
@@ -40,7 +40,6 @@
 
 			<div class="page-category">
 
-        <h2>Enrollment Applications</h2>
 		<div > 
 			<div class="dropdown" id="panelBuscar">
                 <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -77,6 +76,7 @@
                                    
                                     
                                 </tr>
+                                {% comment %}
                                 <tr>
                                     <td>Enrollment Type</td>
                                     <td></td>
@@ -96,6 +96,8 @@
                                   
                                     
                                 </tr>
+                                {% endcomment %}
+
                                 <tr>
                                     <td>Initial Date</td>
                                     <td></td>
@@ -164,12 +166,21 @@
     
                                        <td>{{mat.fecha_matricula}}</td>
                                        <td>{{mat.fk_estruc_programa}}</td>
+                                       {% if mat.fk_status_matricula.valor_elemento == 'EstatusEspera'%}
                                        <td onclick="showModalPago('{{mat.fk_estruc_programa.idestructuraprogrmas}}' )">
                                            <span class="fas fa-credit-card">Payment </span>
                                        </td>
+                                       {% else %}
+                                       <td>
+
+                                       </td>
+                                      {% endif %}
+
+                                       {% comment %}
                                        <td onclick="showModalPago('{{mat.fk_estruc_programa.idmatricula_alumnos}}' )">
                                         <span class="fas fa-edit"> Editar </span>
                                     </td>
+                                    {% endcomment %}
     
     
     
@@ -481,9 +492,138 @@ function reload(){
 
  
 
+<div class="modal fade" tabindex="-1" role="dialog" id="TrMatriculaTr">
+         <form id="enrollTr" class="form" enctype="multipart/form-data" onsubmit="cgPayTr();return false">
+
+    <div class="modal-dialog modal-lg" role="document" id="modalContentTr">
+     
+        
+      
+  <div class="modal-content" onload="Carga2()">
+    <div class="modal-header">
+        <h4 style="left: initial;" class="modal-title">Enrollment Details</h4>
+
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    </div>
+    <div class="modal-body">
+           {% csrf_token %}  
+            <div class="row">
+                
+                    <div class="col-5">
+                        
+        <div id="formCurso" class="form"> Payment details
+      <div class="modal-body" style="height:400px; overflow-y: scroll;">
+         <div class="form-row">
+            <div class="form-group col-12">
+               <label for="titleCourse" class="col-form-label">Amount to pay:</label>
+               <span id="Amount" name="Amount" > </span>
+                 
+            </div>
+             </div>
+             <div class="form-row">
+            <div class="form-group col-12">
+               <label for="titleCourse" class="col-form-label">Name</label>
+               <input type="text" class="form-control n" id="Name" name="Name"
+                  placeholder="Enter your name" value="Banesco" readonly required>
+            </div>
+             </div>
+             <div class="form-row">
+            <div class="form-group col-12">
+               <label for="titleCourse" class="col-form-label">Account Number</label>
+               <input type="text" class="form-control i" id="Transaction" name="Transaction"
+                  placeholder="Enter referral code" value="1025422415252245" readonly required>
+            </div>
+             </div>
+             <div class="form-row">
+            <div class="form-group col-12">
+               <label for="titleCourse" class="col-form-label">Unique identifier</label>
+               <label for="titleCourse" class="col-form-label">(Put this code on you transaccion description)</label>
+
+               <input type="text" class="form-control a" id="hashID" nama="Payment"
+                  placeholder="Enter payment date" value="" readonly required>
+            
+            </div>
+             <button type="button" class="btn btn-success b" onclick="" id="">Copy data</button>
+             <span id="message"></span>
+             </div>
+         
+        </div>
+      </div>
+                   
+                    </div>
+                     
+                        <div class="col-7">
+                        
+                         <div id="formCurso" class="form">Proof of payment
+      <div class="modal-body" style="height:400px; overflow-y: scroll;">
+         
+         <input type="hidden" name="MAX_FILE_SIZE" value="4194304" />
+                       {% comment %} <input type="file" /> {% endcomment %}
+                       <input type="file" id="seleccionArchivos" name="imagenRuta" accept="image/*" required>
+                      <br><br>
+                        <!-- La imagen que vamos a usar para previsualizar lo que el usuario selecciona -->
+                       <img id="imagenPrevisualizacion" width="400px" header="400px">
+                     
+                       
+                     
+         
+         <div class="form-row">
+            <div class="form-group col-12">
+               <label for="descriptionCourse" class="col-form-label">Reference number</label>
+               <textarea class="form-control" id="descriptionCourse" required name="reference" placeholder="reference number description"></textarea>
+            </div>
+         </div>
+         
+      </div>
+
+      <div class="modal-footer">
+         {% comment %} <button type="button" class="btn btn-danger" data-dismiss="modal">
+         <i
+               class="fas fa-arrow-left mr-2"></i>Back</button> {% endcomment %}
+         {% comment %} <button type="submit" class="btn btn-primary">Save<i class="fas fa-save ml-2"></i></button> {% endcomment %}
+      </div>
+   </div>
+
+                   
+                    </div>
+                      
+                    </div>
+
+
+       
+  
+           
+      
+           
+            </div>
+         
+
+
+         
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Save<i class="fas fa-save ml-2"></i></button>
+      
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    </div>
+
+
+    </div>
+</div>
+
+</form>
+
+        </div><!-- /.modal-content -->
+
+
+
+
+
+
+
 <script>
-    
+    var PrecioMatricula=0;
     var matricula=0;
+    var HashCode="";
     function showModalPago(id){
         matricula=id;
     
@@ -517,6 +657,8 @@ function reload(){
     }).then(function(result){
         
         let unit2=result;
+        PrecioMatricula=unit2;
+
         precio(unit2);
     
     });
@@ -531,13 +673,42 @@ function reload(){
         matricula=id;
     
     
-
+        if(id==1){
        $("#PayMatriculaPaypal").modal("show");
-      // initPayPalButton();
+      
+    }
+
+      if(id==2){
+              $("#TrMatriculaTr").modal("show");
+             
+   let url='hashPay/';
+   // let url='ModalPay/?matricula='+id;
+    fetch(url,{
+        mode: 'no-cors',
+      method: 'get'
+    }).then(function(result){
     
+    return result.text();
+    
+    }).then(function(result){
+
+       //alert(result) 
+        hashID.value = result;
+        HashCode=result
+       document.getElementById('Amount').innerHTML=PrecioMatricula;
+        idHash = result;
+     
+    });
+   
+        }
        
       
     }
+    
+    
+       
+      
+    
     
     
     
@@ -662,7 +833,62 @@ function reload(){
         initPayPalButton();
       </script>
     
+<script>
 
+
+function cgPayTr(){
+
+
+   
+Amount.value = pagotr;
+var xhr = new XMLHttpRequest();
+xhr.open("POST", "InsertPayTr/"); 
+xhr.onload = function(event){ 
+alert("Success, server responded with: " + event.target.response); // raw response
+location.href = "" ;
+}; 
+// or onerror, onabort
+var formData = new FormData(document.getElementById("enrollTr")); 
+formData.append('hash', HashCode);
+formData.append('matricula', matricula);
+formData.append('precio', PrecioMatricula);
+formData.append('origen', 3);
+
+
+xhr.send(formData);
+
+
+
+
+}
+
+
+
+const $seleccionArchivos = document.querySelector("#seleccionArchivos"),
+$imagenPrevisualizacion = document.querySelector("#imagenPrevisualizacion");
+
+// Escuchar cuando cambie
+$seleccionArchivos.addEventListener("change", () => {
+// Los archivos seleccionados, pueden ser muchos o uno
+const archivos = $seleccionArchivos.files;
+// Si no hay archivos salimos de la función y quitamos la imagen
+if (!archivos || !archivos.length) {
+$imagenPrevisualizacion.src = "";
+return;
+}
+// Ahora tomamos el primer archivo, el cual vamos a previsualizar
+const primerArchivo = archivos[0];
+// Lo convertimos a un objeto de tipo objectURL
+const objectURL = URL.createObjectURL(primerArchivo);
+// Y a la fuente de la imagen le ponemos el objectURL
+$imagenPrevisualizacion.src = objectURL;
+// imagenRuta.value=objectURL;
+Amount.value = pagotr;
+hashID.value = idHash
+//alert (pagotr);
+});
+
+</script>
     
 {% endblock content %}
 	

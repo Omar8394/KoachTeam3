@@ -38,6 +38,13 @@
          </div>
          <div class="form-row">
             <div class="form-group col-12">
+               <label for="resumenUnit" class="col-form-label">Description</label>
+               <textarea class="form-control" name="resumenUnit" id="resumenUnit"
+                  placeholder="Enter a description here">{% if modelo %}{{ modelo.resumen}}{% endif%}</textarea>
+            </div>
+         </div>
+         <div class="form-row">
+            <div class="form-group col-12">
                <label for="urlUnit" class="col-form-label">URL</label>
                <input type="text" class="form-control" name="urlUnit" id="urlUnit" placeholder="Enter a valid URL"
                   required value="{% if modelo %}{{ modelo.url }}{% endif %}">

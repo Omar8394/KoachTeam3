@@ -13,7 +13,7 @@
 <div class="content">
    <div class="page-inner animated fadeInRight">
       <div class="page-header">
-         <h4 class="page-title">BBDD Course</h4>
+         <h4 class="page-title">Academic</h4>
          <ul class="breadcrumbs">
             <li class="nav-home">
                <a href="{% url 'home' %}">
@@ -30,56 +30,50 @@
                <i class="flaticon-right-arrow"></i>
             </li>
             <li class="nav-item">
-               <a href="{% url 'system_tables' %}">Category</a>
+               <a href="{% url 'programa' programa.url %}">{{programa.descripcion}}</a>
             </li>
             <li class="separator">
                <i class="flaticon-right-arrow"></i>
             </li>
             <li class="nav-item">
-               <a href="{% url 'system_tables' %}">Program</a>
+               <a href="{% url 'proceso' programa=programa.url proceso=proceso.url %}">{{proceso.descripcion}}</a>
             </li>
             <li class="separator">
                <i class="flaticon-right-arrow"></i>
             </li>
             <li class="nav-item">
-               <a href="{% url 'system_tables' %}">Process</a>
-            </li>
-            <li class="separator">
-               <i class="flaticon-right-arrow"></i>
-            </li>
-            <li class="nav-item">
-               <a href="{% url 'system_tables' %}">BBDD Course</a>
+               <a href="{% url 'unidad' programa=programa.url proceso=proceso.url unidad=unidad.url %}">{{unidad.descripcion}}</a>
             </li>
          </ul>
       </div>
       <div class="page-category">
          <div class="card">
             <div class="card-header">
-               <div class="form-row">
-                  <div class="form-group col-md-6">
-                     <h2 id="demo" class="card-text mt-2">
-                        Topics
-                     </h2>
-                  </div>
-                  <div class="form-group col-md-6 d-flex justify-content-end">
-                     <button type="button" id="btnAddSetting" class="btn btn-success" onclick="openAddModal()">
-                        Add topic <i class="fas fa-plus ml-1"></i>
-                     </button>
+               <h2>{{unidad.descripcion}}</h2>
+               <div class="form-group">
+                  <div class="input-group">
+                     <input id="txtSearch" type="text" class="form-control" placeholder="Search for...">
+                     <div class="input-group-append">
+                        <span id="clearBtn" class="btn btn-danger">
+                           <i class="fa fa-broom"></i>
+                        </span>
+                        <span id="searchBtn" class="btn btn-primary">
+                           <i class="fa fa-search"></i>
+                        </span>
+                     </div>
                   </div>
                </div>
             </div>
-            <div class="card-body row">
-               <div id="renderContainer" class="col-md-12 mx-3 table-responsive">
-                  <h3 class="display-4">Select an element from list</h3>
-               </div>
-            </div>
+            <main class="card-body is-loading-lg">
+
+            </main>
          </div>
       </div>
    </div>
 </div>
-<div class="modal fade" id="addNewTopico" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+<div class="modal fade" id="addNewModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
    aria-hidden="true">
-   <div id="addNewTopicoContent" class="modal-dialog  modal-dialog-centered" role="document">
+   <div id="addNewModalContent" class="modal-dialog  modal-dialog-centered" role="document">
 
    </div>
 </div>
@@ -88,188 +82,216 @@
 
 {% block javascripts %}
 <script>
-   let selectedId = 1
    let editmode = false
-
-   const renderModal = () => {
-      return fetch("{% url 'modalAddTopico' %}", {
-         ...fetchObject
+   let query = ""
+   let selectedId = ""
+   // const changeProgram = async () => {
+   //    const comboPrograma = document.getElementById("programCourse")
+   //    const comboProceso = document.getElementById("processCourse")
+   //    const comboUnidad = document.getElementById("padreCourse")
+   //    let idPrograma = comboPrograma.value
+   //    const contenidoProceso = await renderCombo(idPrograma, "Select a process")
+   //    const contenidoUnidad = await renderCombo(null, "Select an unit")
+   //    comboProceso.innerHTML = contenidoProceso ? contenidoProceso : ""
+   //    comboUnidad.innerHTML = contenidoUnidad ? contenidoUnidad : ""
+   //    comboUnidad.value=null
+   // }
+   // const changeProcess = async () => {
+   //    const comboProceso = document.getElementById("processCourse")
+   //    const comboUnidad = document.getElementById("padreCourse")
+   //    let idProceso = comboProceso.value
+   //    const contenidoUnidad = await renderCombo(idProceso, "Select an unit")
+   //    comboUnidad.innerHTML = contenidoUnidad ? contenidoUnidad : ""
+   // }
+   const renderCombo = (id, valor) => {
+      return fetch("{% url 'contenidoCombo'%}", {
+         ...fetchObject,
+         body: JSON.stringify({
+            id,
+            valor
+         })
       })
          .then(async (res) => {
-            document.getElementById("addNewTopicoContent").innerHTML = await res.text()
+            result = await res.text()
+            return result
+         })
+   }
+   const renderContent = () => {
+      document.querySelector("main.card-body").classList.add("is-loading")
+      fetch("{% url 'contenidoCursos'%}", {
+         ...fetchObject,
+         body: JSON.stringify({
+            url: "{{programa.url}}",
+            urlProceso: "{{proceso.url}}",
+            urlUnidad: "{{unidad.url}}",
+            query
+         })
+      })
+         .then(async (res) => {
+            result = await res.text()
+            document.querySelector("main.card-body").classList.remove("is-loading")
+            document.querySelector("main.card-body").innerHTML = result
+         })
+   }
+   renderContent()
+   const updateModel = (url, method, data, id) => {
+      return fetch(url, {
+         ...fetchObject,
+         body: JSON.stringify({
+            method,
+            data,
+            id
+         })
+      })
+   }
+   const clickSave = (formElement, url) => {
+      const formData = new FormData(formElement);
+      const data = {}
+      for (var [key, value] of formData.entries()) {
+         data[key] = value
+      }
+      if (editmode) {
+         return updateModel(url, "Update", data, idSeleted)
+            .then(async (res) => {
+               const text = JSON.parse(await res.text())
+               if (text.message == "error") alerta(5)
+               else alerta(2)
+            })
+      }
+      else {
+         return updateModel(url, "Create", data, null)
+            .then(async (res) => {
+               const text = JSON.parse(await res.text())
+               if (text.message == "error") alerta(5)
+               else alerta(1)
+            })
+      }
+   }
+   const openDeleteCourses = async (id) => {
+      const elimino = await alerta(3)
+      if (elimino) {
+         fetch("{% url 'modalAddCurso'%}", {
+            ...fetchObject,
+            body: JSON.stringify({
+               method: "Delete",
+               id
+            })
+         })
+            .then(async (res) => {
+               const text = JSON.parse(await res.text())
+               if (text.message == "error") alerta(5)
+               else alerta(4)
+            })
+            .then(() => {
+               renderContent()
+            })
+      }
+   }
+   const openEditCourses = (id) => {
+      editmode = true
+      idSeleted = id
+      fetch("{% url 'modalAddCurso'%}", {
+         ...fetchObject,
+         body: JSON.stringify({
+            method: "Find",
+            id
+         })
+      })
+         .then(async (res) => {
+            document.getElementById("addNewModalContent").innerHTML = await res.text()
+            // const comboPrograma = document.getElementById("programCourse")
+            // let idPrograma = comboPrograma.value
+            // const comboProceso = document.getElementById("processCourse")
+            // let idProceso = comboProceso.value
+            // const comboUnidad = document.getElementById("padreCourse")
+            // let idUnidad = comboUnidad.value
+            // const contenidoProceso = await renderCombo(idPrograma, "Select a process")
+            // const contenidoUnidad = await renderCombo(idProceso, "Select an unit")
+            // comboProceso.innerHTML = contenidoProceso ? contenidoProceso : ""
+            // comboProceso.value = idProceso
+            // comboUnidad.innerHTML = contenidoUnidad ? contenidoUnidad : ""
+            // comboUnidad.value = idUnidad
          })
          .then(() => {
-            const formTopico = document.getElementById("formTopico")
-            formTopico.addEventListener("submit", (e) => {
+            $("#addNewModal").modal("show")
+            const formCurso = document.getElementById("formCurso")
+            formCurso.addEventListener("submit", (e) => {
                e.preventDefault()
-               clickSave()
+               clickSave(formCurso, "{% url 'modalAddCurso' %}")
+                  .then(() => {
+                     $("#addNewModal").modal("hide")
+                     renderContent()
+                  })
             })
          })
    }
-   const renderComponentTabla = (idPadre, name) => {
-      return fetch("{% url 'component_tabla'%}",
-         {
-            ...fetchObject,
-            body: JSON.stringify({
-               data: {
-                  name: name,
-                  padre: padre
-               }
-            }),
-         })
-         .then(async (res) => {
-            result = await res.text()
-            if (result[0] == '{') {
-               result = `<h3 class='display-4'>${JSON.parse(result).message}</h3>`
-            }
-            return result
-
-         })
-   }
-   const clickSave = () => {
-      form = {}
-      if (editmode) {
-         updateConfig(form, selectedId)
-      }
-      else {
-         createConfig(form)
-      }
-   }
-   const createConfig = (form) => {
-      fetch("{% url 'system_tables' %}", {
-         ...fetchObject,
-         body: JSON.stringify({
-            data: form
-         }),
-      })
-         .then(async (res) => {
-            let result = JSON.parse(await res.text())
-            if (result.message === "Error") {
-               alerta(5)
-            }
-            alerta(1)
-         })
-         .then(() => {
-            $("#addNewTable").modal("hide")
-         })
-   }
-   const updateConfig = (form, idViejo) => {
-      fetch("{% url 'system_tables' %}", {
-         ...fetchObject,
-         body: JSON.stringify({
-            data: {
-               ...form,
-               idViejo
-            }
-         }),
-      })
-         .then(async (res) => {
-            let result = JSON.parse(await res.text())
-            if (result.message === "Error") {
-               alerta(5)
-            }
-            alerta(2)
-         })
-         .then(() => {
-            $("#addNewTable").modal("hide")
-         })
-   }
-   const deleteConfig = (id) => {
-      return fetch("{% url 'system_tables' %}", {
-         ...fetchObject,
-         body: JSON.stringify({
-            data: {
-               delete: true,
-               id
-            }
-         }),
-      })
-         .then(async (res) => {
-            let result = JSON.parse(await res.text())
-            if (result.message === "Error") {
-               return false
-            }
-            return true
-         })
-   }
-   const toggleContentChild = async (idPadre) => {
-      const tablaHijo = document.getElementById(`tablaHijo${idPadre}`)
-      const contenedor = document.getElementById(`contenidoHijo${idPadre}`)
-      if (tablaHijo.hidden) {
-         const result = await renderComponentTabla(idPadre, "tablaActividades")
-         contenedor.innerHTML = result
-      }
-      else {
-         contenedor.innerHTML = ''
-      }
-      tablaHijo.hidden = !tablaHijo.hidden
-   }
-   const changePerPage = async () => {
-      const contenedorLista = document.getElementById("renderList")
-      const cbLista = document.getElementById("select-perpage")
-      renderComponentLista("listaConfig", 1, cbLista.value).then((resultado) => {
-         contenedorLista.innerHTML = resultado
-      })
-         .then(() => {
-            feedbackLista()
-         })
-   }
-   const goToPage = (page) => {
-      const contenedorLista = document.getElementById("renderList")
-      const cbLista = document.getElementById("select-perpage")
-      renderComponentLista("listaConfig", page, cbLista.value).then((resultado) => {
-         contenedorLista.innerHTML = resultado
-      })
-         .then(() => {
-            feedbackLista()
-         })
-   }
-   const limpiarModal = () => {
+   const openAddCourses = () => {
       editmode = false
-   }
-   const openAddModal = (id) => {
-      fetch("{% url 'modalAddTopico' %}", {
-         ...fetchObject
-      })
-         .then(async (res) => {
-            await renderModal()
-            $("#addNewTopico").modal("show")
-         })
-   }
-   const openEditModal = (id) => {
-      selectedId = id
-      fetch("{% url 'system_tables' %}", {
+      fetch("{% url 'modalAddCurso'%}", {
          ...fetchObject,
          body: JSON.stringify({
-            data: {
-               idFind: id
-            }
-         }),
+            method: "Show",
+            id: "{{unidad.pk}}"
+         })
       })
          .then(async (res) => {
-            await renderModal()
-            limpiarModal()
-            let respuesta = JSON.parse(await res.text())
-            editmode = true
+            document.getElementById("addNewModalContent").innerHTML = await res.text()
+            // const comboProceso = document.getElementById("processCourse")
+            // const comboUnidad = document.getElementById("padreCourse")
+            // const contenidoProceso = await renderCombo(null, "Select a process")
+            // const contenidoUnidad = await renderCombo(null, "Select an unit")
+            // comboProceso.innerHTML = contenidoProceso ? contenidoProceso : ""
+            // comboProceso.value = null
+            // comboUnidad.innerHTML = contenidoUnidad ? contenidoUnidad : ""
+            // comboUnidad.value = null
          })
          .then(() => {
-            $("#addNewTable").modal("show")
+            $("#addNewModal").modal("show")
+            const formCurso = document.getElementById("formCurso")
+            formCurso.addEventListener("submit", (e) => {
+               e.preventDefault()
+               clickSave(formCurso, "{% url 'modalAddCurso' %}")
+                  .then(() => {
+                     $("#addNewModal").modal("hide")
+                     renderContent()
+                  })
+            })
          })
    }
-   const openDeleteModal = async (id) => {
-      const elimino = await alerta(3)
-      if (elimino) {
-         const res = await deleteConfig(id)
-         if (res) {
-            alerta(4)
-         }
-         else {
-            alerta(5)
-         }
-
+   const toggleTime = ()=>{
+      const time = document.getElementById("timeCourse")
+      const duration = document.getElementById("durationCourse")
+      if(!time.disabled){
+         time.value=null
+         duration.value=null
       }
+      time.disabled = !time.disabled
+      duration.disabled = !duration.disabled
+
+   }
+   const searchFor = (text) => {
+      let output = text.trim()
+      if (output.length > 20) return
+      query = output
+      renderContent()
    }
 
-</script>
+   const searchBar = document.querySelector('#txtSearch')
+   const clearBtn = document.querySelector('#clearBtn')
+   const searchBtn = document.querySelector('#searchBtn')
 
+   clearBtn.addEventListener('click', () => {
+      searchBar.value = ""
+      query = ""
+      searchFor("")
+   })
+   searchBtn.addEventListener('click', () => {
+      searchFor(searchBar.value)
+   })
+   searchBar.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+         searchFor(searchBar.value)
+      }
+   });
+</script>
 {% endblock javascripts %}

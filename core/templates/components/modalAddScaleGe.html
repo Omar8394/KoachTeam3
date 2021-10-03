@@ -1,31 +1,92 @@
-<form class="form" id="scaleGe" name="scaleGe">
-    {% csrf_token %}    
-  
-    <div class="modal-content">
-        <div class="modal-header">
-            <h4 style="left: initial;" class="modal-title">New scale</h4>
-
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        </div>
+<div class="modal-content">
+    <div class="modal-header">
+        <h5 style="left: initial;" class="modal-title">New scale</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="color: white;">&times;</span></button>
+    </div>
+    <form class="form" id="scaleGe" name="scaleGe">
         <div class="modal-body">
             <div class="form-row">
+                <h2>General</h2>
             </div>
         
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <label for="desc_escala">Description</label>
-                    <input type="text" name="desc_escala" class="form-control" id="desc_escala" placeholder="Enter a description">
+                    <label for="desc_escala">Title</label>
+                    <input type="text" name="desc_escala" class="form-control" id="desc_escala" placeholder="Enter a title" required>
                 </div>
                 <div class="form-group col-md-6">
                     <label for="max_score">Max score</label>
                     <input type="text" name="max_score" class="form-control" id="max_score" placeholder="Enter a number">
                 </div>
             </div>   
-         
+
+            <div class="form-row mt-2">
+                <h2>Scale splits</h2>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="desc_escala">Description</label>
+                    <input type="text" class="form-control" id="desc_calificacion" placeholder="Enter a description">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="">Qualification</label>
+                    <select class="form-control" id="fk_calificacion">
+                        <option value="null" selected disabled>Select and option</option>
+
+                        {% for cal in califs %}
+                            <option value="{{cal.id_tabla}}">{{cal}}</option>
+                        {% endfor %}
+                 
+                    </select>
+                </div>
+            </div>       
+              
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="max_points">Max points</label>
+                    <input type="text" class="form-control" id="max_points" placeholder="Enter a number">
+                </div>
+                <div class="form-group col-md-6 d-flex justify-content-start">
+                    <button class="btn btn-success mt-4" id="addRow">
+                        Add <i class="fas fa-arrow-down ml-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-row text-center">
+                <div class="form-group col-md-12">
+                    <table class="table table-sm table-bordered table-striped table-hover table-responsive">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Description
+                                </th>
+                                <th>
+                                    Qualification
+                                </th>
+                                <th>
+                                    Max points
+                                </th>
+                            
+                                <th>
+                                    Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody  id="tableContent">
+                           
+                        </tbody>
+                    </table>
+                </div>
+            </div>  
         
-         </div>
+        </div>
         <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">
+                <i class="fas fa-arrow-left mr-2"></i>Back
+            </button>
             <button type="submit" value="Submit" class="btn btn-primary">Save<i class="fas fa-save ml-2"></i></button>
         </div>
-    </div><!-- /.modal-content -->
-</form>
+    </form>
+</div><!-- /.modal-content -->

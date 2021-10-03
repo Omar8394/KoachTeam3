@@ -10,18 +10,18 @@
 	<div class="content">
 		<div class="page-inner">
 			<div class="page-header">
-				<h4 class="page-title">Starter page</h4>
+				<h4 class="page-title">Enrollment</h4>
 				<ul class="breadcrumbs">
 					<li class="nav-home">
-						<a href="index.html">
-							<i class="flaticon-home"></i>
-						</a>
+						<a href="{% url 'home' %}">
+                     <i class="flaticon-home"></i>
+                  </a>
 					</li>
 					<li class="separator">
 						<i class="flaticon-right-arrow"></i>
 					</li>
 					<li class="nav-item">
-						<span>Module name</span>
+						<span>Registration</span>
 					</li>
 					<li class="separator">
 						<i class="flaticon-right-arrow"></i>
@@ -32,7 +32,6 @@
 				</ul>
 			</div>
 			<div class="page-category">
-        <h2>Enrollment</h2>
 		<div class="col-md-12 d-flex justify-content-center" > 
 			
 	   <form id="enroll" name="enroll" onsubmit="enviar();return false">
@@ -48,7 +47,11 @@
 			<option value="" selected>      </option>
 
 			 {% for mat in structuraProg %}
+			 {% if mat.precio != None %}
+
 			 <option value="{{mat.idestructuraprogrmas}}"> {{mat}}</option>
+
+			 {% endif %}
 			 {% endfor %}
       
 
@@ -97,7 +100,7 @@
 					  </select>
 					 </div>
              <br>
-	
+	{% comment %}
 		<div class="row">
 		<label>Enrollment Type</label>
 			   
@@ -112,6 +115,8 @@
 
 		 </select>
 		</div>
+{% endcomment %}
+
       <br>
          <br>
 
@@ -241,6 +246,8 @@ function enviar(){
 xhr.open("POST", "save/"); 
 xhr.onload = function(event){ 
 alerta(1); // raw response
+window.location.href="{% url 'MyEnrollments'%}";
+
 
    // alert("Success, server responded with: " + event.target.response); // raw response
 }; 

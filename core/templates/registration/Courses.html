@@ -10,18 +10,18 @@
 	<div class="content">
 		<div class="page-inner">
 			<div class="page-header">
-				<h4 class="page-title">Starter page</h4>
+				<h4 class="page-title">Enrollment Applications</h4>
 				<ul class="breadcrumbs">
 					<li class="nav-home">
-						<a href="index.html">
-							<i class="flaticon-home"></i>
-						</a>
+						<a href="{% url 'home' %}">
+                            <i class="flaticon-home"></i>
+                        </a>
 					</li>
 					<li class="separator">
 						<i class="flaticon-right-arrow"></i>
 					</li>
 					<li class="nav-item">
-						<span>Module name</span>
+						<span>Registration</span>
 					</li>
 					<li class="separator">
 						<i class="flaticon-right-arrow"></i>
@@ -32,7 +32,6 @@
 				</ul>
 			</div>
 			<div class="page-category">
-        <h2>Enrollment Applications</h2>
 		<div > 
 			<div class="dropdown" id="panelBuscar">
                 <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -51,14 +50,58 @@
                                     <td>Initial Date</td>
                                     <td></td>
                                     <td>
-                                        <input id="fechaInicial" name="fechaInicial" type="date" class="form-control" >
+                                        <input id="fechaInicialPrecios" name="fechaInicialPrecios" value="{{fechaInicialPrecios}}" type="date" class="form-control" >
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>Final Date</td>
                                     <td></td>
                                     <td>
-                                        <input id="fechaFinal" name="fechaFinal" id type="date" class="form-control" >
+                                        <input id="fechaFinalPrecios" name="fechaFinalPrecios" value="{{fechaFinalPrecios}}" id type="date" class="form-control" >
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Courses</td>
+                                    
+                                    
+                                    <td></td>
+                                    <td>
+
+                                        <input id="cbCurso" name="cbCurso"   value="1" {% if cbCurso == "1" %} checked {% endif %} id type="checkbox" class="form-control" >
+                                    </td>
+                                   
+                                    
+                                </tr>
+                                <tr>
+                                    <td>Units</td>
+                                    <td></td>
+                                    
+                                    <td>
+                                        <input id="cbUnidad" name="cbUnidad"   {% if cbUnidad == '2' %} checked {% endif %}   value="2" id type="checkbox" class="form-control" >
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Processes</td>
+                                    <td></td>
+                                    
+                                    <td>
+                                        <input id="cbProceso" name="cbProceso"  {% if cbProceso == '3' %} checked {% endif %}    value="3" id type="checkbox" class="form-control" >
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Programs</td>
+                                    <td></td>
+                                    
+                                    <td>
+                                        <input id="cbPrograma" name="cbPrograma"  {% if cbPrograma == '4' %} checked {% endif %}   value="4" id type="checkbox" class="form-control" >
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Unassigned Price</td>
+                                    <td></td>
+                                    
+                                    <td>
+                                        <input id="cbPrecio" name="cbPrecio"  {% if cbPrecio == '5' %} checked {% endif %}   value="5" id type="checkbox" class="form-control" >
                                     </td>
                                 </tr>
                                
@@ -92,7 +135,7 @@
                                     <th style="width: 65px;"></th>
                                    
                                     <th>Description</th>
-                                    <th>Credits </th>
+                                    <th>Date of Changes </th>
                                     <th></th>
                                     <th></th>
 
@@ -109,7 +152,7 @@
                                 <tr style="cursor:pointer;" id="{{mat.idmatricula_alumnos}}"  onclick="" >
                                     <td ></td>
                                    <td>{{mat}}</td>
-                                   <td>{{mat.peso_creditos}}</td>
+                                   <td>{{mat.fechaIngreso}}</td>
 
                                    <td>
                                        {%if mat.valor_elemento == 'Curso'   %}
@@ -124,7 +167,7 @@
 
                                         <input type="number" id="{{mat.idestructuraprogrmas}}" name="{{mat.idestructuraprogrmas}}"  value="{{mat.precio}}" >
 
-                                        <a href="#" onclick="savePrice('{{mat.idestructuraprogrmas}}')">  <span class="fas fa-save"> </span>   </a>  
+                                        <a href="javascript:void(0);" onclick="savePrice('{{mat.idestructuraprogrmas}}')">  <span class="fas fa-save"> </span>   </a>  
                                        
 
                                        </td>
@@ -140,7 +183,7 @@
                                         Discount Amount: 
                                         <input type="number" id="{{mat.idestructuraprogrmas}}" onchange="calcularDescuento('{{mat.idestructuraprogrmas}}','{{mat.precio}}')" name="{{mat.idestructuraprogrmas}}"  step="0.01" max="100" min="0" value="{{mat.descuento}}" >
                                        
-                                        <a href="#" onclick="saveDiscount('{{mat.idestructuraprogrmas}}')">  <span class="fas fa-save"> </span>   </a>  
+                                        <a href="javascript:void(0);" onclick="saveDiscount('{{mat.idestructuraprogrmas}}')">  <span class="fas fa-save"> </span>   </a>  
                                         
 
 
@@ -293,12 +336,12 @@ let url="{% url 'saveDiscount'%}";
 					method: 'POST',
                     body:formData
     }).then(function(result){
-    
+        alerta(1);
+    reload();
     return result.text();
     
     }).then(function(result){
         
-        alerta(1);
     
     });
         
@@ -329,12 +372,13 @@ let url="{% url 'savePrices'%}";
 					method: 'POST',
                     body:formData
     }).then(function(result){
+        alerta(1);
+        reload();
     
     return result.text();
     
     }).then(function(result){
         
-        alerta(1);
     
     });
         
@@ -389,7 +433,7 @@ xhr.send(formData);
 
 function reload(){
 
-    window.location.href="{% url 'EnrollmentList'%}";
+    window.location.href="{% url 'ManagePrices'%}";
 }
 
 

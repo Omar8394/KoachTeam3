@@ -10,18 +10,18 @@
 	<div class="content">
 		<div class="page-inner">
 			<div class="page-header">
-				<h4 class="page-title">Starter page</h4>
+				<h4 class="page-title">Enrollment Applications</h4>
 				<ul class="breadcrumbs">
 					<li class="nav-home">
-						<a href="index.html">
-							<i class="flaticon-home"></i>
-						</a>
+						<a href="{% url 'home' %}">
+                            <i class="flaticon-home"></i>
+                        </a>
 					</li>
 					<li class="separator">
 						<i class="flaticon-right-arrow"></i>
 					</li>
 					<li class="nav-item">
-						<span>Module name</span>
+						<span>Registration</span>
 					</li>
 					<li class="separator">
 						<i class="flaticon-right-arrow"></i>
@@ -32,7 +32,7 @@
 				</ul>
 			</div>
 			<div class="page-category">
-        <h2>Enrollment Applications</h2>
+      
 		<div > 
 			<div class="dropdown" id="panelBuscar">
                 <button   class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -51,28 +51,28 @@
                                     <td>Initial Date for Registration</td>
                                     <td></td>
                                     <td>
-                                        <input id="fechaInicial" name="fechaInicial" type="date" class="form-control" >
+                                        <input id="fechaInicialPersona" name="fechaInicialPersona" value="{{fechaInicialPersona}}" type="date" class="form-control" >
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>Final Date for Registration</td>
                                     <td></td>
                                     <td>
-                                        <input id="fechaFinal" name="fechaFinal"  type="date" class="form-control" >
+                                        <input id="fechaFinalPersona" name="fechaFinalPersona" value="{{fechaFinalPersona}}" type="date" class="form-control" >
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>Name</td>
                                     <td></td>
                                     <td>
-                                        <input id="name" name="name"  type="text" class="form-control" >
+                                        <input id="personaBuscarNombrePersona" name="personaBuscarNombrePersona" value="{{personaBuscarNombrePersona}}" type="text" class="form-control" >
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>Id Numer</td>
                                     <td></td>
                                     <td>
-                                        <input id="fechaFinal" name="fechaFinal"  type="text" class="form-control" >
+                                        <input id="idNumberPersona" name="idNumberPersona" value="{{idNumberPersona}}"  type="text" class="form-control" >
                                     </td>
                                 </tr>
                                
@@ -107,6 +107,8 @@
                                     <th style="width: 65px;"></th>
                                    
                                     <th>Names</th>
+                                    <th>Id Number</th>
+
                                     <th>Date of Registration</th>
                                     <th></th>
                                     
@@ -121,6 +123,8 @@
                                 <tr style="cursor:pointer;"  >
                                     <td ></td>
                                    <td>{{person}}</td>
+                                   <td>{{person.docto_identidad}}</td>
+
                                    <td>{{person.fecha_registro}}</td>
 
                                    <td> 
@@ -134,8 +138,8 @@
                                    <td>  
                                     <form id="PersonaForm" name="PersonaForm" action="{% url 'EnrollmentList'%}" onsubmit=" return ManagePersonas('{{person.idpublico}}')" method="POST">
                                         {% csrf_token %}
-                                        <input type="hidden" value="0" id="idPersona"
-                                        name="idPersona">
+                                        <input type="hidden" value="0" id="PersonId"
+                                        name="PersonId">
                                         
 
                                <a  href="javascript:void(0);" onclick="sendForm('{{person.idpublico}}')" id="{{person.idpublico}}" ><i class="fa fa-tasks"></i> Manage Enrollments</a>
@@ -248,8 +252,8 @@ function sendForm(id){
     
    
     //$(this).append('<input type="hidden" name="idPersona" id="idPersona" value="value"  /> ');
-    document.getElementById('idPersona').value=Persona;
-    alert(document.getElementById('idPersona').value)
+    document.getElementById('PersonId').value=Persona;
+   // alert(document.getElementById('idPersona').value)
 
     document.getElementById("PersonaForm").submit();
 
@@ -294,7 +298,9 @@ function enviar(){
 var xhr = new XMLHttpRequest();
 xhr.open("POST", "save/"); 
 xhr.onload = function(event){ 
-alert("Success, server responded with: " + event.target.response); // raw response
+//alert("Success, server responded with: " + event.target.response); // raw response
+alerta(1); // raw response
+
 $("#AdministrarMatricula").modal('toggle');
 
 }; 
@@ -412,7 +418,7 @@ xhr.send(formData);
     
 function reload(){
 
-window.location.href="{% url 'EnrollmentList'%}";
+window.location.href="{% url 'ManagePersons'%}";
 }
     
     

@@ -1,446 +1,458 @@
 {% extends "layouts/base.html" %}
 
-{% block title %}{% endblock %} 
+{% block title %}{% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
 
-	<div class="content">
-		<div class="page-inner animated fadeInRight">
-			<div class="page-header">
-				<h4 class="page-title">Scales</h4>
-				<ul class="breadcrumbs">
-					<li class="nav-home">
-						<a href="{% url 'home' %}">
-							<i class="flaticon-home"></i>
-						</a>
-					</li>
-					<li class="separator">
-						<i class="flaticon-right-arrow"></i>
-					</li>
-					<li class="nav-item">
-						<span>Settings</span>
-					</li>
-					<li class="separator">
-						<i class="flaticon-right-arrow"></i>
-					</li>
-					<li class="nav-item">
-						<a href="#">Scales</a>
-					</li>
-				</ul>
-			</div>
-			<div class="page-category">
-           	 	<div class="card">
-					<div class="card-header">
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <h2 class="card-text mt-2">
-                                   List of scales
-                                </h2>
-    
-                            </div>
-                            <div class="form-group col-md-6 d-flex justify-content-end">
-                               
-                                <button type="button" class="btn btn-success" onclick="openAddModalScaleGe()">
-                                    Add scale <i class="fas fa-plus ml-1"></i>
-                                </button>
-    
-                            </div>
+<div class="content">
+    <div class="page-inner animated fadeInRight">
+        <div class="page-header">
+            <h4 class="page-title">Scales</h4>
+            <ul class="breadcrumbs">
+                <li class="nav-home">
+                    <a href="{% url 'home' %}">
+                        <i class="flaticon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <span>Settings</span>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="#">Scales</a>
+                </li>
+            </ul>
+        </div>
+        <div class="page-category">
+            <div class="card">
+                <div class="card-header">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <h2 class="card-text mt-2">
+                                List of scales
+                            </h2>
 
                         </div>
-						
-					</div>
-					<div class="card-body" id="tabSca">
-                        <div class="table-responsive" id="renderContainer">
-                           
+                        <div class="form-group col-md-6 d-flex justify-content-end">
+
+                            <button type="button" class="btn btn-success" onclick="openAddModalScaleGe()">
+                                Add scale <i class="fas fa-plus ml-1"></i>
+                            </button>
+
                         </div>
-					</div>
-                    <div class="card-footer">
-                        <nav aria-label="...">
-                            <ul class="pagination mb-0  justify-content-end">
-                                <li class="page-item">
-                                    <a class="page-link" href="#" tabindex="-1">Previous</a>
-                                </li>
-                                <li class="page-item active">
-                                    <a class="page-link" href="#">1</a>
-                                </li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#">2</a>
-                                </li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#">Next</a>
-                                </li>
-                            </ul>
-                        </nav>
+
                     </div>
-				</div>        
-      		</div>
-		</div>
-	</div>
 
-    <!--Modals-->
+                </div>
+                <div class="card-body" id="tabSca">
+                    <div class="table-responsive" id="renderContainer">
 
-    <div class="modal fade" tabindex="-1" role="dialog" id="addNewScaleGe">
-        <div class="modal-dialog modal-dialog-centered" role="document" id="modalContentGe">
-        
-            
-        </div><!-- /.modal-dialog -->
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <nav aria-label="...">
+                        <ul class="pagination mb-0  justify-content-end">
+                            <li class="page-item">
+                                <a class="page-link" href="#" tabindex="-1">Previous</a>
+                            </li>
+                            <li class="page-item active">
+                                <a class="page-link" href="#">1</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">2</a>
+                            </li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
 
-    <div class="modal fade" tabindex="-1" role="dialog" id="addNewScalePa">
-        <div class="modal-dialog modal-dialog-centered" role="document" id="modalContentPa">
-        
-            
-        </div><!-- /.modal-dialog -->
-    </div>
+<!--Modals-->
 
-   
+<div class="modal fade" tabindex="-1" role="dialog" id="addNewScaleGe">
+    <div class="modal-dialog modal-dialog-centered" role="document" id="modalContentGe">
+
+
+    </div><!-- /.modal-dialog -->
+</div>
 
 {% endblock content %}
-	
-<!-- Specific Page JS goes HERE  -->
+
 {% block javascripts %}
-    <script>    
+<script>
 
-        // Variables
+    // Variables
 
-        let editmode = false
-        let selectedId = ""
-        let scaleType = false
+    let editmode = false
+    let selectedId = ""
+    let listaScales = []
+    let max_points
+    let tablaCuerpos
+    const arrayLoco = [{% for cal in califs %}{ id: "{{cal.id_tabla}}", descripcion: "{{cal.desc_elemento}}" }, {% endfor %}]
+    let hashObj = arrayLoco.reduce(function (acc, e) {
+        acc[e.id] = e.descripcion
+        return acc
+    }, {})
 
-        // Modal Escala general
+    // Tabla dinámica
 
-        const renderModalScaleGe = () => {
-           return fetch("{% url 'modalScaleGeAdd' %}", {
-              ...fetchObject
-           })
-           .then(async (res) => {
-              document.getElementById("modalContentGe").innerHTML = await res.text()
-           }).then(()=>{
+    function actualizarLista() {
+        tablaCuerpo.innerHTML = ""
+        let contenido = ""
+
+        listaScales.map((dato, index) => {
+            let fila =
+                `<tr>
+                        <td>${dato.descriptionCalif}</td>
+                        <td>${dato.qualification}</td>
+                        <td>${dato.max_points}</td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <button onclick="borrarItem(${index})" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip"  data-placement="top" title="Delete" >
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>`
+            contenido += fila
+        })
+        tablaCuerpo.innerHTML = contenido
+    }
+
+    function borrarItem(id) {
+        listaScales.splice(id, 1)
+        actualizarLista()
+    }
+
+    // Renderizar
+
+    const renderModalScaleGe = () => {
+        return fetch("{% url 'modalScaleGeAdd' %}", {
+            ...fetchObject
+        })
+            .then(async (res) => {
+                document.getElementById("modalContentGe").innerHTML = await res.text()
+            }).then(() => {
                 const formScaleGe = document.getElementById("scaleGe")
                 formScaleGe.addEventListener("submit", (e) => {
                     e.preventDefault()
                     clickSave()
-              })
-           })
-        }
+                })
 
-        const openAddModalScaleGe = () => {
-            renderModalScaleGe().then(()=>{
-                scaleType = false
-                editmode = false
-                $("#addNewScaleGe").modal("show")
+                tablaCuerpo = document.getElementById("tableContent")
+
+                function limpiarForm() {
+                    document.getElementById("desc_calificacion").value = null
+                    document.getElementById("fk_calificacion").value = null
+                    document.getElementById("max_points").value = null
+                }
+                $("#max_score").keyup(function(){
+                    max_points = parseInt($("#max_score").val())
+                    $("#scaleGe").validate({
+                        rules: {
+                            max_points: {
+                                required: true,
+                                max: max_points
+                            },
+                            desc_calificacion:{
+                                required:true
+                            }
+                        },
+                        // highlight: function (element) {
+                        //     $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+                        // },
+                        // success: function (element) {
+                        //     $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+                        // },
+                    });
+                    console.log(max_points)
+                })
+                $("#addRow").click(function () {
+                    event.preventDefault()
+                    let datos = {
+                        descriptionCalif: document.getElementById("desc_calificacion").value,
+                        qualification: hashObj[document.getElementById("fk_calificacion").value],
+                        quack: document.getElementById("fk_calificacion").value,
+                        max_points: document.getElementById("max_points").value,
+                        actions: `
+                        <div class="btn-group" role="group">
+                            <button onclick="borrarItem(${listaScales.length})" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip"  data-placement="top" title="Delete" >
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>`
+                    }
+
+                    listaScales.push(datos)
+                    limpiarForm()
+                    actualizarLista()
+
+                })
             })
-        }
- 
-        const clickSave = () => {
-            if (scaleType === false) {
-                const description = document.getElementById("desc_escala")
-                const maxScore = document.getElementById("max_score")
-          
-                form = {
-                 descripcion: description.value,
-                 maxScore: maxScore.value,
-                
-                }
-                if (editmode) {
-                    updateScaleGe(form, selectedId)
-                }
-                else {
-                    createScaleGe(form)
-                }           
-            }
-            else {
-                const descCalificacion = document.getElementById("desc_calificacion")
-                const maxPoints = document.getElementById("max_score")
-                const fkCalificacion = document.getElementById("fk_calificacion")
-          
-                form = {
-                 descCalificacion: descCalificacion.value,
-                 maxPoints: maxPoints.value,
-                 fkCalificacion: fkCalificacion.value
-                
-                }
-                if (editmode) {
-                    updateScalePa(form, selectedId)
-                }
-                else {
-                    createScalePa(form)
-                }   
-            }
-        }
+    }
 
-        const createScaleGe = (form) => {
-            fetch("{% url 'scales' %}", {
-               ...fetchObject,
-               body: JSON.stringify({
-                  data: form
-               }),
+    const renderComponentTabla = async (name) => {
+        return await fetch("{% url 'component_tabla'%}",
+            {
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    "X-CSRFToken": getCookie('csrftoken')
+                },
+                mode: 'same-origin',
+                method: 'POST',
+                body: JSON.stringify({
+                    data: {
+                        name: name,
+                    }
+                }),
             })
             .then(async (res) => {
-               let result = JSON.parse(await res.text())
-               if (result.message === "Error") {
-                  alerta(5)
-               }
-               alerta(1)
+                result = await res.text()
+                if (result[0] != '<') {
+                    console.log(result)
+                    result = "<h3 class='display-4'>There are no items</h3>"
+                }
+                return result
+            })
+    }
+
+    const renderComponentTablaHijos = async (name, idScalesPa) => {
+        return await fetch("{% url 'component_tabla'%}",
+            {
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    "X-CSRFToken": getCookie('csrftoken')
+                },
+                mode: 'same-origin',
+                method: 'POST',
+                body: JSON.stringify({
+                    data: {
+                        name: name,
+                        idScalesPa
+                    }
+                }),
+            })
+            .then(async (res) => {
+                result = await res.text()
+                if (result[0] != '<') {
+                    console.log(result)
+                    result = "<h3 class='display-4'>There are no items</h3>"
+                }
+                return result
+            })
+    }
+
+    const toggleContentChild = async (queso) => {
+        const tablaHijo = document.getElementById(`tablaHijo${queso}`)
+        const contenedor = document.getElementById(`contenidoHijo${queso}`)
+        if (tablaHijo.hidden) {
+            const result = await renderComponentTablaHijos("tablaScalesPa", queso)
+            contenedor.innerHTML = result
+        }
+        else {
+            contenedor.innerHTML = ''
+        }
+        tablaHijo.hidden = !tablaHijo.hidden
+    }
+
+    const renderTable = async () => {
+        const result = await renderComponentTabla("tablaScales")
+        const contenedor = document.getElementById("renderContainer")
+        contenedor.innerHTML = result
+    }
+    renderTable()
+
+    // Guardar
+
+    const limpiarModal = () => {
+        document.getElementById("desc_escala")
+        document.getElementById("max_score")
+        document.getElementById("desc_calificacion")
+        document.getElementById("max_points")
+        document.getElementById("fk_calificacion")
+        tablaCuerpo.innerHTML = ""
+        listaScales = []
+        let contenido = ""
+        editmode = false
+    }
+
+    const openAddModalScaleGe = () => {
+        renderModalScaleGe().then(() => {
+            editmode = false
+            limpiarModal()
+            $("#addNewScaleGe").modal("show")
+        })
+    }
+
+    const clickSave = () => {
+
+        const description = document.getElementById("desc_escala")
+        const maxScore = document.getElementById("max_score")
+        const desc_calificacion = document.getElementById("desc_calificacion")
+        const max_points = document.getElementById("max_points")
+        const fk_calificacion = document.getElementById("fk_calificacion")
+
+        form = {
+            descripcion: description.value,
+            maxScore: maxScore.value,
+            desCalif: desc_calificacion.value,
+            maxPoints: max_points.value,
+            fkCalif: fk_calificacion.value,
+            hijos: listaScales
+
+        }
+        if (editmode) {
+            updateScaleGe(form, selectedId)
+        }
+        else {
+            createScaleGe(form)
+        }
+
+    }
+
+    const createScaleGe = (form) => {
+        fetch("{% url 'scales' %}", {
+            ...fetchObject,
+            body: JSON.stringify({
+                data: form
+            }),
+        })
+            .then(async (res) => {
+                let result = JSON.parse(await res.text())
+                if (result.message === "Error") {
+                    alerta(5)
+                }
+                alerta(1)
             })
             .then(() => {
 
                 renderTable()
-               $("#addNewScaleGe").modal("hide");
+                $("#addNewScaleGe").modal("hide");
             })
-        }
+    }
 
-        const openEditModal = (id) => {
-            selectedId = id
-            fetch("{% url 'scales' %}", {
-               ...fetchObject,
-               body: JSON.stringify({
-                  data: {
-                     idFind: id
-                  }
-               }),
-            })
+    // Actualizar
+
+    const openEditModal = (id) => {
+        selectedId = id
+        fetch("{% url 'scales' %}", {
+            ...fetchObject,
+            body: JSON.stringify({
+                data: {
+                    idFind: id
+                }
+            }),
+        })
             .then(async (res) => {
                 await renderModalScaleGe()
-            
+                limpiarModal()
                 let respuesta = JSON.parse(await res.text())
                 document.getElementById("desc_escala").value = respuesta.data.desc_escala
                 document.getElementById("max_score").value = respuesta.data.maxima_puntuacion
-              
+                let listaLoca = respuesta.childs
+                if(listaLoca){
+                    listaLoca.map((el)=>{
+                        let datos = {
+                            descriptionCalif: el.desc_calificacion,
+                            qualification: hashObj[el.fk_calificacion_id],
+                            quack: el.fk_calificacion_id,
+                            max_points: el.puntos_maximo,
+                            actions: `
+                            <div class="btn-group" role="group">
+                                <button onclick="borrarItem(${listaScales.length})" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip"  data-placement="top" title="Delete" >
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>`
+                        }
+                        listaScales.push(datos)
+                    })
+                    actualizarLista()
+                }
+
                 editmode = true
             })
             .then(() => {
-               $("#addNewScaleGe").modal("show")
+                $("#addNewScaleGe").modal("show")
             })
-        }
+    }
 
-        const updateScaleGe = (form, idViejo) => {
-            fetch("{% url 'scales' %}", {
-               ...fetchObject,
-               body: JSON.stringify({
-                  data: {
+    const updateScaleGe = (form, idViejo) => {
+        fetch("{% url 'scales' %}", {
+            ...fetchObject,
+            body: JSON.stringify({
+                data: {
                     ...form,
                     idViejo
-                  }
-               }),
-            })
-            .then(async (res) => {
-               let result = JSON.parse(await res.text())
-               if (result.message === "Error") {
-                  alerta(5)
-               }
-               alerta(2)
-            })
-            .then(() => {
-
-               renderTable()
-               $("#addNewScaleGe").modal("hide");
-            })
-        }
-
-        const openDeleteModal = async(id)=>{
-           const elimino = await alerta(3)
-           if(elimino){
-                const res = await deleteScaleGe(id)
-                if (res){
-                   alerta(4)
                 }
-                else{
+            }),
+        })
+            .then(async (res) => {
+                let result = JSON.parse(await res.text())
+                if (result.message === "Error") {
                     alerta(5)
                 }
-            }
-        }
-
-        const deleteScaleGe = (id) => {
-           return fetch("{% url 'scales' %}", {
-              ...fetchObject,
-              body: JSON.stringify({
-                 data: {
-                    delete: true,
-                    id
-                 }
-              }),
-           })
-            .then(async(res) => {
-               let result = JSON.parse(await res.text())
-               if(result.message === "Error"){
-                  return false
-               }
-               return true
-            })
-            .then((result) => {
-               renderTable()
-               return result
-            })
-        }
-  
-
-
-        // Modal escala particular
-
-        
-        const renderModalScalePa = () => {
-           return fetch("{% url 'modalScalePaAdd' %}", {
-              ...fetchObject
-           })
-           .then(async (res) => {
-              document.getElementById("modalContentPa").innerHTML = await res.text()
-           }).then(()=>{
-                const formScalePa = document.getElementById("scalePa")
-                formScalePa.addEventListener("submit", (e) => {
-                    e.preventDefault()
-                    clickSave()
-              })
-           })
-        }
-
-        const openAddModal = () => {
-           renderModalScalePa().then(()=>{
-              scaleType = true
-              $("#addNewScalePa").modal("show")
-           })
-        }
-
-        const createScalePa = (form) => {
-            fetch("{% url 'scalesPa' %}", {
-               ...fetchObject,
-               body: JSON.stringify({
-                  data: form
-               }),
-            })
-            .then(async (res) => {
-               let result = JSON.parse(await res.text())
-               if (result.message === "Error") {
-                  alerta(5)
-               }
-               alerta(1)
+                alerta(2)
             })
             .then(() => {
-
-               renderTable()
-               $("#addNewScalePa").modal("hide");
+                renderTable()
+                $("#addNewScaleGe").modal("hide");
             })
+    }
+
+    // Borrar
+
+    const openDeleteModal = async (id) => {
+        const elimino = await alerta(3)
+        if (elimino) {
+            const res = await deleteScaleGe(id)
+            if (res) {
+                alerta(4)
+            }
+            else {
+                alerta(5)
+            }
         }
+    }
 
-        
-        // const openDeleteModal = async(id)=>{
-        //    const elimino = await alerta(3)
-        //    if(elimino){
-        //         const res = await deleteScalePa(id)
-        //         if (res){
-        //            alerta(4)
-        //         }
-        //         else{
-        //             alerta(5)
-        //         }
-        //     }
-        // }
-
-        const deleteScalePa = (id) => {
-           return fetch("{% url 'scalesPa' %}", {
-              ...fetchObject,
-              body: JSON.stringify({
-                 data: {
+    const deleteScaleGe = (id) => {
+        return fetch("{% url 'scales' %}", {
+            ...fetchObject,
+            body: JSON.stringify({
+                data: {
                     delete: true,
                     id
-                 }
-              }),
-           })
-            .then(async(res) => {
-               let result = JSON.parse(await res.text())
-               if(result.message === "Error"){
-                  return false
-               }
-               return true
+                }
+            }),
+        })
+            .then(async (res) => {
+                let result = JSON.parse(await res.text())
+                if (result.message === "Error") {
+                    return false
+                }
+                return true
             })
             .then((result) => {
-               renderTable()
-               return result
+                renderTable()
+                return result
             })
-        }
- 
+    }
 
-        // Renderizar tablas
 
-        
-     
-        const renderComponentTabla = async (name) => {
-            return await fetch("{% url 'component_tabla'%}",
-                {
-                    headers: {
-                        'Accept': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest',
-                        "X-CSRFToken": getCookie('csrftoken')
-                    },
-                    mode: 'same-origin',
-                    method: 'POST',
-                    body: JSON.stringify({
-                        data: {
-                            name: name,
-                        }
-                    }),
-                })
-                .then(async (res) => {
-                    result = await res.text()
-                    if (result[0] != '<') {
-                        console.log(result)
-                        result = "<h3 class='display-4'>There are no items</h3>"
-                    }
-                    return result
-                })
-        }
-
-        const renderComponentTablaHijos = async (name, idScalesPa) => {
-            return await fetch("{% url 'component_tabla'%}",
-                {
-                    headers: {
-                        'Accept': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest',
-                        "X-CSRFToken": getCookie('csrftoken')
-                    },
-                    mode: 'same-origin',
-                    method: 'POST',
-                    body: JSON.stringify({
-                        data: {
-                            name: name, 
-                                  idScalesPa
-                        }
-                    }),
-                })
-                .then(async (res) => {
-                    result = await res.text()
-                    if (result[0] != '<') {
-                        console.log(result)
-                        result = "<h3 class='display-4'>There are no items</h3>"
-                    }
-                    return result
-                })
-        }
-
-        const toggleContentChild = async (queso) => {
-           const tablaHijo = document.getElementById(`tablaHijo${queso}`)
-           const contenedor = document.getElementById(`contenidoHijo${queso}`)
-           if (tablaHijo.hidden) {
-              const result = await renderComponentTablaHijos("tablaScalesPa", queso)
-              contenedor.innerHTML = result
-           }
-           else{
-              contenedor.innerHTML = ''
-           }
-           tablaHijo.hidden = !tablaHijo.hidden
-        }
-
-        const renderTable = async() => {
-            const result = await renderComponentTabla("tablaScales")
-                const contenedor = document.getElementById("renderContainer")
-                contenedor.innerHTML = result
-        }
-        renderTable()
-
-    </script>
+</script>
 
 {% endblock javascripts %}

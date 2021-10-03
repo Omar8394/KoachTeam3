@@ -7,7 +7,7 @@ from django import template
 import json, math
 from django.core.paginator import Paginator
 from .models import TablasConfiguracion
-from ..academic.models import EscalaCalificacion
+from ..academic.models import EscalaCalificacion, EscalaEvaluacion
 
 @login_required(login_url="/login/")
 def index(request):
@@ -95,6 +95,42 @@ def componentTabla(request):
                 "limit": limit,
             }
         #if data["name"] == "El nombre de tu tabla"
+        elif data["name"] == "tablaScales":
+            hijos = EscalaEvaluacion.objects.all()
+            if not hijos:
+                return JsonResponse({"message":"There are no items"})
+            lista = []
+            for i in list(hijos.values()):
+                i['pk'] = i['idescala_evaluacion']
+                i['manejaLista'] = True
+                i['editar'] = True
+                i['eliminable'] = True
+                lista.append(i)
+            context = {
+                
+                "fields": ["Description", "Max Score", "Actions"],
+                
+                "keys": ["desc_escala", "maxima_puntuacion"],
+                "data": lista
+            }
+        elif data["name"] == "tablaScalesPa":
+            if "idScalesPa" in data:
+                table = EscalaEvaluacion.objects.get(pk=data["idScalesPa"])
+                hijos = table.escalacalificacion_set.all()
+            if not hijos:
+                return JsonResponse({"message":"There are no items"})
+            lista = []
+            for i in list(hijos.values()):
+                i['pk'] = i['idescala_calificacion']
+                i['description_config'] = TablasConfiguracion.objects.filter(id_tabla = i['fk_calificacion_id'])[0].desc_elemento
+                lista.append(i)
+            context = {
+                
+                "fields": ["Description","Qualification", "Max Score",],
+                
+                "keys": ["desc_calificacion","description_config", "puntos_maximo"],
+                "data": lista
+            }
         return render(request,'components/tabla.html', context)
     return
 
@@ -129,6 +165,7 @@ def tables(request):
             except:
                 return JsonResponse({"message": "Error"})
     context = {}
+    context['segment'] = 'settings'
     html_template = (loader.get_template('app/settings/tables.html'))
     return HttpResponse(html_template.render(context, request))
 
@@ -142,75 +179,56 @@ def getModalSetting(request):
 def scales(request):
     if request.method == "POST":
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            try:
-                context = {}
-                data = json.load(request)["data"]
-                if "delete" in data:
-                    newScaleGe = EscalaEvaluacion.objects.get(pk=data["id"])
-                    newScaleGe.delete()
-                    return JsonResponse({"message": "Deleted"})
-                elif "idFind" in data:
-                    newScaleGe = EscalaEvaluacion.objects.filter(pk=data["idFind"])
-                    findScaleGe = list(newScaleGe.values())
-                    return JsonResponse({"data":findScaleGe[0]}, safe=False)
-                elif "idViejo" in data:
-                    newScaleGe = EscalaEvaluacion.objects.get(pk=data["idViejo"])
-                else:
-                    newScaleGe = EscalaEvaluacion()
-                    newScaleGe.desc_escala=data["descripcion"] 
-                    newScaleGe.maxima_puntuacion=data["maxScore"] 
-                    newScaleGe.save()
-                    return JsonResponse({"message": "Perfect"})
-                  
-            except:
-                return JsonResponse({"message": "Error"})
+            # try:
+            context = {}
+            data = json.load(request)["data"]
+            if "delete" in data:
+                newScaleGe = EscalaEvaluacion.objects.get(pk=data["id"])
+                newScaleGe.delete()
+                return JsonResponse({"message": "Deleted"})
+            elif "idFind" in data:
+                newScaleGe = EscalaEvaluacion.objects.filter(pk=data["idFind"])
+                findScaleGe = list(newScaleGe.values())
+                childs = EscalaCalificacion.objects.filter(fk_escala_evaluacion_id=data["idFind"])
+                listaChilds = list(childs.values())
+                return JsonResponse({"data":findScaleGe[0], "childs":listaChilds}, safe=False)
+            elif "idViejo" in data:
+                newScaleGe = EscalaEvaluacion.objects.get(pk=data["idViejo"])
+            else:
+                newScaleGe = EscalaEvaluacion()
+            newScaleGe.desc_escala=data["descripcion"] 
+            newScaleGe.maxima_puntuacion=data["maxScore"] 
+            newScaleGe.save()
+            hijos = data["hijos"]
+            if hijos:
+                if "idViejo" in data:
+                    childs = EscalaCalificacion.objects.filter(fk_escala_evaluacion=newScaleGe)
+                    childs.delete()
+                for newScalePa in hijos:
+                    newSP = EscalaCalificacion()
+                    newSP.desc_calificacion=newScalePa["descriptionCalif"]
+                    newSP.puntos_maximo=newScalePa["max_points"] 
+                    newSP.fk_calificacion_id=newScalePa["quack"]
+                    newSP.fk_escala_evaluacion= newScaleGe
+                    newSP.save()      
+            return JsonResponse({"message": "Perfect"})                
+            # except:
+            #     return JsonResponse({"message": "Error"})
                 
-    context = {}
+    context = {
+        "califs" : TablasConfiguracion.obtenerHijos('calif'),
+    }
+    context['segment'] = 'settings'
     html_template = (loader.get_template('app/settings/scales.html'))
     return HttpResponse(html_template.render(context, request))
 
-@login_required(login_url="/login/")
-def scalesPa(request):
-    if request.method == "POST":
-        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            try:
-                context = {}
-                data = json.load(request)["data"]
-                if "delete" in data:
-                    newScalePa = EscalaCalificacion.objects.get(pk=data["id"])
-                    newScalePa.delete()
-                    return JsonResponse({"message": "Deleted"})
-                elif "idFind" in data:
-                    newScalePa = EscalaCalificacion.objects.filter(pk=data["idFind"])
-                    findScalePa = list(newScalePa.values())
-                    return JsonResponse({"data":findScalePa[0]}, safe=False)
-                elif "idViejo" in data:
-                    newScalePa = EscalaCalificacion.objects.get(pk=data["idViejo"])
-                else:
-                    newScalePa = EscalaCalificacion()
-                    newScalePa.desc_calificacion=data["descCalificacion"] 
-                    newScalePa.puntos_maximo=data["maxPoints"] 
-                    newScalePa.fk_calificacion=data["fkCalificacion"] 
-                    newScalePa.save()
-                    return JsonResponse({"message": "Perfect"})
-                  
-            except:
-                return JsonResponse({"message": "Error"})
-                
-    context = {}
-    html_template = (loader.get_template('app/settings/scales.html'))
-    return HttpResponse(html_template.render(context, request))
-    # return render(request, 'app/settings/scales.html', context)
 
 @login_required(login_url="/login/")
 def scalesGeAddModal(request): 
-
-    return render(request, 'components/modalAddScaleGe.html')
-
-@login_required(login_url="/login/")
-def scalesPaAddModal(request):
-
-    return render(request, 'components/modalAddScalePa.html')
+    context = {
+        "califs" : TablasConfiguracion.obtenerHijos('calif'),
+    }
+    return render(request, 'components/modalAddScaleGe.html', context)
 
 
 

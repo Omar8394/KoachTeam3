@@ -38,6 +38,12 @@
 	<!-- Atlantis JS -->
     <script src="/static/assets/js/atlantis.min.js"></script>
 
+	<!-- Jquery validator -->
+	<script src="/static/assets/js/jqueryvalidator.js"></script>
+
+	<!-- Jquery validator methods -->
+	<script src="/static/assets/js/jqueryvalidatormethods.js"></script>
+
 	 <script>
 
 	 	// Notificaciones a la hora de crear, editar o eliminar un registro respectivamente. 
@@ -69,7 +75,6 @@
 				return swal({
 					title: 'Delete?',
 					text: "You won't be able to revert this!",
-					type: 'warning',
 					icon: "warning",
 					buttons:{
 						confirm: {
@@ -87,7 +92,6 @@
 				swal({
 					title: 'Deleted!',
 					text: 'Register has been successfully deleted.',
-					type: 'success',
 					icon: 'success',
 					buttons: {
 						confirm: {
@@ -100,6 +104,77 @@
 				swal({
 					title: 'Error!',
 					text: 'An error has occurred.',
+					icon: 'error',
+					buttons: {
+						confirm: {
+							className: 'btn btn-danger'
+						}
+					}
+				});
+			}
+		}
+
+		//con mensajitos
+		
+		function alertaMensajitos(tipoAlerta,tittle, mssg){
+			if(tipoAlerta === 1){
+				swal(tittle, mssg, 
+				{
+					icon : "success",
+					buttons: {
+						confirm: {
+							className : 'btn btn-success'
+						}
+					},
+				});	 
+			}
+			if(tipoAlerta === 2){
+				swal(tittle, mssg, 
+ 
+				 {
+					icon : "success",
+					buttons: {
+						confirm: {
+							className : 'btn btn-success'
+						}
+					},
+				});
+			}
+			if(tipoAlerta === 3){
+				return swal({
+					title: tittle,
+					text: mssg,
+					type: 'warning',
+					icon: "warning",
+					buttons:{
+						confirm: {
+							text : 'Yes, delete it!',
+							className : 'btn btn-success'
+						},
+						cancel: {
+							visible: true,
+							className: 'btn btn-danger'
+						}
+					}
+				})					
+			}
+			if(tipoAlerta === 4){
+				swal({
+					title: tittle,
+					text: mssg,
+					type: 'success',
+					icon: 'success',
+					buttons: {
+						confirm: {
+							className: 'btn btn-success'
+						}
+					}
+				});
+			}
+			if(tipoAlerta === 5){
+				swal({
+					title: tittle,
+					text: mssg,
 					icon: 'error',
 					buttons: {
 						confirm: {

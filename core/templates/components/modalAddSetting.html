@@ -28,7 +28,9 @@
                   <option value="null" selected disabled>Select a table</option>
                   {% for table in tables%}
                   {% if table.mostrar_en_combos == 1 %}
+                  {% if table.maneja_lista == 1 %}
                   <option value="{{table.id_tabla}}">{{table.desc_elemento}}</option>
+                  {% endif %}
                   {% endif %}
                   {% endfor %}
                </select>

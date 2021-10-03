@@ -20,15 +20,29 @@ urlpatterns = [
     # Mis matriculas
     path('MyEnrollments/', views.MyEnrollments, name='MyEnrollments'  ),
     #Lista cursos
-    path('ManagePrices/', views.ManagePrices, name='MyEnrollments'  ),
-
-
+    path('ManagePrices/', views.ManagePrices, name='ManagePrices'  ),
 
 
 
 
     #pagos
     path('Payments/', views.Pay, name='ManagePay'  ),
+
+    path('ViewPayments/', views.ViewPayments, name='ViewPayments'  ),
+    path('ViewPayments/GetEditStatus/', views.GetEditStatus, name='GetEditStatus'  ),
+    #path('ViewPayments/Getdata/', views.Getdata, name='Getdata'  ),
+
+
+    path('MyEnrollments/hashPay/', views.hashPay, name='hashPay'  ),
+
+    
+    ########################################tomalo cerdo####################
+    path('MyEnrollments/InsertPay/', views.InsertPay, name='InsertPay'  ),
+    path('MyEnrollments/InsertPayTr/', views.InsertPayTr, name='InsertPayTr'  ),
+
+
+
+ 
 
     
 

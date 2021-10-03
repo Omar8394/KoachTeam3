@@ -54,10 +54,63 @@
 		</div>
 	</div>
 
+	
 {% endblock content %}
 
-<!-- Specific Page JS goes HERE  -->
+<!-- Specific Page JS goes HERE  planning/edit-->
 {% block javascripts %}
 
+<script>
+	
+	var t;    
+	function myCallback()
+	{
+		$.ajax({
+			data: $('#formulario').serialize()+"&id={{ id }}",
+			url: "{% url 'validate_username' %}",
+			success: function (response) {
+				if (response.message != null) {
+					$('#id_username').removeClass('is-valid').addClass('is-invalid');
+					if(!$('#usernameError').length)
+						$('#id_username').after('<div class="invalid-feedback d-block" id="usernameError">' + response.message + '</div>')
+				}
+				else if($('#id_username').val()){
+					$('#id_username').removeClass('is-invalid').addClass('is-valid');
+					if($('#usernameError').length)
+						$('#usernameError').remove();
+
+				}else{
+					$('#id_username').removeClass('is-invalid').removeClass('is-valid');
+					if($('#usernameError').length)
+						$('#usernameError').remove();
+
+				}
+
+			},
+			error: function (response) {
+				console.log(response.responseJSON.errors)
+			}
+		});
+	}
+
+	$(document).ready(function () {
+		$('#id_username').keyup(function () {  
+		
+			if ( t )
+			{
+				clearTimeout( t );
+				t = setTimeout( myCallback, 1000 );
+			}
+			else
+			{
+				t = setTimeout( myCallback, 1000 );
+			}
+
+			return false;
+		});
+		
+	})
+
+</script>
 
 {% endblock javascripts %}
