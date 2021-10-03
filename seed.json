@@ -301,6 +301,62 @@
   },
   {
     "model": "app.TablasConfiguracion",
+    "pk": 0,
+    "fields": {
+      "desc_elemento": "Revision",
+      "fk_tabla_padre_id": 21,
+      "tipo_elemento": 1,
+      "permite_cambios":1,
+      "valor_elemento":"",
+      "mostrar_en_combos":1,
+      "maneja_lista":1
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk": 0,
+    "fields": {
+      "desc_elemento": "Cancelled",
+      "fk_tabla_padre_id": 21,
+      "tipo_elemento": 1,
+      "permite_cambios":1,
+      "valor_elemento":"",
+      "mostrar_en_combos":1,
+      "maneja_lista":1
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk": 0,
+    "fields": {
+      "desc_elemento": "Waiting for payment",
+      "fk_tabla_padre_id": 21,
+      "tipo_elemento": 1,
+      "permite_cambios":1,
+      "valor_elemento":"",
+      "mostrar_en_combos":1,
+      "maneja_lista":1
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk": 0,
+    "fields": {
+      "desc_elemento": "Approved",
+      "fk_tabla_padre_id": 21,
+      "tipo_elemento": 1,
+      "permite_cambios":1,
+      "valor_elemento":"",
+      "mostrar_en_combos":1,
+      "maneja_lista":1
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
     "pk": 22,
     "fields": {
       "desc_elemento": "Estatus curso",
@@ -355,6 +411,36 @@
 
     }
   },
+
+  {
+    "model": "app.TablasConfiguracion",
+    "pk": 0,
+    "fields": {
+      "desc_elemento": "Pay",
+      "fk_tabla_padre_id": 6,
+      "tipo_elemento": 1,
+      "permite_cambios":1,
+      "valor_elemento":"",
+      "mostrar_en_combos":1,
+      "maneja_lista":1
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk": 0,
+    "fields": {
+      "desc_elemento": "Scholarship",
+      "fk_tabla_padre_id": 6,
+      "tipo_elemento": 1,
+      "permite_cambios":1,
+      "valor_elemento":"",
+      "mostrar_en_combos":1,
+      "maneja_lista":1
+
+    }
+  },
+  
 
   {
     "model": "app.Contratantes",
@@ -558,8 +644,170 @@
       "fk_categoria":"24",
       "fk_estructura_padre":"6"
     }
-  }
+  },
+  {
+    "model": "app.Estructuraprograma",
+    "pk":8,
+    "fields": {
+      "descripcion":"Distro",
+      "valor_elemento":"Curso",
+      "url":"ubuntu_distro",
+      "peso_creditos":"1",
+      "fk_categoria":"24",
+      "fk_estructura_padre":"7"
+    }
 
+  },
+  {
+    "model": "app.Estructuraprograma",
+    "pk":9,
+    "fields": {
+      "descripcion":"CCS",
+      "valor_elemento":"Curso",
+      "url":"css_dev",
+      "peso_creditos":"1",
+      "fk_categoria":"24",
+      "fk_estructura_padre":"5"
+    }
+
+  },
+
+  {
+    "model": "registration.PreciosFormacion",
+    "pk":1,
+    "fields": {
+      "descripcion":"Distro",
+      "precio":null,
+      "PorcentajeDescuento":null,
+      "peso_creditos":"1",
+      "fecha_registro":"2021-09-24",
+      "fecha_habilitado":"2021-09-24",
+      "fk_tipo_moneda":null,
+
+      "fk_estruc_programa":"1"
+    }
+  },
+  {
+    "model": "registration.PreciosFormacion",
+    "pk":2,
+    "fields": {
+      "descripcion":"Distro",
+      "precio":null,
+      "PorcentajeDescuento":null,
+      "peso_creditos":"1",
+      "fecha_registro":"2021-09-24",
+      "fecha_habilitado":"2021-09-24",
+      "fk_tipo_moneda":null,
+
+      "fk_estruc_programa":"2"
+    }
+  },
+  {
+    "model": "registration.PreciosFormacion",
+    "pk":3,
+    "fields": {
+      "descripcion":"Distro",
+      "precio":null,
+      "PorcentajeDescuento":null,
+      "peso_creditos":"1",
+      "fecha_registro":"2021-09-24",
+      "fecha_habilitado":"2021-09-24",
+      "fk_tipo_moneda":null,
+
+      "fk_estruc_programa":"3"
+    }
+  },
+  {
+    "model": "registration.PreciosFormacion",
+    "pk":4,
+    "fields": {
+      "descripcion":"Distro",
+      "precio":null,
+      "PorcentajeDescuento":null,
+      "peso_creditos":"1",
+      "fecha_registro":"2021-09-24",
+      "fecha_habilitado":"2021-09-24",
+      "fk_tipo_moneda":null,
+
+      "fk_estruc_programa":"4"
+    }
+  },
+  {
+    "model": "registration.PreciosFormacion",
+    "pk":5,
+    "fields": {
+      "descripcion":"Distro",
+      "precio":null,
+      "PorcentajeDescuento":null,
+      "peso_creditos":"1",
+      "fecha_registro":"2021-09-24",
+      "fecha_habilitado":"2021-09-24",
+      "fk_tipo_moneda":null,
+
+      "fk_estruc_programa":"5"
+    }
+  },
+  {
+    "model": "registration.PreciosFormacion",
+    "pk":6,
+    "fields": {
+      "descripcion":"Distro",
+      "precio":null,
+      "PorcentajeDescuento":null,
+      "peso_creditos":"1",
+      "fecha_registro":"2021-09-24",
+      "fecha_habilitado":"2021-09-24",
+      "fk_tipo_moneda":null,
+
+      "fk_estruc_programa":"6"
+    }
+  },
+  {
+    "model": "registration.PreciosFormacion",
+    "pk":7,
+    "fields": {
+      "descripcion":"Distro",
+      "precio":null,
+      "PorcentajeDescuento":null,
+      "peso_creditos":"1",
+      "fecha_registro":"2021-09-24",
+      "fecha_habilitado":"2021-09-24",
+      "fk_tipo_moneda":null,
+
+      "fk_estruc_programa":"7"
+    }
+  },
+  {
+    "model": "registration.PreciosFormacion",
+    "pk":8,
+    "fields": {
+      "descripcion":"Distro",
+      "precio":null,
+      "PorcentajeDescuento":null,
+      "peso_creditos":"1",
+      "fecha_registro":"2021-09-24",
+      "fecha_habilitado":"2021-09-24",
+      "fk_tipo_moneda":null,
+
+      "fk_estruc_programa":"8"
+    }
+  },
+  {
+    "model": "registration.PreciosFormacion",
+    "pk":9,
+    "fields": {
+      "descripcion":"Distro",
+      "precio":null,
+      "PorcentajeDescuento":null,
+      "peso_creditos":"1",
+      "fecha_registro":"2021-09-24",
+      "fecha_habilitado":"2021-09-24",
+      "fk_tipo_moneda":null,
+
+      "fk_estruc_programa":"9"
+    }
+  }
+ 
 
 
 ]

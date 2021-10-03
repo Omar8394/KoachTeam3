@@ -118,7 +118,7 @@ def MatriculacionAdmin(request):
   
     msg = None
     matriculaList=MatriculaAlumnos.objects.all()
-    status=TablasConfiguracion.obtenerHijos("Status")
+    status=TablasConfiguracion.obtenerHijos("EstMatricula")
     types=TablasConfiguracion.obtenerHijos("Tipo Matricula")
 
     fechaF=None
@@ -313,7 +313,7 @@ def MyEnrollments(request):
     publico=Publico.objects.get(user=request.user)
 
     matriculaList=MatriculaAlumnos.objects.filter(fk_publico=publico)
-    status=TablasConfiguracion.obtenerHijos("Status")
+    status=TablasConfiguracion.obtenerHijos("EstMatricula")
     types=TablasConfiguracion.obtenerHijos("Tipo Matricula")
 
     
@@ -590,7 +590,7 @@ def MatriculacionAdminModal(request):
 
     matriculaApplication=MatriculaAlumnos.objects.get(pk=matricula)
     persona=Publico.objects.get(pk=matriculaApplication.fk_publico.idpublico)
-    status=TablasConfiguracion.obtenerHijos("Status")
+    status=TablasConfiguracion.obtenerHijos("EstMatricula")
     types=TablasConfiguracion.obtenerHijos("Tipo Matricula")
 
     admin=True if request.GET.get("admin")==1 else False
