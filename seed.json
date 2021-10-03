@@ -301,7 +301,7 @@
   },
   {
     "model": "app.TablasConfiguracion",
-    "pk": 0,
+    "pk": 31,
     "fields": {
       "desc_elemento": "Revision",
       "fk_tabla_padre_id": 21,
@@ -315,7 +315,7 @@
   },
   {
     "model": "app.TablasConfiguracion",
-    "pk": 0,
+    "pk": 30,
     "fields": {
       "desc_elemento": "Cancelled",
       "fk_tabla_padre_id": 21,
@@ -329,7 +329,7 @@
   },
   {
     "model": "app.TablasConfiguracion",
-    "pk": 0,
+    "pk": 28,
     "fields": {
       "desc_elemento": "Waiting for payment",
       "fk_tabla_padre_id": 21,
@@ -343,7 +343,7 @@
   },
   {
     "model": "app.TablasConfiguracion",
-    "pk": 0,
+    "pk": 29,
     "fields": {
       "desc_elemento": "Approved",
       "fk_tabla_padre_id": 21,
@@ -414,7 +414,7 @@
 
   {
     "model": "app.TablasConfiguracion",
-    "pk": 0,
+    "pk": 26,
     "fields": {
       "desc_elemento": "Pay",
       "fk_tabla_padre_id": 6,
@@ -428,7 +428,7 @@
   },
   {
     "model": "app.TablasConfiguracion",
-    "pk": 0,
+    "pk": 27,
     "fields": {
       "desc_elemento": "Scholarship",
       "fk_tabla_padre_id": 6,
@@ -676,10 +676,10 @@
     "model": "registration.PreciosFormacion",
     "pk":1,
     "fields": {
-      "descripcion":"Distro",
+    
       "precio":null,
       "PorcentajeDescuento":null,
-      "peso_creditos":"1",
+   
       "fecha_registro":"2021-09-24",
       "fecha_habilitado":"2021-09-24",
       "fk_tipo_moneda":null,
@@ -691,10 +691,10 @@
     "model": "registration.PreciosFormacion",
     "pk":2,
     "fields": {
-      "descripcion":"Distro",
+      
       "precio":null,
       "PorcentajeDescuento":null,
-      "peso_creditos":"1",
+     
       "fecha_registro":"2021-09-24",
       "fecha_habilitado":"2021-09-24",
       "fk_tipo_moneda":null,
@@ -706,10 +706,10 @@
     "model": "registration.PreciosFormacion",
     "pk":3,
     "fields": {
-      "descripcion":"Distro",
+      
       "precio":null,
       "PorcentajeDescuento":null,
-      "peso_creditos":"1",
+   
       "fecha_registro":"2021-09-24",
       "fecha_habilitado":"2021-09-24",
       "fk_tipo_moneda":null,
@@ -721,10 +721,10 @@
     "model": "registration.PreciosFormacion",
     "pk":4,
     "fields": {
-      "descripcion":"Distro",
+      
       "precio":null,
       "PorcentajeDescuento":null,
-      "peso_creditos":"1",
+      
       "fecha_registro":"2021-09-24",
       "fecha_habilitado":"2021-09-24",
       "fk_tipo_moneda":null,
@@ -736,10 +736,10 @@
     "model": "registration.PreciosFormacion",
     "pk":5,
     "fields": {
-      "descripcion":"Distro",
+   
       "precio":null,
       "PorcentajeDescuento":null,
-      "peso_creditos":"1",
+      
       "fecha_registro":"2021-09-24",
       "fecha_habilitado":"2021-09-24",
       "fk_tipo_moneda":null,
@@ -751,10 +751,10 @@
     "model": "registration.PreciosFormacion",
     "pk":6,
     "fields": {
-      "descripcion":"Distro",
+      
       "precio":null,
       "PorcentajeDescuento":null,
-      "peso_creditos":"1",
+      
       "fecha_registro":"2021-09-24",
       "fecha_habilitado":"2021-09-24",
       "fk_tipo_moneda":null,
@@ -766,10 +766,10 @@
     "model": "registration.PreciosFormacion",
     "pk":7,
     "fields": {
-      "descripcion":"Distro",
+      
       "precio":null,
       "PorcentajeDescuento":null,
-      "peso_creditos":"1",
+     
       "fecha_registro":"2021-09-24",
       "fecha_habilitado":"2021-09-24",
       "fk_tipo_moneda":null,
@@ -781,10 +781,10 @@
     "model": "registration.PreciosFormacion",
     "pk":8,
     "fields": {
-      "descripcion":"Distro",
+      
       "precio":null,
       "PorcentajeDescuento":null,
-      "peso_creditos":"1",
+      
       "fecha_registro":"2021-09-24",
       "fecha_habilitado":"2021-09-24",
       "fk_tipo_moneda":null,
@@ -796,10 +796,10 @@
     "model": "registration.PreciosFormacion",
     "pk":9,
     "fields": {
-      "descripcion":"Distro",
+      
       "precio":null,
       "PorcentajeDescuento":null,
-      "peso_creditos":"1",
+      
       "fecha_registro":"2021-09-24",
       "fecha_habilitado":"2021-09-24",
       "fk_tipo_moneda":null,
