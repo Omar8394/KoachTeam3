@@ -21,7 +21,7 @@
 				overflow: hidden;
 			}
 			.list-group-item:hover {
-				transform: scale(1.1);
+				/* transform: scale(1.04); */
 				transition: transform 0.1s linear;
 				transition: outline 0.5s linear;
 				outline: 0.5px solid #00000050;

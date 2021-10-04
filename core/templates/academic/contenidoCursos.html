@@ -3,43 +3,47 @@ results for "{{query}}"
 {% endif %}
 <section>
    <div class="section-header">
-      <h3 class="section-title">Units</h3>
+      <h3 class="section-title">Courses</h3>
    </div>
    <div class="cards-container">
       {% if not query %}
       <div class="card-new">
          <div class="card-new-content">
-            <h2 class="card-new-title">Add new unit</h2>
+            <h2 class="card-new-title">Add new course</h2>
             <div class="card-new-body">
-               <div onclick="openAddUnits()" class="btn btn-icon btn-success btn-round add-btn btn-xl">
+               <div onclick="openAddCourses()" class="btn btn-icon btn-success btn-round add-btn btn-xl">
                   <i class="fas fa-plus"></i>
                </div>
             </div>
          </div>
       </div>
       {% endif%}
-      {% for unit in data%}
-      {%if unit.valor_elemento == 'Unidad'%}
+      {% for course in data%}
+      {%if course.valor_elemento == 'Curso'%}
       <div class="card-academic">
          <div class="card-academic-content">
             <div class="over-title">
-               <p><span class="subtitle">Type</span> {{unit.valor_elemento}}</p>
+               <p><span class="subtitle">Type</span> {{course.valor_elemento}}</p>
                <p><span class="subtitle">Profesor</span> Jesus Campos</p>
             </div>
-            <h2 class="card-academic-title">{{unit.descripcion}}</h2>
+            <h2 class="card-academic-title">{{course.descripcion}}</h2>
             <p class="card-academic-body">
+               {% if course.cursos %}
+                  {{course.cursos.desc_curso}}
+               {% else%}
                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Tempora et incidunt repellendus
                libero voluptates ab cum, exercitationem
+               {% endif %}
             </p>
             <div class="btn-group" role="group">
                {%if edit%}
-               <a href="#" onclick="openEditUnits('{{unit.pk}}')" class="button btn btn-primary"><i
+               <a href="#" onclick="openEditCourses('{{course.pk}}')" class="button btn btn-primary"><i
                      class="fas fa-edit"></i></a>
                {%endif%}
-               <a href="{% url 'unidad' programa=programa.url proceso=proceso.url unidad=unit.url %}"
+               <a href="{% url 'curso' programa=programa.url proceso=proceso.url unidad=unidad.url curso=course.url %}"
                   class="button btn btn-success"><strong>Acceder</strong></a>
                {%if delete%}
-               <a href="#" onclick="openDeleteUnits('{{unit.pk}}')" class="button btn btn-danger"><i
+               <a href="#" onclick="openDeleteCourses('{{course.pk}}')" class="button btn btn-danger"><i
                      class="fas fa-trash-alt"></i></a>
                {%endif%}
             </div>

@@ -20,7 +20,7 @@ urlpatterns = [
     # Mis matriculas
     path('MyEnrollments/', views.MyEnrollments, name='MyEnrollments'  ),
     #Lista cursos
-    path('ManagePrices/', views.ManagePrices, name='MyEnrollments'  ),
+    path('ManagePrices/', views.ManagePrices, name='ManagePrices'  ),
 
 
 

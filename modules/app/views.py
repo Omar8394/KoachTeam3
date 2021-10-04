@@ -129,6 +129,7 @@ def tables(request):
             except:
                 return JsonResponse({"message": "Error"})
     context = {}
+    context['segment'] = 'settings'
     html_template = (loader.get_template('app/settings/tables.html'))
     return HttpResponse(html_template.render(context, request))
 
@@ -166,6 +167,7 @@ def scales(request):
                 return JsonResponse({"message": "Error"})
                 
     context = {}
+    context['segment'] = 'settings'
     html_template = (loader.get_template('app/settings/scales.html'))
     return HttpResponse(html_template.render(context, request))
 

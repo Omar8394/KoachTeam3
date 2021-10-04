@@ -35,13 +35,11 @@ def enrollment(request):
 
 
             
-    context = {}
-   # context['segment'] = 'index'
 
     html_template = loader.get_template( 'registration/Matriculacion.html' )
 
     #return HttpResponse(html_template.render(context, request))
-    return render(request, 'registration/Matriculacion.html', {"form": form, "msg" : msg,'structuraProg':structuraProg, 'tipoPrograma':tipoPrograma})
+    return render(request, 'registration/Matriculacion.html', {"form": form, "msg" : msg,'structuraProg':structuraProg, 'tipoPrograma':tipoPrograma, 'segment':'registration'})
 
 @login_required(login_url="/login/")
 def ManageEnrollments(request):
@@ -104,7 +102,7 @@ def PublicoAdmin(request):
 
             
     context = { 'msg':msg, 'publicoObject':page_obj}
-   # context['segment'] = 'index'
+    context['segment'] = 'registration'
 
   
     html_template = (loader.get_template('registration/PublicoAdmin.html'))
@@ -120,7 +118,7 @@ def MatriculacionAdmin(request):
   
     msg = None
     matriculaList=MatriculaAlumnos.objects.all()
-    status=TablasConfiguracion.obtenerHijos("Status")
+    status=TablasConfiguracion.obtenerHijos("EstMatricula")
     types=TablasConfiguracion.obtenerHijos("Tipo Matricula")
 
     fechaF=None
@@ -295,7 +293,7 @@ def MatriculacionAdmin(request):
      idTipo=int(idTipo)
             
     context = { 'msg':msg,'matriculasList': matriculaList}
-   # context['segment'] = 'index'
+    context['segment'] = 'registration'
 
     
     html_template = (loader.get_template('registration/MatriculacionAdmin.html'))
@@ -303,7 +301,7 @@ def MatriculacionAdmin(request):
     
     
    # return HttpResponse(html_template.render(context, request))
-    return render(request, 'registration/MatriculacionAdmin.html', {'msg':msg,'matriculasList': page_obj,'FechaInicial':fechaI,'FechaFinal':fechaF, 'publicoObject':numeroPaginas,'idPersona':idPersona,'personaBuscarNombre':personaBuscarNombre, 'selectedStatus':idStatus,'selectedType':idTipo ,'status':status,'types':types} )
+    return render(request, 'registration/MatriculacionAdmin.html', {'msg':msg,'matriculasList': page_obj,'FechaInicial':fechaI,'FechaFinal':fechaF, 'publicoObject':numeroPaginas,'idPersona':idPersona,'personaBuscarNombre':personaBuscarNombre, 'selectedStatus':idStatus,'selectedType':idTipo ,'status':status,'types':types, 'segment':'registration'} )
 
 
 
@@ -315,7 +313,7 @@ def MyEnrollments(request):
     publico=Publico.objects.get(user=request.user)
 
     matriculaList=MatriculaAlumnos.objects.filter(fk_publico=publico)
-    status=TablasConfiguracion.obtenerHijos("Status")
+    status=TablasConfiguracion.obtenerHijos("EstMatricula")
     types=TablasConfiguracion.obtenerHijos("Tipo Matricula")
 
     
@@ -326,6 +324,11 @@ def MyEnrollments(request):
     idTipo=None
 
     personaBuscarNombre=None
+    
+    context = {}
+    context['segment'] = 'registration'
+
+
 
 
     
@@ -465,7 +468,7 @@ def MyEnrollments(request):
      idStatus=int(idStatus)
     if idTipo!=None and idTipo!="":
      idTipo=int(idTipo)
-    return render(request, 'registration/MyMatriculas.html', {'msg':msg,'matriculasList': page_obj,'FechaInicial':fechaI,'FechaFinal':fechaF, 'selectedStatus':idStatus,'selectedType':idTipo ,'status':status,'types':types} )
+    return render(request, 'registration/MyMatriculas.html', {'msg':msg,'matriculasList': page_obj,'FechaInicial':fechaI,'FechaFinal':fechaF, 'selectedStatus':idStatus,'selectedType':idTipo ,'status':status,'types':types, 'segment':'registration'} )
 
     return render(request, 'registration/MyMatriculas.html', {'msg':msg,'matriculasList': page_obj})
 
@@ -520,7 +523,7 @@ def ManagePrices(request):
    page_number = request.GET.get('page')
    page_obj = paginator.get_page(page_number)
    
-   return render(request, 'registration/Courses.html', {"structuras": page_obj, })
+   return render(request, 'registration/Courses.html', {"structuras": page_obj, 'segment':'registration' })
 
 
 
@@ -587,7 +590,7 @@ def MatriculacionAdminModal(request):
 
     matriculaApplication=MatriculaAlumnos.objects.get(pk=matricula)
     persona=Publico.objects.get(pk=matriculaApplication.fk_publico.idpublico)
-    status=TablasConfiguracion.obtenerHijos("Status")
+    status=TablasConfiguracion.obtenerHijos("EstMatricula")
     types=TablasConfiguracion.obtenerHijos("Tipo Matricula")
 
     admin=True if request.GET.get("admin")==1 else False
@@ -1115,7 +1118,9 @@ def updateEnrollment(request):
 @login_required(login_url="/login/")
 def Pay(request):
     
-       
+  context = {}
+  context['segment'] = 'registration'
+
   msg = None
   
   structuraProg = ""

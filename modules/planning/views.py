@@ -177,8 +177,9 @@ def show(request):
         return render(request,"planning/show.html",{'plan':paginas(request, plan), 'search':search_query}) 
     
     else:
+        return render(request,"planning/show.html",{'plan':paginas(request, plan), 'search':search_query, 'segment':'planning'}) 
 
-        return redirect('/') 
+    return redirect('/') 
 
 def showCompetences(request): 
 
@@ -197,6 +198,7 @@ def showCompetences(request):
 
         return redirect('/') 
 
+    return render(request,"planning/showCompetence.html",{'competencia':paginas(request, competencia), 'search':search_query, 'segment':'planning'}) 
 
 def showCompetencesAdq(request):  
 
@@ -211,12 +213,12 @@ def showCompetencesAdq(request):
 
         competencia = competencia.filter(fk_publico__nombre__startswith=search_query) 
 
-    return render(request,"planning/showCompetenceAdq.html",{'competencia':paginas(request, competencia), 'search':search_query}) 
+    return render(request,"planning/showCompetenceAdq.html",{'competencia':paginas(request, competencia), 'search':search_query, 'segment':'planning'}) 
 
 def showProgram(request): 
      
     program = Programascap.objects.all()  
-    return render(request,"planning/showProgram.html",{'programs':program}) 
+    return render(request,"planning/showProgram.html",{'programs':program, 'segment':'planning'}) 
 
 def addProgram(request):  
     if request.method == "POST":  
