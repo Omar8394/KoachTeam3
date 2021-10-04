@@ -14,7 +14,7 @@ class TipoRecursos(models.Model):
 class EscalaEvaluacion(models.Model):
     idescala_evaluacion = models.SmallAutoField(primary_key=True)
     desc_escala = models.TextField()
-    maxima_puntuacion = models.DecimalField(max_digits=5, decimal_places=2)
+    maxima_puntuacion = models.DecimalField(max_digits=6, decimal_places=2)
 
     def __str__(self):
         return self.desc_escala
