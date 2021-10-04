@@ -254,6 +254,17 @@
             })
          })
    }
+   const toggleTime = ()=>{
+      const time = document.getElementById("timeCourse")
+      const duration = document.getElementById("durationCourse")
+      if(!time.disabled){
+         time.value=null
+         duration.value=null
+      }
+      time.disabled = !time.disabled
+      duration.disabled = !duration.disabled
+
+   }
    const searchFor = (text) => {
       let output = text.trim()
       if (output.length > 20) return

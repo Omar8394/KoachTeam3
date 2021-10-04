@@ -8,7 +8,7 @@ from django.urls import reverse
 from django import template
 import json
 from ..app.models import TablasConfiguracion, Estructuraprograma
-from .models import ActividadEvaluaciones
+from .models import ActividadEvaluaciones, Cursos
 
 # Create your views here.
 @login_required(login_url="/login/")
@@ -309,44 +309,66 @@ def getModalCursos(request):
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             context = {}
             modelo = {}
-            try:
-                if request.body:
-                    data = json.load(request)
-                    if data["method"] == "Find":
-                        modelo = Estructuraprograma.objects.get(pk=data["id"])
-                        modeloPadre = Estructuraprograma.objects.get(pk=modelo.fk_estructura_padre_id)
-                        modeloAbuelo = Estructuraprograma.objects.get(pk=modeloPadre.fk_estructura_padre_id)
-                        programs = Estructuraprograma.objects.filter(valor_elemento="Programa")
-                        processes = Estructuraprograma.objects.filter(valor_elemento="Proceso")
-                        units = Estructuraprograma.objects.filter(valor_elemento="Unidad")
-                        context = {"programs": programs, "processes":processes,"units":units, "modelo": modelo, "modeloPadre": modeloPadre, "modeloAbuelo":modeloAbuelo}
-                        html_template = (loader.get_template('components/modalAddCurso.html'))
-                        return HttpResponse(html_template.render(context, request))
-                    elif data["method"] == "Delete":
-                        curso = Estructuraprograma.objects.get(pk=data["id"])
-                        curso.delete()
-                        return JsonResponse({"message":"Deleted"})
-                    elif data["method"] == "Update":
-                        curso = Estructuraprograma.objects.get(pk=data["id"])
-                    elif data["method"] == "Create":
-                        curso = Estructuraprograma()
-                        curso.valor_elemento = "Curso"
-                    curso.fk_estructura_padre_id=data["data"]["padreCourse"]
-                    curso.descripcion = data["data"]["descriptionCourse"]
-                    curso.url = data["data"]["urlCourse"]
-                    curso.fk_categoria_id = Estructuraprograma.objects.get(pk=data["data"]["padreCourse"]).fk_categoria_id
-                    curso.peso_creditos = data["data"]["creditos"]
-                    curso.save()
-                    return JsonResponse({"message":"Perfect"})
-                else:
+            # try:
+            if request.body:
+                data = json.load(request)
+                if data["method"] == "Find":
+                    modeloCurso = Cursos.objects.get(fk_estruc_programa=data["id"])
+                    modelo = Estructuraprograma.objects.get(pk=data["id"])
+                    modeloPadre = Estructuraprograma.objects.get(pk=modelo.fk_estructura_padre_id)
+                    modeloAbuelo = Estructuraprograma.objects.get(pk=modeloPadre.fk_estructura_padre_id)
                     programs = Estructuraprograma.objects.filter(valor_elemento="Programa")
                     processes = Estructuraprograma.objects.filter(valor_elemento="Proceso")
                     units = Estructuraprograma.objects.filter(valor_elemento="Unidad")
-                    context = {"programs": programs, "processes":processes, "units":units, "modelo": modelo}
+                    tipoDuracion = TablasConfiguracion.obtenerHijos(valor="Duracion")
+                    status = TablasConfiguracion.obtenerHijos(valor="EstCurso")
+                    context = {"programs": programs, "processes":processes,"units":units, "modeloCurso":modeloCurso, "modelo": modelo, "modeloPadre": modeloPadre, "modeloAbuelo":modeloAbuelo, "tipoDuracion":tipoDuracion, "status":status}
                     html_template = (loader.get_template('components/modalAddCurso.html'))
                     return HttpResponse(html_template.render(context, request))
-            except:
-                return JsonResponse({"message":"error"})
+                elif data["method"] == "Delete":
+                    curso = Estructuraprograma.objects.get(pk=data["id"])
+                    curso.delete()
+                    return JsonResponse({"message":"Deleted"})
+                elif data["method"] == "Update":
+                    curso = Estructuraprograma.objects.get(pk=data["id"])
+                    curso_char = curso.cursos
+                elif data["method"] == "Create":
+                    curso = Estructuraprograma()
+                    curso_char = Cursos()
+                    curso.valor_elemento = "Curso"
+                curso.fk_estructura_padre_id=data["data"]["padreCourse"]
+                curso.descripcion = data["data"]["titleCourse"]
+                curso.url = data["data"]["urlCourse"]
+                curso.fk_categoria_id = Estructuraprograma.objects.get(pk=data["data"]["padreCourse"]).fk_categoria_id
+                curso.peso_creditos = data["data"]["creditos"]
+                curso_char.desc_curso = data["data"]["descriptionCourse"]
+                curso_char.abrev_curso = data["data"]["tagCourse"]
+                curso_char.codigo_curso = data["data"]["codeCourse"]
+                curso_char.disponible_desde = data["data"]["disponibleCourse"]
+                curso_char.fk_estatus_curso_id = data["data"]["statusCourse"]
+                curso_char.tipo_evaluacion = False
+                if "checkExpertCB" in data["data"]:
+                    curso_char.tipo_evaluacion = True
+                if "durationCourse" in data["data"]:
+                    curso_char.duracion = data["data"]["durationCourse"]
+                if "timeCourse" in data["data"]:
+                    curso_char.fk_tipo_duracion = data["data"]["timeCourse"]
+                curso.save()
+                curso_char.fk_estruc_programa = curso
+                curso_char.save()
+                return JsonResponse({"message":"Perfect"})
+            else:
+                programs = Estructuraprograma.objects.filter(valor_elemento="Programa")
+                processes = Estructuraprograma.objects.filter(valor_elemento="Proceso")
+                units = Estructuraprograma.objects.filter(valor_elemento="Unidad")
+                tipoDuracion = TablasConfiguracion.obtenerHijos(valor="Duracion")
+                status = TablasConfiguracion.obtenerHijos(valor="EstCurso")
+                
+                context = {"programs": programs, "processes":processes, "units":units, "modelo": modelo,"tipoDuracion":tipoDuracion, "status":status}
+                html_template = (loader.get_template('components/modalAddCurso.html'))
+                return HttpResponse(html_template.render(context, request))
+            # except:
+            #     return JsonResponse({"message":"error"})
 
 
 @login_required(login_url="/login/")

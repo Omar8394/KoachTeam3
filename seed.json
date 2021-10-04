@@ -309,7 +309,7 @@
       "permite_cambios":1,
       "valor_elemento":"",
       "mostrar_en_combos":1,
-      "maneja_lista":1
+      "maneja_lista":0
 
     }
   },
@@ -323,7 +323,7 @@
       "permite_cambios":1,
       "valor_elemento":"",
       "mostrar_en_combos":1,
-      "maneja_lista":1
+      "maneja_lista":0
 
     }
   },
@@ -337,7 +337,7 @@
       "permite_cambios":1,
       "valor_elemento":"",
       "mostrar_en_combos":1,
-      "maneja_lista":1
+      "maneja_lista":0
 
     }
   },
@@ -351,7 +351,7 @@
       "permite_cambios":1,
       "valor_elemento":"",
       "mostrar_en_combos":1,
-      "maneja_lista":1
+      "maneja_lista":0
 
     }
   },
@@ -440,8 +440,72 @@
 
     }
   },
-  
+  {
+    "model": "app.TablasConfiguracion",
+    "fields": {
+      "desc_elemento": "Days",
+      "fk_tabla_padre_id": 13,
+      "tipo_elemento": 0,
+      "permite_cambios":1,
+      "valor_elemento":"",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
 
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "fields": {
+      "desc_elemento": "Minutes",
+      "fk_tabla_padre_id": 13,
+      "tipo_elemento": 0,
+      "permite_cambios":1,
+      "valor_elemento":"",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "fields": {
+      "desc_elemento": "Hours",
+      "fk_tabla_padre_id": 13,
+      "tipo_elemento": 0,
+      "permite_cambios":1,
+      "valor_elemento":"",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "fields": {
+      "desc_elemento": "Open",
+      "fk_tabla_padre_id": 22,
+      "tipo_elemento": 0,
+      "permite_cambios":1,
+      "valor_elemento":"",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "fields": {
+      "desc_elemento": "Close",
+      "fk_tabla_padre_id": 22,
+      "tipo_elemento": 0,
+      "permite_cambios":1,
+      "valor_elemento":"",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
+  
   {
     "model": "app.Contratantes",
     "pk": 1,

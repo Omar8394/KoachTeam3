@@ -40,60 +40,73 @@
                </select>
             </div>
             <div class="form-group col-6">
-               <label for="comboProcess" class="col-form-label">Other</label>
-               <select class="form-control" name="comboProcess" id="comboProcess">
-                  <option value="null" selected disabled>Select a process</option>
-               </select>
+               <label for="urlCourse" class="col-form-label">URL</label>
+               <input type="text" class="form-control" name="urlCourse" id="urlCourse" placeholder="Enter a valid URL"
+                  required value="{% if modelo %}{{ modelo.url}}{% endif %}">
             </div>
+
          </div>
          <div class="form-row">
             <div class="form-group col-6">
                <label for="titleCourse" class="col-form-label">Title</label>
-               <input type="text" class="form-control" id="titleCourse"
-                  placeholder="Enter a title for this course"
-                  required value="{% if modelo %}{{ modelo.descripcion }}{% endif %}">
+               <input type="text" class="form-control" id="titleCourse" name="titleCourse"
+                  placeholder="Enter a title for this course" required
+                  value="{% if modelo %}{{ modelo.descripcion }}{% endif %}">
             </div>
             <div class="form-group col-6">
+               <label for="tagCourse" class="col-form-label">Tag</label>
+               <input type="text" class="form-control" id="tagCourse" name="tagCourse"
+                  placeholder="Enter a abbreviation to identify this course" required
+                  value="{% if modeloCurso %}{{ modeloCurso.abrev_curso}}{% endif %}">
+            </div>
+         </div>
+         <div class="form-row">
+            <div class="form-group col-6">
                <label for="codeCourse" class="col-form-label">Code</label>
-               <input type="text" class="form-control" id="codeCourse"
-                  placeholder="Enter a code to identify this course"
-                  required value="{% if modeloCurso %}{{ modeloCurso.codigo_curso}}{% endif %}"
-                  >
+               <input type="text" class="form-control" id="codeCourse" name="codeCourse"
+                  placeholder="Enter a code to identify this course" required
+                  value="{% if modeloCurso %}{{ modeloCurso.codigo_curso}}{% endif %}">
+            </div>
+            <div class="form-group col-6">
+               <label for="creditos" class="col-form-label">Credits</label>
+               <input type="number" class="form-control" name="creditos" id="creditos" placeholder="1" required
+                  value="{% if modelo %}{{ modelo.peso_creditos }}{% endif %}">
             </div>
          </div>
          <div class="form-row">
             <div class="form-group col-12">
                <label for="descriptionCourse" class="col-form-label">Description</label>
-               <textarea class="form-control" id="descriptionCourse" placeholder="Enter a description here"
-               required value="{% if modeloCurso %}{{ modeloCurso.desc_curso}}{% endif %}"
-               ></textarea>
+               <textarea class="form-control" name="descriptionCourse" id="descriptionCourse"
+                  placeholder="Enter a description here" required>{% if modeloCurso %}{{ modeloCurso.desc_curso}}{% endif %}</textarea>
             </div>
          </div>
          <div class="form-row">
             <div class="form-group col-6">
-               <label for="tagCourse" class="col-form-label">Tag</label>
-               <input type="text" class="form-control" id="tagCourse"
-                  placeholder="Enter a abbreviation to identify this course"
-                  required value="{% if modeloCurso %}{{ modeloCurso.abrev_curso}}{% endif %}">
+               <label for="statusCourse" class="col-form-label">Status</label>
+               <select class="form-control" name="statusCourse" id="statusCourse">
+                  <option value="null" {% if not modeloCurso %}selected{% endif %} disabled>Select a status</option>
+                  {% for item in status %}
+                  <option value="{{item.pk}}" {% if modeloCurso %}{% if modeloCurso.fk_estatus_curso_id == item.pk %}selected{% endif %}{% endif %}>{{item.desc_elemento}}</option>
+                  {% endfor%}
+               </select>
             </div>
             <div class="form-group col-6">
                <label for="diponibleCourse" class="col-form-label">Available from</label>
-               <input type="date" class="form-control" id="disponibleCourse"
-               required value="{% if modeloCurso %}{{ modeloCurso.disponible_desde}}{% endif %}">
+               <input type="date" class="form-control" name="disponibleCourse" id="disponibleCourse" required
+                  value="{% if modeloCurso %}{{ modeloCurso.disponible_desde|date:'Y-m-d'}}{% endif %}">
             </div>
          </div>
          <div class="form-row">
             <div class="form-group col-6">
                <div class="custom-control custom-checkbox ml-2">
-                  <input type="checkbox" class="custom-control-input" name="checkExpertCB" id="checkExpertCB"
-                  {% if modeloCurso %}{% if modeloCurso.tipo_evaluacion %} checked {% endif %}{% endif %}>
+                  <input type="checkbox" class="custom-control-input" name="checkExpertCB" id="checkExpertCB" {% if modeloCurso %}{% if modeloCurso.tipo_evaluacion %} checked {% endif %}{% endif %}>
                   <label class="custom-control-label" for="checkExpertCB">Expert test</label>
                </div>
             </div>
             <div class="form-group col-6">
                <div class="custom-control custom-checkbox ml-2">
                   <input type="checkbox" class="custom-control-input" name="checkDurationCB" id="checkDurationCB"
-                  {% if modeloCurso %}{% if modeloCurso.duracion %} checked {% endif %}{% endif %}>
+                     onclick="toggleTime()" {% if modeloCurso %}{% if modeloCurso.duracion %} checked {% endif %}{% endif %}>
                   <label class="custom-control-label" for="checkDurationCB">Handle duration</label>
                </div>
             </div>
@@ -101,13 +114,16 @@
          <div class="form-row">
             <div class="form-group col-6">
                <label for="durationCourse" class="col-form-label">Duration</label>
-               <input type="number" class="form-control" id="durationCourse" placeholder="0"
-               required value="{% if modeloCurso %}{{ modeloCurso.duracion}}{% endif %}">
+               <input type="number" class="form-control" name="durationCourse" id="durationCourse" placeholder="0"
+                  required {% if modeloCurso %} {% if modeloCurso.duracion %} value="{{ modeloCurso.duracion}}" {%else%} disabled {% endif %}{% else %} disabled {% endif %}>
             </div>
             <div class="form-group col-6">
                <label for="timeCourse" class="col-form-label">Time</label>
-               <select class="form-control" name="timeCourse" id="timeCourse">
+               <select class="form-control" name="timeCourse" id="timeCourse" {% if modeloCurso %}{% if not modeloCurso.fk_tipo_duracion%}disabled{% endif %}{% else %}disabled{% endif %}>
                   <option value="null" selected disabled>Select a type time</option>
+                  {% for item in tipoDuracion %}
+                  <option value="{{item.pk}}" {% if modeloCurso %}{% if modeloCurso.fk_tipo_duracion == item.pk %}selected{% endif %}{% endif %}>{{item.desc_elemento}}</option>
+                  {% endfor%}
                </select>
             </div>
          </div>

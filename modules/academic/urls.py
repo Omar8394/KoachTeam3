@@ -28,8 +28,9 @@ urlpatterns = [
    path('<str:programa>/', views.programa, name="programa"),
    path('<str:programa>/<str:proceso>/', views.proceso, name="proceso"),
    path('<str:programa>/<str:proceso>/<str:unidad>/', views.unidad, name="unidad"),
-   path('<str:programa>/<str:proceso>/<str:unidad>/<str:topico>/', views.topico, name="topico"),
-   path('<str:programa>/<str:proceso>/<str:unidad>/<str:topico>/<int:idActividad>/', views.actividad, name="actividad"),
+   path('<str:programa>/<str:proceso>/<str:unidad>/<str:curso>/', views.curso, name="curso"),
+   path('<str:programa>/<str:proceso>/<str:unidad>/<str:curso>/<str:topico>/', views.topico, name="topico"),
+   path('<str:programa>/<str:proceso>/<str:unidad>/<str:curso>/<str:topico>/<int:idActividad>/', views.actividad, name="actividad"),
    #demas paginas
    re_path(r'^.*\.*', views.pages, name='pages'),
 ]
