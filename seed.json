@@ -870,8 +870,137 @@
 
       "fk_estruc_programa":"9"
     }
-  }
+  },
+  {
+    "model": "app.tablasconfiguracion",
+    "pk": 44,
+    "fields": {
+      "desc_elemento": "Medicine",
+      "fk_tabla_padre": 15,
+      "tipo_elemento": "0",
+      "permite_cambios": 1,
+      "valor_elemento": null,
+      "mostrar_en_combos": 1,
+      "maneja_lista": 0
+    }
+  },
+  {
+    "model": "app.tablasconfiguracion",
+    "pk": 45,
+    "fields": {
+      "desc_elemento": "Engineering",
+      "fk_tabla_padre": 15,
+      "tipo_elemento": "0",
+      "permite_cambios": 1,
+      "valor_elemento": null,
+      "mostrar_en_combos": 1,
+      "maneja_lista": 0
+    }
+  },
+  {
+    "model": "app.tablasconfiguracion",
+    "pk": 46,
+    "fields": {
+      "desc_elemento": "Science",
+      "fk_tabla_padre": 15,
+      "tipo_elemento": "0",
+      "permite_cambios": 1,
+      "valor_elemento": null,
+      "mostrar_en_combos": 1,
+      "maneja_lista": 0
+    }
+  },
+  {
+    "model": "app.tablasconfiguracion",
+    "pk": 47,
+    "fields": {
+      "desc_elemento": "Administration",
+      "fk_tabla_padre": 15,
+      "tipo_elemento": "0",
+      "permite_cambios": 1,
+      "valor_elemento": null,
+      "mostrar_en_combos": 1,
+      "maneja_lista": 0
+    }
+  },
+  {
+    "model": "app.tablasconfiguracion",
+    "pk": 48,
+    "fields": {
+      "desc_elemento": "Moral",
+      "fk_tabla_padre": 8,
+      "tipo_elemento": "0",
+      "permite_cambios": 1,
+      "valor_elemento": null,
+      "mostrar_en_combos": 1,
+      "maneja_lista": 0
+    }
+  },
+  {
+    "model": "app.tablasconfiguracion",
+    "pk": 49,
+    "fields": {
+      "desc_elemento": "Physical",
+      "fk_tabla_padre": 8,
+      "tipo_elemento": "0",
+      "permite_cambios": 1,
+      "valor_elemento": null,
+      "mostrar_en_combos": 1,
+      "maneja_lista": 0
+    }
+  },
  
-
+{
+  "model": "app.tablasconfiguracion",
+  "pk": 33,
+  "fields": {
+    "desc_elemento": "Low",
+    "fk_tabla_padre": 17,
+    "tipo_elemento": "0",
+    "permite_cambios": 1,
+    "valor_elemento": null,
+    "mostrar_en_combos": 1,
+    "maneja_lista": 0
+  }
+},
+{
+  "model": "app.tablasconfiguracion",
+  "pk": 34,
+  "fields": {
+    "desc_elemento": "Middle",
+    "fk_tabla_padre": 17,
+    "tipo_elemento": "0",
+    "permite_cambios": 1,
+    "valor_elemento": null,
+    "mostrar_en_combos": 1,
+    "maneja_lista": 0
+  }
+},
+{
+  "model": "app.tablasconfiguracion",
+  "pk": 35,
+  "fields": {
+    "desc_elemento": "High",
+    "fk_tabla_padre": 17,
+    "tipo_elemento": "0",
+    "permite_cambios": 1,
+    "valor_elemento": null,
+    "mostrar_en_combos": 1,
+    "maneja_lista": 0
+  }
+},
+{
+  "model": "app.tablasconfiguracion",
+  "pk": 32,
+  "fields": {
+    "desc_elemento": "Logic",
+    "fk_tabla_padre": 8,
+    "tipo_elemento": "0",
+    "permite_cambios": 1,
+    "valor_elemento": null,
+    "mostrar_en_combos": 1,
+    "maneja_lista": 0
+  }
+}
 
 ]

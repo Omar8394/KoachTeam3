@@ -164,7 +164,7 @@ def paginas(request, obj):
     return pages
 
 def show(request):  
-
+    
     if(request.user.is_staff):
         
         search_query = request.GET.get('search_box', "")
@@ -177,9 +177,9 @@ def show(request):
         return render(request,"planning/show.html",{'plan':paginas(request, plan), 'search':search_query}) 
     
     else:
-        return render(request,"planning/show.html",{'plan':paginas(request, plan), 'search':search_query, 'segment':'planning'}) 
+        
+        return redirect('/') 
 
-    return redirect('/') 
 
 def showCompetences(request): 
 
