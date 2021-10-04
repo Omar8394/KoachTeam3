@@ -1,5 +1,5 @@
 <div class="card-body">
-    <form method="post" action="">
+    <form method="post" action="" id="formulario">
 
         {% csrf_token %}
 
@@ -14,7 +14,7 @@
                                         <i class="fas fa-list"></i>
                                     </span>
                                 </div>
-                                {{ p }}  
+                                {{ p }}
                             </div>
                         </div>
                     {% endfor %} 
@@ -24,5 +24,26 @@
         <div class="card-action">
             <button type="submit" class="btn bg-dark2 btn-lg btn-block d-flex" style="color: white">Submit</button>
         </div>
+        <div class="card-action">
+            {% if form.errors %}
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <div class="alert alert-danger">
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+        
+                {% for error in form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        <strong>{{ error|escape }}</strong>
+                    </div>
+                {% endfor %}
+        
+            {% endif %}
+        </div>
     </form>
+
+
 </div>
+{% include 'planning/mensajes.html' %}  

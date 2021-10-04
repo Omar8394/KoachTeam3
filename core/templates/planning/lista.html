@@ -1,0 +1,16 @@
+
+<option value selected>{{ defecto }}</option>
+  
+{% for p in lista %}  
+    
+    {% if tipo == 'CompetenciasReq' %}
+
+<option value={{ p.idcompetenciasreq }}>{{ p.desc_competencia }}</option>
+
+    {% elif tipo == 'NivelComp' %}
+
+<option value={{ p.id_tabla }}>{{ p.desc_elemento }}</option>
+
+    {% endif %}
+
+{% endfor %} 

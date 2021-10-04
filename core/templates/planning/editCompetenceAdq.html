@@ -60,4 +60,45 @@
 {% block javascripts %}
 
 
+	<script>
+
+		const select = document.getElementById('id_fk_publico');
+
+		$('document').ready(function(){
+
+			if(!select.value){
+				
+				$('#id_fk_nivel').empty().append('<option selected="selected" value>Select a Public</option>');
+				$('#id_fk_competencia').empty().append('<option selected="selected" value>Select a Public</option>');
+
+			}
+
+
+		});
+
+
+		select.addEventListener('change',function(){
+
+			if(select.value && "{{ request.user.is_staff }}".toLowerCase()==='true' && select.length > 2){
+				
+				$.ajax({
+					data: "id=" + select.value,
+					url: "{% url 'renderListasPublic' %}",
+					success: function (response) {
+
+						document.getElementById('id_fk_competencia').innerHTML = response.competence
+						document.getElementById('id_fk_nivel').innerHTML = response.levels
+
+					},
+					error: function (response) {
+						console.log(response.responseJSON.errors)
+					}
+				});
+
+			}
+
+		});
+
+	</script>
+
 {% endblock javascripts %}

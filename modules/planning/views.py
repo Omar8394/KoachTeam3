@@ -1,118 +1,222 @@
 from django.contrib.auth.models import User
+from django.contrib import messages
 from django.shortcuts import render, redirect  
 from .forms import competenciaAdqForm, competenciaForm, perfilForm, programForm
 from .models import CompetenciasAdq, Perfil, CompetenciasReq
 from ..app.models import TablasConfiguracion, Programascap, Publico
-import json
+from json import dumps
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.http import HttpResponse, JsonResponse
+from django.template.loader import render_to_string
 # Create your views here.
 
+def editCompetenceAdq(request, id = None):  
 
-def emp(request):  
+    competence = CompetenciasAdq.objects.get(idcompetencias_adq=id) if id else None
+
     if request.method == "POST":  
-        form = perfilForm(request.POST)
+
+        form = competenciaAdqForm(data = request.POST, instance = competence) 
+
         if form.is_valid():  
-            try:  
+
+            form.save()  
+
+            if id:
+
+                messages.info(request, 'Changes applied successfully')
+                
+            else:
+                
+                messages.info(request, 'Competence Added Succefuly')
+
+            return redirect('/planning/showCompetenceAdq/') 
+
+        else:
+            
+            messages.warning(request, 'An error has occurred!')
+            return render(request,'planning/editCompetenceAdq.html',{'form':form})
+
+    form = competenciaAdqForm(instance=competence)
+
+    competencias = CompetenciasReq.objects.all()
+    publicos = Publico.objects.all()
+    publicos = publicos.filter(user=request.user) if not request.user.is_staff else publicos.filter(user=Publico.objects.get(idpublico=CompetenciasAdq.objects.get(idcompetencias_adq=id).fk_publico.idpublico).user) if id else publicos
+    
+    if(publicos and len(publicos)==1):
+
+        form.fields['fk_publico'].queryset = publicos
+        form.fields['fk_publico'].initial = publicos[0].idpublico
+
+        if not id:
+
+            for publico in CompetenciasAdq.objects.filter(fk_publico = publicos[0].idpublico):
+                
+                competencias = competencias.exclude(idcompetenciasreq=publico.fk_competencia.idcompetenciasreq)
+
+        else:
+
+            competencias = competencias.filter(idcompetenciasreq=CompetenciasAdq.objects.get(idcompetencias_adq=id).fk_competencia.idcompetenciasreq)
+
+        if competencias:
+
+            form.fields['fk_competencia'].queryset = competencias
+            if id: form.fields['fk_competencia'].initial = competencias[0].idcompetenciasreq
+        
+        else:
+            print("mensaje")
+            messages.error(request, 'There are no more competences to include')
+            
+            return redirect('/planning/showCompetenceAdq/') 
+
+    return render(request,'planning/editCompetenceAdq.html', {'form':form, 'id':id})  
+
+def editCompetence(request, id = None):  
+
+    if(request.user.is_staff):
+
+        competence = CompetenciasReq.objects.get(idcompetenciasreq=id) if id else None
+
+        if request.method == "POST":  
+
+            form = competenciaForm(property_id = id, data = request.POST, instance = competence)  
+
+            if form.is_valid():  
+
                 form.save()  
+
+                if id:
+
+                    messages.info(request, 'Changes applied to %s successfully' %(form.data['desc_competencia']))
+                    
+                else:
+                    
+                    messages.info(request, 'Competence Named %s Added Succefuly ' %(form.data['desc_competencia']))
+
+                return redirect('/planning/showCompetence/') 
+
+            else:
+
+                messages.warning(request, 'An error has occurred!')
+                return render(request,'planning/editCompetence.html',{'form':form})
+
+        # print(id)
+        form = competenciaForm(instance=competence)
+        return render(request,'planning/editCompetence.html', {'form':form, 'id':id}) 
+    
+    else:
+
+        return redirect('/') 
+
+def edit(request, id=None):  
+
+    if(request.user.is_staff):
+        
+        profilage = Perfil.objects.get(idperfil=id) if id else None
+
+        if request.method == "POST":  
+
+            form = perfilForm(property_id = id, data = request.POST, instance = profilage) 
+
+            if form.is_valid():  
+
+                form.save()  
+
+                if id:
+
+                    messages.info(request, 'Changes applied to %s successfully' %(form.data['deescripcion']))
+
+                else:
+                    
+                    messages.info(request, 'Profile Named %s Added Succefuly ' %(form.data['deescripcion']))
+
                 return redirect('/planning/show/')  
-            except:  
-                pass  
-    else:  
-        form = perfilForm()  
-    # print(type(form.fields["fk_rama"].choices))
-    # for x in form.fields["fk_rama"].choices:
-    #     print(x)
-    # print("hola")
-    return render(request,'planning/add.html',{'form':form})
+
+            else:
+
+                messages.warning(request, 'An error has occurred!')
+                return render(request,'planning/edit.html',{'form':form})
+
+        form = perfilForm(instance=profilage)
+        return render(request,'planning/edit.html', {'form':form, 'id':id}) 
+
+    else:
+
+        return redirect('/') 
     
 def paginas(request, obj):
-    page = request.GET.get('page', 1)
 
+    page = request.GET.get('page', 1)
     paginator = Paginator(obj, 5)
+
     try:
+
         pages = paginator.page(page)
+
     except PageNotAnInteger:
+
         pages = paginator.page(1)
+
     except EmptyPage:
+
         pages = paginator.page(paginator.num_pages)
 
     return pages
 
 def show(request):  
 
-    search_query = request.GET.get('search_box', "")
-    plan = Perfil.objects.all()
-    # print(plan.__class__.__name__)
+    if(request.user.is_staff):
+        
+        search_query = request.GET.get('search_box', "")
+        plan = Perfil.objects.all()
 
-    if(search_query):
+        if(search_query):
 
-        plan = plan.filter(deescripcion__startswith=search_query) 
+            plan = plan.filter(deescripcion__startswith=search_query) 
 
-    return render(request,"planning/show.html",{'plan':paginas(request, plan), 'search':search_query}) 
+        return render(request,"planning/show.html",{'plan':paginas(request, plan), 'search':search_query}) 
+    
+    else:
 
-def showCompetences(request):  
-    search_query = request.GET.get('search_box', "")
-    competencia = CompetenciasReq.objects.all()  
+        return redirect('/') 
 
-    if(search_query):
-        competencia = competencia.filter(desc_competencia__startswith=search_query) 
+def showCompetences(request): 
 
-    return render(request,"planning/showCompetence.html",{'competencia':paginas(request, competencia), 'search':search_query}) 
+    if(request.user.is_staff):
+
+        search_query = request.GET.get('search_box', "")
+        competencia = CompetenciasReq.objects.all()  
+
+        if(search_query):
+
+            competencia = competencia.filter(desc_competencia__startswith=search_query) 
+
+        return render(request,"planning/showCompetence.html",{'competencia':paginas(request, competencia), 'search':search_query}) 
+    
+    else:
+
+        return redirect('/') 
+
 
 def showCompetencesAdq(request):  
+
     search_query = request.GET.get('search_box', "")
+    competencia = CompetenciasAdq.objects.all()
 
     if not request.user.is_staff:
-        competencia = CompetenciasAdq.objects.filter(fk_publico= Publico.objects.get(user = request.user))
-    else:
-        competencia = CompetenciasAdq.objects.all()  
 
-    if(search_query):
+        competencia = competencia.filter(fk_publico__user = request.user)
 
-        competencia = competencia.filter(periodo__startswith=search_query) 
+    if(search_query and request.user.is_staff):
+
+        competencia = competencia.filter(fk_publico__nombre__startswith=search_query) 
 
     return render(request,"planning/showCompetenceAdq.html",{'competencia':paginas(request, competencia), 'search':search_query}) 
 
-def showProgram(request):  
+def showProgram(request): 
+     
     program = Programascap.objects.all()  
     return render(request,"planning/showProgram.html",{'programs':program}) 
-
-def addCompetence(request):  
-    if request.method == "POST":  
-        form = competenciaForm(request.POST, )
-        if form.is_valid():  
-            try:  
-                form.save()  
-                return redirect('/planning/showCompetence/')  
-            except:  
-                pass  
-    else:  
-        form = competenciaForm()  
-    return render(request,'planning/addCompetence.html',{'form':form})
-
-def addCompetenceAdq(request):  
-    if request.method == "POST":  
-        form = competenciaAdqForm(request.POST)
-        if form.is_valid():  
-            try:  
-                print("valid")
-                form.save()  
-                return redirect('/planning/showCompetenceAdq/')  
-            except:  
-                print("error")
-                print(form.errors)
-                pass  
-        else:
-            print(form.errors)
-            print(request.POST)
-
-    elif not request.user.is_staff:
-        publico=Publico.objects.filter(user=request.user)
-        form = competenciaAdqForm()
-        form.fields['fk_publico'].queryset = publico
-    else:  
-        form = competenciaAdqForm()  
-    return render(request,'planning/addCompetenceAdq.html',{'form':form})
 
 def addProgram(request):  
     if request.method == "POST":  
@@ -131,96 +235,110 @@ def addProgram(request):
         form = programForm()  
     
     return render(request,'planning/addProgram.html',{'form':form})
+     
 
-def edit(request, id):  
-    
-    profilage = Perfil.objects.get(idperfil=id) 
-    if request.method == "POST":  
-        # print("update")
-        form = perfilForm(request.POST, instance = profilage)  
-        if form.is_valid():  
-            form.save()  
-            return redirect('/planning/show/')  
-    tabla = TablasConfiguracion.objects.filter(id_tabla=1)
-    # print(profilage.fk_rama)
-    # print("hola edit")
-    # form = perfilForm(initial={'deescripcion': profilage.deescripcion, 'desc_corta' : profilage.desc_corta, 'fk_rama' : profilage.fk_rama})
-    form = perfilForm(instance=profilage)
-    # form.fields['fk_rama'].queryset = TablasConfiguracion.objects.filter(id_tabla=TablasConfiguracion.objects.get(valor_elemento="Padre").id_tabla)
-    return render(request,'planning/edit.html', {'form':form}) 
-    
-def editCompetence(request, id):  
-    competence = CompetenciasReq.objects.get(idcompetenciasreq=id) 
-    # print(competence)
-    if request.method == "POST":  
-        # print("update")
-        form = competenciaForm(request.POST, instance = competence)  
-        if form.is_valid():  
-            form.save()  
-            return redirect('/planning/showCompetence/')  
-
-    # print("hola edit")
-    # form = perfilForm(initial={'deescripcion': profilage.deescripcion, 'desc_corta' : profilage.desc_corta, 'fk_rama' : profilage.fk_rama})
-    form = competenciaForm(instance=competence)
-    return render(request,'planning/editCompetence.html', {'form':form})  
-
-def editCompetenceAdq(request, id):  
-    competence = CompetenciasAdq.objects.get(idcompetencias_adq=id) 
-    if request.method == "POST":  
-        # print("update")
-        form = competenciaAdqForm(request.POST, instance = competence)  
-        if form.is_valid():  
-            form.save()  
-            return redirect('/planning/showCompetenceAdq/')  
-
-    # print("hola edit")
-    # form = perfilForm(initial={'deescripcion': profilage.deescripcion, 'desc_corta' : profilage.desc_corta, 'fk_rama' : profilage.fk_rama})
-    elif not request.user.is_staff:
-        publico=Publico.objects.filter(user=request.user)
-        form = competenciaAdqForm(instance=competence)
-        form.fields['fk_publico'].queryset = publico
-    else:
-        form = competenciaAdqForm(instance=competence)
-    return render(request,'planning/editCompetenceAdq.html', {'form':form})  
 
 def editProgram(request, id):  
+
     program = Programascap.objects.get(idprogramascap=id) 
+
     if request.method == "POST":  
-        # print("update")
+
         form = programForm(request.POST, instance = program)  
+
         if form.is_valid():  
+
             form.save()  
             return redirect('/planning/showProgram/')  
 
-    # print("hola edit")
-    # form = perfilForm(initial={'deescripcion': profilage.deescripcion, 'desc_corta' : profilage.desc_corta, 'fk_rama' : profilage.fk_rama})
     form = programForm(instance=program)
     return render(request,'planning/editProgram.html', {'form':form})  
     
-# def update(request, id):  
-#     employee = Perfil.objects.get(id=id)  
-#     form = perfilForm(request.POST, instance = employee)  
-#     if form.is_valid():  
-#         form.save()  
-#         return redirect("/show")  
-#     return render(request, 'edit.html', {'employee': employee})  
+def destroy(request):  
 
-def destroy(request, id):  
-    profilage = Perfil.objects.get(idperfil=id)  
-    profilage.delete()  
-    return redirect('/planning/show/') 
+    if(request.user.is_staff):
 
-def destroyCompetence(request, id):  
-    competence = CompetenciasReq.objects.get(idcompetenciasreq=id)  
-    competence.delete()  
-    return redirect('/planning/showCompetence/') 
+        if request.method == "POST":  
 
-def destroyCompetenceAdq(request, id):  
-    competence = CompetenciasAdq.objects.get(idcompetencias_adq=id)  
-    competence.delete()  
-    return redirect('/planning/showCompetenceAdq/') 
+            profilage = Perfil.objects.get(idperfil=request.POST['id'])  
+            profilage.delete()  
+            messages.info(request, '%s deleted successfully' %(profilage.deescripcion))
+            return JsonResponse({})  
+            
+    else:
+
+        return redirect('/') 
+
+def destroyCompetence(request):  
+
+    if(request.user.is_staff):
+
+        if request.method == "POST":  
+
+            competence = CompetenciasReq.objects.get(idcompetenciasreq=request.POST['id'])  
+            competence.delete()  
+            messages.info(request, '%s deleted successfully' %(competence.desc_competencia))
+            return JsonResponse({})  
+
+    else:
+
+        return redirect('/') 
+
+def destroyCompetenceAdq(request):  
+
+    if request.method == "POST":  
+
+        competence = CompetenciasAdq.objects.get(idcompetencias_adq=request.POST['id'])  
+        competence.delete()  
+        messages.info(request, 'Competence deleted successfully')
+        return JsonResponse({})  
 
 def destroyProgram(request, id):  
+
     program = Programascap.objects.get(idprogramascap=id)  
     program.delete()  
     return redirect('/planning/showProgram/') 
+
+def validate_username(request):
+
+    username = request.GET.get('deescripcion', None)
+    id = request.GET.get('id', None)
+
+    response = {
+        'message': "This record already exists!" if Perfil.filtering(username.strip() if username else username, id if id.isdecimal() else None) else None
+    }
+    return JsonResponse(response)
+
+    
+def validate_competence(request):
+
+    username = request.GET.get('desc_competencia', None)
+    id = request.GET.get('id', None)
+    # print(id)
+    response = {
+        'message': "This record already exists!" if CompetenciasReq.filtering(username.strip() if username else username, id if id.isdecimal() else None) else None
+    }
+    return JsonResponse(response)
+
+    
+def renderListasPublic(request):
+
+    id = request.GET.get('id', None)
+    competence = CompetenciasReq.objects.all()
+
+    for publico in CompetenciasAdq.objects.filter(fk_publico = id):
+        
+        competence = competence.exclude(idcompetenciasreq=publico.fk_competencia.idcompetenciasreq)
+
+    niveles = TablasConfiguracion.obtenerHijos("NivelComp")
+    html = render_to_string('planning/lista.html', {'lista': competence, 'defecto': "Select a competence" if len(competence) > 0 else "There is no more competences to add", 'tipo' : 'CompetenciasReq'})
+    lvl = render_to_string('planning/lista.html', {'lista': niveles, 'defecto': "Skill level" if len(niveles) > 0 else "There is no more levels to add", 'tipo' : 'NivelComp'})
+
+    response = {
+
+        'competence': html,
+        'levels': lvl
+
+    }
+
+    return JsonResponse(response)
