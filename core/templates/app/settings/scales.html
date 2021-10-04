@@ -199,7 +199,6 @@
                     listaScales.push(datos)
                     limpiarForm()
                     actualizarLista()
-                    console.log(listaScales)
 
                 })
             })
@@ -365,6 +364,25 @@
                 let respuesta = JSON.parse(await res.text())
                 document.getElementById("desc_escala").value = respuesta.data.desc_escala
                 document.getElementById("max_score").value = respuesta.data.maxima_puntuacion
+                let listaLoca = respuesta.childs
+                if(listaLoca){
+                    listaLoca.map((el)=>{
+                        let datos = {
+                            descriptionCalif: el.desc_calificacion,
+                            qualification: hashObj[el.fk_calificacion_id],
+                            quack: el.fk_calificacion_id,
+                            max_points: el.puntos_maximo,
+                            actions: `
+                            <div class="btn-group" role="group">
+                                <button onclick="borrarItem(${listaScales.length})" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip"  data-placement="top" title="Delete" >
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>`
+                        }
+                        listaScales.push(datos)
+                    })
+                    actualizarLista()
+                }
 
                 editmode = true
             })

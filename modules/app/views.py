@@ -189,7 +189,9 @@ def scales(request):
             elif "idFind" in data:
                 newScaleGe = EscalaEvaluacion.objects.filter(pk=data["idFind"])
                 findScaleGe = list(newScaleGe.values())
-                return JsonResponse({"data":findScaleGe[0]}, safe=False)
+                childs = EscalaCalificacion.objects.filter(fk_escala_evaluacion_id=data["idFind"])
+                listaChilds = list(childs.values())
+                return JsonResponse({"data":findScaleGe[0], "childs":listaChilds}, safe=False)
             elif "idViejo" in data:
                 newScaleGe = EscalaEvaluacion.objects.get(pk=data["idViejo"])
             else:
@@ -199,6 +201,9 @@ def scales(request):
             newScaleGe.save()
             hijos = data["hijos"]
             if hijos:
+                if "idViejo" in data:
+                    childs = EscalaCalificacion.objects.filter(fk_escala_evaluacion=newScaleGe)
+                    childs.delete()
                 for newScalePa in hijos:
                     newSP = EscalaCalificacion()
                     newSP.desc_calificacion=newScalePa["descriptionCalif"]
