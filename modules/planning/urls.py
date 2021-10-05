@@ -6,7 +6,7 @@ Copyright (c) 2019 - present AppSeed.us
 from django.urls import path, re_path
 # from .views import hello
 from django.urls import path  
-from .views import show, showCompetences, edit, destroy, editCompetence, destroyCompetence, showCompetencesAdq, editCompetenceAdq, destroyCompetenceAdq, showProgram, addProgram, editProgram, destroyProgram, validate_username, validate_competence, renderListasPublic
+from .views import show, showCompetences, edit, destroy, editCompetence, destroyCompetence, showCompetencesAdq, editCompetenceAdq, destroyCompetenceAdq, showProgram, addProgram, editProgram, destroyProgram, validate_username, validate_competence, renderListasPublic, paginar
 # from .views import edit
 # from modules.planning import views
 
@@ -34,6 +34,7 @@ urlpatterns = [
     path('deleteProgram/<int:id>', destroyProgram, name="destroyProgram"),   
     path('validate_username', validate_username, name='validate_username'),
     path('validate_competence', validate_competence, name='validate_competence'),
-    path('renderListasPublic', renderListasPublic, name='renderListasPublic')
+    path('renderListasPublic', renderListasPublic, name='renderListasPublic'),
+    path('paginar', paginar, name='paginar')
     
 ]

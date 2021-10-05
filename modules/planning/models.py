@@ -25,7 +25,7 @@ class Perfil(models.Model):
             
     class Meta:
 
-        ordering = ['idperfil']
+        ordering = ['-idperfil']
 
 class CompetenciasReq(models.Model):
 
@@ -51,7 +51,7 @@ class CompetenciasReq(models.Model):
 
     class Meta:
 
-        ordering = ['idcompetenciasreq']
+        ordering = ['-idcompetenciasreq']
 
 class CompetenciasAdq(models.Model):
     
@@ -65,4 +65,4 @@ class CompetenciasAdq(models.Model):
 
     class Meta:
 
-        ordering = ['idcompetencias_adq']
+        ordering = ['-idcompetencias_adq']

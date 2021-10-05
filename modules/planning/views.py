@@ -3,12 +3,20 @@ from django.contrib import messages
 from django.shortcuts import render, redirect  
 from .forms import competenciaAdqForm, competenciaForm, perfilForm, programForm
 from .models import CompetenciasAdq, Perfil, CompetenciasReq
-from ..app.models import TablasConfiguracion, Programascap, Publico
+from ..app.models import PublicoRelacion, TablasConfiguracion, Programascap, Publico
 from json import dumps
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponse, JsonResponse
 from django.template.loader import render_to_string
+from django.template.defaulttags import register
 # Create your views here.
+TITULOPERFIL = {'idperfil': '#', 'deescripcion': 'Name', 'desc_corta': 'Description', 'fk_rama': 'Branch'}
+TITULOCOMPETENCIA = {'idcompetenciasreq': '#', 'desc_competencia': 'Name', 'fk_perfil': 'Profile', 'fk_tipo_competencia': 'Type', 'fk_nivel': 'Minimum Level'}
+TITULOCOMPETENCIAADQ = {'idcompetencias_adq': '#', 'fk_publico': 'Public', 'periodo': 'Period', 'experiencia': 'Experience', 'fk_tipo_duracion': 'Duration', 'fk_competencia': 'Competence', 'fk_nivel': 'Level'}
+
+@register.filter
+def get_attr(dictionary, key):
+    return getattr(dictionary, key)
 
 def editCompetenceAdq(request, id = None):  
 
@@ -144,27 +152,8 @@ def edit(request, id=None):
 
         return redirect('/') 
     
-def paginas(request, obj):
-
-    page = request.GET.get('page', 1)
-    paginator = Paginator(obj, 5)
-
-    try:
-
-        pages = paginator.page(page)
-
-    except PageNotAnInteger:
-
-        pages = paginator.page(1)
-
-    except EmptyPage:
-
-        pages = paginator.page(paginator.num_pages)
-
-    return pages
-
 def show(request):  
-    
+
     if(request.user.is_staff):
         
         search_query = request.GET.get('search_box', "")
@@ -174,7 +163,7 @@ def show(request):
 
             plan = plan.filter(deescripcion__startswith=search_query) 
 
-        return render(request,"planning/show.html",{'plan':paginas(request, plan), 'search':search_query}) 
+        return render(request,"planning/show.html",{'plan':paginas(request, plan), 'keys' : TITULOPERFIL, 'urlEdit': 'editProfilage', 'urlRemove': 'destroyProfilage', 'search':search_query}) 
     
     else:
         
@@ -187,18 +176,17 @@ def showCompetences(request):
 
         search_query = request.GET.get('search_box', "")
         competencia = CompetenciasReq.objects.all()  
-
+        pagina = paginas(request, competencia)
+        print(pagina)
         if(search_query):
 
             competencia = competencia.filter(desc_competencia__startswith=search_query) 
 
-        return render(request,"planning/showCompetence.html",{'competencia':paginas(request, competencia), 'search':search_query}) 
+        return render(request,"planning/showCompetence.html",{'plan': paginas(request, competencia), 'keys' : TITULOCOMPETENCIA, 'urlEdit': 'editCompetence', 'urlRemove': 'destroyCompetence', 'search':search_query}) 
     
     else:
 
         return redirect('/') 
-
-    return render(request,"planning/showCompetence.html",{'competencia':paginas(request, competencia), 'search':search_query, 'segment':'planning'}) 
 
 def showCompetencesAdq(request):  
 
@@ -213,7 +201,7 @@ def showCompetencesAdq(request):
 
         competencia = competencia.filter(fk_publico__nombre__startswith=search_query) 
 
-    return render(request,"planning/showCompetenceAdq.html",{'competencia':paginas(request, competencia), 'search':search_query, 'segment':'planning'}) 
+    return render(request,"planning/showCompetenceAdq.html",{'plan': paginas(request, competencia), 'keys' : TITULOCOMPETENCIAADQ, 'urlEdit': 'editCompetenceAdq', 'urlRemove': 'destroyCompetenceAdq', 'search':search_query, 'segment':'planning'}) 
 
 def showProgram(request): 
      
@@ -344,3 +332,61 @@ def renderListasPublic(request):
     }
 
     return JsonResponse(response)
+    
+def paginar(request):
+    
+    tipo = request.POST.get('tipo', None)
+    if tipo and tipo == 'competencia':
+        plan = CompetenciasReq.objects.all()
+    elif tipo and tipo == 'competenciaadq':
+        plan = CompetenciasAdq.objects.all()
+    else:
+        plan = Perfil.objects.all()
+
+    # test = Perfil.objects.get(idperfil=55)
+    # print(getattr(test, 'idperfil'))
+    # # print(pagina)
+    
+    if(tipo and tipo == 'competencia'):
+        pagina = render_to_string('planning/paginas.html', {'plan': paginas(request, plan)})
+        tabla = render_to_string('planning/contenidoTabla.html', {'plan': paginas(request, plan), 'keys' : TITULOCOMPETENCIA, 'urlEdit': 'editCompetence', 'urlRemove': 'destroyCompetence'})
+        
+    elif tipo and tipo == 'competenciaadq':
+
+        pagina = render_to_string('planning/paginas.html', {'plan': paginas(request, plan)})
+        tabla = render_to_string('planning/contenidoTabla.html', {'plan': paginas(request, plan), 'keys' : TITULOCOMPETENCIAADQ, 'urlEdit': 'editCompetenceAdq', 'urlRemove': 'destroyCompetenceAdq'})
+
+    else:
+
+        pagina = render_to_string('planning/paginas.html', {'plan': paginas(request, plan)})
+        tabla = render_to_string('planning/contenidoTabla.html', {'plan': paginas(request, plan), 'keys' : TITULOPERFIL, 'urlEdit': 'editProfilage', 'urlRemove': 'destroyProfilage'})
+    # print(tabla)
+
+    response = {
+        'paginas': pagina,
+        'contenido' : tabla
+    }
+
+    return JsonResponse(response)
+
+def paginas(request, obj):
+
+
+    page = request.GET.get('page', 1) if request.GET else request.POST.get('page', 1)
+
+    paginator = Paginator(obj, 5)
+
+    try:
+
+        pages = paginator.page(page)
+        # print(page)
+
+    except PageNotAnInteger:
+        # print("error 1")
+        pages = paginator.page(1)
+
+    except EmptyPage:
+        # print("error 2")
+        pages = paginator.page(paginator.num_pages)
+
+    return pages

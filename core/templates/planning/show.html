@@ -61,36 +61,16 @@
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-hover table-striped table-borderless text-center">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Name</th>
-                                        <th>Description</th>
-                                        <th>Branch</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>  
-                                    {% for p in plan %}  
-                                        <tr>  
-                                            <td>{{ p.idperfil }}</td>  
-                                            <td>{{ p.deescripcion }}</td>  
-                                            <td>{{ p.desc_corta }}</td>  
-                                            <td>{{ p.fk_rama }}</td>
-                                            <td>  
-                                                <a href="{% url 'editProfilage' p.idperfil %}" class="btn btn-icon btn-sm btn-info"><i class="fas fa-edit align-middle mt-1"></i></a>  
-                                                <button onclick="eliminar({{p.idperfil}})" class="btn btn-icon btn-sm btn-danger ml-1" ><i class="fas fa-trash-alt"></i></button>
-                                            </td>  
-                                        </tr>  
-                                        {% empty %}
-                                            <tr><td colspan="100%"><h2>No matching records found</h2></td></tr> 
-                                    {% endfor %} 
-                                </tbody>  
+                            <table class="table table-hover table-striped table-borderless text-center" id="tablaContenido">
+                                
+                                {% include 'planning/contenidoTabla.html' with plan=plan %}   
+
                             </table>
                         </div>
                     </div>
-                    {% include 'planning/paginas.html' with plan=plan %}    
+                    <div class="card-footer" id="paginas">
+                        {% include 'planning/paginas.html' with plan=plan %}   
+                    </div> 
                 </div>           
       		</div>
 		</div>
@@ -115,7 +95,7 @@
 
                         $.ajax({
                         type: "POST",
-                        url: "{% url 'destroyProfilage' %}",
+                        url: "{% url urlRemove %}",
                         data: {
                             'csrfmiddlewaretoken': '{{ csrf_token }}',
                             'id': id,
@@ -133,7 +113,49 @@
                 }
             });
         } 
+        
+        // const modificar = (id, url) => {
 
+        //         $.ajax({
+        //             type: "POST",
+        //             url: url,
+        //             data: {
+        //                 'csrfmiddlewaretoken': '{{ csrf_token }}',
+        //                 'id': id,
+        //             },
+        //             dataType: "json",
+        //             success: function (data) {
+        //                 window.location = "{% url 'showProfilage' %}"
+                        
+        //             },
+        //             failure: function () {
+        //                 swal("failure");
+        //             }
+        //         });
+
+        // } 
+
+        $('#paginas').on('click', ".page-link", function(e){
+            e.preventDefault();
+            var page = $(this).attr('href').replace ( /[^\d.]/g, '' );
+                $.ajax({
+                        type: "POST",
+                        url: "{% url 'paginar' %}", 
+                        data : {    
+                        page : page, 
+                        csrfmiddlewaretoken: '{{ csrf_token }}',
+                    },
+                    success: function (response) {
+
+                        document.getElementById('paginas').innerHTML = response.paginas;
+                        document.getElementById('tablaContenido').innerHTML = response.contenido;
+                        // console.log(response.contenido)
+
+                    },
+                    error: function () {}
+                });
+
+        });  
 
     </script>
 

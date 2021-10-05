@@ -60,52 +60,16 @@
 					</div>
 					<div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-hover table-striped table-borderless text-center">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Name</th>
-                                        <th>Profile</th>
-                                        <th>Type</th>
-                                        <th>Minimum Level</th>
-                                    </tr>
-                                </thead>
-                                <!-- <tbody>
-                                    <tr>
-                                        <th scope="row">1</th>
-                                        <td>Table cell</td>
-                                        <td>
-                                            <button type="button" class="btn btn-icon btn-sm btn-info"  data-placement="top" title="Tooltip on top" data-toggle="modal" data-target="#newModal">
-                                                <i class="fas fa-edit"></i>
-                                           </button>
-                                           <button type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="modal" data-target="#newModal">
-                                               <i class="fas fa-trash-alt"></i>
-                                           </button>       
-                                        </td>
-                                      
-                                    </tr>
-                                </tbody> -->
-                                <tbody>  
-                                    {% for p in competencia %}  
-                                        <tr>  
-                                            <td>{{ p.idcompetenciasreq }}</td>  
-                                            <td>{{ p.desc_competencia }}</td>  
-                                            <td>{{ p.fk_perfil }}</td>  
-                                            <td>{{ p.fk_tipo_competencia }}</td>  
-                                            <td>{{ p.fk_nivel }}</td>  
-                                            <td>  
-                                                <a href="{% url 'editCompetence' p.idcompetenciasreq %}" class="btn btn-icon btn-sm btn-info"><i class="fas fa-edit align-middle mt-1"></i></a>  
-                                                <button onclick="eliminar({{p.idcompetenciasreq}})" class="btn btn-icon btn-sm btn-danger ml-1" ><i class="fas fa-trash-alt"></i></button>
-                                            </td>  
-                                        </tr>
-                                        {% empty %}
-                                            <tr><td colspan="100%"><h2>No matching records found</h2></td></tr> 
-                                    {% endfor %}
-                                </tbody>  
+                            <table class="table table-hover table-striped table-borderless text-center" id="tablaContenido">
+
+                                {% include 'planning/contenidoTabla.html' with plan=plan %}   
+                                    
                             </table>
                         </div>
 					</div>
-                    {% include 'planning/paginas.html' with plan=competencia %}  
+                    <div class="card-footer" id="paginas">
+                        {% include 'planning/paginas.html' with plan=plan %}   
+                    </div> 
 				</div>        
       		</div>
 		</div>
@@ -128,7 +92,7 @@
 
                     $.ajax({
                     type: "POST",
-                    url: "{% url 'destroyCompetence' %}",
+                    url: "{% url urlRemove %}",
                     data: {
                         'csrfmiddlewaretoken': '{{ csrf_token }}',
                         'id': id,
@@ -146,6 +110,30 @@
             }
         });
     } 
+    
+    $('#paginas').on('click', ".page-link", function(e){
+        e.preventDefault();
+        var page = $(this).attr('href').replace ( /[^\d.]/g, '' );
+            $.ajax({
+                    type: "POST",
+                    url: "{% url 'paginar' %}", 
+                    data : {    
+                    page : page, 
+                    tipo: "competencia",
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                },
+                success: function (response) {
+
+                    document.getElementById('paginas').innerHTML = response.paginas;
+                    document.getElementById('tablaContenido').innerHTML = response.contenido;
+                    // console.log(response.contenido)
+
+                },
+                error: function () {}
+            });
+
+    }); 
+
 
 </script>
 
