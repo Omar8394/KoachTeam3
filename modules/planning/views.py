@@ -337,6 +337,8 @@ def paginar(request):
     
     tipo = request.POST.get('tipo', None)
     filtro = request.POST.get('filtro', None)
+    orden = request.POST.get('orden', None)
+    tipoOrden = request.POST.get('tipoOrden', "")
 
     if tipo and tipo == 'competencia':
 
@@ -349,6 +351,7 @@ def paginar(request):
     else:
 
         plan = Perfil.objects.all()
+
 
     if filtro:
 
@@ -367,6 +370,12 @@ def paginar(request):
             plan = plan.filter(deescripcion__startswith=filtro).order_by('deescripcion')
 
 
+    if(orden):
+        # print(tipoOrden + orden)
+        plan = plan.order_by(tipoOrden + orden)
+
+
+
     # test = Perfil.objects.get(idperfil=55)
     # print(getattr(test, 'idperfil'))
     # # print(pagina)
@@ -374,17 +383,17 @@ def paginar(request):
     if(tipo and tipo == 'competencia'):
         
         pagina = render_to_string('planning/paginas.html', {'plan': paginas(request, plan)})
-        tabla = render_to_string('planning/contenidoTabla.html', {'plan': paginas(request, plan), 'keys' : TITULOCOMPETENCIA, 'urlEdit': 'editCompetence', 'urlRemove': 'destroyCompetence', 'search':filtro})
+        tabla = render_to_string('planning/contenidoTabla.html', {'plan': paginas(request, plan), 'keys' : TITULOCOMPETENCIA, 'urlEdit': 'editCompetence', 'urlRemove': 'destroyCompetence', 'search':filtro, 'orden':orden, 'tipoOrden': tipoOrden})
         
     elif tipo and tipo == 'competenciaadq':
 
         pagina = render_to_string('planning/paginas.html', {'plan': paginas(request, plan)})
-        tabla = render_to_string('planning/contenidoTabla.html', {'plan': paginas(request, plan), 'keys' : TITULOCOMPETENCIAADQ, 'urlEdit': 'editCompetenceAdq', 'urlRemove': 'destroyCompetenceAdq', 'search':filtro})
+        tabla = render_to_string('planning/contenidoTabla.html', {'plan': paginas(request, plan), 'keys' : TITULOCOMPETENCIAADQ, 'urlEdit': 'editCompetenceAdq', 'urlRemove': 'destroyCompetenceAdq', 'search':filtro, 'orden':orden, 'tipoOrden': tipoOrden})
 
     else:
 
         pagina = render_to_string('planning/paginas.html', {'plan': paginas(request, plan)})
-        tabla = render_to_string('planning/contenidoTabla.html', {'plan': paginas(request, plan), 'keys' : TITULOPERFIL, 'urlEdit': 'editProfilage', 'urlRemove': 'destroyProfilage', 'search':filtro})
+        tabla = render_to_string('planning/contenidoTabla.html', {'plan': paginas(request, plan), 'keys' : TITULOPERFIL, 'urlEdit': 'editProfilage', 'urlRemove': 'destroyProfilage', 'search':filtro, 'orden':orden, 'tipoOrden': tipoOrden })
     # print(tabla)
 
     response = {

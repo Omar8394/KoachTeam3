@@ -119,6 +119,8 @@
                 url: "{% url 'paginar' %}", 
                 data : {    
                 page : page, 
+                orden: orden,
+                tipoOrden: $("#tablaContenido").hasClass("descendiente")?"-":"",
                 filtro : $('#search_box').val(), 
                 tipo: "competencia",
                 csrfmiddlewaretoken: '{{ csrf_token }}',
@@ -196,6 +198,44 @@
                 myCallback();
             }
         })
+        
+        let orden="", tipoOrden="";
+        
+
+        $("#tablaContenido").on('click', "th", function(e){
+
+        if($(this).attr("id"))
+            var ord=""
+            if($("#tablaContenido").hasClass("descendiente"))
+
+                $('#tablaContenido').removeClass('descendiente');
+
+            else{
+                ord="-"
+                $('#tablaContenido').addClass('descendiente');
+            }
+            orden = $(this).attr("id")
+            $.ajax({
+                    type: "POST",
+                    url: "{% url 'paginar' %}", 
+                    data : {    
+                    orden: orden,
+                    tipoOrden: ord,
+                    filtro : $('#search_box').val(), 
+                    tipo: "competencia",
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                },
+                success: function (response) {
+
+                    document.getElementById('paginas').innerHTML = response.paginas;
+                    document.getElementById('tablaContenido').innerHTML = response.contenido;
+                    // console.log(response.contenido)
+
+                },
+                error: function () {}
+            });
+
+        });
 
 </script>
 

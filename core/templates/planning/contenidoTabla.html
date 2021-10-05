@@ -1,8 +1,8 @@
 
-    <thead>
+    <thead id="tablaHead">
         <tr>
             {% for key, value in keys.items %}
-                <th>{{ value }}</th>
+                <th id={{ key }} class={% if key == orden %}descendiente{% endif %}>{{ value }}</th>
             {% endfor %}
             <th>Action</th>
         </tr>
