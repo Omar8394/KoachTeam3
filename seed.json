@@ -479,6 +479,45 @@
 
     }
   },
+   {
+    "model": "app.TablasConfiguracion",
+    "fields": {
+      "desc_elemento": "Approved",
+      "fk_tabla_padre_id": 18,
+      "tipo_elemento": 0,
+      "permite_cambios":1,
+      "valor_elemento":"",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
+   {
+    "model": "app.TablasConfiguracion",
+    "fields": {
+      "desc_elemento": "Reprobate",
+      "fk_tabla_padre_id": 18,
+      "tipo_elemento": 0,
+      "permite_cambios":1,
+      "valor_elemento":"",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
+   {
+    "model": "app.TablasConfiguracion",
+    "fields": {
+      "desc_elemento": "Repair",
+      "fk_tabla_padre_id": 18,
+      "tipo_elemento": 0,
+      "permite_cambios":1,
+      "valor_elemento":"",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
   {
     "model": "app.TablasConfiguracion",
     "fields": {
