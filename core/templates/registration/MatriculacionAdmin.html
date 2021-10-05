@@ -500,8 +500,11 @@ function enviar(){
 var xhr = new XMLHttpRequest();
 xhr.open("POST", "updateEnrollment/"); 
 xhr.onload = function(event){ 
-alert("Success, server responded with: " + event.target.response); // raw response
-location.href = "" ;
+//alert("Success, server responded with: " + event.target.response); // raw response
+alerta(1);
+
+window.location.href="{% url 'EnrollmentList'%}";
+
 }; 
 // or onerror, onabort
 var formData = new FormData(document.getElementById("enroll")); 

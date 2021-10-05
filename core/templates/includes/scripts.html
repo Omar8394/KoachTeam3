@@ -113,6 +113,77 @@
 				});
 			}
 		}
+
+		//con mensajitos
+		
+		function alertaMensajitos(tipoAlerta,tittle, mssg){
+			if(tipoAlerta === 1){
+				swal(tittle, mssg, 
+				{
+					icon : "success",
+					buttons: {
+						confirm: {
+							className : 'btn btn-success'
+						}
+					},
+				});	 
+			}
+			if(tipoAlerta === 2){
+				swal(tittle, mssg, 
+ 
+				 {
+					icon : "success",
+					buttons: {
+						confirm: {
+							className : 'btn btn-success'
+						}
+					},
+				});
+			}
+			if(tipoAlerta === 3){
+				return swal({
+					title: tittle,
+					text: mssg,
+					type: 'warning',
+					icon: "warning",
+					buttons:{
+						confirm: {
+							text : 'Yes, delete it!',
+							className : 'btn btn-success'
+						},
+						cancel: {
+							visible: true,
+							className: 'btn btn-danger'
+						}
+					}
+				})					
+			}
+			if(tipoAlerta === 4){
+				swal({
+					title: tittle,
+					text: mssg,
+					type: 'success',
+					icon: 'success',
+					buttons: {
+						confirm: {
+							className: 'btn btn-success'
+						}
+					}
+				});
+			}
+			if(tipoAlerta === 5){
+				swal({
+					title: tittle,
+					text: mssg,
+					icon: 'error',
+					buttons: {
+						confirm: {
+							className: 'btn btn-danger'
+						}
+					}
+				});
+			}
+		}
 		 //FUNCION PARA OBTENER EL CRSFTOKEN DESDE JS EN CASO DE USAR AJAX
 		 function getCookie(name) {
 				let cookieValue = null;

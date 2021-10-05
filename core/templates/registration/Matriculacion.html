@@ -47,7 +47,11 @@
 			<option value="" selected>      </option>
 
 			 {% for mat in structuraProg %}
+			 {% if mat.precio != None %}
+
 			 <option value="{{mat.idestructuraprogrmas}}"> {{mat}}</option>
+
+			 {% endif %}
 			 {% endfor %}
       
 
@@ -96,7 +100,7 @@
 					  </select>
 					 </div>
              <br>
-	
+	{% comment %}
 		<div class="row">
 		<label>Enrollment Type</label>
 			   
@@ -111,6 +115,8 @@
 
 		 </select>
 		</div>
+{% endcomment %}
+
       <br>
          <br>
 
@@ -240,6 +246,8 @@ function enviar(){
 xhr.open("POST", "save/"); 
 xhr.onload = function(event){ 
 alerta(1); // raw response
+window.location.href="{% url 'MyEnrollments'%}";
+
 
    // alert("Success, server responded with: " + event.target.response); // raw response
 }; 

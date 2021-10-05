@@ -22,9 +22,13 @@
                           <select class="form-control" id="program" name="program" onchange="programChange()" required >
                              <option value="" selected>      </option>
                  
-                              {% for mat in structuraProg %}
-                              <option value="{{mat.idestructuraprogrmas}}"> {{mat}}</option>
-                              {% endfor %}
+                             {% for mat in structuraProg %}
+                             {% if mat.precio != None %}
+                      
+                             <option value="{{mat.idestructuraprogrmas}}"> {{mat}}</option>
+                      
+                             {% endif %}
+                             {% endfor %}
                        
                  
                           </select>
@@ -88,6 +92,24 @@
                           </select>
                          </div>
                        <br>
+                       <div class="form-group">
+                        <label>Status</label>
+                                
+                          <select class="form-control" id="status" name="status"  required >
+                             <option value="" selected>      </option>
+                 
+                             {% for mat in status %}
+                           
+                      
+                             <option value="{{mat.id_tabla}}"> {{mat}}</option>
+                      
+                          
+                             {% endfor %}
+                       
+                 
+                          </select>
+                         </div>
+                        <br>
                           <br>
 
                           

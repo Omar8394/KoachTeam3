@@ -25,3 +25,27 @@ class MyMethod:
 
    else:
 	   return None
+
+def OrigenPagoCodigo(id):
+   if id == 1:
+	   return"Paypal"
+   elif id == 2:
+	   return"Credit Card"
+   elif id == 3:
+	    return"Bank Transfer"
+   
+
+   else:
+	   return"error"
+
+def OrigenPagoNombre(code):
+   if code == "Paypal":
+	   return 1
+   elif code == "Credit Card":
+	   return 2
+   elif code == "Bank Transfer":
+	    return 3
+  
+
+   else:
+	   return None

@@ -7,7 +7,7 @@ from modules.registration import forms
 from modules.app.models import Estructuraprograma
 from modules.app.models import TablasConfiguracion
 from modules.app.models import Publico
-from modules.registration.models import MatriculaAlumnos
+from modules.registration.models import MatriculaAlumnos, MatriculasPagos
 from django.http import JsonResponse
 import datetime
 from modules.app import Methods
@@ -18,6 +18,16 @@ from django.db.models import Q
 from django.db.models import F
 from django.db.models import Count
 from django.db.models import Max
+import random
+import uuid
+
+from django.shortcuts import render
+from django.conf import settings
+from django.core.files.storage import FileSystemStorage
+
+
+from time import gmtime, strftime
+import hashlib
 # Create your views here.
 
 
@@ -30,7 +40,14 @@ def enrollment(request):
 
 
     msg = None
-    structuraProg=Estructuraprograma.objects.filter(fk_estructura_padre=None)
+   # structuraProg=Estructuraprograma.objects.filter(fk_estructura_padre=None)
+    structuras=Estructuraprograma.objects.all()
+
+    structuras=structuras.annotate(precio=F('prize__precio'), fechaIngreso=F('prize__fecha_registro'), id=F('prize__idprograma_precios'), descuento=F('prize__PorcentajeDescuento'), max=Max('prize__idprograma_precios'), amountDiscount=Max('prize__idprograma_precios')  ).filter(id=Max('prize__idprograma_precios')  )
+    structuras=structuras.filter(fk_estructura_padre=None)
+    
+  
+
     tipoPrograma=TablasConfiguracion.obtenerHijos("Tipo matricula")
 
 
@@ -39,7 +56,7 @@ def enrollment(request):
     html_template = loader.get_template( 'registration/Matriculacion.html' )
 
     #return HttpResponse(html_template.render(context, request))
-    return render(request, 'registration/Matriculacion.html', {"form": form, "msg" : msg,'structuraProg':structuraProg, 'tipoPrograma':tipoPrograma, 'segment':'registration'})
+    return render(request, 'registration/Matriculacion.html', {"form": form, "msg" : msg,'structuraProg':structuras, 'tipoPrograma':tipoPrograma, 'segment':'registration'})
 
 @login_required(login_url="/login/")
 def ManageEnrollments(request):
@@ -51,7 +68,7 @@ def ManageEnrollments(request):
         
       
         idPersona=request.POST.get('idPersona') 
-        print(idPersona + "ssss")
+        
         matriculaList=matriculaList.filter(fk_publico=idPersona)
 
         fechaInicial=request.POST.get('fechaInicial') 
@@ -88,20 +105,135 @@ def ManageEnrollments(request):
 @login_required(login_url="/login/")
 def PublicoAdmin(request):
   
-
-    
-    msg = None
     publicoObject=Publico.objects.all()
+
+    fechaFinalPersona=None
+    fechaInicialPersona=None
+  
+    idNumberPersona=None
+
+    personaBuscarNombrePersona=None
+    is_cookie_set = 0
+    
+    if 'fechaInicialPersona' in request.session or 'fechaFinalPersona' in request.session or 'idNumberPersona' in request.session or 'personaBuscarNombrePersona' in request.session : 
+        fechaFinalPersona = request.session['fechaFinalPersona'] if 'fechaFinalPersona' in request.session else None
+        fechaInicialPersona = request.session['fechaInicialPersona'] if 'fechaInicialPersona' in request.session else None
+        idNumberPersona=request.session['idNumberPersona'] if 'idNumberPersona' in request.session else None
+        personaBuscarNombrePersona=request.session['personaBuscarNombrePersona'] if 'personaBuscarNombrePersona' in request.session else None
+       
+
+        
+        is_cookie_set = 1
+
+    if request.method == "GET":
+      
+
+     if request.GET.get('page')==None:
+        is_cookie_set = 0
+        request.session['fechaInicialPersona']=None
+        request.session['fechaFinalPersona']=None
+        request.session['idNumberPersona']=None
+        request.session['personaBuscarNombrePersona']=None
+        
+        fechaInicialPersona=None
+        fechaFinalPersona=None
+  
+        idNumberPersona=None
+
+        personaBuscarNombrePersona=None
+
+      
+      
+     if (is_cookie_set == 1): 
+          if fechaInicialPersona!=None and fechaInicialPersona!="":
+
+           dateI=parse_datetime(fechaInicialPersona+' 00:00:00-00')
+          
+         
+           publicoObject=publicoObject.filter(fecha_registro__gte=dateI)
+          if fechaFinalPersona!=None  and fechaFinalPersona!="":
+
+           dateF=parse_datetime(fechaFinalPersona+' 00:00:00-00')
+          
+          
+           publicoObject=publicoObject.filter(fecha_registro__lte=dateF)
+          
+          if idNumberPersona!=None and idNumberPersona!="":
+           publicoObject=publicoObject.filter(docto_identidad__contains=idNumberPersona)
+
+          if personaBuscarNombrePersona!=None and personaBuscarNombrePersona!="":
+           publicoObject=publicoObject.filter(Q(nombre__contains=personaBuscarNombrePersona) | Q(apellido__contains=personaBuscarNombrePersona))
+
+    if request.method == "POST":
+        
+        if (is_cookie_set == 1): 
+          
+          
+         request.session['fechaInicialPersona']=None
+         request.session['fechaFinalPersona']=None
+         request.session['idNumberPersona']=None
+         request.session['personaBuscarNombrePersona']=None
+
+       
+
+        fechaInicialPersona=request.POST.get('fechaInicialPersona') 
+        
+
+        print(request.POST)
+       
+        fechaFinalPersona=request.POST.get('fechaFinalPersona') 
+        idNumberPersona=request.POST.get('idNumberPersona') 
+        personaBuscarNombrePersona=request.POST.get('personaBuscarNombrePersona') 
+        
+
+        if personaBuscarNombrePersona != None and personaBuscarNombrePersona!="":
+         
+         
+         publicoObject=publicoObject.filter(Q(nombre__contains=personaBuscarNombrePersona) | Q(apellido__contains=personaBuscarNombrePersona))
+
+         request.session['personaBuscarNombrePersona'] = personaBuscarNombrePersona
+
+        if idNumberPersona != None and idNumberPersona!="" :
+         
+         
+         publicoObject=publicoObject.filter(docto_identidad__contains=idNumberPersona)
+         request.session['idNumberPersona'] = idNumberPersona
+
+        
+        if fechaInicialPersona != None and fechaInicialPersona!="":
+          dateI=parse_datetime(fechaInicialPersona+' 00:00:00-00')
+          fechaI=fechaInicialPersona
+          request.session['fechaInicialPersona'] = fechaI
+          
+          publicoObject=publicoObject.filter(fecha_registro__gte=dateI)
+
+        if fechaFinalPersona != None and fechaFinalPersona!="":
+          dateF=parse_datetime(fechaFinalPersona+' 00:00:00-00')
+          fechaF=fechaFinalPersona
+          request.session['fechaFinalPersona'] = fechaF
+          
+          publicoObject=publicoObject.filter(fecha_registro__lte=dateF)
+          
+
+
+
+
+
+    msg = None
      
     paginator = Paginator(publicoObject, 10)
     
     
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
+    if personaBuscarNombrePersona==None:
+     personaBuscarNombrePersona=""
+    if idNumberPersona==None:
+      idNumberPersona=""
 
 
             
-    context = { 'msg':msg, 'publicoObject':page_obj}
+    context = { 'msg':msg, 'publicoObject':page_obj ,'fechaFinalPersona':fechaFinalPersona,'personaBuscarNombrePersona':personaBuscarNombrePersona,'fechaInicialPersona':fechaInicialPersona,'idNumberPersona':idNumberPersona}
     context['segment'] = 'registration'
 
   
@@ -123,14 +255,14 @@ def MatriculacionAdmin(request):
 
     fechaF=None
     fechaI=None
-    idPersona=None
+    
     idPersona=None
     idStatus=None
     idTipo=None
 
     personaBuscarNombre=None
 
-
+   #numero de paginas para el modal
     publico=Publico.objects.all()
     paginatorP = Paginator(publico, 1)
     
@@ -479,7 +611,160 @@ def ManagePrices(request):
    structuras=Estructuraprograma.objects.all()
    structuras=structuras.annotate(precio=F('prize__precio'), fechaIngreso=F('prize__fecha_registro'), id=F('prize__idprograma_precios'), descuento=F('prize__PorcentajeDescuento'), max=Max('prize__idprograma_precios'), amountDiscount=Max('prize__idprograma_precios')  ).filter(id=Max('prize__idprograma_precios'))
    
+   fechaFinalPrecios=None
+   fechaInicialPrecios=None
+    
+   cbCurso=None
+   cbUnidad=None
+   cbProceso=None
+   cbPrograma=None
+   cbPrecio=None
+
+
+   is_cookie_set = 0
    
+   if 'fechaFinalPrecios' in request.session or 'fechaInicialPrecios' in request.session or 'cbCurso' in request.session or 'cbUnidad' in request.session or 'cbProceso' in request.session  or 'cbPrograma' in request.session or 'cbPrecio' in request.session : 
+        fechaFinalPrecios = request.session['fechaFinalPrecios'] if 'fechaFinalPrecios' in request.session else None
+        fechaInicialPrecios = request.session['fechaInicialPrecios'] if 'fechaInicialPrecios' in request.session else None
+        cbProceso=request.session['cbProceso'] if 'cbProceso' in request.session else None
+        cbUnidad=request.session['cbUnidad'] if 'cbUnidad' in request.session else None
+        cbCurso=request.session['cbCurso'] if 'cbCurso' in request.session else None
+        cbPrograma=request.session['cbPrograma'] if 'cbPrograma' in request.session else None
+        cbPrice=request.session['cbPrecio'] if 'cbPrecio' in request.session else None
+
+
+
+        
+        is_cookie_set = 1
+
+   if request.GET.get('page')==None:
+        is_cookie_set = 0
+        request.session['fechaFinalPrecios']=None
+        request.session['fechaInicialPrecios']=None
+        request.session['cbUnidad']=None
+        request.session['cbCurso']=None
+        request.session['cbProceso']=None
+        request.session['cbPrograma']=None
+        request.session['cbPrecio']=None
+
+        
+
+        
+        
+        fechaInicialPrecios=None
+        fechaFinalPrecios=None
+        cbCurso=None
+        cbUnidad=None
+        cbProceso=None
+        cbPrecio=None
+
+      
+      
+        if (is_cookie_set == 1): 
+          if fechaInicialPrecios!=None and fechaInicialPrecios!="":
+
+           dateI=parse_datetime(fechaInicialPrecios+' 00:00:00-00')
+          
+         
+           structuras=structuras.filter(fechaIngreso__gte=dateI)
+
+          if fechaFinalPrecios!=None  and fechaFinalPrecios!="":
+
+           dateF=parse_datetime(fechaFinalPrecios+' 00:00:00-00')
+          
+          
+           structuras=structuras.filter(fechaIngreso__lte=dateF)
+          
+          if cbCurso!="1":
+             structuras=structuras.exclude(valor_elemento='Curso')
+
+          if cbUnidad!="2":
+             structuras=structuras.exclude(valor_elemento='Unidad')
+
+          if cbProceso!="3":
+             structuras=structuras.exclude(valor_elemento='Proceso')
+
+          if cbPrograma!="4":
+             structuras=structuras.exclude(valor_elemento='Programa')
+          if cbPrecio=="5":
+             structuras=structuras.filter(precio=None)
+   
+
+   
+   if request.method == "POST":
+        
+        if (is_cookie_set == 1): 
+          
+          request.session['fechaFinalPrecios']=None
+          request.session['fechaInicialPrecios']=None
+          request.session['cbUnidad']=None
+          request.session['cbCurso']=None
+          request.session['cbProceso']=None
+          request.session['cbPrograma']=None
+          request.session['cbPrecio']=None
+
+          
+
+
+        print(request.POST)
+
+        fechaInicialPrecios=request.POST.get('fechaInicialPrecios') 
+        fechaFinalPrecios=request.POST.get('fechaFinalPrecios') 
+        cbUnidad=request.POST.get('cbUnidad') 
+        cbCurso=request.POST.get('cbCurso') 
+        cbProceso=request.POST.get('cbProceso') 
+        cbPrograma=request.POST.get('cbPrograma') 
+        cbPrecio=request.POST.get('cbPrecio') 
+
+
+        
+        
+        
+       
+        
+        if fechaInicialPrecios != None and fechaInicialPrecios!="":
+          dateI=parse_datetime(fechaInicialPrecios+' 00:00:00-00')
+          fechaI=fechaInicialPrecios
+          request.session['fechaInicialPrecios'] = fechaI
+          
+          structuras=structuras.filter(fechaIngreso__gte=dateI)
+
+        if fechaFinalPrecios != None and fechaFinalPrecios!="":
+          dateF=parse_datetime(fechaFinalPrecios+' 00:00:00-00')
+          fechaF=fechaFinalPrecios
+          request.session['fechaFinalPrecios'] = fechaF
+          
+          structuras=structuras.filter(fechaIngreso__lte=dateF)
+        
+        if cbCurso!="1":
+             structuras=structuras.exclude(valor_elemento='Curso')
+             request.session['cbCurso'] = cbCurso
+
+
+        if cbUnidad!="2":
+             structuras=structuras.exclude(valor_elemento='Unidad')
+             request.session['cbUnidad'] = cbUnidad
+
+
+        if cbProceso!="3":
+             structuras=structuras.exclude(valor_elemento='Proceso')
+             request.session['cbProceso'] = cbProceso
+
+
+        if cbPrograma!="4":
+             structuras=structuras.exclude(valor_elemento='Programa')
+             request.session['cbPrograma'] = cbPrograma
+
+        if cbPrecio=="5":
+             structuras=structuras.filter(precio=None)
+
+             request.session['cbPrecio'] = cbPrecio
+
+        
+        
+
+       
+
    
    paginator = Paginator(structuras, 10)
 
@@ -522,8 +807,9 @@ def ManagePrices(request):
     
    page_number = request.GET.get('page')
    page_obj = paginator.get_page(page_number)
+   print(cbUnidad)
    
-   return render(request, 'registration/Courses.html', {"structuras": page_obj, 'segment':'registration' })
+   return render(request, 'registration/Courses.html', {"structuras": page_obj, 'segment':'registration','fechaInicialPrecios':fechaInicialPrecios,'fechaFinalPrecios':fechaFinalPrecios,'cbCurso':cbCurso, 'cbProceso':cbProceso,'cbPrograma':cbPrograma,'cbUnidad':cbUnidad, 'cbPrecio':cbPrecio  })
 
 
 
@@ -573,6 +859,198 @@ def MasterPiece(request):
    
    return render(request, 'registration/Courses.html', {"cursos": Cursos, })
 
+
+
+##pagoss
+
+@login_required(login_url="/login/")
+def InsertPay(request):
+
+     if request.method == "GET":
+     
+        id1=request.GET.get('matricula')
+        id2=request.GET.get('matricula2')
+        id3=request.GET.get('matricula3')
+        #id4=request.GET.get('id1')
+        print(id1,id2,id3)
+
+        id41 = MatriculaAlumnos.objects.get(idmatricula_alumnos = request.GET['codM'])
+        id4=id41
+        #id4=1;
+        id5 = request.GET.get('refPay')
+        id6 = datetime.datetime.now()
+        id7 = request.GET.get('refPayer')
+
+        if id1 == 'Paypal':
+          
+           p = MatriculasPagos(
+         fk_matricula_alumnos =  id4,
+         fk_metodopago_id  = 1,
+         monto_cancel  = id3,
+         fk_tipomoneda  = None,
+         fecha_pago = id6,
+         referencia   = id5,
+         status_pay = id2 ,
+         codigo_hash   = id7,
+         url_imagen  = None  )
+           p.save()
+         
+           return HttpResponse("Changes saved con valor")   
+
+@login_required(login_url="/login/")
+def InsertPayTr(request):
+
+     if request.method == "POST":
+     
+        hash=request.POST.get('hash')
+        precio=request.POST.get('precio')
+        matricula=request.POST.get('matricula')
+       
+       # id5=request.POST.get('codigoMatricula')
+        
+        matriculadb = MatriculaAlumnos.objects.get(idmatricula_alumnos = matricula)
+        
+
+        reference=request.POST.get('reference')
+        origen=request.POST.get('origen')
+       
+        if origen == 3:
+          
+          myfile = request.FILES['imagenRuta']
+          fs = FileSystemStorage()
+          filename = fs.save(myfile.name, myfile)
+          uploaded_file_url = fs.url(filename)
+          print(myfile)
+          print(fs)
+          print(uploaded_file_url)
+          id4 = uploaded_file_url
+
+          #showtime = strftime("%Y-%m-%d %H:%M:%S", gmtime())
+          #showtime = datetime.datetime.now().strftime ("%Y%m%d")
+          #datetime.date.today()  # Returns 2018-01-15
+          showtime=datetime.datetime.now() # Returns 2018-01-15 09:00
+
+          p = MatriculasPagos(
+         fk_matricula_alumnos = id5,
+         fk_metodopago_id  = 3,
+         monto_cancel  = id2,
+         fk_tipomoneda  = None,
+         fecha_pago = showtime,
+         referencia   = id6,
+         status_pay = "pending confirmation" ,
+         codigo_hash   = id3,
+         url_imagen  = id4  )
+          p.save()
+
+           #if request.method == 'POST' and request.FILES['myfile']:
+          
+          #  return render(request, 'core/simple_upload.html', {
+          #   'uploaded_file_url': uploaded_file_url
+          #  })
+
+           #result = urllib.urlretrieve(id4) # image_url is a URL to an image
+          
+           #self.photo is the ImageField
+           #photo.save(
+           #os.path.basename(url),
+           #File(open(result[0], 'rb')))
+           #self.save()
+           
+          return HttpResponse("Changes saved con valor")   
+        else:
+              
+          return HttpResponse("Error")
+
+
+
+@login_required(login_url="/login/")
+def ViewPayments(request):
+   #structuras=Estructuraprograma.objects.raw("Select * from app_Estructuraprograma INNER  join registration_PreciosFormacion on app_Estructuraprograma.idestructuraprogrmas=registration_PreciosFormacion Where ( select fk_estruc_programa from registration_PreciosFormacion) ")
+   #structuras=Estructuraprograma.objects.all()
+   #structuras=structuras.annotate(precio=F('prize__precio'), fechaIngreso=F('prize__fecha_registro'), id=F('prize__idprograma_precios'), descuento=F('prize__PorcentajeDescuento'), max=Max('prize__idprograma_precios'), amountDiscount=Max('prize__idprograma_precios')  ).filter(id=Max('prize__idprograma_precios'))
+   
+   #structuras2=MatriculaAlumnos.objects.all()
+   #structuras3=structuras2.annotate(id1=F('idreferencia__idmatricula_pagos'), id2=F('idreferencia__fk_matricula_alumnos'),Monto=F('idreferencia__monto_cancel'), fecha=F('idreferencia__fecha_pago'), referencia=F('idreferencia__referencia'), status=F('idreferencia__status_pay'), codigoHash=F('idreferencia__codigo_hash'), imagen=F('idreferencia__url_imagen') ).filter(id1=Max('idreferencia__idmatricula_alumnos'))
+   #print(structuras3)
+   
+   #structuras=MatriculasPagos.objects.raw("Select * from registration_matriculaspagos as rmp join registration_matriculaalumnos as rpf on rmp.fk_matricula_alumnos_id=rpf.idmatricula_alumnos ")
+   structuras=MatriculasPagos.objects.raw("Select * from registration_matriculaspagos as rmp join registration_matriculaalumnos as rpf on rmp.fk_matricula_alumnos_id=rpf.idmatricula_alumnos join app_publico as ap on ap.idpublico=rpf.fk_publico_id ")
+   print(structuras.query)
+   
+   #print(MatriculasPagos.objects.select_related('fk_matricula_alumnos__fk_estruc_programa').all().query)
+   #Unidad = MatriculasPagos.objects.select_related('fk_matricula_alumnos__fk_estruc_programa').all()
+   
+   
+   paginator = Paginator(structuras, 2)
+
+    
+   page_number = request.GET.get('page')
+   structuras = paginator.get_page(page_number)
+   
+   return render(request, 'registration/viewpay.html', {"structuras": structuras, })
+
+  # return render(request, 'registration/viewpay.html', {"doc_et": qs_json,"doc_et2": qs_json2, "msg" : msg,'id':id, 'id2':id2})
+
+@login_required(login_url="/login/")
+def hashPay(request):
+
+  
+         
+       
+       hash = uuid.uuid4()
+      # contraseña_cifrada = hashlib.sha512(contraseña.encode()) 
+      # print(contraseña_cifrada.hexdigest())
+      # hash=contraseña_cifrada.hexdigest()   
+       #print (hash.hexdigest())
+       #m = hashlib.shake_128(b.binary_converted)
+       #hash=m.hexdigest(15)
+       print(hash)
+       return HttpResponse(hash)
+
+@login_required(login_url="/login/")
+def media(request):
+
+  if request.method == "GET":
+   uploaded_file_url=request.GET.get('Url')
+
+  # return render(request, 'core/simple_upload.html', { 'uploaded_file_url': uploaded_file_url })
+
+   return HttpResponse(uploaded_file_url)
+   #return HttpResponse("hola")
+
+
+@login_required(login_url="/login/")
+def GetEditStatus(request):
+
+
+    
+   if request.method == "GET":
+      
+      try:
+
+
+        status=request.GET.get('Combo')    
+
+        #type=request.POST.get('type')
+        
+        id=request.GET.get('id')
+        print(id)
+        print(status)
+        #estado=TablasConfiguracion.objects.get(id_tabla=status)
+        
+        #tipo=TablasConfiguracion.objects.get(id_tabla=type)
+
+        matricula=MatriculasPagos.objects.get( pk=id  )
+        
+        matricula.status_pay=status
+        #matricula.fk_tipo_matricula=tipo
+        matricula.save()
+        return HttpResponse("Changes saved")
+
+      except:
+        return HttpResponse("Error, try again later")
+
+
 #parciales
 def ComboOptions(request):
     structuraProg=request.GET.get("structuraProg")
@@ -606,10 +1084,18 @@ def MatriculacionAdminModal(request):
 @login_required(login_url="/login/")
 def MatriculacionAddModal(request):
   
-    structuraProg=Estructuraprograma.objects.filter(fk_estructura_padre=None)
-    tipoPrograma=TablasConfiguracion.obtenerHijos("Tipo matricula")
+ 
 
-    return render(request, 'components/modalAddMatricula.html',{'structuraProg':structuraProg, 'tipoPrograma':tipoPrograma})
+    # structuraProg=Estructuraprograma.objects.filter(fk_estructura_padre=None)
+    structuras=Estructuraprograma.objects.all()
+
+    structuras=structuras.annotate(precio=F('prize__precio'), fechaIngreso=F('prize__fecha_registro'), id=F('prize__idprograma_precios'), descuento=F('prize__PorcentajeDescuento'), max=Max('prize__idprograma_precios'), amountDiscount=Max('prize__idprograma_precios')  ).filter(id=Max('prize__idprograma_precios')  )
+    structuras=structuras.filter(fk_estructura_padre=None)
+    tipoPrograma=TablasConfiguracion.obtenerHijos("Tipo matricula")
+    estatus=TablasConfiguracion.obtenerHijos("EstMatricula")
+
+
+    return render(request, 'components/modalAddMatricula.html',{'structuraProg':structuras, 'tipoPrograma':tipoPrograma, 'status':estatus})
 
 @login_required(login_url="/login/")
 def ModalPay(request):
@@ -729,6 +1215,9 @@ def save(request):
         cbProcess=request.POST.get('cbProcess')
         cbUnit=request.POST.get('cbUnit')
         cbCourse=request.POST.get('cbCourse')
+        statusDB=None
+        typeDB=None
+        status=request.POST.get('status')
 
         type=request.POST.get('type')
         idEstruct=None
@@ -744,10 +1233,20 @@ def save(request):
         
         publico=Publico.objects.get(user=request.user)
         struct=Estructuraprograma.objects.get(idestructuraprogrmas=idEstruct)
-        tipo=TablasConfiguracion.objects.get(id_tabla=type)
+
+        if type!=None and type!="":
+         typeDB=TablasConfiguracion.objects.get(id_tabla=type)
+
+
+        if status!=None and status!="":
+         statusDB=TablasConfiguracion.objects.get(id_tabla=status)
+        else:
+         statusDB=TablasConfiguracion.objects.get(valor_elemento='EstatusRevision')
+       
+
 
         
-        matricula=MatriculaAlumnos.objects.create(fk_publico=publico,fk_estruc_programa=struct, fecha_matricula=datetime.date.today(),fk_tipo_matricula=tipo,fk_status_matricula=None,fecha_aprobada=None  )
+        matricula=MatriculaAlumnos.objects.create(fk_publico=publico,fk_estruc_programa=struct, fecha_matricula=datetime.date.today(),fk_tipo_matricula=typeDB,fk_status_matricula=statusDB,fecha_aprobada=None  )
         matricula.save()
         return HttpResponse("Errolment application saved")
 
@@ -1059,7 +1558,9 @@ def ManagePersonSave(request):
         cbUnit=request.POST.get('cbUnit')
         cbCourse=request.POST.get('cbCourse')
         idPersona=request.POST.get('id')
-
+        statusDB=None
+        typeDB=None
+        status=request.POST.get('status')
 
         type=request.POST.get('type')
         idEstruct=None
@@ -1075,10 +1576,19 @@ def ManagePersonSave(request):
         
         publico=Publico.objects.get(pk=idPersona)
         struct=Estructuraprograma.objects.get(idestructuraprogrmas=idEstruct)
-        tipo=TablasConfiguracion.objects.get(id_tabla=type)
+        if type!=None and type!="":
+          typeDB=TablasConfiguracion.objects.get(id_tabla=type)
+
+
+        if status!=None and status!="":
+         statusDB=TablasConfiguracion.objects.get(id_tabla=status)
+        else:
+         statusDB=TablasConfiguracion.objects.get(valor_elemento='EstatusRevision')
+       
+
 
         
-        matricula=MatriculaAlumnos.objects.create(fk_publico=publico,fk_estruc_programa=struct, fecha_matricula=datetime.date.today(),fk_tipo_matricula=tipo,fk_status_matricula=None,fecha_aprobada=None  )
+        matricula=MatriculaAlumnos.objects.create(fk_publico=publico,fk_estruc_programa=struct, fecha_matricula=datetime.date.today(),fk_tipo_matricula=typeDB,fk_status_matricula=statusDB,fecha_aprobada=None  )
         matricula.save()
         return HttpResponse("Errolment application saved")
 

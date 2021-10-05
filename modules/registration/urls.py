@@ -25,10 +25,24 @@ urlpatterns = [
 
 
 
-
-
     #pagos
     path('Payments/', views.Pay, name='ManagePay'  ),
+
+    path('ViewPayments/', views.ViewPayments, name='ViewPayments'  ),
+    path('ViewPayments/GetEditStatus/', views.GetEditStatus, name='GetEditStatus'  ),
+    #path('ViewPayments/Getdata/', views.Getdata, name='Getdata'  ),
+
+
+    path('MyEnrollments/hashPay/', views.hashPay, name='hashPay'  ),
+
+    
+    ########################################tomalo cerdo####################
+    path('MyEnrollments/InsertPay/', views.InsertPay, name='InsertPay'  ),
+    path('MyEnrollments/InsertPayTr/', views.InsertPayTr, name='InsertPayTr'  ),
+
+
+
+ 
 
     
 

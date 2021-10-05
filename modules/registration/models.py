@@ -39,12 +39,17 @@ class MatriculaAlumnos(models.Model):
     fecha_aprobada = models.DateField(null=True)
     origenSolicitud = models.SmallIntegerField(default=0)
 
+
+
 class MatriculasPagos(models.Model):
     idmatricula_pagos  = models.AutoField(primary_key=True)
-    fk_matricula_alumnos = models.ForeignKey(MatriculaAlumnos, on_delete=models.CASCADE, default=None, null=True)
-    fk_metodopago  = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE, default=None, null=True)
+    fk_matricula_alumnos = models.ForeignKey(MatriculaAlumnos, on_delete=models.CASCADE, default=None, null=True,related_name='idreferencia')
+    #fk_metodopago_id  = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE, default=None, null=True)
+    fk_metodopago_id  = models.DecimalField(max_digits=11, decimal_places=2, default=None, null=True)
     monto_cancel  = models.DecimalField(max_digits=11, decimal_places=2, default=None, null=True)
     fk_tipomoneda  = models.ForeignKey(PreciosFormacion, on_delete=models.CASCADE, default=None, null=True)
+    fecha_pago = models.DateField(null=True)
     referencia   = models.CharField(max_length=70, blank=True, null=True)
-    codigo_hash   = models.CharField(max_length=70, blank=True, null=True)
-    url_imagen  = models.CharField(max_length=70, blank=True, null=True)
+    status_pay = models.CharField(max_length=10, blank=True, null=True)
+    codigo_hash   = models.CharField(max_length=300, blank=True, null=True)
+    url_imagen  = models.CharField(max_length=100, blank=True, null=True)

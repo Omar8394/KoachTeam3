@@ -307,7 +307,7 @@
       "fk_tabla_padre_id": 21,
       "tipo_elemento": 1,
       "permite_cambios":1,
-      "valor_elemento":"",
+      "valor_elemento":"EstatusRevision",
       "mostrar_en_combos":1,
       "maneja_lista":0
 
@@ -321,7 +321,7 @@
       "fk_tabla_padre_id": 21,
       "tipo_elemento": 1,
       "permite_cambios":1,
-      "valor_elemento":"",
+      "valor_elemento":"EstatusCancelado",
       "mostrar_en_combos":1,
       "maneja_lista":0
 
@@ -335,7 +335,7 @@
       "fk_tabla_padre_id": 21,
       "tipo_elemento": 1,
       "permite_cambios":1,
-      "valor_elemento":"",
+      "valor_elemento":"EstatusEspera",
       "mostrar_en_combos":1,
       "maneja_lista":0
 
@@ -349,7 +349,7 @@
       "fk_tabla_padre_id": 21,
       "tipo_elemento": 1,
       "permite_cambios":1,
-      "valor_elemento":"",
+      "valor_elemento":"EstatusAprovado",
       "mostrar_en_combos":1,
       "maneja_lista":0
 
@@ -420,7 +420,7 @@
       "fk_tabla_padre_id": 6,
       "tipo_elemento": 1,
       "permite_cambios":1,
-      "valor_elemento":"",
+      "valor_elemento":"MatriculaPaga",
       "mostrar_en_combos":1,
       "maneja_lista":1
 
@@ -434,9 +434,66 @@
       "fk_tabla_padre_id": 6,
       "tipo_elemento": 1,
       "permite_cambios":1,
-      "valor_elemento":"",
+      "valor_elemento":"MatriculaBeca",
       "mostrar_en_combos":1,
       "maneja_lista":1
+
+    }
+  },
+
+  {
+    "model": "app.TablasConfiguracion",
+    "pk": 100,
+    "fields": {
+      "desc_elemento": "Payment Status",
+      "fk_tabla_padre_id": 1,
+      "tipo_elemento": 0,
+      "permite_cambios":0,
+      "valor_elemento":"PayStatus",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk": 101,
+    "fields": {
+      "desc_elemento": "Confirmed",
+      "fk_tabla_padre_id": 100,
+      "tipo_elemento": 0,
+      "permite_cambios":0,
+      "valor_elemento":"payConfirm",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk": 102,
+    "fields": {
+      "desc_elemento": "Waiting for Confirmation",
+      "fk_tabla_padre_id": 100,
+      "tipo_elemento": 0,
+      "permite_cambios":0,
+      "valor_elemento":"payWait",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk": 103,
+    "fields": {
+      "desc_elemento": "Payment Rejected",
+      "fk_tabla_padre_id": 100,
+      "tipo_elemento": 0,
+      "permite_cambios":0,
+      "valor_elemento":"payRejected",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
 
     }
   },
