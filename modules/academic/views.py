@@ -209,6 +209,7 @@ def getModalProgramas(request):
                         programa.valor_elemento = "Programa"
                         programa.fk_estructura_padre_id=None
                     programa.descripcion = data["data"]["descriptionProgram"]
+                    programa.resumen = data["data"]["resumenProgram"]
                     programa.url = data["data"]["urlProgram"]
                     programa.fk_categoria_id = data["data"]["categoryProgram"]
                     programa.peso_creditos = data["data"]["creditos"]
@@ -248,6 +249,7 @@ def getModalProcesos(request):
                         proceso.valor_elemento = "Proceso"
                     proceso.fk_estructura_padre_id=data["data"]["padreProcess"]
                     proceso.descripcion = data["data"]["descriptionProcess"]
+                    proceso.resumen = data["data"]["resumenProcess"]
                     proceso.url = data["data"]["urlProcess"]
                     proceso.fk_categoria_id = Estructuraprograma.objects.get(pk=data["data"]["padreProcess"]).fk_categoria_id
                     proceso.peso_creditos = data["data"]["creditos"]
@@ -289,6 +291,7 @@ def getModalUnidades(request):
                         unidad.valor_elemento = "Unidad"
                     unidad.fk_estructura_padre_id=data["data"]["padreUnit"]
                     unidad.descripcion = data["data"]["descriptionUnit"]
+                    unidad.resumen = data["data"]["resumenUnit"]
                     unidad.url = data["data"]["urlUnit"]
                     unidad.fk_categoria_id = Estructuraprograma.objects.get(pk=data["data"]["padreUnit"]).fk_categoria_id
                     unidad.peso_creditos = data["data"]["creditos"]
@@ -312,17 +315,23 @@ def getModalCursos(request):
             # try:
             if request.body:
                 data = json.load(request)
-                if data["method"] == "Find":
+                if data["method"] == "Show":
+                    modelo = Estructuraprograma.objects.get(pk=data["id"])
+                    units = Estructuraprograma.objects.filter(valor_elemento="Unidad",fk_estructura_padre_id=modelo.fk_estructura_padre_id)
+                    tipoDuracion = TablasConfiguracion.obtenerHijos(valor="Duracion")
+                    status = TablasConfiguracion.obtenerHijos(valor="EstCurso")
+                    
+                    context = {"units":units,"tipoDuracion":tipoDuracion, "status":status}
+                    html_template = (loader.get_template('components/modalAddCurso.html'))
+                    return HttpResponse(html_template.render(context, request))
+                elif data["method"] == "Find":
                     modeloCurso = Cursos.objects.get(fk_estruc_programa=data["id"])
                     modelo = Estructuraprograma.objects.get(pk=data["id"])
                     modeloPadre = Estructuraprograma.objects.get(pk=modelo.fk_estructura_padre_id)
-                    modeloAbuelo = Estructuraprograma.objects.get(pk=modeloPadre.fk_estructura_padre_id)
-                    programs = Estructuraprograma.objects.filter(valor_elemento="Programa")
-                    processes = Estructuraprograma.objects.filter(valor_elemento="Proceso")
-                    units = Estructuraprograma.objects.filter(valor_elemento="Unidad")
+                    units = Estructuraprograma.objects.filter(valor_elemento="Unidad",fk_estructura_padre=modeloPadre.fk_estructura_padre)
                     tipoDuracion = TablasConfiguracion.obtenerHijos(valor="Duracion")
                     status = TablasConfiguracion.obtenerHijos(valor="EstCurso")
-                    context = {"programs": programs, "processes":processes,"units":units, "modeloCurso":modeloCurso, "modelo": modelo, "modeloPadre": modeloPadre, "modeloAbuelo":modeloAbuelo, "tipoDuracion":tipoDuracion, "status":status}
+                    context = {"units":units, "modeloCurso":modeloCurso, "modelo": modelo, "tipoDuracion":tipoDuracion, "status":status}
                     html_template = (loader.get_template('components/modalAddCurso.html'))
                     return HttpResponse(html_template.render(context, request))
                 elif data["method"] == "Delete":
@@ -338,10 +347,10 @@ def getModalCursos(request):
                     curso.valor_elemento = "Curso"
                 curso.fk_estructura_padre_id=data["data"]["padreCourse"]
                 curso.descripcion = data["data"]["titleCourse"]
+                curso.resumen = data["data"]["resumenCourse"]
                 curso.url = data["data"]["urlCourse"]
                 curso.fk_categoria_id = Estructuraprograma.objects.get(pk=data["data"]["padreCourse"]).fk_categoria_id
                 curso.peso_creditos = data["data"]["creditos"]
-                curso_char.desc_curso = data["data"]["descriptionCourse"]
                 curso_char.abrev_curso = data["data"]["tagCourse"]
                 curso_char.codigo_curso = data["data"]["codeCourse"]
                 curso_char.disponible_desde = data["data"]["disponibleCourse"]
@@ -351,22 +360,18 @@ def getModalCursos(request):
                     curso_char.tipo_evaluacion = True
                 if "durationCourse" in data["data"]:
                     curso_char.duracion = data["data"]["durationCourse"]
+                else:
+                    curso_char.duracion = None
                 if "timeCourse" in data["data"]:
-                    curso_char.fk_tipo_duracion = data["data"]["timeCourse"]
+                    curso_char.fk_tipo_duracion_id = data["data"]["timeCourse"]
+                else:
+                    curso_char.fk_tipo_duracion_id = None
                 curso.save()
                 curso_char.fk_estruc_programa = curso
                 curso_char.save()
                 return JsonResponse({"message":"Perfect"})
-            else:
-                programs = Estructuraprograma.objects.filter(valor_elemento="Programa")
-                processes = Estructuraprograma.objects.filter(valor_elemento="Proceso")
-                units = Estructuraprograma.objects.filter(valor_elemento="Unidad")
-                tipoDuracion = TablasConfiguracion.obtenerHijos(valor="Duracion")
-                status = TablasConfiguracion.obtenerHijos(valor="EstCurso")
+            # else:
                 
-                context = {"programs": programs, "processes":processes, "units":units, "modelo": modelo,"tipoDuracion":tipoDuracion, "status":status}
-                html_template = (loader.get_template('components/modalAddCurso.html'))
-                return HttpResponse(html_template.render(context, request))
             # except:
             #     return JsonResponse({"message":"error"})
 

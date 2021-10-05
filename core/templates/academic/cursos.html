@@ -85,24 +85,24 @@
    let editmode = false
    let query = ""
    let selectedId = ""
-   const changeProgram = async () => {
-      const comboPrograma = document.getElementById("programCourse")
-      const comboProceso = document.getElementById("processCourse")
-      const comboUnidad = document.getElementById("padreCourse")
-      let idPrograma = comboPrograma.value
-      const contenidoProceso = await renderCombo(idPrograma, "Select a process")
-      const contenidoUnidad = await renderCombo(null, "Select an unit")
-      comboProceso.innerHTML = contenidoProceso ? contenidoProceso : ""
-      comboUnidad.innerHTML = contenidoUnidad ? contenidoUnidad : ""
-      comboUnidad.value=null
-   }
-   const changeProcess = async () => {
-      const comboProceso = document.getElementById("processCourse")
-      const comboUnidad = document.getElementById("padreCourse")
-      let idProceso = comboProceso.value
-      const contenidoUnidad = await renderCombo(idProceso, "Select an unit")
-      comboUnidad.innerHTML = contenidoUnidad ? contenidoUnidad : ""
-   }
+   // const changeProgram = async () => {
+   //    const comboPrograma = document.getElementById("programCourse")
+   //    const comboProceso = document.getElementById("processCourse")
+   //    const comboUnidad = document.getElementById("padreCourse")
+   //    let idPrograma = comboPrograma.value
+   //    const contenidoProceso = await renderCombo(idPrograma, "Select a process")
+   //    const contenidoUnidad = await renderCombo(null, "Select an unit")
+   //    comboProceso.innerHTML = contenidoProceso ? contenidoProceso : ""
+   //    comboUnidad.innerHTML = contenidoUnidad ? contenidoUnidad : ""
+   //    comboUnidad.value=null
+   // }
+   // const changeProcess = async () => {
+   //    const comboProceso = document.getElementById("processCourse")
+   //    const comboUnidad = document.getElementById("padreCourse")
+   //    let idProceso = comboProceso.value
+   //    const contenidoUnidad = await renderCombo(idProceso, "Select an unit")
+   //    comboUnidad.innerHTML = contenidoUnidad ? contenidoUnidad : ""
+   // }
    const renderCombo = (id, valor) => {
       return fetch("{% url 'contenidoCombo'%}", {
          ...fetchObject,
@@ -199,18 +199,18 @@
       })
          .then(async (res) => {
             document.getElementById("addNewModalContent").innerHTML = await res.text()
-            const comboPrograma = document.getElementById("programCourse")
-            let idPrograma = comboPrograma.value
-            const comboProceso = document.getElementById("processCourse")
-            let idProceso = comboProceso.value
-            const comboUnidad = document.getElementById("padreCourse")
-            let idUnidad = comboUnidad.value
-            const contenidoProceso = await renderCombo(idPrograma, "Select a process")
-            const contenidoUnidad = await renderCombo(idProceso, "Select an unit")
-            comboProceso.innerHTML = contenidoProceso ? contenidoProceso : ""
-            comboProceso.value = idProceso
-            comboUnidad.innerHTML = contenidoUnidad ? contenidoUnidad : ""
-            comboUnidad.value = idUnidad
+            // const comboPrograma = document.getElementById("programCourse")
+            // let idPrograma = comboPrograma.value
+            // const comboProceso = document.getElementById("processCourse")
+            // let idProceso = comboProceso.value
+            // const comboUnidad = document.getElementById("padreCourse")
+            // let idUnidad = comboUnidad.value
+            // const contenidoProceso = await renderCombo(idPrograma, "Select a process")
+            // const contenidoUnidad = await renderCombo(idProceso, "Select an unit")
+            // comboProceso.innerHTML = contenidoProceso ? contenidoProceso : ""
+            // comboProceso.value = idProceso
+            // comboUnidad.innerHTML = contenidoUnidad ? contenidoUnidad : ""
+            // comboUnidad.value = idUnidad
          })
          .then(() => {
             $("#addNewModal").modal("show")
@@ -229,17 +229,21 @@
       editmode = false
       fetch("{% url 'modalAddCurso'%}", {
          ...fetchObject,
+         body: JSON.stringify({
+            method: "Show",
+            id: "{{unidad.pk}}"
+         })
       })
          .then(async (res) => {
             document.getElementById("addNewModalContent").innerHTML = await res.text()
-            const comboProceso = document.getElementById("processCourse")
-            const comboUnidad = document.getElementById("padreCourse")
-            const contenidoProceso = await renderCombo(null, "Select a process")
-            const contenidoUnidad = await renderCombo(null, "Select an unit")
-            comboProceso.innerHTML = contenidoProceso ? contenidoProceso : ""
-            comboProceso.value = null
-            comboUnidad.innerHTML = contenidoUnidad ? contenidoUnidad : ""
-            comboUnidad.value = null
+            // const comboProceso = document.getElementById("processCourse")
+            // const comboUnidad = document.getElementById("padreCourse")
+            // const contenidoProceso = await renderCombo(null, "Select a process")
+            // const contenidoUnidad = await renderCombo(null, "Select an unit")
+            // comboProceso.innerHTML = contenidoProceso ? contenidoProceso : ""
+            // comboProceso.value = null
+            // comboUnidad.innerHTML = contenidoUnidad ? contenidoUnidad : ""
+            // comboUnidad.value = null
          })
          .then(() => {
             $("#addNewModal").modal("show")

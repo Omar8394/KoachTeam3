@@ -52,7 +52,6 @@ class EvaluacionesPreguntas(models.Model):
 
 class Cursos(models.Model):
     idcurso = models.SmallAutoField(primary_key=True)
-    desc_curso = models.TextField(db_collation='utf8mb3_swedish_ci')
     abrev_curso = models.CharField(max_length=7, db_collation='utf8mb3_swedish_ci')
     codigo_curso = models.CharField(max_length=15, db_collation='utf8mb3_swedish_ci')
     disponible_desde = models.DateField(null=True)

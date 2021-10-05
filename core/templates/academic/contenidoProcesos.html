@@ -27,10 +27,7 @@ results for "{{query}}"
                <p><span class="subtitle">Profesor</span> Jesus Campos</p>
             </div>
             <h2 class="card-academic-title">{{process.descripcion}}</h2>
-            <p class="card-academic-body">
-               Lorem ipsum dolor sit, amet consectetur adipisicing elit. Tempora et incidunt repellendus
-               libero voluptates ab cum, exercitationem
-            </p>
+            <p class="card-academic-body">{{process.resumen}}</p>
             <div class="btn-group" role="group">
                {%if edit%}
                <a href="#" onclick="openEditProcess('{{process.pk}}')" class="button btn btn-primary"><i

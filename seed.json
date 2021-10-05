@@ -633,6 +633,7 @@
     "pk":1,
     "fields": {
       "descripcion":"System engineer",
+      "resumen":"Complete program to adquire knowledge about all kind of systems and network",
       "valor_elemento":"Programa",
       "url":"system_eng",
       "peso_creditos":"2",
@@ -644,6 +645,7 @@
     "pk":2,
     "fields": {
       "descripcion":"Industrial engineer",
+      "resumen":"Complete program to adquire knowledge about all kind of industrial processes and procedures",
       "valor_elemento":"Programa",
       "url":"indust_eng",
       "peso_creditos":"2",
@@ -655,6 +657,7 @@
     "pk":3,
     "fields": {
       "descripcion":"Agronomic engineer",
+      "resumen":"Complete program to adquire knowledge about ground, farm animals, botanic topics and more",
       "valor_elemento":"Programa",
       "url":"agro_eng",
       "peso_creditos":"2",
@@ -666,6 +669,7 @@
     "pk":4,
     "fields": {
       "descripcion":"Web developer",
+      "resumen":"Required process to be an web developer capable to develop frontend and backend, client and server",
       "valor_elemento":"Proceso",
       "url":"web_dev",
       "peso_creditos":"2",
@@ -678,6 +682,7 @@
     "pk":5,
     "fields": {
       "descripcion":"Frontend developer",
+      "resumen":"Unit in order to built client side of web, ui and ux",
       "valor_elemento":"Unidad",
       "url":"front_dev",
       "peso_creditos":"2",
@@ -690,6 +695,7 @@
     "pk":6,
     "fields": {
       "descripcion":"VPS",
+      "resumen":"Required process to have a full understanding of Virtual servers and their use",
       "valor_elemento":"Proceso",
       "url":"vps_admin",
       "peso_creditos":"2",
@@ -702,6 +708,7 @@
     "pk":7,
     "fields": {
       "descripcion":"Ubuntu server",
+      "resumen":"Unit to learn deeply about Ubuntu server and this linux distro unique features",
       "valor_elemento":"Unidad",
       "url":"ubuntu_server",
       "peso_creditos":"2",
@@ -714,6 +721,7 @@
     "pk":8,
     "fields": {
       "descripcion":"Distro",
+      "resumen":"Course oriented to know how to interact with Ubuntu server distro",
       "valor_elemento":"Curso",
       "url":"ubuntu_distro",
       "peso_creditos":"1",
@@ -726,12 +734,24 @@
     "model": "app.Estructuraprograma",
     "pk":9,
     "fields": {
-      "descripcion":"CCS",
+      "descripcion":"CSS",
+      "resumen":"Make u the best designer of visuals for client with this course",
       "valor_elemento":"Curso",
       "url":"css_dev",
       "peso_creditos":"1",
       "fk_categoria":"24",
       "fk_estructura_padre":"5"
+    }
+
+  },
+  {
+    "model": "academic.Cursos",
+    "fields": {
+      "abrev_curso":"css",
+      "codigo_curso":"d001",
+      "disponible_desde":"2021-10-04",
+      "fk_estruc_programa_id":9,
+      "tipo_evaluacion":"1"
     }
 
   },

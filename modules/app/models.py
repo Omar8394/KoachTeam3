@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.forms.utils import to_current_timezone
 # from django.contrib.auth.models import User
 
 class TablasConfiguracion(models.Model):
@@ -93,6 +94,7 @@ class AplicacionesContratante(models.Model):
 class Estructuraprograma(models.Model):
     idestructuraprogrmas = models.SmallAutoField(primary_key=True)
     descripcion = models.TextField()
+    resumen = models.TextField(null=True)
     valor_elemento = models.TextField(blank=True, null=True)
     url = models.TextField(blank=True, null=True)
     peso_creditos = models.DecimalField(max_digits=7, decimal_places=2, blank=True, null=True)

@@ -27,14 +27,7 @@ results for "{{query}}"
                <p><span class="subtitle">Profesor</span> Jesus Campos</p>
             </div>
             <h2 class="card-academic-title">{{course.descripcion}}</h2>
-            <p class="card-academic-body">
-               {% if course.cursos %}
-                  {{course.cursos.desc_curso}}
-               {% else%}
-               Lorem ipsum dolor sit, amet consectetur adipisicing elit. Tempora et incidunt repellendus
-               libero voluptates ab cum, exercitationem
-               {% endif %}
-            </p>
+            <p class="card-academic-body">{{course.resumen}}</p>
             <div class="btn-group" role="group">
                {%if edit%}
                <a href="#" onclick="openEditCourses('{{course.pk}}')" class="button btn btn-primary"><i

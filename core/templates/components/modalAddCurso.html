@@ -9,27 +9,6 @@
       <div class="modal-body">
          <div class="form-row">
             <div class="form-group col-6">
-               <label for="programCourse" class="col-form-label">Program</label>
-               <select class="form-control" name="programCourse" id="programCourse" onchange="changeProgram()">
-                  <option value="null" {% if not modeloAbuelo %}selected{% endif %} disabled>Select a program</option>
-                  {% for item in programs %}
-                  <option value="{{item.pk}}" {% if modeloAbuelo %}{% if modeloAbuelo.fk_estructura_padre_id == item.pk %}selected{% endif %}{% endif %}>{{item.descripcion}}</option>
-                  {% endfor%}
-               </select>
-            </div>
-            <div class="form-group col-6">
-               <label for="processCourse" class="col-form-label">Process</label>
-               <select class="form-control" name="processCourse" id="processCourse" onchange="changeProcess()" required>
-                  <option value="null" {% if not modeloPadre %}selected{% endif %} disabled>Select a process</option>
-                  {% for item in processes %}
-                  <option value="{{item.pk}}" {% if modeloPadre %}{% if modeloPadre.fk_estructura_padre_id == item.pk %}selected{% endif %}{% endif %}>
-                     {{item.descripcion}}</option>
-                  {% endfor%}
-               </select>
-            </div>
-         </div>
-         <div class="form-row">
-            <div class="form-group col-6">
                <label for="padreCourse" class="col-form-label">Unit</label>
                <select class="form-control" name="padreCourse" id="padreCourse" required>
                   <option value="null" {% if not modelo %}selected{% endif %} disabled>Select an unit</option>
@@ -75,9 +54,9 @@
          </div>
          <div class="form-row">
             <div class="form-group col-12">
-               <label for="descriptionCourse" class="col-form-label">Description</label>
-               <textarea class="form-control" name="descriptionCourse" id="descriptionCourse"
-                  placeholder="Enter a description here" required>{% if modeloCurso %}{{ modeloCurso.desc_curso}}{% endif %}</textarea>
+               <label for="resumenCourse" class="col-form-label">Description</label>
+               <textarea class="form-control" name="resumenCourse" id="resumenCourse"
+                  placeholder="Enter a description here" required>{% if modelo %}{{ modelo.resumen}}{% endif %}</textarea>
             </div>
          </div>
          <div class="form-row">
@@ -122,7 +101,7 @@
                <select class="form-control" name="timeCourse" id="timeCourse" {% if modeloCurso %}{% if not modeloCurso.fk_tipo_duracion%}disabled{% endif %}{% else %}disabled{% endif %}>
                   <option value="null" selected disabled>Select a type time</option>
                   {% for item in tipoDuracion %}
-                  <option value="{{item.pk}}" {% if modeloCurso %}{% if modeloCurso.fk_tipo_duracion == item.pk %}selected{% endif %}{% endif %}>{{item.desc_elemento}}</option>
+                  <option value="{{item.pk}}" {% if modeloCurso %}{% if modeloCurso.fk_tipo_duracion_id == item.pk %}selected{% endif %}{% endif %}>{{item.desc_elemento}}</option>
                   {% endfor%}
                </select>
             </div>
