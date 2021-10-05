@@ -499,6 +499,7 @@
   },
   {
     "model": "app.TablasConfiguracion",
+    "pk":60,
     "fields": {
       "desc_elemento": "Days",
       "fk_tabla_padre_id": 13,
@@ -512,6 +513,7 @@
   },
   {
     "model": "app.TablasConfiguracion",
+    "pk":61,
     "fields": {
       "desc_elemento": "Minutes",
       "fk_tabla_padre_id": 13,
@@ -525,6 +527,7 @@
   },
   {
     "model": "app.TablasConfiguracion",
+    "pk":62,
     "fields": {
       "desc_elemento": "Hours",
       "fk_tabla_padre_id": 13,
@@ -538,6 +541,7 @@
   },
    {
     "model": "app.TablasConfiguracion",
+    "pk":63,
     "fields": {
       "desc_elemento": "Approved",
       "fk_tabla_padre_id": 18,
@@ -551,6 +555,7 @@
   },
    {
     "model": "app.TablasConfiguracion",
+    "pk":64,
     "fields": {
       "desc_elemento": "Reprobate",
       "fk_tabla_padre_id": 18,
@@ -564,6 +569,7 @@
   },
    {
     "model": "app.TablasConfiguracion",
+    "pk":65,
     "fields": {
       "desc_elemento": "Repair",
       "fk_tabla_padre_id": 18,
@@ -577,6 +583,7 @@
   },
   {
     "model": "app.TablasConfiguracion",
+    "pk":66,
     "fields": {
       "desc_elemento": "Open",
       "fk_tabla_padre_id": 22,
@@ -590,6 +597,7 @@
   },
   {
     "model": "app.TablasConfiguracion",
+    "pk":67,
     "fields": {
       "desc_elemento": "Close",
       "fk_tabla_padre_id": 22,
@@ -625,6 +633,48 @@
     }
   },
 
+  {
+    "model": "academic.escalaevaluacion",
+    "pk": 1,
+    "fields": {
+      "desc_escala": "Scale base 10",
+      "maxima_puntuacion": "10"
+    }
+  },
+
+  {
+    "model": "academic.escalacalificacion",
+    "pk": 1,
+    "fields": {
+      "desc_calificacion": "1 to 3",
+      "puntos_maximo": "3",
+      "fk_calificacion_id": "113",
+      "fk_escala_evaluacion_id": "1"
+    }
+  }, 
+
+  {
+    "model": "academic.escalacalificacion",
+    "pk": 2,
+    "fields": {
+      "desc_calificacion": "3 to 4.99",
+      "puntos_maximo": "4.99",
+      "fk_calificacion_id": "114",
+      "fk_escala_evaluacion_id": "1"
+    }
+  },
+
+  {
+    "model": "academic.escalacalificacion",
+    "pk": 3,
+    "fields": {
+      "desc_calificacion": "5 to 10",
+      "puntos_maximo": "10",
+      "fk_calificacion_id": "112",
+      "fk_escala_evaluacion_id": "1"
+    }
+  },
+  
   {
     "model": "security.ContratantesRol",
     "pk": 1,
@@ -842,6 +892,7 @@
   },
   {
     "model": "academic.Cursos",
+    "pk":1,
     "fields": {
       "abrev_curso":"css",
       "codigo_curso":"d001",
@@ -1118,5 +1169,4 @@
     "maneja_lista": 0
   }
 }
-
 ]

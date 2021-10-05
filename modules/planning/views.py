@@ -161,7 +161,7 @@ def show(request):
 
         if(search_query):
 
-            plan = plan.filter(deescripcion__startswith=search_query) 
+            plan = plan.filter(deescripcion__icontains=search_query) 
 
         return render(request,"planning/show.html",{'plan':paginas(request, plan), 'keys' : TITULOPERFIL, 'urlEdit': 'editProfilage', 'urlRemove': 'destroyProfilage', 'search':search_query}) 
     
@@ -180,7 +180,7 @@ def showCompetences(request):
         print(pagina)
         if(search_query):
 
-            competencia = competencia.filter(desc_competencia__startswith=search_query) 
+            competencia = competencia.filter(desc_competencia__icontains=search_query) 
 
         return render(request,"planning/showCompetence.html",{'plan': paginas(request, competencia), 'keys' : TITULOCOMPETENCIA, 'urlEdit': 'editCompetence', 'urlRemove': 'destroyCompetence', 'search':search_query}) 
     
@@ -199,7 +199,7 @@ def showCompetencesAdq(request):
 
     if(search_query and request.user.is_staff):
 
-        competencia = competencia.filter(fk_publico__nombre__startswith=search_query) 
+        competencia = competencia.filter(fk_publico__nombre__icontains=search_query) 
 
     return render(request,"planning/showCompetenceAdq.html",{'plan': paginas(request, competencia), 'keys' : TITULOCOMPETENCIAADQ, 'urlEdit': 'editCompetenceAdq', 'urlRemove': 'destroyCompetenceAdq', 'search':search_query, 'segment':'planning'}) 
 
@@ -359,15 +359,15 @@ def paginar(request):
 
         if tipo and tipo == 'competencia':
 
-            plan = plan.filter(desc_competencia__startswith=filtro).order_by('desc_competencia')
+            plan = plan.filter(desc_competencia__icontains=filtro).order_by('desc_competencia')
 
         elif tipo and tipo == 'competenciaadq':
 
-            plan = plan.filter(fk_publico__nombre__startswith=filtro).order_by('fk_publico__nombre')
+            plan = plan.filter(fk_publico__nombre__icontains=filtro).order_by('fk_publico__nombre')
 
         else:
 
-            plan = plan.filter(deescripcion__startswith=filtro).order_by('deescripcion')
+            plan = plan.filter(deescripcion__icontains=filtro).order_by('deescripcion')
 
 
     if(orden):
