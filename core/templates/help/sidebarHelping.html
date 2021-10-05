@@ -1,5 +1,5 @@
 	
-		<!-- Sidebar -->
+			<!-- Sidebar -->
 		<div class="sidebar sidebar-style-2">	
 			<div class="sidebar-wrapper scrollbar scrollbar-inner">
 			   <div class="sidebar-content">
@@ -19,7 +19,7 @@
 							</span>
 							<h4 class="text-section">Modules Helping</h4>
 						</li>
-
+                        <!-- Modulo de Security -->
 						<li class="nav-item {% if 'Security' in segment %} active {% endif %}">
 							<a data-toggle="collapse" href="#submenuSecurity">
 								<i class="fa fa-unlock-alt" aria-hidden="true"></i>
@@ -38,11 +38,55 @@
 											<span class="sub-item">Password</span>
 										</a>
 									</li>
+									<li>
+										<a href="#a3">
+											<span class="sub-item">Sign In</span>
+										</a>
+									</li>
 								</ul>
 							</div>
 						</li>
 
+						<!-- Modulo de Registration -->
+						<li class="nav-item {% if 'Registration' in segment %} active {% endif %}">
+							<a data-toggle="collapse" href="#submenuRegistration">
+								<i class="fa fa-archive" aria-hidden="true"></i>
+								<p>Registration</p>
+								<span class="caret"></span>
+							</a>
+							<div class="collapse" id="submenuRegistration">
+								<ul class="nav nav-collapse">			
+                                     <li>
+									    <a href="#b1">
+											<span class="sub-item"> Enrollment </span>
+										</a>
+									</li>
 
+									<li>
+									    <a href="#b2">
+											<span class="sub-item">Enrollment List</span>
+										</a>
+									</li>
+
+
+									<li>
+									    <a href="#b3">
+											<span class="sub-item">Manage Persons</span>
+										</a>
+									</li>
+
+									<li>
+									    <a href="#">
+											<span class="sub-item">My Enrollments</span>
+										</a>
+									</li>
+
+
+								</ul>
+							</div>
+						</li>	
+
+                        <!-- Modulo de Academic -->
 						<li class="nav-item {% if 'Academic' in segment %} active {% endif %}">
 							<a data-toggle="collapse" href="#submenuAcademic">
 								<i class="fas fa-tasks"></i>
@@ -60,7 +104,7 @@
 							</div>
 						</li>
 								
-
+                        <!-- Modulo de Comunication -->
 						<li class="nav-item {% if 'Comunication' in segment %} active {% endif %}">
 							<a data-toggle="collapse" href="#submenuComunication">
 								<i class="fas fa-money-check-alt"></i>
@@ -78,7 +122,7 @@
 							</div>
 						</li>
 								
-
+                        <!-- Modulo de Planning -->
 						<li class="nav-item {% if 'Planning' in segment %} active {% endif %}">
 							<a data-toggle="collapse" href="#submenuPlanning">
 								<i class="fas fa-university"></i>
@@ -108,41 +152,39 @@
 							</div>
 						</li>
 
+                        <!-- Modulo de Payments -->
+						<li class="nav-item {% if 'Payments' in segment %} active {% endif %}">
+					       <a data-toggle="collapse" href="#submenuPayments">   
+						        <i class="fas fa-money-check-alt"></i>
+						        <p>Payments</p>
+						        <span class="caret"></span>
+					        </a>
+                            <div class="collapse" id="submenuPayments">
+						         <ul class="nav nav-collapse">
+							        <li>
+								       <a href="{% url 'ManagePay' %}">
+									   <span class="sub-item">Manage Pay</span>
+								       </a>
+							        </li>
+                                    <li>
+								        <a href="#">
+									    <span class="sub-item">Manage Pay</span>
+								        </a>
+							        </li>
+							        <li>
+								        <a href="#">
+									    <span class="sub-item">page 2</span>
+								        </a>
+							        </li>
+							
+						        </ul>
+					        </div>
+				        </li>
 
-						<li class="nav-item {% if 'calendar' in segment %} active {% endif %}">
-							<a data-toggle="collapse" href="#submenuCalendar">
-								<i class="fas fa-calendar-alt"></i>
-								<p>Calendar</p>
-								<span class="caret"></span>
-							</a>
-							<div class="collapse" id="submenuCalendar">
-								<ul class="nav nav-collapse">			
-                                     <li>
-									    <a href="#b2">
-											<span class="sub-item"> Security help </span>
-										</a>
-									</li>
-								</ul>
-							</div>
-						</li>
+                        
 
 
-						<li class="nav-item {% if 'Page' in segment %} active {% endif %}">
-							<a data-toggle="collapse" href="#submenuPage">
-								<i class="fas fa-info-circle"></i>
-								<p>Page</p>
-								<span class="caret"></span>
-							</a>
-							<div class="collapse" id="submenuPage">
-								<ul class="nav nav-collapse">			
-                                     <li>
-									    <a href="#">
-											<span class="sub-item"> help I </span>
-										</a>
-									</li>
-								</ul>
-							</div>
-						</li>																			
+
 					</ul>
 				        {% else %} 
 					

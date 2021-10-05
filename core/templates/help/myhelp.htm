@@ -38,7 +38,26 @@
 		.content{
           background: url(/static/help-style/hepl_Imag/img_fond.jpg);
 		  width: 100%;
+		 
 		}
+
+		#cont-security{
+			background: rgba(128, 128, 128, 0.89);
+			color: whitesmoke;
+			
+		}
+
+		#cont_title{
+			background: rgba(128, 128, 128, 0.856);
+			color: whitesmoke;
+		
+		}
+
+	    #cont-security .container{
+          font-size: 150%;
+		}
+
+		
 
 	</style>
 	
@@ -48,101 +67,244 @@
 <body style="background-color: #dde2e1;">
 	<div class="wrapper sidebar_minimize">
 
-        
         {% include 'help/navigationHelping.html' %}
-
+       
+		{% include 'help/sidebarHelping.html' %}  
+	
 		<div class="main-panel">
 			
-            {% include 'help/sidebarHelping.html' %}  
-
-
 			{% block content %} 
-			 
-            <div class="content" >
+		 
+			<div class="content">
 				<div class="page-inner">
 					<div class="page-category animated fadeInRight">
-
+	
 					
-                        <div class="row" id="a1" >
-
-							<section class="col-md-8 bg-primary">
-								<h1>scrollReveal.js</h1>
+						<div class="row border-warning border-bottom" id="cont_title" >
+	
+							<section class="col" style="padding: 2%;">
+								<h1 class="d-inline p-2 " id="">The User's Manual</h1>
+								<i class="fas fa-tv"></i>
 							</section>
 	
-							<article class="col-md-4 bg-success" >
-                                       <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis, aliquam placeat? At, dolorum reprehenderit fugiat soluta aliquid voluptas molestias similique quas hic itaque ab officia, tenetur quisquam ex, aut iste minus recusandae quidem? Temporibus cupiditate expedita repellat sequi eligendi rem incidunt pariatur voluptatem.</p>
-							</article>
-
 						</div>
-						<div class="row mt-4" id="a2">
 
-							<section class="col-md-8 bg-primary"data-scroll-reveal="enter right">
-                                   col-1
-							</section>
+						<div class="row mt-4" id="cont-security">
 	
-							<article class="col-md-4 bg-warning">
-                                       <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis, aliquam placeat? At, dolorum reprehenderit fugiat soluta aliquid voluptas molestias similique quas hic itaque ab officia, tenetur quisquam ex, aut iste minus recusandae quidem? Temporibus cupiditate expedita repellat sequi eligendi rem incidunt pariatur voluptatem.</p>
-							</article>
+							<div class="container-fluid border-warning border-bottom">
+								<section class="row mt-4">
+									<h2 class="container">Manual of Security</h2>
+								</section>
+		
+								<article class="row">
+									     <h3 class="container" id="a1">Registration:</h3>
+										   <p class="container">
+											To be able to register in the system, for favvor it follows the step that we show him next.</p>
+								</article>
+                                             
+								<article class="row">
+									<p class="container">Step 1: enter user's name and a mail been worth.</p>
+									<div class="container text-center"> 
+										
+										<img src="/static/help-style/hepl_Imag/img_security_reg_1.png" alt="" style="width: 80%;">
+									</div>
+						        </article>
+								
+							</div>
+
+							<div class="container-fluid border-warning border-bottom">
+								<section class="row mt-4">
+									<h2 class="container">Modulo de Seguridad</h2>
+								</section>
+		
+								<article class="row">
+									     <h3 class="container" id="a2">Step 2: Password Creation:</h3>
+										   <p class="container">
+											The password should contain minimum 8 characters, he/she should have uppercase, minuscule, numbers and a special character. <br>
+										    Enter a key and then write it for confirmation again.
+										    </p>
+								</article>
+
+								<article class="row">
+									
+									<div class="container text-center">
+										<img src="/static/help-style/hepl_Imag/img_security_in_password.png" alt="" style="width: 80%;">
+									</div>
+						        </article>
+								
+							</div>
+
+							<div class="container-fluid border-warning border-bottom">
+								<section class="row mt-4">
+									<h2 class="container">Modulo de Seguridad</h2>
+								</section>
+		
+								<article class="row">
+									     <h3 class="container" id="a2">Step 3: Registro Exitoso:</h3>
+										   <p class="container">
+											If their user name and countersign have been verified correctly, of he/she would see appear in the superior part of the form written in red letters the following User created-please login. such and like it is shown in the following image
+											</p>
+								</article>
+
+								<article class="row">
+									
+									<div class="container text-center">
+										<img src="/static/help-style/hepl_Imag/img_security_reg_exitoso.png" alt="" style="width: 80%;">
+									</div>
+						        </article>
+								
+							</div>
+
+							<div class="container-fluid border-warning border-bottom">
+								<section class="row mt-4">
+									<h2 class="container">Manual of Security</h2>
+								</section>
+		
+								<article class="row">
+									     <h3 class="container" id="">Unsatisfied Verification:</h3>
+										   <p class="container">
+											If their countersign doesn't fulfill the established requirements of security for the system, write a new countersign again.
+											</p>
+								</article>
+
+								<article class="row">
+									<div class="container text-center">
+										<img src="/static/help-style/hepl_Imag/img_security_caracter.png" alt="" style="width: 80%;">
+									</div>
+						        </article>
+								
+							</div>
+
+							
+
+
+							<div class="container-fluid border-warning border-bottom">
+								<section class="row mt-4">
+									<h2 class="container">Manual of Security</h2>
+								</section>
+		
+								<article class="row">
+									     <h3 class="container" id="a3">Sing in:</h3>
+										   <p class="container">
+											To consent to the system it should enter their user name and the previously created countersign.</p>
+								</article>
+
+								<article class="row">
+									<div class="container text-center">
+										<img src="/static/help-style/hepl_Imag/img_security_sing_in.png" alt="" style="width: 80%;">
+									</div>
+						        </article>
+								
+							</div>
+
+
+
 						</div>
 
-						<div class="row mt-4" id="a3">
 
-							<section class="col-md-8 bg-primary">
-                                   col-1
-							</section>
+						<div class="row mt-4" id="cont-security">
 	
-							<article class="col-md-4 bg-default">
-                                       <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis, aliquam placeat? At, dolorum reprehenderit fugiat soluta aliquid voluptas molestias similique quas hic itaque ab officia, tenetur quisquam ex, aut iste minus recusandae quidem? Temporibus cupiditate expedita repellat sequi eligendi rem incidunt pariatur voluptatem.</p>
-							</article>
+							<div class="container-fluid border-warning border-bottom">
+								<section class="row mt-4">
+									<h2 class="container">Manual of Registration</h2>
+								</section>
+		
+								<article class="row">
+									     <h3 class="container" id="b1">Enrollment</h3>
+										   <p class="container">
+											Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis, aliquam placeat? At, dolorum reprehenderit fugiat soluta aliquid voluptas molestias similique quas hic itaque ab officia, tenetur quisquam ex, aut iste minus recusandae quidem? Temporibus cupiditate expedita repellat sequi eligendi rem incidunt pariatur voluptatem.</p>
+								</article>
+
+								<article class="row">
+									<div class="container text-center">
+										<img src="/static/help-style/hepl_Imag/regist (85).png" alt="" style="width: 80%;">
+									</div>
+						        </article>
+								
+							</div>
+
+							<div class="container-fluid border-warning border-bottom">
+								<section class="row mt-4">
+									<h2 class="container">Manual of Registration</h2>
+								</section>
+		
+								<article class="row">
+									     <h3 class="container" id="b2">Enrollment List</h3>
+										   <p class="container">
+											Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis, aliquam placeat? At, dolorum reprehenderit fugiat soluta aliquid voluptas molestias similique quas hic itaque ab officia, tenetur quisquam ex, aut iste minus recusandae quidem? Temporibus cupiditate expedita repellat sequi eligendi rem incidunt pariatur voluptatem.</p>
+								</article>
+
+								<article class="row">
+									<div class="container text-center">
+										<img src="/static/help-style/hepl_Imag/regis(84).png" alt="" style="width: 80%;">
+									</div>
+						        </article>
+								
+							</div>
+
+							<div class="container-fluid border-warning border-bottom">
+								<section class="row mt-4">
+									<h2 class="container">Manual of Registration</h2>
+								</section>
+		
+								<article class="row">
+									     <h3 class="container" id="b3">Manage Persons</h3>
+										   <p class="container">
+											Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis, aliquam placeat? At, dolorum reprehenderit fugiat soluta aliquid voluptas molestias similique quas hic itaque ab officia, tenetur quisquam ex, aut iste minus recusandae quidem? Temporibus cupiditate expedita repellat sequi eligendi rem incidunt pariatur voluptatem.</p>
+								</article>
+
+								<article class="row">
+									<div class="container text-center">
+										<img src="/static/help-style/hepl_Imag/regist (86).png" alt="" style="width: 80%;">
+									</div>
+						        </article>
+								
+							</div>
+
+							
+
+
+							<div class="container-fluid border-warning border-bottom">
+								<section class="row mt-4">
+									<h2 class="container">Manual of Registration</h2>
+								</section>
+		
+								<article class="row">
+									     <h3 class="container" id="b4"></h3>
+										   <p class="container">
+											Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis, aliquam placeat? At, dolorum reprehenderit fugiat soluta aliquid voluptas molestias similique quas hic itaque ab officia, tenetur quisquam ex, aut iste minus recusandae quidem? Temporibus cupiditate expedita repellat sequi eligendi rem incidunt pariatur voluptatem.</p>
+								</article>
+
+								<article class="row">
+									<div class="container text-center">
+										<img src="" alt="" style="width: 80%;">
+									</div>
+						        </article>
+								
+							</div>
+
+
+
 						</div>
-
-						<div class="row mt-4" id="b1">
-
-							<section class="col-md-8 bg-primary">
-                                   col-1
-							</section>
 	
-							<article class="col-md-4 bg-secondary">
-                                       <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis, aliquam placeat? At, dolorum reprehenderit fugiat soluta aliquid voluptas molestias similique quas hic itaque ab officia, tenetur quisquam ex, aut iste minus recusandae quidem? Temporibus cupiditate expedita repellat sequi eligendi rem incidunt pariatur voluptatem.</p>
-							</article>
-						</div>
-
-						<div class="row mt-4" id="b2">
-
-							<section class="col-md-8 bg-primary">
-                                   col-1
-							</section>
+						
 	
-							<article class="col-md-4 bg-secondary">
-                                       <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis, aliquam placeat? At, dolorum reprehenderit fugiat soluta aliquid voluptas molestias similique quas hic itaque ab officia, tenetur quisquam ex, aut iste minus recusandae quidem? Temporibus cupiditate expedita repellat sequi eligendi rem incidunt pariatur voluptatem.</p>
-							</article>
-						</div>
-
-						<div class="row mt-4" id="c1">
-
-							<section class="col-md-4 bg-primary">
-                                  <h1>Imagen</h1>
-								  <div class="container">
-									  <img src="/static/help-style/hepl_Imag/image1.png" style="width: 100%;">
-								  </div>
-							</section>
+					
 	
-							<article class="col-md-8 bg-secondary">
-                                       <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis, aliquam placeat? At, dolorum reprehenderit fugiat soluta aliquid voluptas molestias similique quas hic itaque ab officia, tenetur quisquam ex, aut iste minus recusandae quidem? Temporibus cupiditate expedita repellat sequi eligendi rem incidunt pariatur voluptatem.</p>
-							</article>
-						</div>
-
+						
+	
+						
 						<div class="row mt-4" id="d1">
-
-							<section class="col-md-8 bg-primary">
-                                   col-1
+	
+							<section class="col-md-">
+								   col-1
 							</section>
 	
-							<article class="col-md-4 bg-secondary">
-                                       <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis, aliquam placeat? At, dolorum reprehenderit fugiat soluta aliquid voluptas molestias similique quas hic itaque ab officia, tenetur quisquam ex, aut iste minus recusandae quidem? Temporibus cupiditate expedita repellat sequi eligendi rem incidunt pariatur voluptatem.</p>
+							<article class="col-md-4">
+									   <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis, aliquam placeat? At, dolorum reprehenderit fugiat soluta aliquid voluptas molestias similique quas hic itaque ab officia, tenetur quisquam ex, aut iste minus recusandae quidem? Temporibus cupiditate expedita repellat sequi eligendi rem incidunt pariatur voluptatem.</p>
 							</article>
 						</div>
-
+	
 						
 				</div>
 				</div>
@@ -175,6 +337,7 @@
 		});
 	  });
 	  </script>
+	  
     {% block javascripts %}{% endblock javascripts %}
 
 </body>

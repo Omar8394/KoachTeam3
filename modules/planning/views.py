@@ -154,7 +154,7 @@ def edit(request, id=None):
     
 def show(request):  
 
-    if(request.user.is_staff):
+    # if(request.user.is_staff):
         
         search_query = request.GET.get('search_box', "")
         plan = Perfil.objects.all()
@@ -165,14 +165,14 @@ def show(request):
 
         return render(request,"planning/show.html",{'plan':paginas(request, plan), 'keys' : TITULOPERFIL, 'urlEdit': 'editProfilage', 'urlRemove': 'destroyProfilage', 'search':search_query}) 
     
-    else:
+    # else:
         
-        return redirect('/') 
+    #     return redirect('/') 
 
 
 def showCompetences(request): 
 
-    if(request.user.is_staff):
+    # if(request.user.is_staff):
 
         search_query = request.GET.get('search_box', "")
         competencia = CompetenciasReq.objects.all()  
@@ -184,9 +184,9 @@ def showCompetences(request):
 
         return render(request,"planning/showCompetence.html",{'plan': paginas(request, competencia), 'keys' : TITULOCOMPETENCIA, 'urlEdit': 'editCompetence', 'urlRemove': 'destroyCompetence', 'search':search_query}) 
     
-    else:
+    # else:
 
-        return redirect('/') 
+    #     return redirect('/') 
 
 def showCompetencesAdq(request):  
 
