@@ -35,6 +35,6 @@ urlpatterns = [
     path('validate_username', validate_username, name='validate_username'),
     path('validate_competence', validate_competence, name='validate_competence'),
     path('renderListasPublic', renderListasPublic, name='renderListasPublic'),
-    path('paginar', paginar, name='paginar')
+    path('paginar', paginar, name='paginar'),
     
 ]

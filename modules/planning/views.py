@@ -336,30 +336,55 @@ def renderListasPublic(request):
 def paginar(request):
     
     tipo = request.POST.get('tipo', None)
+    filtro = request.POST.get('filtro', None)
+
     if tipo and tipo == 'competencia':
+
         plan = CompetenciasReq.objects.all()
+
     elif tipo and tipo == 'competenciaadq':
+
         plan = CompetenciasAdq.objects.all()
+
     else:
+
         plan = Perfil.objects.all()
+
+    if filtro:
+
+        filtro = filtro.strip()
+
+        if tipo and tipo == 'competencia':
+
+            plan = plan.filter(desc_competencia__startswith=filtro).order_by('desc_competencia')
+
+        elif tipo and tipo == 'competenciaadq':
+
+            plan = plan.filter(fk_publico__nombre__startswith=filtro).order_by('fk_publico__nombre')
+
+        else:
+
+            plan = plan.filter(deescripcion__startswith=filtro).order_by('deescripcion')
+
 
     # test = Perfil.objects.get(idperfil=55)
     # print(getattr(test, 'idperfil'))
     # # print(pagina)
     
     if(tipo and tipo == 'competencia'):
+        
         pagina = render_to_string('planning/paginas.html', {'plan': paginas(request, plan)})
-        tabla = render_to_string('planning/contenidoTabla.html', {'plan': paginas(request, plan), 'keys' : TITULOCOMPETENCIA, 'urlEdit': 'editCompetence', 'urlRemove': 'destroyCompetence'})
+        tabla = render_to_string('planning/contenidoTabla.html', {'plan': paginas(request, plan), 'keys' : TITULOCOMPETENCIA, 'urlEdit': 'editCompetence', 'urlRemove': 'destroyCompetence', 'search':filtro})
         
     elif tipo and tipo == 'competenciaadq':
 
         pagina = render_to_string('planning/paginas.html', {'plan': paginas(request, plan)})
-        tabla = render_to_string('planning/contenidoTabla.html', {'plan': paginas(request, plan), 'keys' : TITULOCOMPETENCIAADQ, 'urlEdit': 'editCompetenceAdq', 'urlRemove': 'destroyCompetenceAdq'})
+        tabla = render_to_string('planning/contenidoTabla.html', {'plan': paginas(request, plan), 'keys' : TITULOCOMPETENCIAADQ, 'urlEdit': 'editCompetenceAdq', 'urlRemove': 'destroyCompetenceAdq', 'search':filtro})
 
     else:
 
         pagina = render_to_string('planning/paginas.html', {'plan': paginas(request, plan)})
-        tabla = render_to_string('planning/contenidoTabla.html', {'plan': paginas(request, plan), 'keys' : TITULOPERFIL, 'urlEdit': 'editProfilage', 'urlRemove': 'destroyProfilage'})
+        tabla = render_to_string('planning/contenidoTabla.html', {'plan': paginas(request, plan), 'keys' : TITULOPERFIL, 'urlEdit': 'editProfilage', 'urlRemove': 'destroyProfilage', 'search':filtro})
     # print(tabla)
 
     response = {
@@ -373,6 +398,8 @@ def paginas(request, obj):
 
 
     page = request.GET.get('page', 1) if request.GET else request.POST.get('page', 1)
+    # print(request.GET.get('page') if request.GET.get('page') else "nada get")
+    # print(request.POST.get('page') if request.POST.get('page') else "nada post")
 
     paginator = Paginator(obj, 5)
 

@@ -113,49 +113,89 @@
                 }
             });
         } 
-        
-        // const modificar = (id, url) => {
-
-        //         $.ajax({
-        //             type: "POST",
-        //             url: url,
-        //             data: {
-        //                 'csrfmiddlewaretoken': '{{ csrf_token }}',
-        //                 'id': id,
-        //             },
-        //             dataType: "json",
-        //             success: function (data) {
-        //                 window.location = "{% url 'showProfilage' %}"
-                        
-        //             },
-        //             failure: function () {
-        //                 swal("failure");
-        //             }
-        //         });
-
-        // } 
 
         $('#paginas').on('click', ".page-link", function(e){
             e.preventDefault();
             var page = $(this).attr('href').replace ( /[^\d.]/g, '' );
+            $.ajax({
+                    type: "POST",
+                    url: "{% url 'paginar' %}", 
+                    data : {    
+                    page : page, 
+                    filtro : $('#search_box').val(), 
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                },
+                success: function (response) {
+
+                    document.getElementById('paginas').innerHTML = response.paginas;
+                    document.getElementById('tablaContenido').innerHTML = response.contenido;
+                    // console.log(response.contenido)
+
+                },
+                error: function () {}
+            });
+
+        }); 
+
+        
+        var t;    
+        function myCallback()
+        {
+            var txt = $('#search_box').val();
                 $.ajax({
                         type: "POST",
                         url: "{% url 'paginar' %}", 
                         data : {    
-                        page : page, 
+                        filtro : txt, 
                         csrfmiddlewaretoken: '{{ csrf_token }}',
                     },
                     success: function (response) {
 
                         document.getElementById('paginas').innerHTML = response.paginas;
                         document.getElementById('tablaContenido').innerHTML = response.contenido;
-                        // console.log(response.contenido)
+                        // // console.log(response.contenido)
 
                     },
                     error: function () {}
                 });
+        }
 
-        });  
+        $(document).ready(function () {
+            $('#search_box').keyup(function (e) {  
+
+                if (e.keyCode === 13) {
+
+                    if (t){
+                        
+                        clearTimeout( t );
+                        t = null;
+                        myCallback();
+                    }
+
+                }
+                
+                else
+
+                    if ( t )
+                    {
+                        clearTimeout( t );
+                        t = setTimeout( myCallback, 1000 );
+                    }
+                    else
+                    {
+                        t = setTimeout( myCallback, 1000 );
+                    }
+
+                return false;
+            });
+            
+        })
+
+        document.getElementById('search_box').addEventListener('input', function(e) { 
+            if(e.currentTarget.value == "") {
+                myCallback();
+            }
+        })
 
     </script>
 
