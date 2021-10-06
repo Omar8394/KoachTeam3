@@ -36,7 +36,7 @@ class ActividadEvaluaciones(models.Model):
     nro_repeticiones = models.IntegerField(blank=True, null=True)
     duracion = models.DecimalField(max_digits=5, decimal_places=2, null=True)
     fk_tipo_duracion = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE, default=None, null=True, related_name="actividad_tipo_duracion")
-    fk_escala_calificacion = models.ForeignKey(EscalaCalificacion, on_delete=models.CASCADE,  default=None, null=True)
+    fk_escala_evaluacion = models.ForeignKey(EscalaEvaluacion, on_delete=models.CASCADE,  default=None, null=True)
     calificacion_aprobar = models.IntegerField()
 
     def __str__(self):
@@ -57,20 +57,14 @@ class Cursos(models.Model):
     def __str__(self):
         return self.desc_curso
 
-
-
-class CursosTopicos(models.Model):
-    idcurso_topico=models.AutoField(primary_key=True)
-    nomb_topico = models.TextField(null=True)
-    disponible_desde = models.DateField(null=True)
-    fk_curso = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE, default=None, null=True)
-
-class TopicosProfesores(models.Model):
-    idtopicos_profesores=models.AutoField(primary_key=True)
+# aqui pueden ir todos los profesores si cambiamos la fk a estructuras programa
+class ProgramaProfesores(models.Model):
+    idprograma_profesores=models.AutoField(primary_key=True)
     fecha_autorizado = models.DateField(null=True)
     fecha_retiro = models.DateField(null=True)
+    comentarios = models.TextField(null=True)
     fk_publico = models.ForeignKey(Publico, on_delete=models.CASCADE, default=None, null=True)
-    fk_cursos_topicos = models.ForeignKey(CursosTopicos, on_delete=models.CASCADE, default=None, null=True)
+    fk_estructura_programa = models.ForeignKey(Estructuraprograma, on_delete=models.CASCADE, default=None, null=True)
     fk_situacion= models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE, default=None, null=True)
 
 class CursosPrerequisitos(models.Model):
@@ -84,11 +78,6 @@ class PreguntasOpciones(models.Model):
     tipo_condicion = models.BooleanField(default=False)
     puntos_porc=models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
 
-class CursosProfesores(models.Model):
-    idcursos_profesores=models.AutoField(primary_key=True)
-    comentarios = models.TextField(null=True)
-    fk_publico = models.ForeignKey(Publico, on_delete=models.CASCADE, default=None, null=True)
-    fk_curso = models.ForeignKey(Cursos, on_delete=models.CASCADE, default=None, null=True)
 
 class EvaluacionInstrucciones(models.Model):
     idevaluacion_instrucciones=models.AutoField(primary_key=True)

@@ -609,6 +609,63 @@
 
     }
   },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk":68,
+    "fields": {
+      "desc_elemento": "Exam",
+      "fk_tabla_padre_id": 9,
+      "tipo_elemento": 0,
+      "permite_cambios":1,
+      "valor_elemento":"",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk":69,
+    "fields": {
+      "desc_elemento": "Homework",
+      "fk_tabla_padre_id": 9,
+      "tipo_elemento": 0,
+      "permite_cambios":1,
+      "valor_elemento":"",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk":70,
+    "fields": {
+      "desc_elemento": "Lesson",
+      "fk_tabla_padre_id": 9,
+      "tipo_elemento": 0,
+      "permite_cambios":1,
+      "valor_elemento":"",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
+  
+  {
+    "model": "app.TablasConfiguracion",
+    "pk":71,
+    "fields": {
+      "desc_elemento": "Forum",
+      "fk_tabla_padre_id": 9,
+      "tipo_elemento": 0,
+      "permite_cambios":1,
+      "valor_elemento":"",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
   
   {
     "model": "app.Contratantes",
@@ -648,7 +705,7 @@
     "fields": {
       "desc_calificacion": "1 to 3",
       "puntos_maximo": "3",
-      "fk_calificacion_id": "113",
+      "fk_calificacion_id": "61",
       "fk_escala_evaluacion_id": "1"
     }
   }, 
@@ -659,7 +716,7 @@
     "fields": {
       "desc_calificacion": "3 to 4.99",
       "puntos_maximo": "4.99",
-      "fk_calificacion_id": "114",
+      "fk_calificacion_id": "62",
       "fk_escala_evaluacion_id": "1"
     }
   },
@@ -670,7 +727,7 @@
     "fields": {
       "desc_calificacion": "5 to 10",
       "puntos_maximo": "10",
-      "fk_calificacion_id": "112",
+      "fk_calificacion_id": "63",
       "fk_escala_evaluacion_id": "1"
     }
   },
