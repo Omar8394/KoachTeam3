@@ -98,6 +98,7 @@ class Estructuraprograma(models.Model):
     valor_elemento = models.TextField(blank=True, null=True)
     url = models.TextField(blank=True, null=True)
     peso_creditos = models.DecimalField(max_digits=7, decimal_places=2, blank=True, null=True)
+    orden_presentacion = models.SmallIntegerField(null=True)
     fk_categoria = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE, default=None, null=True)
     fk_estructura_padre = models.ForeignKey('self', on_delete=models.CASCADE, default=None, null=True)
     def __str__(self):
