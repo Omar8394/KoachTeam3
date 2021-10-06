@@ -1,0 +1,107 @@
+{% if query%}
+results for "{{query}}"
+{% endif %}
+<section>
+   <div class="section-header">
+      <h3 class="section-title">Topics</h3>
+   </div>
+   <ul class="card-list">
+      {% if not query %}
+      <li class="card-list-item">
+         <div class="card-list-item-inner">
+            <div class="card-list-item-title">Add new topic</div>
+            <div class="card-list-item-actions">
+               <div onclick="openAddTopics()" class="btn btn-icon btn-success btn-round add-btn btn-card-lg">
+                  <i class="fas fa-plus"></i>
+               </div>
+            </div>
+         </div>
+      </li>
+      {% endif %}
+
+      {% for topic in data%}
+      {%if topic.valor_elemento == 'Topic'%}
+      <li class="card-list-item">
+         <div class="card-list-item-inner">
+            <div class="card-list-item-title">{{topic.descripcion}}</div>
+            <div class="card-list-item-actions">
+               <div class="btn-group" role="group">
+                  {% if add %}
+                  <button type="button" class="btn btn-icon btn-sm btn-success" data-placement="top" title="Add"
+                     data-toggle="tooltip" data-target="tooltip">
+                     <i class="fas fa-plus"></i>
+                  </button>
+                  {% endif %}
+                  {% if edit %}
+                  <button type="button" class="btn btn-icon btn-sm btn-info ml-1" data-toggle="tooltip"
+                     data-placement="top" title="Edit">
+                     <i class="fas fa-edit"></i>
+                  </button>
+                  {% endif %}
+                  {% if delete %}
+                  <button type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip"
+                     data-placement="top" title="Delete">
+                     <i class="fas fa-trash-alt"></i>
+                  </button>
+                  {% endif %}
+                  <button type="button" class="btn btn-icon btn-sm btn-warning ml-1" data-toggle="tooltip"
+                     data-placement="top" title="Show/Hide">
+                     <i class="fas fa-clipboard"></i>
+                  </button>
+               </div>
+            </div>
+            <div class="card-list-item-extra">
+               Teacher: Fulano de tal
+               <br>
+               Requirements: topico 2 y cualquier otro
+               <br>
+               Credits: 4
+            </div>
+         </div>
+         <div class="card-list-item-content card-list-item-close">{{topic.resumen}}</div>
+         <ul class="card-list-item-close">
+            <li class="card-list-item-content">
+               <div class="card-list-item-subtitle">Limites</div>
+               <div class="card-list-item-description">Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+                  Adipisci
+                  rerum accusamus minima perferendis in asperiores aliquid distinctio sed incidunt eos.</div>
+               <div class="card-list-item-actions">
+                  <div class="btn-group" role="group">
+                     <button type="button" class="btn btn-icon btn-sm btn-success" data-placement="top" title="Add"
+                        data-toggle="tooltip" data-target="tooltip">
+                        <i class="fas fa-plus"></i>
+                     </button>
+                     <button type="button" class="btn btn-icon btn-sm btn-info ml-1" data-toggle="tooltip"
+                        data-placement="top" title="Edit">
+                        <i class="fas fa-edit"></i>
+                     </button>
+                     <button type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="modal"
+                        data-target="#newModal">
+                        <i class="fas fa-trash-alt"></i>
+                     </button>
+                     <button type="button" class="btn btn-icon btn-sm btn-warning ml-1">
+                        <i class="fas fa-clipboard"></i>
+                     </button>
+                  </div>
+               </div>
+            </li>
+            <li class="card-list-item-content">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nulla sint
+               laboriosam tempora dolores. Delectus, dolor facere! Quis expedita repellendus nihil beatae pariatur
+               officiis
+               quasi obcaecati reprehenderit molestiae natus. Laudantium, eveniet.</li>
+            <li class="card-list-item-content">Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia nemo
+               atque
+               mollitia labore fuga aliquam, ullam tempore excepturi, beatae reiciendis cumque facere architecto
+               suscipit
+               quidem vitae illo deserunt nobis incidunt?</li>
+            <li class="card-list-item-content">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex iste
+               dignissimos
+               excepturi, omnis veniam quaerat quibusdam porro sed inventore molestias at nam ducimus ut autem numquam
+               adipisci iusto reiciendis accusantium.</li>
+         </ul>
+      </li>
+      {% endif %}
+      {% endfor %}
+   </ul>
+
+</section>
