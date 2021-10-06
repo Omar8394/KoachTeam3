@@ -442,6 +442,18 @@ def getModalTopico(request):
                 return JsonResponse({"message":"error"})
 
 @login_required(login_url="/login/")
+def getModalChooseActivities(request):
+    context = {}
+    html_template = (loader.get_template('components/modalEscogerActividad.html'))
+    return HttpResponse(html_template.render(context, request))
+
+@login_required(login_url="/login/")
+def getModalNewTest(request):
+    context = {}
+    html_template = (loader.get_template('components/modalAddTest.html'))
+    return HttpResponse(html_template.render(context, request))
+
+@login_required(login_url="/login/")
 def programa(request, programa):
     program = Estructuraprograma.objects.get(url=programa)
     context = {"programa" : program}

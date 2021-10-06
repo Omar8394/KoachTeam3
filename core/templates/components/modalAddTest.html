@@ -1,0 +1,65 @@
+<div class="modal-content">
+   <div class="modal-header">
+      <h5 class="modal-title" id="exampleModalLabel"><strong>New test</strong></h5>
+      <button type="button" data-dismiss="modal" aria-label="Close">
+         <span aria-hidden="true">&times;</span>
+      </button>
+   </div>
+   <form id="formTest" class="form">
+      <div class="modal-body">
+         <div class="form-row">
+            <div class="form-group col-md-6">
+               <label for="title">Title for the test</label>
+               <input type="text" name="title" class="form-control" id="title" placeholder="Enter a title" autocomplete="off" spellcheck="false">
+            </div>
+            <div class="form-group col-md-6">
+               <label for="repeats">Amount of repeats</label>
+               <input type="text" name="repeats" class="form-control" id="repeats" placeholder="Enter a number">
+            </div>
+         </div>
+
+         <div class="form-row">
+            <div class="form-group col-md-6">
+               <label for="minApp">Minimun score to approve</label>
+               <input type="text" name="minApp" class="form-control" id="minApp" placeholder="Enter a number">
+            </div>
+            <div class="form-group col-md-6">                     
+                 <label for="qualification">Qualification</label>
+                 <select class="form-control" id="qualification" name="qualification">
+                   <option value="">Select an option</option>      
+                 
+                    {% for cal in durations %}
+                       <option value="{{cal.id_tabla}}"> {{cal}}</option>
+                    {% endfor %}
+                 </select>
+            </div>          
+         </div>        
+
+         <div class="form-row">
+            <div class="form-group col-md-6">                      
+                <label for="timerCB">Timer</label>
+              <input type="number" class="form-control" id="timer" placeholder="Enter time">                       
+               <!-- <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" id="timerCB">
+                 </div> -->
+            </div>
+            <div class="form-group col-md-6">
+               <label for="typeTime">Type of time</label>
+               <select class="form-control" id="typeTime" name="typeTime">
+                 <option value="">Select an option</option>      
+                 
+                  {% for dur in durations %}
+                     <option value="{{dur.id_tabla}}"> {{dur}}</option>
+                  {% endfor %}
+               </select>
+            </div>
+         </div>                               
+      </div>
+      <div class="modal-footer">
+         <button type="button" class="btn btn-danger" data-dismiss="modal">
+            <i class="fas fa-arrow-left mr-2"></i>Back</button>
+         <button type="submit" class="btn btn-primary">Save<i class="fas fa-save ml-2"></i></button>
+      </div>
+   </form>
+</div>
+ 

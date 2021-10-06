@@ -79,9 +79,17 @@
       </div>
    </div>
 </div>
-<div class="modal fade" id="addNewModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-   aria-hidden="true">
-   <div id="addNewModalContent" class="modal-dialog  modal-dialog-centered" role="document">
+
+<!-- Modal escoger actividad -->
+<div class="modal fade" id="addChooseActivities" tabindex="-1" role="dialog">
+   <div class="modal-dialog  modal-dialog-centered" role="document" id="modalContentChoose">
+
+   </div>
+</div>
+
+<!-- Modal nueva evaluación -->
+<div class="modal fade" id="addNewTest" tabindex="-1" role="dialog">
+   <div class="modal-dialog  modal-dialog-centered" role="document" id="modalContentTest">
 
    </div>
 </div>
@@ -126,6 +134,49 @@
          })
       })
    }
+   
+   const openAddActivity = () => {
+      renderModalChooseActivities().then(() => {
+       
+       
+         $("#addChooseActivities").modal("show")
+      })
+    }
+    
+   const renderModalChooseActivities = () => {
+      return fetch("{% url 'modalChooseActivity' %}", {
+          ...fetchObject
+      })
+      .then(async (res) => {
+         document.getElementById("modalContentChoose").innerHTML = await res.text()
+      })
+      // .then(() => {
+      //    const formScaleGe = document.getElementById("scaleGe")
+      //    formScaleGe.addEventListener("submit", (e) => {
+      //       e.preventDefault()
+       
+      //    })
+            
+      // })
+   }
+
+   const renderModalNewTest = () => {
+      return fetch("{% url 'modalNewTest' %}", {
+          ...fetchObject
+      })
+      .then(async (res) => {
+         document.getElementById("modalContentTest").innerHTML = await res.text()
+      })
+      // .then(() => {
+      //    const formScaleGe = document.getElementById("scaleGe")
+      //    formScaleGe.addEventListener("submit", (e) => {
+      //       e.preventDefault()
+       
+      //    })
+            
+      // })
+   }
+
    const clickSave = (formElement, url) => {
       const formData = new FormData(formElement);
       const data = {}
