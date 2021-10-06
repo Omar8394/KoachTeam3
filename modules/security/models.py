@@ -20,6 +20,18 @@ class ContratantesRol(models.Model):
     fk_contratante = models.IntegerField()
     valor_rol = models.CharField(max_length=16, blank=True, null=True)
 
+class LandPage(models.Model):
+    id_solicitud = models.AutoField(primary_key=True)
+    nombre = models.CharField(db_column='Nombre', max_length=45)  # Field name made lowercase.
+    apellido = models.CharField(db_column='Apellido', max_length=45)  # Field name made lowercase.
+    fk_ciudad = models.SmallIntegerField(null=True)
+    direccion = models.TextField()
+    correos = models.TextField()
+    motivo_solicitud = models.TextField()
+    status_solicitud = models.BooleanField(default=False)
+    codigo_aprobacion = models.IntegerField(null=True)
+    fecha_solicitud = models.DateField(auto_now_add=True, null=True)
+    fec_cod_expiracion= models.DateField(null=True)
 
 class LogSeguridad(models.Model):
     idlog_seguridad = models.AutoField(primary_key=True)

@@ -27,115 +27,80 @@
 						<i class="flaticon-right-arrow"></i>
 					</li>
 					<li class="nav-item">
-						<a href="#">Page 1</a>
+						<a href="{% url 'enrollment' %}">Enrollment</a>
 					</li>
 				</ul>
 			</div>
-			<div class="page-category">
-		<div class="col-md-12 d-flex justify-content-center" > 
-			
-	   <form id="enroll" name="enroll" onsubmit="enviar();return false">
-				{% csrf_token %}
-
-
+			<div class="page-category col-md-12 d-flex justify-content-center">
+				<div class="d-flex justify-content-center mt-4"> 
+	   				<form id="enroll" name="enroll" onsubmit="enviar();return false">
+						{% csrf_token %}
+						<div class="card" style="width: 30rem;">
+							<div class="card-body">
+								<div class="form-row">
+									<div class="form-group col-md-12">
+										<label for="program">Program</label>
+										 <select class="form-control" id="program" name="program" onchange="programChange()" required >
+											<option value="" selected>      </option>
+											 {% for mat in structuraProg %}
+												 {% if mat.precio != None %}
+									
+													 <option value="{{mat.idestructuraprogrmas}}"> {{mat}}</option>
+	
+												{% endif %}
+											{% endfor %}
+										</select>
+									</div>
+								</div>
+								<div class="form-row" id="listaProcess">
+									<div class="form-group col-md-12">
+										<label>Process</label>
+										<select class="form-control" id="cbProcess" name="cbProcess"  onchange="processChange()">
+											<option value="" selected> </option>
+										</select>
+									</div>
+								</div>
+								<div class="form-row">
+									<div class="form-group col-md-12">
+										<label>Unit</label>
+										<select class="form-control" id="cbUnit" name="cbUnit" onchange="unitChange()">
+											<option value="" selected> </option>		 
+										</select>
+									</div>
+								</div>
+								<div class="form-row">
+									<div class="form-group col-md-12">
+										<label>Course</label>
+										<select class="form-control" id="cbCourse" name="cbCourse" onchange="courseChange()">
+											<option value="" selected>   </option>		   		 
+										</select>
+									</div>
+								</div>
+								<div class="form-row">
+									<div class="form-group col-md-12">
+										{% comment %}
 		
-
-		<div class="row">
-	   <label>Program</label>
-			   
-		 <select class="form-control" id="program" name="program" onchange="programChange()" required >
-			<option value="" selected>      </option>
-
-			 {% for mat in structuraProg %}
-			 {% if mat.precio != None %}
-
-			 <option value="{{mat.idestructuraprogrmas}}"> {{mat}}</option>
-
-			 {% endif %}
-			 {% endfor %}
-      
-
-		 </select>
-		</div>
-       <br>
-
-		<div id="listaProcess"  class="row">
-			<label>Process</label>
-					
-			  <select class="form-control" id="cbProcess" name="cbProcess"  onchange="processChange()">
-				<option value="" selected> </option>
-
-	 
-			
-		   
-	 
-			  </select>
-			 </div>
-			 <br>
-
-			 <div class="row" >
-				<label>Unit</label>
-						
-				  <select class="form-control" id="cbUnit" name="cbUnit" onchange="unitChange()">
-					<option value="" selected> </option>
-
-		 
-					
-			   
-		 
-				  </select>
-				 </div>
-				 <br>
-
-				 <div class="row">
-					<label>Course</label>
-							
-					  <select class="form-control" id="cbCourse" name="cbCourse" onchange="courseChange()">
-						<option value="" selected>   </option>
-
-			 
-						
-				   
-			 
-					  </select>
-					 </div>
-             <br>
-	{% comment %}
-		<div class="row">
-		<label>Enrollment Type</label>
-			   
-		<select class="form-control" id="type" name="type" required >
-			<option value="" selected> </option>
-
-
-			 {% for mat in tipoPrograma %}
-			 <option value="{{mat.id_tabla}}"> {{mat}}</option>
-			 {% endfor %}
-      
-
-		 </select>
-		</div>
-{% endcomment %}
-
-      <br>
-         <br>
-
-
-		<div class="row">
-			<input type="submit" value="Save application">
-				   
-			
-			</div>
-	   
-	   
-	   
-	
-			
-		</div> 
-	
-	   </form>
-		</div>			            
-      </div>
+										<label>Enrollment Type</label>
+										<select class="form-control" id="type" name="type" required >
+											<option value="" selected> </option>
+											{% for mat in tipoPrograma %}
+												<option value="{{mat.id_tabla}}"> {{mat}}</option>
+											{% endfor %}
+										</select>
+		
+										{% endcomment %}
+									</div>
+								</div>
+							</div>
+							<div class="card-footer">
+								<div class="form-row d-flex justify-content-end">
+									<input type="submit" class="btn btn-primary" value="Save application">
+								</div>
+							</div>
+						</div>		
+	   				</form>
+				</div>			            
+     		</div>
 		</div>
 	</div>
 <script>

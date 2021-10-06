@@ -160,10 +160,30 @@
                     document.getElementById("fk_calificacion").value = null
                     document.getElementById("max_points").value = null
                 }
+                let rules = {
+                    max_score: {
+                        required: true,
+                        max: 999,
+                        min: 2
+                    },
+                }
+                commonValidator = $("#scaleGe").validate({
+                    rules,
+                    highlight: function (element) {
+                        $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+                    },
+                    success: function (element) {
+                        $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+                    },
+                });
+                let validator
                 $("#max_score").keyup(function(){
-                    max_points = parseInt($("#max_score").val())
-                    $("#scaleGe").validate({
+                    max_points = parseFloat($("#max_score").val())
+                    console.log(max_points)
+                    if(validator)validator.destroy()
+                    validator = $("#scaleGe").validate({
                         rules: {
+                            ...rules,
                             max_points: {
                                 required: true,
                                 max: max_points
@@ -172,17 +192,17 @@
                                 required:true
                             }
                         },
-                        // highlight: function (element) {
-                        //     $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
-                        // },
-                        // success: function (element) {
-                        //     $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
-                        // },
+                        highlight: function (element) {
+                            $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+                        },
+                        success: function (element) {
+                            $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+                        },
                     });
-                    console.log(max_points)
                 })
                 $("#addRow").click(function () {
                     event.preventDefault()
+                    if(!$("#scaleGe").valid())return
                     let datos = {
                         descriptionCalif: document.getElementById("desc_calificacion").value,
                         qualification: hashObj[document.getElementById("fk_calificacion").value],

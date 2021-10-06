@@ -9,6 +9,8 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponse, JsonResponse
 from django.template.loader import render_to_string
 from django.template.defaulttags import register
+from django.db.models import Q
+import re
 # Create your views here.
 TITULOPERFIL = {'idperfil': '#', 'deescripcion': 'Name', 'desc_corta': 'Description', 'fk_rama': 'Branch'}
 TITULOCOMPETENCIA = {'idcompetenciasreq': '#', 'desc_competencia': 'Name', 'fk_perfil': 'Profile', 'fk_tipo_competencia': 'Type', 'fk_nivel': 'Minimum Level'}
@@ -17,6 +19,20 @@ TITULOCOMPETENCIAADQ = {'idcompetencias_adq': '#', 'fk_publico': 'Public', 'peri
 @register.filter
 def get_attr(dictionary, key):
     return getattr(dictionary, key)
+
+@register.filter
+def replaces(value, key):
+    txt = re.search(key, value, flags = re.IGNORECASE)
+    print(txt)
+    return re.sub(key, '<b style="background-color:#c0ffc8;">%s</b>' %txt[0], value, flags = re.IGNORECASE, count =1)
+
+@register.filter
+def matches(value, key):
+    return re.search(key, value, flags = re.IGNORECASE) != None
+
+@register.filter
+def tostring(value):
+    return str(value)
 
 def editCompetenceAdq(request, id = None):  
 
@@ -359,15 +375,15 @@ def paginar(request):
 
         if tipo and tipo == 'competencia':
 
-            plan = plan.filter(desc_competencia__icontains=filtro).order_by('desc_competencia')
+            plan = plan.filter(Q(desc_competencia__icontains=filtro) | Q(fk_perfil__deescripcion__icontains=filtro) | Q(fk_tipo_competencia__desc_elemento__icontains=filtro) | Q(fk_nivel__desc_elemento__icontains=filtro))
 
         elif tipo and tipo == 'competenciaadq':
 
-            plan = plan.filter(fk_publico__nombre__icontains=filtro).order_by('fk_publico__nombre')
-
+            plan = plan.filter(Q(periodo__icontains=filtro) | Q(experiencia__icontains=filtro) | Q(fk_publico__nombre__icontains=filtro) | Q(fk_competencia__desc_competencia__icontains=filtro) | Q(fk_nivel__desc_elemento__icontains=filtro) | Q(fk_tipo_duracion__desc_elemento__icontains=filtro))
+    
         else:
 
-            plan = plan.filter(deescripcion__icontains=filtro).order_by('deescripcion')
+            plan = plan.filter(Q(deescripcion__icontains=filtro) | Q(desc_corta__icontains=filtro) | Q(fk_rama__desc_elemento__icontains=filtro))
 
 
     if(orden):

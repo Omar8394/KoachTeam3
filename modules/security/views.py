@@ -11,7 +11,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.forms.utils import ErrorList
 from django.http import HttpResponse
-from .forms import LoginForm, SignUpForm, ResetPasswordForm, LandingPage
+from .forms import LoginForm, SignUpForm, ResetPasswordForm, LandingPage, FullRegistration
 from modules.app.models import TablasConfiguracion
 from modules.security.models import CtaUsuario
 from modules.security import Methods
@@ -129,20 +129,20 @@ def lang_page(request):
         form = LandingPage()
         print("tipo Telefono:", tipo_telefono)
 
-    return render(request, "security/landPage.html", {"form": form, "msg": msg, 'success': success,
+    return render(request, "security/landPage.html", {"form": form, "reason": True, "emailposition": True, "msg": msg, 'success': success,
                                                       "tipoTelefono": tipo_telefono})
 
 def full_registration(request):
     msg = None
     success = False
-    form_land_page = LandingPage(request.POST)
+    full_registration_form = FullRegistration(request.POST)
     form_registration = SignUpForm(request.POST)
     tipo_telefono = None
     if request.method == "POST":
-        print("form lanpage:", form_land_page)
+        print("form lanpage:", full_registration_form)
         print("form registro:", form_registration)
-        if form_land_page.is_valid() and form_registration.is_valid():
-            form_land_page.save()
+        if full_registration_form.is_valid() and form_registration.is_valid():
+            full_registration_form.save()
             form_registration.save()
             success = True
             msg = "Registration has been completed successfully."
@@ -151,6 +151,6 @@ def full_registration(request):
             msg = 'Error validating the form'
     else:
         tipo_telefono = TablasConfiguracion.obtenerHijos("tipTelefono")
-        form_land_page = LandingPage()
+        full_registration_form = LandingPage()
         form_registration = SignUpForm()
-    return render(request, "security/full_registration.html", {"msg": msg, 'success': success, "tipoTelefono": tipo_telefono})
+    return render(request, "security/full_registration.html", {"msg": msg, "reason": False, 'success': success, "tipoTelefono": tipo_telefono})

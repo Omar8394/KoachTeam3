@@ -9,13 +9,14 @@ from modules.academic import views
 urlpatterns = [
    path('', views.index, name='academic'),
    #Pruebas de sprint 2
-   path('cursos/', views.cursos, name="cursos"),
+   path('test/', views.prueba, name="academic_test"),
    path('evaluaciones/', views.evaluaciones, name="evaluaciones"),
    #contenidos AJAX
    path('contenidoProgramas/', views.getContentProgramas, name="contenidoProgramas"),
    path('contenidoProcesos/', views.getContentProcesos, name="contenidoProcesos"),
    path('contenidoUnidades/', views.getContentUnidades, name="contenidoUnidades"),
    path('contenidoCursos/', views.getContentCursos, name="contenidoCursos"),
+   path('contenidoTopicos/', views.getContentTopicos, name="contenidoTopicos"),
    path('comboOption/', views.getComboContent, name="contenidoCombo"),
    #modales
    path('modalAddCategoria/', views.getModalCategorias, name="modalAddCategoria"),

@@ -1,6 +1,48 @@
 {% extends "security/landPage.html" %}
 {% block title %}Full Registration{% endblock %}
 {% block titulo %}Full Registration Form{% endblock %}
+{% block emailandidentity %}
+     <span class="h3 text-dark" style="text-align: left;">Identity and Emails.</span>
+                <div class="form-row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="docto_identidad">ID card:</label>
+                            <input  type="number" class="form-control" id="docto_identidad" name="docto_identidad"  maxlength="10"  required/>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="email_pri">Primary Email:</label>
+                            <input  type="email" class="form-control" id="email_pri" name="email_pri" maxlength="50"  required/>
+                        </div>
+                    </div>
+                </div>
+{% endblock %}
+{% block telefono %}
+        <span class="h3 text-dark tex">Phone Numbers</span>
+                <div class="form-row">
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label for="telefonos_pri">Primary Phone</label>
+                            <input  type="number" class="form-control" id="telefonos_pri" name="telefonos_pri" maxlength="13"  required/>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="cb_tipo_telefono">Phone Type</label>
+                            <select id="cb_tipo_telefono" name="cb_tipo_telefono" class="form-control">
+                                 {% if tipoTelefono is not None %}
+                                     {% for tipo in tipoTelefono %}
+                                        <option value="{{ tipo.id_tabla }}">{{ tipo.desc_elemento }}</option>
+                                     {% endfor %}
+
+                                {% endif %}
+
+                            </select>
+                        </div>
+                    </div>
+                </div>
+{% endblock %}
 {% block registrofull %}
     <span class="h3 text-dark tex">User Credentials</span>
 <div class="form-row justify-content-center">

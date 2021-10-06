@@ -13,5 +13,5 @@ urlpatterns = [
     path('passwordReset/', forgot_password, name="passwordReset"),
     path("logout/", LogoutView.as_view(), name="logout"),
     path("landpage/", lang_page, name="land_page"),
-    path("fullregistration/", full_registration, name="full_registratione")
+    path("fullregistration/", full_registration, name="full_registration")
 ]

@@ -27,11 +27,11 @@
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="desc_escala">Description</label>
-                    <input type="text" class="form-control" id="desc_calificacion" placeholder="Enter a description">
+                    <input type="text" class="form-control" name="desc_calificacion" id="desc_calificacion" placeholder="Enter a description" required>
                 </div>
                 <div class="form-group col-md-6">
                     <label for="">Qualification</label>
-                    <select class="form-control" id="fk_calificacion">
+                    <select class="form-control" id="fk_calificacion" name="fk_calificacion" required>
                         <option value="null" selected disabled>Select and option</option>
 
                         {% for cal in califs %}
@@ -45,7 +45,7 @@
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="max_points">Max points</label>
-                    <input type="text" class="form-control" id="max_points" placeholder="Enter a number">
+                    <input type="text" class="form-control" name="max_points" id="max_points" placeholder="Enter a number" required>
                 </div>
                 <div class="form-group col-md-6 d-flex justify-content-start">
                     <button class="btn btn-success mt-4" id="addRow">
