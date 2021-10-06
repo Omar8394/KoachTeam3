@@ -93,6 +93,10 @@
    let editmode = false
    let query = ""
    let selectedId = ""
+   const showContent = (id)=>{
+      let contenido = document.getElementById(`contentTopic${id}`)
+      contenido.classList.toggle("card-list-item-close")
+   }
    const renderContent = () => {
       document.querySelector("main.card-body").classList.add("is-loading")
       fetch("{% url 'contenidoTopicos'%}", {
