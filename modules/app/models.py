@@ -53,7 +53,6 @@ class Publico(models.Model):
     nombre = models.CharField(db_column='Nombre', max_length=45)  # Field name made lowercase.
     apellido = models.CharField(db_column='Apellido', max_length=45)  # Field name made lowercase.
     direccion = models.TextField()
-    user = models.OneToOneField(User, on_delete=models.CASCADE, default=None, null=True)
     procedencia = models.CharField(max_length=1)
     docto_identidad = models.TextField()
     fk_ciudad = models.SmallIntegerField(null=True)
