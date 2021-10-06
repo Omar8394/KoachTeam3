@@ -62,6 +62,8 @@ class Publico(models.Model):
     cuenta_telegram = models.CharField(max_length=45, null=True) #telegram id or null
     cuenta_whatsapp = models.CharField(max_length=20, null=True)# whatsapp number or null
     fecha_registro = models.DateField(auto_now_add=True, null=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, default=None, null=True)
+
       
     def __str__(self):
         return self.nombre +" " +self.apellido

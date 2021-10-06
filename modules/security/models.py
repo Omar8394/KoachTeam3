@@ -1,12 +1,14 @@
 from django.db import models
 from ..app.models import TablasConfiguracion, Publico
+from django.contrib.auth.models import User
 
 class CtaUsuario(models.Model):
     idcta_usuario = models.AutoField(primary_key=True)  # Field name made lowercase.
     codigo_cta = models.CharField(max_length=15)  # Field name made lowercase.
-    clave = models.TextField(blank=True, null=True)  # Field name made lowercase.
+   # clave = models.TextField(blank=True, null=True)  # Field name made lowercase.
     fk_rol_usuario = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE, related_name='rol_usuario')  # Field name made lowercase.
-    fk_publico = models.ForeignKey(Publico, on_delete=models.CASCADE)
+    #fk_publico = models.ForeignKey(Publico, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, default=None, null=True)
     fk_pregunta_secreta = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE, related_name='pregunta')
     intentos_fallidos = models.IntegerField()  # Field name made lowercase.
     fecha_ult_cambio = models.DateField(blank=True, null=True)
