@@ -1,4 +1,11 @@
 
+
+class origenPago:
+  def __init__(self, id, origen):
+    self.id = id
+    self.origen = origen
+
+
 class MyMethod:
  def ReturnOrigen(id):
    if id == 1:
@@ -49,3 +56,18 @@ def OrigenPagoNombre(code):
 
    else:
 	   return None
+
+
+def getOrigenes():
+
+  Origenes = []
+
+  for i in range(3):
+    Origenes.append( origenPago(i+1,OrigenPagoCodigo(i+1)) )
+    
+
+
+
+
+
+  return Origenes

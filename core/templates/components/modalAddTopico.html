@@ -1,78 +1,42 @@
 <div class="modal-content">
    <div class="modal-header">
-      <h5 class="modal-title"><strong>Course</strong></h5>
+      <h5 class="modal-title">Topic</h5>
       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
          <span aria-hidden="true">&times;</span>
       </button>
    </div>
    <form id="formTopico" class="form">
-      <div class="modal-body" style="height:400px; overflow-y: scroll;">
+      <div class="modal-body">
          <div class="form-row">
-            <div class="form-group col-6">
-               <label for="comboCategory" class="col-form-label">Category</label>
-               <select class="form-control" name="comboCategory" id="comboCategory">
-                  <option value="null" selected disabled>Select a category</option>
+            <div class="form-group col-12">
+               <label for="padreTopic" class="col-form-label">Course</label>
+               <select class="form-control" name="padreTopic" id="padreTopic" required>
+                  <option value="null" disabled {% if not modelo %}selected{% endif %}>Select a course</option>
+                  {% for item in courses %}
+                  <option value="{{item.pk}}" {% if modelo %}{% if modelo.fk_estructura_padre_id == item.pk %}selected{% endif %}{% endif %}>{{item.descripcion}}</option>
+                  {% endfor%}
                </select>
-            </div>
-            <div class="form-group col-6">
-               <label for="comboProcess" class="col-form-label">Process</label>
-               <select class="form-control" name="comboProcess" id="comboProcess">
-                  <option value="null" selected disabled>Select a process</option>
-               </select>
-            </div>
-         </div>
-         <div class="form-row">
-            <div class="form-group col-6">
-               <label for="titleCourse" class="col-form-label">Title</label>
-               <input type="text" class="form-control" id="titleCourse" placeholder="Enter a title for this course">
-            </div>
-            <div class="form-group col-6">
-               <label for="codeCourse" class="col-form-label">Code</label>
-               <input type="text" class="form-control" id="codeCourse"
-                  placeholder="Enter a code to identify this course">
             </div>
          </div>
          <div class="form-row">
             <div class="form-group col-12">
-               <label for="descriptionCourse" class="col-form-label">Description</label>
-               <textarea class="form-control" id="descriptionCourse" placeholder="Enter a description here"></textarea>
+               <label for="descriptionTopic" class="col-form-label">Title</label>
+               <input type="text" class="form-control" name="descriptionTopic" id="descriptionTopic"
+                  placeholder="Enter a title" required value="{% if modelo %}{{ modelo.descripcion }}{% endif %}">
             </div>
          </div>
          <div class="form-row">
-            <div class="form-group col-6">
-               <label for="tagCourse" class="col-form-label">Tag</label>
-               <input type="text" class="form-control" id="tagCourse"
-                  placeholder="Enter a abbreviation to identify this course">
-            </div>
-            <div class="form-group col-6">
-               <label for="diponibleCourse" class="col-form-label">Available from</label>
-               <input type="date" class="form-control" id="disponibleCourse">
+            <div class="form-group col-12">
+               <label for="resumenTopic" class="col-form-label">Description</label>
+               <textarea class="form-control" name="resumenTopic" id="resumenTopic"
+                  placeholder="Enter a description here">{% if modelo %}{{ modelo.resumen}}{% endif%}</textarea>
             </div>
          </div>
          <div class="form-row">
-            <div class="form-group col-6">
-               <div class="custom-control custom-checkbox ml-2">
-                  <input type="checkbox" class="custom-control-input" name="checkExpertCB" id="checkExpertCB">
-                  <label class="custom-control-label" for="checkExpertCB">Expert test</label>
-               </div>
-            </div>
-            <div class="form-group col-6">
-               <div class="custom-control custom-checkbox ml-2">
-                  <input type="checkbox" class="custom-control-input" name="checkDurationCB" id="checkDurationCB">
-                  <label class="custom-control-label" for="checkDurationCB">Handle duration</label>
-               </div>
-            </div>
-         </div>
-         <div class="form-row">
-            <div class="form-group col-6">
-               <label for="durationCourse" class="col-form-label">Duration</label>
-               <input type="number" class="form-control" id="durationCourse" placeholder="0">
-            </div>
-            <div class="form-group col-6">
-               <label for="timeCourse" class="col-form-label">Time</label>
-               <select class="form-control" name="timeCourse" id="timeCourse">
-                  <option value="null" selected disabled>Select a type time</option>
-               </select>
+            <div class="form-group col-12">
+               <label for="urlTopic" class="col-form-label">Codename</label>
+               <input type="text" class="form-control" name="urlTopic" id="urlTopic" placeholder="Enter a codename"
+                  required value="{% if modelo %}{{ modelo.url }}{% endif %}">
             </div>
          </div>
       </div>

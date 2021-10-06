@@ -1,0 +1,44 @@
+<div class="form-row">
+   <div class="form-group col-md-6">
+      <label for="minApp">Minimun score to approve</label>
+      <input type="text" name="minApp" class="form-control" id="minApp" placeholder="Enter a number">
+   </div>
+   <div class="form-group col-md-6">
+      <label for="repeats">Amount of repeats</label>
+      <input type="text" name="repeats" class="form-control" id="repeats" placeholder="Enter a number">
+   </div>
+</div>
+<div class="form-row">
+   <div class="form-group col-6">
+      <div class="custom-control custom-checkbox ml-2">
+         <input type="checkbox" class="custom-control-input" name="checkDurationCB" id="checkDurationCB"
+            onclick="toggleTime()" {% if modelo %}{% if modelo.duracion %} checked {% endif %}{% endif %}>
+         <label class="custom-control-label" for="checkDurationCB">Handle duration</label>
+      </div>
+   </div>
+   <div class="form-group col-md-6">
+      <label for="qualification">Qualification</label>
+      <select class="form-control" id="qualification" name="qualification">
+         <option value="">Select an option</option>
+
+         {% for cal in durations %}
+         <option value="{{cal.id_tabla}}"> {{cal}}</option>
+         {% endfor %}
+      </select>
+   </div>
+</div>
+<div class="form-row">
+   <div class="form-group col-6">
+      <label for="durationActivity" class="col-form-label">Duration</label>
+      <input type="number" class="form-control" name="durationActivity" id="durationActivity" placeholder="0" required {% if modelo %} {% if modelo.duracion %} value="{{ modelo.duracion}}" {%else%} disabled {% endif %}{% else %} disabled {% endif %}>
+   </div>
+   <div class="form-group col-6">
+      <label for="timeActivity" class="col-form-label">Time</label>
+      <select class="form-control" name="timeActivity" id="timeActivity" {% if modelo %}{% if not modelo.fk_tipo_duracion%}disabled{% endif %}{% else %}disabled{% endif %}>
+         <option value="null" selected disabled>Select a type time</option>
+         {% for item in tipoDuracion %}
+         <option value="{{item.pk}}" {% if modelo %}{% if modelo.fk_tipo_duracion_id == item.pk %}selected{% endif %}{% endif %}>{{item.desc_elemento}}</option>
+         {% endfor%}
+      </select>
+   </div>
+</div>

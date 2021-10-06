@@ -31,7 +31,7 @@
 						<i class="flaticon-right-arrow"></i>
 					</li>
 					<li class="nav-item">
-						<a href="#">Page 1</a>
+						<a href="#">Enrollment Applications</a>
 					</li>
 				</ul>
 			</div>
@@ -443,7 +443,7 @@ function reload(){
                 
                                     <center>
                                      <input type="hidden" id="dato" value= "{{ precio }}"/>
-                                        <p><strong> Datos </strong></p>
+                                        <p><strong> Amount to Pay: <span id="precioPaypal">  </span></strong></p>
                                     </center>
                                     <div class="clearfix"></div>
                                     </div>
@@ -493,7 +493,7 @@ function reload(){
  
 
 <div class="modal fade" tabindex="-1" role="dialog" id="TrMatriculaTr">
-         <form id="enrollTr" class="form" enctype="multipart/form-data" onsubmit="cgPayTr();return false">
+         <form id="enrollTr" class="form" method="POST" enctype="multipart/form-data" onsubmit="cgPayTr();return false">
 
     <div class="modal-dialog modal-lg" role="document" id="modalContentTr">
      
@@ -559,7 +559,7 @@ function reload(){
          
          <input type="hidden" name="MAX_FILE_SIZE" value="4194304" />
                        {% comment %} <input type="file" /> {% endcomment %}
-                       <input type="file" id="seleccionArchivos" name="imagenRuta" accept="image/*" required>
+                       <input type="file" id="seleccionArchivos" name="imagenRuta" id="imagenRuta" accept="image/*" required>
                       <br><br>
                         <!-- La imagen que vamos a usar para previsualizar lo que el usuario selecciona -->
                        <img id="imagenPrevisualizacion" width="400px" header="400px">
@@ -675,6 +675,8 @@ function reload(){
     
         if(id==1){
        $("#PayMatriculaPaypal").modal("show");
+       document.getElementById('precioPaypal').innerHTML=PrecioMatricula;
+
       
     }
 
@@ -819,6 +821,35 @@ function reload(){
                 const element = document.getElementById('paypal-button-container');
                 element.innerHTML = '';
                 element.innerHTML = '<h3>Thank you for your payment!</h3>';
+               
+                var  statusPay=(orderData.purchase_units[0].payments.captures[0].final_capture);
+
+
+                if(statusPay==true){
+                        var xhr = new XMLHttpRequest();
+                        xhr.open("POST", "InsertPayTr/"); 
+                        xhr.onload = function(event){ 
+                        //alert("Success, server responded with: " + event.target.response); // raw response
+                        alerta(1);
+                        reload();
+                        }; 
+                        // or onerror, onabort
+                        var formData = new FormData(document.getElementById("enrollTr")); 
+                        formData.append('hash', HashCode);
+                        formData.append('matricula', matricula);
+                        formData.append('precio', PrecioMatricula);
+                        formData.append('origen', 1);
+                        formData.append('reference', orderData.purchase_units[0].payments.captures[0].id);
+
+
+
+                        xhr.send(formData);
+
+                    }
+
+
+                       
+
     
                 // Or go to another URL:  actions.redirect('thank_you.html');
                 
@@ -839,13 +870,13 @@ function reload(){
 function cgPayTr(){
 
 
-   
-Amount.value = pagotr;
+
 var xhr = new XMLHttpRequest();
 xhr.open("POST", "InsertPayTr/"); 
 xhr.onload = function(event){ 
-alert("Success, server responded with: " + event.target.response); // raw response
-location.href = "" ;
+//alert("Success, server responded with: " + event.target.response); // raw response
+alerta(1);
+reload();
 }; 
 // or onerror, onabort
 var formData = new FormData(document.getElementById("enrollTr")); 

@@ -343,6 +343,20 @@
   },
   {
     "model": "app.TablasConfiguracion",
+    "pk": 202,
+    "fields": {
+      "desc_elemento": "Payment in Revision",
+      "fk_tabla_padre_id": 21,
+      "tipo_elemento": 1,
+      "permite_cambios":1,
+      "valor_elemento":"EstatusPay",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
     "pk": 29,
     "fields": {
       "desc_elemento": "Approved",
@@ -609,6 +623,63 @@
 
     }
   },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk":68,
+    "fields": {
+      "desc_elemento": "Exam",
+      "fk_tabla_padre_id": 9,
+      "tipo_elemento": 0,
+      "permite_cambios":1,
+      "valor_elemento":"",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk":69,
+    "fields": {
+      "desc_elemento": "Homework",
+      "fk_tabla_padre_id": 9,
+      "tipo_elemento": 0,
+      "permite_cambios":1,
+      "valor_elemento":"",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk":70,
+    "fields": {
+      "desc_elemento": "Lesson",
+      "fk_tabla_padre_id": 9,
+      "tipo_elemento": 0,
+      "permite_cambios":1,
+      "valor_elemento":"",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
+  
+  {
+    "model": "app.TablasConfiguracion",
+    "pk":71,
+    "fields": {
+      "desc_elemento": "Forum",
+      "fk_tabla_padre_id": 9,
+      "tipo_elemento": 0,
+      "permite_cambios":1,
+      "valor_elemento":"",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
   
   {
     "model": "app.Contratantes",
@@ -648,7 +719,7 @@
     "fields": {
       "desc_calificacion": "1 to 3",
       "puntos_maximo": "3",
-      "fk_calificacion_id": "113",
+      "fk_calificacion_id": "61",
       "fk_escala_evaluacion_id": "1"
     }
   }, 
@@ -659,7 +730,7 @@
     "fields": {
       "desc_calificacion": "3 to 4.99",
       "puntos_maximo": "4.99",
-      "fk_calificacion_id": "114",
+      "fk_calificacion_id": "62",
       "fk_escala_evaluacion_id": "1"
     }
   },
@@ -670,7 +741,7 @@
     "fields": {
       "desc_calificacion": "5 to 10",
       "puntos_maximo": "10",
-      "fk_calificacion_id": "112",
+      "fk_calificacion_id": "63",
       "fk_escala_evaluacion_id": "1"
     }
   },
@@ -780,7 +851,7 @@
     "fields": {
       "descripcion":"System engineer",
       "resumen":"Complete program to adquire knowledge about all kind of systems and network",
-      "valor_elemento":"Programa",
+      "valor_elemento":"Program",
       "url":"system_eng",
       "peso_creditos":"2",
       "fk_categoria":"24"
@@ -792,7 +863,7 @@
     "fields": {
       "descripcion":"Industrial engineer",
       "resumen":"Complete program to adquire knowledge about all kind of industrial processes and procedures",
-      "valor_elemento":"Programa",
+      "valor_elemento":"Program",
       "url":"indust_eng",
       "peso_creditos":"2",
       "fk_categoria":"24"
@@ -804,7 +875,7 @@
     "fields": {
       "descripcion":"Agronomic engineer",
       "resumen":"Complete program to adquire knowledge about ground, farm animals, botanic topics and more",
-      "valor_elemento":"Programa",
+      "valor_elemento":"Program",
       "url":"agro_eng",
       "peso_creditos":"2",
       "fk_categoria":"25"
@@ -816,7 +887,7 @@
     "fields": {
       "descripcion":"Web developer",
       "resumen":"Required process to be an web developer capable to develop frontend and backend, client and server",
-      "valor_elemento":"Proceso",
+      "valor_elemento":"Process",
       "url":"web_dev",
       "peso_creditos":"2",
       "fk_categoria":"24",
@@ -829,7 +900,7 @@
     "fields": {
       "descripcion":"Frontend developer",
       "resumen":"Unit in order to built client side of web, ui and ux",
-      "valor_elemento":"Unidad",
+      "valor_elemento":"Unit",
       "url":"front_dev",
       "peso_creditos":"2",
       "fk_categoria":"24",
@@ -842,7 +913,7 @@
     "fields": {
       "descripcion":"VPS",
       "resumen":"Required process to have a full understanding of Virtual servers and their use",
-      "valor_elemento":"Proceso",
+      "valor_elemento":"Process",
       "url":"vps_admin",
       "peso_creditos":"2",
       "fk_categoria":"24",
@@ -855,7 +926,7 @@
     "fields": {
       "descripcion":"Ubuntu server",
       "resumen":"Unit to learn deeply about Ubuntu server and this linux distro unique features",
-      "valor_elemento":"Unidad",
+      "valor_elemento":"Unit",
       "url":"ubuntu_server",
       "peso_creditos":"2",
       "fk_categoria":"24",
@@ -868,7 +939,7 @@
     "fields": {
       "descripcion":"Distro",
       "resumen":"Course oriented to know how to interact with Ubuntu server distro",
-      "valor_elemento":"Curso",
+      "valor_elemento":"Course",
       "url":"ubuntu_distro",
       "peso_creditos":"1",
       "fk_categoria":"24",
@@ -882,7 +953,7 @@
     "fields": {
       "descripcion":"CSS",
       "resumen":"Make u the best designer of visuals for client with this course",
-      "valor_elemento":"Curso",
+      "valor_elemento":"Course",
       "url":"css_dev",
       "peso_creditos":"1",
       "fk_categoria":"24",

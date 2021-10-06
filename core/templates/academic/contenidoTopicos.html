@@ -1,0 +1,95 @@
+{% if query%}
+results for "{{query}}"
+{% endif %}
+<section>
+   <div class="section-header">
+      <h3 class="section-title">Topics</h3>
+   </div>
+   <ul class="card-list">
+      {% if not query %}
+      <li class="card-list-item">
+         <div class="card-list-item-inner">
+            <div class="card-list-item-title">Add new topic</div>
+            <div class="card-list-item-actions">
+               <div onclick="openAddTopic()" class="btn btn-icon btn-success btn-round add-btn btn-card-lg">
+                  <i class="fas fa-plus"></i>
+               </div>
+            </div>
+         </div>
+      </li>
+      {% endif %}
+
+      {% for topic in data%}
+      {%if topic.valor_elemento == 'Topic'%}
+      <li class="card-list-item">
+         <div class="card-list-item-inner">
+            <div class="card-list-item-title" onclick="showContent('{{topic.pk}}')">{{topic.descripcion}}</div>
+            <div class="card-list-item-actions">
+               <div class="btn-group" role="group">
+                  {% if add %}
+                  <button type="button" class="btn btn-icon btn-sm btn-success" data-placement="top" title="Add"
+                     data-toggle="tooltip" data-target="tooltip" onclick="openAddActivity('{{topic.pk}}')">
+                     <i class="fas fa-plus"></i>
+                  </button>
+                  {% endif %}
+                  {% if edit %}
+                  <button type="button" class="btn btn-icon btn-sm btn-info ml-1" data-toggle="tooltip"
+                     data-placement="top" title="Edit" onclick="openEditTopic('{{topic.pk}}')">
+                     <i class="fas fa-edit"></i>
+                  </button>
+                  {% endif %}
+                  {% if delete %}
+                  <button type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip"
+                     data-placement="top" title="Delete" onclick="openDeleteTopic('{{topic.pk}}')">
+                     <i class="fas fa-trash-alt"></i>
+                  </button>
+                  {% endif %}
+                  {% if topic.estructuraprograma_set.all %}
+                  <button type="button" class="btn btn-icon btn-sm btn-warning ml-1" data-toggle="tooltip"
+                     data-placement="top" title="Show/Hide" onclick="showChilds('{{topic.pk}}')">
+                     <i class="fas fa-clipboard"></i>
+                  </button>
+                  {% endif %}
+               </div>
+            </div>
+            <div class="card-list-item-extra">
+               Teacher: Fulano de tal
+               <br>
+               Requirements: topico 2 y cualquier otro
+               <br>
+               Credits: {{topic.peso_creditos}}
+            </div>
+         </div>
+         <div id="contentTopic{{topic.pk}}" class="card-list-item-content card-list-item-close">{{topic.resumen}}</div>
+         <ul id="childsTopic{{topic.pk}}" class="card-list-item-close">
+            {% for activity in topic.estructuraprograma_set.all %}
+            {%if activity.valor_elemento == 'Activity'%}
+            <li class="card-list-item-content">
+               <div class="card-list-item-subtitle">{{activity.descripcion}}</div>
+               <div class="card-list-item-description">{{activity.resumen}}</div>
+               <div class="card-list-item-actions">
+                  <div class="btn-group" role="group">
+                     {% if edit %}
+                     <button type="button" class="btn btn-icon btn-sm btn-info ml-1" data-toggle="tooltip" data-placement="top" title="Edit"
+                        onclick="openEditActivity('{{activity.pk}}')">
+                        <i class="fas fa-edit"></i>
+                     </button>
+                     {% endif %}
+                     {% if delete %}
+                     <button type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip" data-placement="top"
+                        title="Delete" onclick="openDeleteActivity('{{activity.pk}}')">
+                        <i class="fas fa-trash-alt"></i>
+                     </button>
+                     {% endif %}
+                  </div>
+               </div>
+            </li>
+            {% endif %}
+            {% endfor%}
+         </ul>
+      </li>
+      {% endif %}
+      {% endfor %}
+   </ul>
+
+</section>

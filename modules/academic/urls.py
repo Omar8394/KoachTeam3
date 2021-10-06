@@ -9,13 +9,14 @@ from modules.academic import views
 urlpatterns = [
    path('', views.index, name='academic'),
    #Pruebas de sprint 2
-   path('cursos/', views.cursos, name="cursos"),
+   path('test/', views.prueba, name="academic_test"),
    path('evaluaciones/', views.evaluaciones, name="evaluaciones"),
    #contenidos AJAX
    path('contenidoProgramas/', views.getContentProgramas, name="contenidoProgramas"),
    path('contenidoProcesos/', views.getContentProcesos, name="contenidoProcesos"),
    path('contenidoUnidades/', views.getContentUnidades, name="contenidoUnidades"),
    path('contenidoCursos/', views.getContentCursos, name="contenidoCursos"),
+   path('contenidoTopicos/', views.getContentTopicos, name="contenidoTopicos"),
    path('comboOption/', views.getComboContent, name="contenidoCombo"),
    #modales
    path('modalAddCategoria/', views.getModalCategorias, name="modalAddCategoria"),
@@ -24,6 +25,9 @@ urlpatterns = [
    path('modalAddUnidad/', views.getModalUnidades, name="modalAddUnidad"),
    path('modalAddCurso/', views.getModalCursos, name="modalAddCurso"),
    path('modalAddTopico/', views.getModalTopico, name="modalAddTopico"),
+   path('modalAddActividad/', views.getModalActividad, name="modalAddActividad"),
+   path('modalChooseActivity/', views.getModalChooseActivities, name="modalChooseActivity"),
+   path('modalNewTest/', views.getModalNewTest, name="modalNewTest"),
    #urls serias
    path('<str:programa>/', views.programa, name="programa"),
    path('<str:programa>/<str:proceso>/', views.proceso, name="proceso"),

@@ -25,6 +25,9 @@ staticfiles/*
 !staticfiles/.gitkeep 
 .vscode/symbols.json
 
+#media
+core/upload/
+
 #migrations
 modules/app/migrations/
 modules/academic/migrations/

@@ -7,7 +7,9 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.models import User
+
 from ..app.models import Publico
+from ..security.models import LandPage
 
 
 class LoginForm(forms.Form):
@@ -73,12 +75,16 @@ class SignUpForm(UserCreationForm):
 
 
 class LandingPage(forms.ModelForm):
+    class Meta:
+        model = LandPage
+        exclude = (
+            'fk_ciudad', 'fecha_solicitud', 'status_solicitud', 'codigo_aprobacion', 'fec_cod_expiracion')
 
+
+class FullRegistration(forms.ModelForm):
     telefonos = forms.CharField(widget=forms.NumberInput)
-    cuenta_telegram = forms.CharField()
-    cuenta_whatsapp = forms.CharField()
 
     class Meta:
         model = Publico
         exclude = (
-        'user', 'procedencia', 'fk_ciudad', 'fk_contratante', 'fecha_registro')
+            'procedencia', 'cuenta_telegram', 'cuenta_whatsapp', 'docto_identidad', 'fk_ciudad', 'fk_contratante', 'fecha_registro')

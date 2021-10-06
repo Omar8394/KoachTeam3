@@ -9,10 +9,11 @@
    color: #fff;
 }
 
+.modal-header > button > span{
+   color: #fff;
+}
+
 .modal-title{
    font-size: 1.2rem !important;
    font-weight: bold;
-}
-.close{
-   color:#fff;
 }

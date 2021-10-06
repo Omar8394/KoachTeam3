@@ -53,7 +53,6 @@ class Publico(models.Model):
     nombre = models.CharField(db_column='Nombre', max_length=45)  # Field name made lowercase.
     apellido = models.CharField(db_column='Apellido', max_length=45)  # Field name made lowercase.
     direccion = models.TextField()
-    user = models.OneToOneField(User, on_delete=models.CASCADE, default=None, null=True)
     procedencia = models.CharField(max_length=1)
     docto_identidad = models.TextField()
     fk_ciudad = models.SmallIntegerField(null=True)
@@ -63,6 +62,8 @@ class Publico(models.Model):
     cuenta_telegram = models.CharField(max_length=45, null=True) #telegram id or null
     cuenta_whatsapp = models.CharField(max_length=20, null=True)# whatsapp number or null
     fecha_registro = models.DateField(auto_now_add=True, null=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, default=None, null=True)
+
       
     def __str__(self):
         return self.nombre +" " +self.apellido
@@ -98,6 +99,7 @@ class Estructuraprograma(models.Model):
     valor_elemento = models.TextField(blank=True, null=True)
     url = models.TextField(blank=True, null=True)
     peso_creditos = models.DecimalField(max_digits=7, decimal_places=2, blank=True, null=True)
+    orden_presentacion = models.SmallIntegerField(null=True)
     fk_categoria = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE, default=None, null=True)
     fk_estructura_padre = models.ForeignKey('self', on_delete=models.CASCADE, default=None, null=True)
     def __str__(self):

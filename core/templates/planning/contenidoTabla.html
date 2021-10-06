@@ -9,9 +9,19 @@
     </thead>
     <tbody>  
         {% for p in plan %}  
-            <tr>  
+            <tr> 
                 {% for key, value in keys.items %}
-                    <td>{{ p|get_attr:key }}</td>
+                    <td>
+                        {% if search and p|get_attr:key|tostring|matches:search %}
+
+                            {{ p|get_attr:key|tostring|replaces:search|safe }}
+                        
+                        {% else %}
+
+                            {{ p|get_attr:key }}
+
+                        {% endif %}
+                    </td>
                 {% endfor %}
                 
                 {% for key, value in keys.items %}
