@@ -99,10 +99,10 @@
                                     
                                     <th>Reference</th>
                                     <th>Method</th>
-                                    <th>Pay</th>
+                                    <th>Reference</th>
                                     {% comment %} <th>Hash</th> {% endcomment %}
                                     <th>Status</th>
-                                    <th>Image</th>
+                                    
                                     
                                     <th></th>
 
@@ -125,7 +125,7 @@
                                    {% elif mat.fk_metodopago_id == 2 %}
                                    {{"Credit card"}}
                                    {% elif mat.fk_metodopago_id == 3 %}
-                                   {{"Transfer"}}
+                                   {{"Bank Transfers"}}
                                    {% endif %}
                                    </td>
                                     
@@ -141,22 +141,29 @@
                                        
                                    </td>
 
-                                   {% comment %} <td>{{mat.codigo_hash}}</td> {% endcomment %}
+                                   {% comment %} 
+                                   
+                                   <td>{{mat.codigo_hash}}</td>
+                                   
+                                   <td onclick="verI('{{mat.url_imagen}}')">
+                                    {{mat.url_imagen}}</td>
+                                   
+                                   {% endcomment %}
 
 
-                                   <td id="precio" name="precio" onclick="editarm('{{mat.idmatricula_pagos}}','{{mat.status_pay}}' )">
-                                    <input type="hidden" id="{{  mat.idmatricula_pagos }}" value="{{  mat.status_pay }}"/>
+                                   <td id="precio" name="precio" >
+                                   
                                     {{mat.status_pay}}
                                     </td>
 
-                                   <td onclick="verI('{{mat.url_imagen}}')">
-                                   {{mat.url_imagen}}</td>
+                                  
                                    
                                         
                                         
 
                                     <td>
-                                     
+                                        <button  class="btn btn-primary" onclick="Review('{{mat.idmatricula_pagos}}','{{mat.fk_metodopago_id}}')">Review<i class="fas fa-edit ml-2"></i></button>
+
                                    
                                     </td>
                                 </tr>
@@ -224,14 +231,7 @@
                           </ul>
                         </nav>
 
-                        <div class="clearfix">aquiii
-                        
-                           {% load static %}
-                            <img id="prueba" src="{% static "images/hi.jpg" %}" width="300" height="300"/>
-
-                           
-
-                        </div>
+                   
             
                     </div>
                 </div>
@@ -262,286 +262,43 @@
 
 {% comment %} ###################################Modal para el status ############################################### {% endcomment %}
 
-<div class="modal fade" tabindex="-1" role="dialog" id="ModalEd">
-    <div class="modal-dialog " role="document" id="modalContentEdit">
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" id="ModalEd">
+    <div class="modal-dialog modal-lg " role="document" id="modalContentEdit">
      
         
-      
-  <form class="form" id="enrollI" name="enrollI" onsubmit="cargaed();return false">
-    {% csrf_token %}    
   
-<div class="modal-content" onload="">
-    <div class="modal-header">
-        <h4 style="left: initial;" class="modal-title">Pay Details</h4>
-
- <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-    </div>
-    <div class="modal-body">
-        
-     <div class="row">
-            
-
-            
-                <div class="col-6">
-
-
-            
-            
-             
-           
-           <input type="hidden" name="ol" id="ol"/>
-           <input class="form-control" type="text" name="curso" id="curso" readonly/>
-
-             </div>
-  
-  
-                <div class="col-6">
-                    
-                    <select class="form-control" id="statusG" name="statusG" onchange="" required >
-			       
-                    <option id="a" value="Select" selected>Select </option>
-                    <option id="b" value="Completed">Completed</option>
-                    <option id="c" value="Rejected">Rejected</option>
-
-            		 </select>
-                   
-                   
-                  
-                           
-                </div>
-                
-                 
-        </div>  
-        
-    </div>
-    <div class="modal-footer">
-         <input type="submit"  class="btn btn-default"  value="Save Changes"> 
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-    </div>
-</form>
-
 
     </div>
 </div>
 
 </div>
-{% comment %}############################ modal de la imagen ########################################{% endcomment %}
-<div class="modal fade" tabindex="-1" role="dialog" id="Modalver">
-    <div class="modal-dialog modal-lg" role="document" id="modalContentEdit">
-  <form class="form" id="enrollI" name="enrollI" onsubmit="enviarver();return false">
-    {% csrf_token %}    
-  
-<div class="modal-content" onload="">
-    <div class="modal-header">
-        <h4 style="left: initial;" class="modal-title">Pay Details</h4>
 
- <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-    </div>
-    <div class="modal-body">
-        
-     <div class="row">
-            
-
-            
-                <div class="col-6">
-
-
-            
-            
-             
-           
-           <input type="hidden" name="ol" id="ol"/>
-           <input type="text" name="curso" id="curso" readonly/>
-
-             </div>
-  
-  
-                <div class="col-6">
-                 
-                  <img class="imagenUrl" id="imagenUrl" src="" width="200" height="200" >
-                   
-                </div>
-                
-                 
-        </div>  
-        
-    </div>
-    <div class="modal-footer">
-         <input type="submit"  class="btn btn-default"  value="Save Changes"> 
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-    </div>
-</form>
-
-
-    </div>
-</div>
-
-
-</div>
 
 
 
 <script>
-//mys();
 
-function mys(){
-
-//var tunombrevariable= JSON.stringify({{ doc_et | safe  }});
-//var tunombrevariable=JSON.parse(tunombrevariable);
-
-//var tunombrevariable2= JSON.stringify({{ doc_et2 | safe  }});
-//var tunombrevariable2=JSON.parse(tunombrevariable2);
-//var ax=[];
-//alert(tunombrevariable[0].model);
-//var a = 0;
-//var b = 0;
-//for (valor of tunombrevariable2) {
-
-  // for (valor2 of tunombrevariable){
-
- //  if(valor.fields.fk_cta_usuario == valor2.pk){
-
- //    console.log(valor2.fields.codigo_cta);
- //    console.log(valor.fields.fecha_transaccion);
- //    console.log(valor.fields.desc_operacion);
-
- //        ax.push(valor.fields.fecha_transaccion);
-    // ax.append({'id':b[0], 'title': b[1],'content': b[2]})
+function Review (id,origen){
  
-    
 
- //    break;
- //  }
- //   b=b+1;
- //  }
-
-
-//a=a+1;
-//if(a==2){break;}
-//}
-//enviarPack(ax);
-}
-
-function enviarPack(a){
-//console.log(a);
-
-
-  // let url='Getdata/?matricula='+a;
-//fetch(url,{
-//	mode: 'no-cors',
-//  method: 'get'
-//}).then(function(result){
-
-//console.log(result)
-//return result.text();
-
-//}).then(function(result){
-	
-
-
-//});
-    //$("#editarPrecio").modal("show");
-
-
-}
-function verI(a){
-$("#Modalver").modal("show");
-//cargaver(a);
- //const img = document.querySelector('.imagenUrl')
- //document.img.src="";
- //document.img[0].src = "objetos/imagen2.jpg"
- //var Aatrox = document.getElementById("imagenUrl");
- //var Aatroxclicks = 0;
-
-   // Aatrox.setAttribute("src", a);
- //$("#imagenUrl").attr("src",a);
- 
- //cargaver(a);
-$("#prueba").attr("src",a);
-}
-
-
-function cargaver(a){
- let url='media/?Url='+a;
+ let url='PaymentModal/?id='+id+'&vista='+origen;
 fetch(url,{
-	mode: 'no-cors',
-  method: 'get'
+	
 }).then(function(result){
 
-//console.log(result)
 return result.text();
 
 }).then(function(result){
 	
-    
+	let unit=document.getElementById("modalContentEdit").innerHTML=result;
 
 });
-}
+ 
+    
+  
 
-var idBusqueda;
-var campo;
-function editarm(a,b){
 $("#ModalEd").modal("show");
-//cargaed(a,b);
-    curso.value=b;
-    ol.value=a;
-    idBusqueda = a;
-}
 
- var select = document.getElementById('statusG');
-   select.addEventListener('change',
-  function(){
-    var selectedOption = this.options[select.selectedIndex];
-    console.log(selectedOption.value + ': ' + selectedOption.text);
-
-     campo = selectedOption.value;
-
-
-
-      });
-
-//function cargaed(id,id2){
-    function cargaed(){
-    console.log(idBusqueda,campo);
-   
-  //  var tdElem = document.getElementById ( "precio" );
-  //  var tdText = tdElem.innerHTML;
-    // alert(document.getElementById ( id ).value);
-  //  a.value =document.getElementById ( id ).value;
-   // alert(a);
-   // $('#statusG').val(id).html(id);
-   //alert(statusG.value);
-   // var id3 = statusG.value
-    //let unit=document.getElementById("precio").innerHTML;
-    //valor.value = unit;
-   
-
-   let url='GetEditStatus/?Combo='+campo+'&id='+idBusqueda;
-fetch(url,{
-	mode: 'no-cors',
-  method: 'get'
-}).then(function(result){
-
-//console.log(result)
-return result.text();
-
-}).then(function(result){
-	
-	//let unit=document.getElementById("modalContent").innerHTML=result;
-    //valor.value = result.id;
-   //console.log(result)
-   //var asd = JSON.parse(result.id);
-  // console.log(result)
-  // console.log(result)
-  idBusqueda=0;
-  Combo="";
-  alert(result);
-    location.href = "" ;
-
-});
-    //$("#editarPrecio").modal("show");
-    
- 
 }
 
 
@@ -567,7 +324,7 @@ xhr.send(formData);
 
 function reload(){
 
-    window.location.href="{% url 'EnrollmentList'%}";
+    window.location.href="{% url 'ViewPayments'%}";
 }
 
 

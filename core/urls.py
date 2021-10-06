@@ -7,6 +7,10 @@ from django.contrib import admin
 from django.urls import path, include  # add this
 from modules.registration import views
 from modules.registration.views import enrollment
+from django.conf.urls.static import static
+from django.conf import settings
+from django.urls import re_path
+from django.views.static import serve
 
 urlpatterns = [
     
@@ -19,8 +23,11 @@ urlpatterns = [
     
                                                          # Auth routes - login / register
     path('admin/', admin.site.urls),                     # Django admin route
-    path("", include("modules.app.urls")),               # UI Kits Html files
+    path("", include("modules.app.urls")),            
+       # UI Kits Html files
    
   
 
-]
+]+ static(settings.UPLOAD_URL, document_root=settings.UPLOAD_ROOT)
+
+

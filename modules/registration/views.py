@@ -20,11 +20,13 @@ from django.db.models import Count
 from django.db.models import Max
 import random
 import uuid
+import os
+from pathlib import Path
 
 from django.shortcuts import render
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
-
+from core import settings
 
 from time import gmtime, strftime
 import hashlib
@@ -809,7 +811,7 @@ def ManagePrices(request):
    page_obj = paginator.get_page(page_number)
    print(cbUnidad)
    
-   return render(request, 'registration/Courses.html', {"structuras": page_obj, 'segment':'registration','fechaInicialPrecios':fechaInicialPrecios,'fechaFinalPrecios':fechaFinalPrecios,'cbCurso':cbCurso, 'cbProceso':cbProceso,'cbPrograma':cbPrograma,'cbUnidad':cbUnidad, 'cbPrecio':cbPrecio  })
+   return render(request, 'registration/Courses.html', {"structuras": page_obj, 'segment':'registration','fechaInicialPrecios':fechaInicialPrecios,'fechaFinalPrecios':fechaFinalPrecios,'cbCurso':cbCurso, 'cbProceso':cbProceso,'cbPrograma':cbPrograma,'cbUnidad':cbUnidad, 'cbPrecio':cbPrecio, 'segment':'registration'  })
 
 
 
@@ -901,12 +903,12 @@ def InsertPay(request):
 def InsertPayTr(request):
 
      if request.method == "POST":
-     
+        print(request.POST)
         hash=request.POST.get('hash')
         precio=request.POST.get('precio')
         matricula=request.POST.get('matricula')
-       
-       # id5=request.POST.get('codigoMatricula')
+        
+
         
         matriculadb = MatriculaAlumnos.objects.get(idmatricula_alumnos = matricula)
         
@@ -914,52 +916,70 @@ def InsertPayTr(request):
         reference=request.POST.get('reference')
         origen=request.POST.get('origen')
        
-        if origen == 3:
+        if origen == '3':
           
           myfile = request.FILES['imagenRuta']
+          
           fs = FileSystemStorage()
-          filename = fs.save(myfile.name, myfile)
-          uploaded_file_url = fs.url(filename)
-          print(myfile)
-          print(fs)
-          print(uploaded_file_url)
-          id4 = uploaded_file_url
+          nombreImagen = str(uuid.uuid4())
+          extensionFile=Path(myfile.name).suffix
+          nombreImagen=nombreImagen+extensionFile
+          Ruta=settings.UPLOAD_ROOT
+          
 
-          #showtime = strftime("%Y-%m-%d %H:%M:%S", gmtime())
-          #showtime = datetime.datetime.now().strftime ("%Y%m%d")
-          #datetime.date.today()  # Returns 2018-01-15
+
+          folder = request.path.replace("/", "_")
+          try:
+            os.mkdir(os.path.join(Ruta, folder))
+          except:
+           pass
+          
+          
+
+          filename = fs.save(Ruta+'/'+nombreImagen, myfile)
+          
+
+          id4 = nombreImagen
+
+          statusPago=TablasConfiguracion.objects.get(valor_elemento='payWait')
+
+         
           showtime=datetime.datetime.now() # Returns 2018-01-15 09:00
 
-          p = MatriculasPagos(
-         fk_matricula_alumnos = id5,
+          Pago = MatriculasPagos.objects.create(
+         fk_matricula_alumnos = matriculadb,
          fk_metodopago_id  = 3,
-         monto_cancel  = id2,
+         monto_cancel  = precio,
          fk_tipomoneda  = None,
          fecha_pago = showtime,
-         referencia   = id6,
-         status_pay = "pending confirmation" ,
-         codigo_hash   = id3,
+         referencia   = reference,
+         status_pay = statusPago ,
+         codigo_hash   = hash,
          url_imagen  = id4  )
-          p.save()
+          Pago.save()
 
-           #if request.method == 'POST' and request.FILES['myfile']:
-          
-          #  return render(request, 'core/simple_upload.html', {
-          #   'uploaded_file_url': uploaded_file_url
-          #  })
-
-           #result = urllib.urlretrieve(id4) # image_url is a URL to an image
-          
-           #self.photo is the ImageField
-           #photo.save(
-           #os.path.basename(url),
-           #File(open(result[0], 'rb')))
-           #self.save()
-           
           return HttpResponse("Changes saved con valor")   
         else:
+         
+
+          statusPago=TablasConfiguracion.objects.get(valor_elemento='payConfirm')
+
+         
+          showtime=datetime.datetime.now() # Returns 2018-01-15 09:00
+
+          Pago = MatriculasPagos.objects.create(
+         fk_matricula_alumnos = matriculadb,
+         fk_metodopago_id  = 1,
+         monto_cancel  = precio,
+         fk_tipomoneda  = None,
+         fecha_pago = showtime,
+         referencia   = reference,
+         status_pay = statusPago ,
+         codigo_hash   = None,
+         url_imagen  = None  )
+          Pago.save()
               
-          return HttpResponse("Error")
+         
 
 
 
@@ -981,15 +1001,19 @@ def ViewPayments(request):
    #Unidad = MatriculasPagos.objects.select_related('fk_matricula_alumnos__fk_estruc_programa').all()
    
    
-   paginator = Paginator(structuras, 2)
+   paginator = Paginator(structuras, 10)
+   statusPago=TablasConfiguracion.obtenerHijos('PayStatus')
 
     
    page_number = request.GET.get('page')
    structuras = paginator.get_page(page_number)
    
-   return render(request, 'registration/viewpay.html', {"structuras": structuras, })
+   return render(request, 'registration/viewpay.html', {"structuras": structuras, 'segment':'registration','statusPago':statusPago })
 
   # return render(request, 'registration/viewpay.html', {"doc_et": qs_json,"doc_et2": qs_json2, "msg" : msg,'id':id, 'id2':id2})
+
+
+
 
 @login_required(login_url="/login/")
 def hashPay(request):
@@ -1052,6 +1076,29 @@ def GetEditStatus(request):
 
 
 #parciales
+
+@login_required(login_url="/login/")
+def PaymentModal(request):
+  id=request.GET.get('id')
+  vista=int(request.GET.get('vista'))
+  statusPago=TablasConfiguracion.obtenerHijos('PayStatus')
+  Ruta=settings.UPLOAD_ROOT
+
+
+  pago=MatriculasPagos.objects.raw("Select * from registration_matriculaspagos as rmp join registration_matriculaalumnos as rpf on rmp.fk_matricula_alumnos_id=rpf.idmatricula_alumnos join app_publico as ap on ap.idpublico=rpf.fk_publico_id where idmatricula_pagos="+id)
+  
+
+  if vista!=3:
+   return render(request, 'components/modalEditPay.html', {'pago':pago[0], 'statusPago':statusPago, 'Ruta':Ruta})
+  if vista==3:
+
+   return render(request, 'components/modalEditTransfer.html', {'pago':pago[0], 'statusPago':statusPago, 'Ruta':Ruta})
+
+
+  
+
+
+
 def ComboOptions(request):
     structuraProg=request.GET.get("structuraProg")
     subEstructuraProg=Estructuraprograma.objects.filter(fk_estructura_padre=structuraProg)

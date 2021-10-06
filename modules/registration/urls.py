@@ -29,6 +29,11 @@ urlpatterns = [
     path('Payments/', views.Pay, name='ManagePay'  ),
 
     path('ViewPayments/', views.ViewPayments, name='ViewPayments'  ),
+    path('ViewPayments/PaymentModal/', views.PaymentModal, name='PaymentModal'  ),
+    
+
+
+
     path('ViewPayments/GetEditStatus/', views.GetEditStatus, name='GetEditStatus'  ),
     #path('ViewPayments/Getdata/', views.Getdata, name='Getdata'  ),
 
