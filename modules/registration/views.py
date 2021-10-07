@@ -1056,11 +1056,11 @@ def ViewPayments(request):
       'fechaInicialPago':fechaInicialPago  ,
       'refPago':refPago
       }
+   context['segment'] = 'registration'
 
    
    return render(request, 'registration/viewpay.html', context)
 
-  # return render(request, 'registration/viewpay.html', {"doc_et": qs_json,"doc_et2": qs_json2, "msg" : msg,'id':id, 'id2':id2})
 
 
 
