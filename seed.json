@@ -343,6 +343,20 @@
   },
   {
     "model": "app.TablasConfiguracion",
+    "pk": 202,
+    "fields": {
+      "desc_elemento": "Payment in Revision",
+      "fk_tabla_padre_id": 21,
+      "tipo_elemento": 1,
+      "permite_cambios":1,
+      "valor_elemento":"EstatusPay",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
     "pk": 29,
     "fields": {
       "desc_elemento": "Approved",

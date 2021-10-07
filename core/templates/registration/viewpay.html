@@ -6,6 +6,7 @@
 {% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
+{% load Filter %}
  
 	<div class="content">
 		<div class="page-inner">
@@ -51,14 +52,67 @@
                                     <td>Initial Date</td>
                                     <td></td>
                                     <td>
-                                        <input id="fechaInicial" name="fechaInicial" type="date" class="form-control" >
+                                        <input id="fechaInicialPago" name="fechaInicialPago" type="date" class="form-control" >
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>Final Date</td>
                                     <td></td>
                                     <td>
-                                        <input id="fechaFinal" name="fechaFinal" id type="date" class="form-control" >
+                                        <input id="fechaFinalPago" name="fechaFinalPago" id type="date" class="form-control" >
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Payment Status</td>
+                                    <td></td>
+                                    <td>
+                                        <select id="idStatusPago" name="idStatusPago" class="form-control" >
+                                            <option value=""></option>
+
+                                            {% for mat in statusPago %}
+                                            <option value="{{mat.id_tabla}}" {% if mat.id_tabla == idStatusPago %} selected {% endif %}    >{{mat}}</option>
+
+
+                                            {% endfor %}
+
+
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Origen</td>
+                                    <td></td>
+                                    <td>
+                                        <select id="idOrigenPago" name="idOrigenPago"  class="form-control" >
+                                            <option value=""></option>
+
+                                            {% for mat in origenes %}
+                                            <option value="{{mat.id}}"  {% if mat.id == idOrigenPago %} selected {% endif %}    >{{mat.origen}}</option>
+
+
+                                            {% endfor %}
+
+
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>User</td>
+                                    <td></td>
+                                    <td>
+                                        <input id="userPago" name="userPago" id type="text" value="{{userPago}}"  readonly class="form-control" >
+                                        <input   type="hidden" readonly id="userPagoId" name="userPagoId" value="{{userPagoId}}" >
+
+                                    </td>
+                                    <td>
+                                        <a href="javascript:void(0);"  onclick="modalBuscarPersona()">   <span class="fas fa-search">     </span></a> 
+                                       </td>
+                                </tr>
+                                <tr>
+                                    <td>Reference</td>
+                                    <td></td>
+                                    <td>
+                                        <input id="refPago" name="refPago" value="{{refPago}}" id type="text" class="form-control" >
                                     </td>
                                 </tr>
                                
@@ -99,7 +153,7 @@
                                     
                                     <th>Reference</th>
                                     <th>Method</th>
-                                    <th>Reference</th>
+                                    <th>Amount</th>
                                     {% comment %} <th>Hash</th> {% endcomment %}
                                     <th>Status</th>
                                     
@@ -115,18 +169,12 @@
                                 {% for mat in structuras %}
                                 <tr style="cursor:pointer;" id=""  onclick="" >
                                     <td ></td>
-                                   <td>{{mat.Nombre }}  {{ mat.Apellido}}</td>
+                                   <td>{{mat.fk_matricula_alumnos.fk_publico }}  </td>
                                    <td>{{mat.fecha_pago}}</td>
                                     
-                                   <td>{{mat.referencia}}</td>
+                                   <td>{{mat.referencia}}  </td>
                                    <td>
-                                   {% if mat.fk_metodopago_id == 1 %}
-                                   {{"Paypal"}}
-                                   {% elif mat.fk_metodopago_id == 2 %}
-                                   {{"Credit card"}}
-                                   {% elif mat.fk_metodopago_id == 3 %}
-                                   {{"Bank Transfers"}}
-                                   {% endif %}
+                               {{ mat.fk_metodopago_id|Origen}}
                                    </td>
                                     
                                   <td >
@@ -272,14 +320,221 @@
 </div>
 
 </div>
+<!--Buscar Personas DB Modal-->
+<div class="modal fade" tabindex="-1" role="dialog" id="BuscarPersonaModal">
+    <div class="modal-dialog" role="document" id="modalContentPersona">
+     
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
 
+
+<script>
+    var paginaActual=1;
+    var numPaginas="{{ publicoObject}}";
+
+    function setNumPages(value){
+
+        numPaginas=value;
+    }
+
+
+    function openmen(){
+        
+    }
+
+function SelectPersona(nombre, id){
+$("#BuscarPersonaModal").modal("toggle");
+
+userPago.value=nombre;
+userPagoId.value=id;
+
+
+
+
+}
+function BuscarPersonaPost(){
+	
+
+    let url='ModalPublico/';
+    let formData = new FormData(); 
+    formData.append("nombreBuscar", nombreBuscar.value);
+
+
+    fetch(url,{
+        headers: {
+						'Accept': 'application/json',
+						'X-Requested-With': 'XMLHttpRequest',
+						"X-CSRFToken": getCookie('csrftoken')
+					},
+					mode: 'same-origin',
+					method: 'POST',
+                    body:formData
+    }).then(function(result){
+    
+    return result.text();
+    
+    }).then(function(result){
+        
+        let unit=document.getElementById("modalContentPersona").innerHTML=result;
+    
+    });
+        $("#BuscarPersonaModal").modal("show");
+        
+      
+    }
+
+
+function goToPage(page){
+    
+
+    paginaActual=paginaActual+1;
+    let url='ModalPublico/'+"?page="+page.toString();
+    fetch(url,{
+        mode: 'no-cors',
+      method: 'get'
+    }).then(function(result){
+    
+    return result.text();
+    
+    }).then(function(result){
+        
+        let unit=document.getElementById("modalContentPersona").innerHTML=result;
+    
+    });
+        $("#BuscarPersonaModal").modal("show");
+        
+      
+    }
+
+
+function modalNext(){
+    
+
+    paginaActual=paginaActual+1;
+    let url='ModalPublico/'+"?page="+paginaActual.toString();
+    fetch(url,{
+        mode: 'no-cors',
+      method: 'get'
+    }).then(function(result){
+    
+    return result.text();
+    
+    }).then(function(result){
+        
+        let unit=document.getElementById("modalContentPersona").innerHTML=result;
+    
+    });
+        $("#BuscarPersonaModal").modal("show");
+        
+      
+    }
+
+    
+function modalPrevius(){
+    
+  paginaActual=paginaActual-1;
+
+    let url='ModalPublico/'+"?page="+paginaActual.toString();
+    fetch(url,{
+        mode: 'no-cors',
+      method: 'get'
+    }).then(function(result){
+    
+    return result.text();
+    
+    }).then(function(result){
+        
+        let unit=document.getElementById("modalContentPersona").innerHTML=result;
+    
+    });
+        $("#BuscarPersonaModal").modal("show");
+        
+      
+    }
+    
+function modalLast(){
+    paginaActual=numPaginas;
+ 
+
+    let url='ModalPublico/'+"?page="+numPaginas.toString();
+    fetch(url,{
+        mode: 'no-cors',
+      method: 'get'
+    }).then(function(result){
+    
+    return result.text();
+    
+    }).then(function(result){
+        
+        let unit=document.getElementById("modalContentPersona").innerHTML=result;
+    
+    });
+        $("#BuscarPersonaModal").modal("show");
+        
+      
+    }
+    
+function modalFirst(){
+    paginaActual=1;
+
+
+    let url='ModalPublico/'+"?page=1";
+    fetch(url,{
+        mode: 'no-cors',
+      method: 'get'
+    }).then(function(result){
+    
+    return result.text();
+    
+    }).then(function(result){
+        
+        let unit=document.getElementById("modalContentPersona").innerHTML=result;
+    
+    });
+        $("#BuscarPersonaModal").modal("show");
+        
+      
+    }
+    
+
+
+</script>
+
+<script>
+
+function modalBuscarPersona(){
+    
+
+
+    let url='ModalPublico/';
+    fetch(url,{
+        mode: 'no-cors',
+      method: 'get'
+    }).then(function(result){
+    
+    return result.text();
+    
+    }).then(function(result){
+        
+        let unit=document.getElementById("modalContentPersona").innerHTML=result;
+    
+    });
+        $("#BuscarPersonaModal").modal("show");
+        
+      
+    }
+
+</script>
 
 
 
 <script>
+var idPago=0;
+var origin=0;
 
 function Review (id,origen){
- 
+ idPago=id;
+ origin=origen;
 
  let url='PaymentModal/?id='+id+'&vista='+origen;
 fetch(url,{
@@ -304,17 +559,19 @@ $("#ModalEd").modal("show");
 
 
 
-function enviar(){
+function uptdatePay(){
 
 var xhr = new XMLHttpRequest();
-xhr.open("POST", "InsertC/"); 
+xhr.open("POST", "updatePayStatus/"); 
 xhr.onload = function(event){ 
-alert("Success, server responded with: " + event.target.response); // raw response
+//alert("Success, server responded with: " + event.target.response); // raw response
 //location.href = "" ;
+ alerta(1);
+reload();
 }; 
 // or onerror, onabort
-var formData = new FormData(document.getElementById("enrollI")); 
-formData.append('idNum', codigoMatricula.value);
+var formData = new FormData(document.getElementById("paymentForm")); 
+formData.append('idPago',idPago );
 xhr.send(formData);
 
 

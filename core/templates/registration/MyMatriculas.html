@@ -822,9 +822,10 @@ function reload(){
                 element.innerHTML = '';
                 element.innerHTML = '<h3>Thank you for your payment!</h3>';
                
+                var  statusPay=(orderData.purchase_units[0].payments.captures[0].final_capture);
 
 
-
+                if(statusPay==true){
                         var xhr = new XMLHttpRequest();
                         xhr.open("POST", "InsertPayTr/"); 
                         xhr.onload = function(event){ 
@@ -844,7 +845,7 @@ function reload(){
 
                         xhr.send(formData);
 
-
+                    }
 
 
                        
@@ -874,7 +875,7 @@ var xhr = new XMLHttpRequest();
 xhr.open("POST", "InsertPayTr/"); 
 xhr.onload = function(event){ 
 //alert("Success, server responded with: " + event.target.response); // raw response
-alert(1);
+alerta(1);
 reload();
 }; 
 // or onerror, onabort

@@ -428,6 +428,7 @@ def MatriculacionAdmin(request):
             
     context = { 'msg':msg,'matriculasList': matriculaList}
     context['segment'] = 'registration'
+    
 
     
     html_template = (loader.get_template('registration/MatriculacionAdmin.html'))
@@ -632,7 +633,7 @@ def ManagePrices(request):
         cbUnidad=request.session['cbUnidad'] if 'cbUnidad' in request.session else None
         cbCurso=request.session['cbCurso'] if 'cbCurso' in request.session else None
         cbPrograma=request.session['cbPrograma'] if 'cbPrograma' in request.session else None
-        cbPrice=request.session['cbPrecio'] if 'cbPrecio' in request.session else None
+        cbPrecio=request.session['cbPrecio'] if 'cbPrecio' in request.session else None
 
 
 
@@ -863,219 +864,210 @@ def MasterPiece(request):
 
 
 
-##pagoss
 
-@login_required(login_url="/login/")
-def InsertPay(request):
-
-     if request.method == "GET":
-     
-        id1=request.GET.get('matricula')
-        id2=request.GET.get('matricula2')
-        id3=request.GET.get('matricula3')
-        #id4=request.GET.get('id1')
-        print(id1,id2,id3)
-
-        id41 = MatriculaAlumnos.objects.get(idmatricula_alumnos = request.GET['codM'])
-        id4=id41
-        #id4=1;
-        id5 = request.GET.get('refPay')
-        id6 = datetime.datetime.now()
-        id7 = request.GET.get('refPayer')
-
-        if id1 == 'Paypal':
-          
-           p = MatriculasPagos(
-         fk_matricula_alumnos =  id4,
-         fk_metodopago_id  = 1,
-         monto_cancel  = id3,
-         fk_tipomoneda  = None,
-         fecha_pago = id6,
-         referencia   = id5,
-         status_pay = id2 ,
-         codigo_hash   = id7,
-         url_imagen  = None  )
-           p.save()
-         
-           return HttpResponse("Changes saved con valor")   
-
-@login_required(login_url="/login/")
-def InsertPayTr(request):
-
-     if request.method == "POST":
-        print(request.POST)
-        hash=request.POST.get('hash')
-        precio=request.POST.get('precio')
-        matricula=request.POST.get('matricula')
-        
-
-        
-        matriculadb = MatriculaAlumnos.objects.get(idmatricula_alumnos = matricula)
-        
-
-        reference=request.POST.get('reference')
-        origen=request.POST.get('origen')
-       
-        if origen == '3':
-          
-          myfile = request.FILES['imagenRuta']
-          
-          fs = FileSystemStorage()
-          nombreImagen = str(uuid.uuid4())
-          extensionFile=Path(myfile.name).suffix
-          nombreImagen=nombreImagen+extensionFile
-          Ruta=settings.UPLOAD_ROOT
-          
-
-
-          folder = request.path.replace("/", "_")
-          try:
-            os.mkdir(os.path.join(Ruta, folder))
-          except:
-           pass
-          
-          
-
-          filename = fs.save(Ruta+'/'+nombreImagen, myfile)
-          
-
-          id4 = nombreImagen
-
-          statusPago=TablasConfiguracion.objects.get(valor_elemento='payWait')
-
-         
-          showtime=datetime.datetime.now() # Returns 2018-01-15 09:00
-
-          Pago = MatriculasPagos.objects.create(
-         fk_matricula_alumnos = matriculadb,
-         fk_metodopago_id  = 3,
-         monto_cancel  = precio,
-         fk_tipomoneda  = None,
-         fecha_pago = showtime,
-         referencia   = reference,
-         status_pay = statusPago ,
-         codigo_hash   = hash,
-         url_imagen  = id4  )
-          Pago.save()
-
-          return HttpResponse("Changes saved con valor")   
-        else:
-         
-
-          statusPago=TablasConfiguracion.objects.get(valor_elemento='payConfirm')
-
-         
-          showtime=datetime.datetime.now() # Returns 2018-01-15 09:00
-
-          Pago = MatriculasPagos.objects.create(
-         fk_matricula_alumnos = matriculadb,
-         fk_metodopago_id  = 1,
-         monto_cancel  = precio,
-         fk_tipomoneda  = None,
-         fecha_pago = showtime,
-         referencia   = reference,
-         status_pay = statusPago ,
-         codigo_hash   = None,
-         url_imagen  = None  )
-          Pago.save()
-              
-         
 
 
 
 @login_required(login_url="/login/")
 def ViewPayments(request):
-   #structuras=Estructuraprograma.objects.raw("Select * from app_Estructuraprograma INNER  join registration_PreciosFormacion on app_Estructuraprograma.idestructuraprogrmas=registration_PreciosFormacion Where ( select fk_estruc_programa from registration_PreciosFormacion) ")
-   #structuras=Estructuraprograma.objects.all()
-   #structuras=structuras.annotate(precio=F('prize__precio'), fechaIngreso=F('prize__fecha_registro'), id=F('prize__idprograma_precios'), descuento=F('prize__PorcentajeDescuento'), max=Max('prize__idprograma_precios'), amountDiscount=Max('prize__idprograma_precios')  ).filter(id=Max('prize__idprograma_precios'))
+
    
-   #structuras2=MatriculaAlumnos.objects.all()
-   #structuras3=structuras2.annotate(id1=F('idreferencia__idmatricula_pagos'), id2=F('idreferencia__fk_matricula_alumnos'),Monto=F('idreferencia__monto_cancel'), fecha=F('idreferencia__fecha_pago'), referencia=F('idreferencia__referencia'), status=F('idreferencia__status_pay'), codigoHash=F('idreferencia__codigo_hash'), imagen=F('idreferencia__url_imagen') ).filter(id1=Max('idreferencia__idmatricula_alumnos'))
-   #print(structuras3)
+   structuras=MatriculasPagos.objects.all()
+
+   fechaFinalPago=None
+   fechaInicialPago=None
+      
+   userPagoId=None
+   idStatusPago=None
+   idOrigenPago=None
+
+   userPago=None
+   refPago=None
+
+
+
+   is_cookie_set = 0
    
-   #structuras=MatriculasPagos.objects.raw("Select * from registration_matriculaspagos as rmp join registration_matriculaalumnos as rpf on rmp.fk_matricula_alumnos_id=rpf.idmatricula_alumnos ")
-   structuras=MatriculasPagos.objects.raw("Select * from registration_matriculaspagos as rmp join registration_matriculaalumnos as rpf on rmp.fk_matricula_alumnos_id=rpf.idmatricula_alumnos join app_publico as ap on ap.idpublico=rpf.fk_publico_id ")
-   print(structuras.query)
-   
-   #print(MatriculasPagos.objects.select_related('fk_matricula_alumnos__fk_estruc_programa').all().query)
-   #Unidad = MatriculasPagos.objects.select_related('fk_matricula_alumnos__fk_estruc_programa').all()
-   
+   if 'fechaFinalPago' in request.session or 'fechaInicialPago' in request.session or 'userPagoId' in request.session or 'idStatusPago' in request.session or 'idOrigenPago' in request.session or 'refPago' in request.session : 
+        fechaFinalPago = request.session['fechaFinalPago'] if 'fechaFinalPago' in request.session else None
+        fechaInicialPago = request.session['fechaInicialPago'] if 'fechaInicialPago' in request.session else None
+        userPagoId=request.session['userPagoId'] if 'userPagoId' in request.session else None
+        idStatusPago=request.session['idStatusPago'] if 'idStatusPago' in request.session else None
+        idOrigenPago=request.session['idOrigenPago'] if 'idOrigenPago' in request.session else None
+        refPago=request.session['refPago'] if 'refPago' in request.session else None
+
+
+        
+        is_cookie_set = 1
+
+   if request.method == "GET":
+      
+
+      if request.GET.get('page')==None:
+        is_cookie_set = 0
+        request.session['fechaFinalPago']=None
+        request.session['fechaInicialPago']=None
+        request.session['idStatusPago']=None
+        request.session['userPagoId']=None
+        request.session['idOrigenPago']=None
+        request.session['refPago']=None
+
+        fechaFinalPago=None
+        fechaInicialPago=None
+              
+        userPagoId=None
+        idStatusPago=None
+        idOrigenPago=None
+
+        userPago=None
+        refPago=None
+
+      
+      
+      if (is_cookie_set == 1): 
+          if fechaInicialPago!=None and fechaInicialPago!="":
+
+           dateI=parse_datetime(fechaInicialPago+' 00:00:00-00')
+          
+         
+           structuras=structuras.filter(fecha_pago__gte=dateI)
+          if fechaFinalPago!=None  and fechaFinalPago!="":
+
+           dateF=parse_datetime(fechaFinalPago+' 00:00:00-00')
+          
+          
+           structuras=structuras.filter(fecha_pago__lte=dateF)
+          
+          if userPagoId!=None and userPagoId!="":
+           structuras=structuras.filter(fk_matricula_alumnos__fk_publico=userPagoId)
+
+          if idOrigenPago!=None and idOrigenPago!="":
+           structuras=structuras.filter(fk_metodopago_id=idOrigenPago)
+
+          if idStatusPago!=None and idStatusPago!="":
+           structuras=structuras.filter(status_pay=idStatusPago)
+
+          if refPago!=None and refPago!="":
+           structuras=structuras.filter(referencia__contains=refPago)
+
+
+
+
+   if request.method == "POST":
+        
+        if (is_cookie_set == 1): 
+          
+          request.session['fechaFinalPago']=None
+          request.session['fechaInicialPago']=None
+          request.session['idStatusPago']=None
+          request.session['userPagoId']=None
+          request.session['idOrigenPago']=None
+          request.session['refPago']=None
+
+       
+
+        fechaInicialPago=request.POST.get('fechaInicialPago') 
+        fechaFinalPago=request.POST.get('fechaFinalPago') 
+        userPagoId=request.POST.get('userPagoId') 
+        idStatusPago=request.POST.get('idStatusPago') 
+        idOrigenPago=request.POST.get('idOrigenPago') 
+        refPago=request.POST.get('refPago') 
+
+        
+  
+        
+        if userPagoId!= None and userPagoId!="":
+         structuras=structuras.filter(fk_matricula_alumnos__fk_publico=userPagoId)
+         request.session['userPagoId'] = userPagoId
+
+       
+
+        if idStatusPago != None and idStatusPago!="":
+         structuras=structuras.filter(status_pay=idStatusPago)
+
+         request.session['idStatusPago'] = idStatusPago
+
+
+
+        if idOrigenPago != None and idOrigenPago!="" :
+         
+         
+         structuras=structuras.filter(fk_metodopago_id=idOrigenPago)
+         request.session['idOrigenPago'] = idOrigenPago
+
+
+        if refPago != None and refPago!="" :
+         
+         
+         structuras=structuras.filter(referencia__contains=refPago)
+         request.session['refPago'] = refPago
+
+        
+        if fechaInicialPago != None and fechaInicialPago!="":
+          dateI=parse_datetime(fechaInicialPago+' 00:00:00-00')
+          fechaI=fechaInicialPago
+          request.session['fechaInicial'] = fechaI
+          
+          structuras=structuras.filter(fecha_matricula__gte=dateI)
+
+        if fechaFinalPago != None and fechaFinalPago!="":
+          dateF=parse_datetime(fechaFinalPago+' 00:00:00-00')
+          fechaF=fechaFinalPago
+          request.session['fechaFinalPago'] = fechaF
+          
+          structuras=structuras.filter(fecha_matricula__lte=dateF)
+          
+
+
+
    
    paginator = Paginator(structuras, 10)
    statusPago=TablasConfiguracion.obtenerHijos('PayStatus')
+   origenes=Methods.getOrigenes()
 
+
+   if userPagoId!=None and userPagoId!="" :
+     userPago=Publico.objects.get(pk=userPagoId)
+   else:
+      userPago=""
+      userPagoId=""
+    
+   if idOrigenPago!=None and idOrigenPago!="":
+     idOrigenPago=int(idOrigenPago)
+
+   if idStatusPago!=None and idStatusPago!="":
+     idStatusPago=int(idStatusPago)
+   
+   if refPago==None:
+      refPago=""
     
    page_number = request.GET.get('page')
    structuras = paginator.get_page(page_number)
+
+   context = {"structuras": structuras,
+    'segment':'registration',
+    'statusPago':statusPago,
+     'origenes':origenes,
+     'idOrigenPago':idOrigenPago,
+     'idStatusPago':idStatusPago,
+     'userPago':userPago,
+     'userPagoId':userPagoId,
+     'fechaFinalPago':fechaFinalPago,
+      'fechaInicialPago':fechaInicialPago  ,
+      'refPago':refPago
+      }
+
    
-   return render(request, 'registration/viewpay.html', {"structuras": structuras, 'segment':'registration','statusPago':statusPago })
+   return render(request, 'registration/viewpay.html', context)
 
   # return render(request, 'registration/viewpay.html', {"doc_et": qs_json,"doc_et2": qs_json2, "msg" : msg,'id':id, 'id2':id2})
 
 
 
 
-@login_required(login_url="/login/")
-def hashPay(request):
-
-  
-         
-       
-       hash = uuid.uuid4()
-      # contraseña_cifrada = hashlib.sha512(contraseña.encode()) 
-      # print(contraseña_cifrada.hexdigest())
-      # hash=contraseña_cifrada.hexdigest()   
-       #print (hash.hexdigest())
-       #m = hashlib.shake_128(b.binary_converted)
-       #hash=m.hexdigest(15)
-       print(hash)
-       return HttpResponse(hash)
-
-@login_required(login_url="/login/")
-def media(request):
-
-  if request.method == "GET":
-   uploaded_file_url=request.GET.get('Url')
-
-  # return render(request, 'core/simple_upload.html', { 'uploaded_file_url': uploaded_file_url })
-
-   return HttpResponse(uploaded_file_url)
-   #return HttpResponse("hola")
 
 
-@login_required(login_url="/login/")
-def GetEditStatus(request):
-
-
-    
-   if request.method == "GET":
-      
-      try:
-
-
-        status=request.GET.get('Combo')    
-
-        #type=request.POST.get('type')
-        
-        id=request.GET.get('id')
-        print(id)
-        print(status)
-        #estado=TablasConfiguracion.objects.get(id_tabla=status)
-        
-        #tipo=TablasConfiguracion.objects.get(id_tabla=type)
-
-        matricula=MatriculasPagos.objects.get( pk=id  )
-        
-        matricula.status_pay=status
-        #matricula.fk_tipo_matricula=tipo
-        matricula.save()
-        return HttpResponse("Changes saved")
-
-      except:
-        return HttpResponse("Error, try again later")
-
-
-#parciales
+# region parciales
 
 @login_required(login_url="/login/")
 def PaymentModal(request):
@@ -1157,25 +1149,6 @@ def ModalPay(request):
 
   return render(request, 'components/modalpay.html',{'precio':listaPrecio,})
 
-@login_required(login_url="/login/")
-def ModalPayDetail(request):
-  
-    # idU=request.POST.get('un')
-    # idC=request.POST.get('cant')
-    idU="12"
-    idC="24"
-    structuraProg=""
-    tipoPrograma=""
-
-    return render(request, 'components/modalpaydetail.html',{'idU':idU, 'idC':idC})
-
-@login_required(login_url="/login/")
-def ModalPayDetail2(request):
-  
-    structuraProg=""
-    tipoPrograma=""
-
-    return render(request, 'components/modalpaydetail2.html',{'structuraProg':structuraProg, 'tipoPrograma':tipoPrograma})
 
 
 def ModalPublico(request):
@@ -1242,16 +1215,17 @@ def ModalPublico(request):
     if personaBuscar==None:
       personaBuscar=""
     context = { 'msg':msg,'publicoObject':page_obj ,'personaBuscar':personaBuscar}
-   # context['segment'] = 'index'
 
-  
-    html_template = (loader.get_template('registration/PublicoAdmin.html'))
+
 
    # return HttpResponse(html_template.render(context, request))
-    return render(request, 'components/modalPublico.html', context)
+    return render(request, 'components/modalPublicoBuscar.html', context)
 
+  #  return render(request, 'components/modalPublico.html', context)
 
-#metod
+#endregion
+
+# region metodos
 @login_required(login_url="/login/")
 def save(request):
 
@@ -1710,5 +1684,140 @@ def GetPrice(request):
 
   return HttpResponse(precio)
 
-   
 
+@login_required(login_url="/login/")
+def updatePayStatus(request):
+
+
+    
+   if request.method == "POST":
+      
+      try:
+
+
+
+        
+        id=request.POST.get('idPago')
+        status=request.POST.get('statusG')
+
+        
+        estado=TablasConfiguracion.objects.get(id_tabla=status)
+        
+      
+        
+
+        matricula=MatriculasPagos.objects.get( pk=id  )
+        
+        matricula.status_pay=estado
+       
+        matricula.save()
+        return HttpResponse("Changes saved")
+
+      except:
+        return HttpResponse("Error, try again later")
+
+@login_required(login_url="/login/")
+def hashPay(request):
+
+  
+         
+       
+       hash = uuid.uuid4()
+      # contraseña_cifrada = hashlib.sha512(contraseña.encode()) 
+      # print(contraseña_cifrada.hexdigest())
+      # hash=contraseña_cifrada.hexdigest()   
+       #print (hash.hexdigest())
+       #m = hashlib.shake_128(b.binary_converted)
+       #hash=m.hexdigest(15)
+       print(hash)
+       return HttpResponse(hash)
+
+
+@login_required(login_url="/login/")
+def InsertPayTr(request):
+
+     if request.method == "POST":
+        print(request.POST)
+        hash=request.POST.get('hash')
+        precio=request.POST.get('precio')
+        matricula=request.POST.get('matricula')
+        
+
+        
+        matriculadb = MatriculaAlumnos.objects.get(idmatricula_alumnos = matricula)
+        
+
+        reference=request.POST.get('reference')
+        origen=request.POST.get('origen')
+       
+        if origen == '3':
+          
+          myfile = request.FILES['imagenRuta']
+          
+          fs = FileSystemStorage(location=settings.UPLOAD_ROOT )
+          nombreImagen = str(uuid.uuid4())
+          extensionFile=Path(myfile.name).suffix
+          nombreImagen=nombreImagen+extensionFile
+          Ruta=settings.UPLOAD_ROOT
+          
+
+
+          folder = request.path.replace("/", "_")
+          try:
+            os.mkdir(os.path.join(Ruta))
+          except:
+           pass
+
+        
+
+          filename = fs.save(Ruta+'/'+nombreImagen, myfile)
+          
+
+          id4 = nombreImagen
+
+          statusPago=TablasConfiguracion.objects.get(valor_elemento='payWait')
+
+         
+          showtime=datetime.datetime.now() # Returns 2018-01-15 09:00
+
+          Pago = MatriculasPagos.objects.create(
+            fk_matricula_alumnos = matriculadb,
+            fk_metodopago_id  = 3,
+            monto_cancel  = precio,
+            fk_tipomoneda  = None,
+            fecha_pago = showtime,
+            referencia   = reference,
+            status_pay = statusPago ,
+            codigo_hash   = hash,
+            url_imagen  = id4  )
+          Pago.save()
+
+          matriculadb.fk_status_matricula=TablasConfiguracion.objects.get('EstatusPay')
+          matriculadb.save()
+
+          return HttpResponse("Changes saved con valor")   
+        else:
+         
+
+          statusPago=TablasConfiguracion.objects.get(valor_elemento='payConfirm')
+
+         
+          showtime=datetime.datetime.now() # Returns 2018-01-15 09:00
+
+          Pago = MatriculasPagos.objects.create(
+            fk_matricula_alumnos = matriculadb,
+            fk_metodopago_id  = 1,
+            monto_cancel  = precio,
+            fk_tipomoneda  = None,
+            fecha_pago = showtime,
+            referencia   = reference,
+            status_pay = statusPago ,
+            codigo_hash   = None,
+            url_imagen  = None  )
+          Pago.save()
+          matriculadb.fk_status_matricula=TablasConfiguracion.objects.get('EstatusAprovado')
+          matriculadb.save()
+
+              
+#endregion
+      

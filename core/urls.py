@@ -15,19 +15,21 @@ from django.views.static import serve
 urlpatterns = [
     
     path("registration/", include("modules.registration.urls")),
+    re_path(r'^upload/(?P<path>.*)$', serve,{'document_root': settings.UPLOAD_ROOT}), 
     path("academic/", include("modules.academic.urls")),
     path("communication/", include("modules.communication.urls")),
     path("planning/", include("modules.planning.urls")),
     path("help_app/", include("modules.helping.urls")),
-    path("", include("modules.security.urls")),
-    
-                                                         # Auth routes - login / register
+    path("", include("modules.security.urls")),                              # Auth routes - login / register
     path('admin/', admin.site.urls),                     # Django admin route
     path("", include("modules.app.urls")),            
        # UI Kits Html files
    
   
 
-]+ static(settings.UPLOAD_URL, document_root=settings.UPLOAD_ROOT)
+]
+#+ static(settings.UPLOAD_URL, document_root=settings.UPLOAD_ROOT)
+
+
 
 

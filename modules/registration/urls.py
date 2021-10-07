@@ -30,11 +30,13 @@ urlpatterns = [
 
     path('ViewPayments/', views.ViewPayments, name='ViewPayments'  ),
     path('ViewPayments/PaymentModal/', views.PaymentModal, name='PaymentModal'  ),
+    path('ViewPayments/ModalPublico/', views.ModalPublico, name='ModalPublico'  ),
+
     
 
 
 
-    path('ViewPayments/GetEditStatus/', views.GetEditStatus, name='GetEditStatus'  ),
+    path('ViewPayments/updatePayStatus/', views.updatePayStatus, name='updatePayStatus'  ),
     #path('ViewPayments/Getdata/', views.Getdata, name='Getdata'  ),
 
 
@@ -42,7 +44,7 @@ urlpatterns = [
 
     
     ########################################tomalo cerdo####################
-    path('MyEnrollments/InsertPay/', views.InsertPay, name='InsertPay'  ),
+ 
     path('MyEnrollments/InsertPayTr/', views.InsertPayTr, name='InsertPayTr'  ),
 
 
@@ -77,8 +79,7 @@ urlpatterns = [
 
 
     path('MyEnrollments/ModalPay/', views.ModalPay, name='ModalPay'  ),
-    path('MyEnrollments/ModalPayDetail/', views.ModalPayDetail, name='ModalPayDetail'  ),
-    path('MyEnrollments/ModalPayDetail2/', views.ModalPayDetail2, name='ModalPayDetail2'  ),
+   
     path('MyEnrollments/GetPrice/', views.GetPrice, name='GetPrice'  ),
 
 

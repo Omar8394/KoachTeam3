@@ -1,6 +1,11 @@
 from django.db import models
 from ..app.models import TablasConfiguracion, Publico
+
 from django.contrib.auth.models import User
+
+
+
+
 
 class CtaUsuario(models.Model):
     idcta_usuario = models.AutoField(primary_key=True)  # Field name made lowercase.
@@ -41,3 +46,8 @@ class LogSeguridad(models.Model):
     fecha_transaccion = models.DateField()  # Field name made lowercase.
     fk_tipo_operacion = models.SmallIntegerField()
     valor_dato = models.TextField(blank=True, null=True)
+
+#class ExtensionUsuario(models.Model):
+ #   user = models.OneToOneField(User, on_delete=models.CASCADE, default=None, null=True)
+  #  CtaUsuario = models.OneToOneField(CtaUsuario, on_delete=models.CASCADE, default=None, null=True)
+   # Publico = models.OneToOneField(Publico, on_delete=models.CASCADE, default=None, null=True)
