@@ -11,7 +11,7 @@ results for "{{query}}"
          <div class="card-list-item-inner">
             <div class="card-list-item-title">Add new topic</div>
             <div class="card-list-item-actions">
-               <div onclick="openAddTopics()" class="btn btn-icon btn-success btn-round add-btn btn-card-lg">
+               <div onclick="openAddTopic()" class="btn btn-icon btn-success btn-round add-btn btn-card-lg">
                   <i class="fas fa-plus"></i>
                </div>
             </div>
@@ -22,8 +22,8 @@ results for "{{query}}"
       {% for topic in data%}
       {%if topic.valor_elemento == 'Topic'%}
       <li class="card-list-item">
-         <div class="card-list-item-inner" onclick="showContent('{{topic.pk}}')">
-            <div class="card-list-item-title">{{topic.descripcion}}</div>
+         <div class="card-list-item-inner">
+            <div class="card-list-item-title" onclick="showContent('{{topic.pk}}')">{{topic.descripcion}}</div>
             <div class="card-list-item-actions">
                <div class="btn-group" role="group">
                   {% if add %}

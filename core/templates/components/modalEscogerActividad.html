@@ -1,51 +1,50 @@
+{% load static%}
 <div class="modal-content">
-	<div class="modal-header">
-		<h5 class="modal-title" id="chooseNew">Choose an activity</h5>
-		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-			<span aria-hidden="true">&times;</span>
-		</button>
+    <div class="modal-header">
+        <h5 class="modal-title" id="chooseNew">Choose an activity</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
     </div>
     <form class="form" id="chooseContent" name="chooseContent">
-	    <div class="modal-body">
-	    	
-                <div class="form-row">
-                    <div class="form-group col-sm-6 text-center">
-                        <a href="#" >
-                            <img src="/static/assets/img/placeholder.jpeg" alt="Lesson img" class="img-thumbnail"/>
-                        </a>
-                        <span class="font-weight-bold mt-3">Lesson</span>
-                    </div>
-    
-                    <div class="form-group col-sm-6 text-center">
-                        <a href="#">
-                            <img  alt="Homework img" class="img-thumbnail ml-1"/>
-                        </a>
-                        <span class="font-weight-bold mt-3 ml-2">Homework</span>
-                    </div>                
+        <div class="modal-body">
+
+            <div class="form-row">
+                <div class="form-group col-sm-6 text-center" onclick="chooseModal('lesson')">
+                    <a href="#">
+                        <img src="{% static 'assets/img/placeholder.jpeg' %}" alt="Lesson img" class="img-thumbnail" />
+                    </a>
+                    <span class="font-weight-bold mt-3">Lesson</span>
                 </div>
-                <div class="form-row">
-                    <div class="form-group col-sm-6 text-center">
-                        <a href="#" >
-                            <img alt="Test img" class="img-thumbnail"/>
-                        </a>
-                        <span class="font-weight-bold mt-3">Test</span>
-                    </div>
-    
-                    <div class="form-group col-sm-6 text-center">
-                        <a href="#">
-                            <img  alt="Expert test img" class="img-thumbnail ml-1"/>
-                        </a>
-                        <span class="font-weight-bold mt-3 ml-2">Expert Test</span>
-                    </div>   
+
+                <div class="form-group col-sm-6 text-center" onclick="chooseModal('homework')">
+                    <a href="#">
+                        <img alt="Homework img" class="img-thumbnail ml-1" />
+                    </a>
+                    <span class="font-weight-bold mt-3 ml-2">Homework</span>
                 </div>
-         
-	    </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-sm-6 text-center" onclick="chooseModal('forum')">
+                    <a href="#">
+                        <img alt="Forum img" class="img-thumbnail" />
+                    </a>
+                    <span class="font-weight-bold mt-3">Forum</span>
+                </div>
+
+                <div class="form-group col-sm-6 text-center" onclick="chooseModal('test')">
+                    <a href="#">
+                        <img alt="Test img" class="img-thumbnail ml-1" />
+                    </a>
+                    <span class="font-weight-bold mt-3 ml-2">Test</span>
+                </div>
+            </div>
+
+        </div>
     </form>
-	<div class="modal-footer">
-		<button type="button" class="btn btn-danger" data-dismiss="modal">
+    <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">
             <i class="fas fa-arrow-left mr-2"></i>Back</button>
-		</button>
-	</div>
+        </button>
+    </div>
 </div>
-		
-	

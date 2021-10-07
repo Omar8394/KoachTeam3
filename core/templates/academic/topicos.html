@@ -80,6 +80,12 @@
    </div>
 </div>
 
+<!-- Modal nuevo tópico -->
+<div class="modal fade" id="addNewModal" tabindex="-1" role="dialog">
+   <div class="modal-dialog  modal-dialog-centered" role="document" id="addNewModalContent" >
+
+   </div>
+</div>
 <!-- Modal escoger actividad -->
 <div class="modal fade" id="addChooseActivities" tabindex="-1" role="dialog">
    <div class="modal-dialog  modal-dialog-centered" role="document" id="modalContentChoose">
@@ -101,7 +107,15 @@
    let editmode = false
    let query = ""
    let selectedId = ""
-   const showContent = (id)=>{
+   let selectedActivity = ""
+   const chooseModal = async (type)=>{
+      $("#addChooseActivities").modal("hide")
+      await renderModalActivity()
+      if(type == "test"){
+         await renderModalNewTest()
+      }
+   }
+   const showContent = (id) => {
       let contenido = document.getElementById(`contentTopic${id}`)
       contenido.classList.toggle("card-list-item-close")
    }
@@ -134,46 +148,67 @@
          })
       })
    }
-   
-   const openAddActivity = () => {
+
+   const openAddActivity = (idPadre) => {
+      selectedActivity = idPadre
       renderModalChooseActivities().then(() => {
-       
-       
          $("#addChooseActivities").modal("show")
       })
-    }
-    
-   const renderModalChooseActivities = () => {
-      return fetch("{% url 'modalChooseActivity' %}", {
-          ...fetchObject
-      })
-      .then(async (res) => {
-         document.getElementById("modalContentChoose").innerHTML = await res.text()
-      })
-      // .then(() => {
-      //    const formScaleGe = document.getElementById("scaleGe")
-      //    formScaleGe.addEventListener("submit", (e) => {
-      //       e.preventDefault()
-       
-      //    })
-            
-      // })
    }
 
-   const renderModalNewTest = () => {
-      return fetch("{% url 'modalNewTest' %}", {
-          ...fetchObject
+   const renderModalChooseActivities = () => {
+      return fetch("{% url 'modalChooseActivity' %}", {
+         ...fetchObject
       })
-      .then(async (res) => {
-         document.getElementById("modalContentTest").innerHTML = await res.text()
-      })
+         .then(async (res) => {
+            document.getElementById("modalContentChoose").innerHTML = await res.text()
+         })
       // .then(() => {
       //    const formScaleGe = document.getElementById("scaleGe")
       //    formScaleGe.addEventListener("submit", (e) => {
       //       e.preventDefault()
-       
+
       //    })
-            
+
+      // })
+   }
+   const renderModalActivity = () => {
+         return fetch("{% url 'modalAddActividad'%}", {
+            ...fetchObject,
+            body: JSON.stringify({
+               method: "Show",
+            })
+         })
+            .then(async (res) => {
+               document.getElementById("addNewModalContent").innerHTML = await res.text()
+            })
+            .then(() => {
+               $("#addNewModal").modal("show")
+               const formActividad = document.getElementById("formActividad")
+               formActividad.addEventListener("submit", (e) => {
+                  e.preventDefault()
+                  clickSave(formActividad, "{% url 'modalAddActividad' %}")
+                     .then(() => {
+                        $("#addNewModal").modal("hide")
+                        renderContent()
+                     })
+               })
+            })
+      }
+   const renderModalNewTest = () => {
+      return fetch("{% url 'modalNewTest' %}", {
+         ...fetchObject
+      })
+         .then(async (res) => {
+            document.getElementById("sectionDetailed").innerHTML = await res.text()
+         })
+      // .then(() => {
+      //    const formScaleGe = document.getElementById("scaleGe")
+      //    formScaleGe.addEventListener("submit", (e) => {
+      //       e.preventDefault()
+
+      //    })
+
       // })
    }
 
@@ -200,7 +235,7 @@
             })
       }
    }
-   const openDeleteTopics = async (id) => {
+   const openDeleteTopic = async (id) => {
       const elimino = await alerta(3)
       if (elimino) {
          fetch("{% url 'modalAddTopico'%}", {
@@ -220,7 +255,7 @@
             })
       }
    }
-   const openEditTopics = (id) => {
+   const openEditTopic = (id) => {
       editmode = true
       idSeleted = id
       fetch("{% url 'modalAddTopico'%}", {
@@ -246,7 +281,7 @@
             })
          })
    }
-   const openAddTopics = () => {
+   const openAddTopic = () => {
       editmode = false
       fetch("{% url 'modalAddTopico'%}", {
          ...fetchObject,
@@ -271,9 +306,10 @@
             })
          })
    }
+   
    const toggleTime = () => {
-      const time = document.getElementById("timeTopic")
-      const duration = document.getElementById("durationTopic")
+      const time = document.getElementById("timeActivity")
+      const duration = document.getElementById("durationActivity")
       if (!time.disabled) {
          time.value = null
          duration.value = null
