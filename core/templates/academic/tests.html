@@ -1,0 +1,349 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %}{% endblock %}
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+{% endblock stylesheets %}
+{% block content %}
+   <div class="content">
+      <div class="page-inner animated fadeInRight">
+         <div class="page-header">
+            <h4 class="page-title">Create test</h4>
+            <ul class="breadcrumbs">
+               <li class="nav-home">
+                  <a href="{% url 'home' %}">
+                     <i class="flaticon-home"></i>
+                  </a>
+               </li>
+               <li class="separator">
+                  <i class="flaticon-right-arrow"></i>
+               </li>
+               <li class="nav-item">
+                  <span>Module name</span>
+               </li>
+               <li class="separator">
+                  <i class="flaticon-right-arrow"></i>
+               </li>
+               <li class="nav-item">
+                  <a href="#">Page 1</a>
+               </li>
+            </ul>
+         </div>
+         <div class="page-category">         
+            <form action="">
+               <div class="form-row d-flex justify-content-center">
+                  <div class="card mt-3" style="width: 80rem;" >
+                     <div class="card-header">
+                        <div class="form-row">
+                           <h1>General settings</h1>
+                        </div>
+
+                        <div class="form-row">
+                           <div class="form-group col-md-6">
+                              <label for="title">Title for the test</label>
+                              <input type="text" name="title" class="form-control" id="title" placeholder="Enter a title" autocomplete="off" spellcheck="false">
+                           </div>
+                           <div class="form-group col-md-6">
+                              <label for="repeats">Amount of repeats</label>
+                              <input type="text" name="repeats" class="form-control" id="repeats" placeholder="Enter a number">
+                           </div>
+                        </div>
+
+                        <div class="form-row">
+                           <div class="form-group col-md-6">
+                              <label for="minApp">Minimun score to approve</label>
+                              <input type="text" name="minApp" class="form-control" id="minApp" placeholder="Enter a number">
+                           </div>
+                           <div class="form-group col-md-6">                     
+                              <label class="form-label">Score split</label>
+                              <div class="selectgroup w-100">
+                                 <label class="selectgroup-item">
+                                    <input type="radio" name="scoreRB" value="auto" class="selectgroup-input">
+                                    <span class="selectgroup-button">Auto</span>
+                                 </label>
+                                 <label class="selectgroup-item">
+                                    <input type="radio" name="scoreRB" value="manual" class="selectgroup-input">
+                                    <span class="selectgroup-button">Manual</span>
+                                 </label>                        
+                              </div>                 
+                           </div>          
+                        </div>        
+
+                        <div class="form-row">
+                           <div class="form-group col-md-6">                      
+                              <div class="custom-control custom-checkbox">
+                                 <input type="checkbox" class="custom-control-input" id="timerCB">
+                                 <label class="custom-control-label" for="timerCB">Timer</label>
+                              </div>
+                              <input type="number" class="form-control" id="timer" placeholder="Enter time" disabled>                       
+                           </div>
+                           <div class="form-group col-md-6">
+                              <label for="typeTime">Type of time</label>
+                              <select class="form-control" id="typeTime" name="typeTime" disabled>
+                                <option value="">Select an option</option>      
+                                
+                                 {% for dur in durations %}
+                                    <option value="{{dur.id_tabla}}"> {{dur}}</option>
+                                 {% endfor %}
+                              </select>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="card-body" id="questionCard">
+                        <div class="form-row">
+                            <div class="form-group col-md-6 d-flex justify-content-start">
+                                <h1>Questions</h1>
+                            </div>
+                            <div class="form-group col-md-6 d-flex justify-content-end">
+                                <button type="button" class="btn btn-success" onclick="openAddModalQuestion()">
+                                    Add question <i class="fas fa-plus ml-1"></i>
+                                </button>
+                            </div>
+                        </div>     
+                        <div class="form-row text-center">
+                            <div class="form-group col-md-12">
+                                <table class="table table-bordered table-striped table-hover text-center table-responsive">
+                                    <thead>
+                                        <tr>
+                                           <th class="col-md-8">
+                                               Question text
+                                           </th>
+                                           <th  class="col-md-2">
+                                               Question points
+                                           </th>
+                                            <th  class="col-md-2">
+                                                Type
+                                            </th>
+                                        
+                                            <th  class="col-md-2">
+                                                Actions
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody  id="tableContent">
+                                       
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                   
+                        <div class="d-flex justify-content-end p-3">     
+                            <nav aria-label="...">
+                                <ul class="pagination mb-0  justify-content-end">
+                                    <li class="page-item">
+                                        <a class="page-link" href="#" tabindex="-1">Previous</a>
+                                    </li>
+                                    <li class="page-item active">
+                                        <a class="page-link" href="#">1</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#">2</a>
+                                    </li>
+                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#">Next</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>                
+                     </div>
+                     <div class="card-footer d-flex justify-content-end">
+                        <button type="submit" value="Submit" class="btn btn-primary">Save<i class="fas fa-save ml-2"></i></button>
+                     </div>
+                  </div>           
+               </div>
+            </form>
+         </div>
+      </div>
+   </div>
+
+    <!--Modals-->
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="addNewQuestion">
+        <div class="modal-dialog modal-dialog-centered" role="document" id="modalQuestion">
+        
+            
+        </div><!-- /.modal-dialog -->
+    </div>
+{% endblock content %}
+
+{% block javascripts %}
+
+   <script>
+
+      // Variables
+
+      let tablaPreguntas = []
+      let tablaCuerpo = document.getElementById("tableContent")
+      const arrayTipos = [{% for type in tipoPreguntas %}{id:"{{type.id_tabla}}", descripcion:"{{type.desc_elemento}}"},{% endfor %}]
+
+        let hashObj = arrayTipos.reduce(function(acc, e){
+            acc[e.id]=e.descripcion
+            return acc
+        },{})
+
+
+      // Renderizar  
+
+      const renderModalQuestions = () => {
+         return fetch("{% url 'modalAddQuestion' %}", {
+             ...fetchObject
+         })
+         .then(async (res) => {
+            document.getElementById("modalQuestion").innerHTML = await res.text()
+         }).then(()=>{
+            const formQuestion = document.getElementById("questionForm")
+            formQuestion.addEventListener("submit", (e) => {
+               e.preventDefault()
+               clickAdd()
+            })              
+         })
+        }
+
+      const openAddModalQuestion = () => {
+         renderModalQuestions().then(()=>{
+            editmode = false
+            $("#addNewQuestion").modal("show")
+         })
+      }
+
+      // Agregar a la tabla
+
+      const clickAdd = () => {
+           
+         let datos = {
+            textQuestion: document.getElementById("questionText").value,
+            pointsQuestion: document.getElementById("questionPoints").value,
+            typeQuestion: hashObj[document.getElementById("typeQuestion").value],
+            actions:`
+            <div class="btn-group" role="group">
+               <button onclick="borrarItem(${tablaPreguntas.length})" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip" data-placement="top" title="Delete" >
+                  <i class="fas fa-trash-alt"></i>
+               </button>
+            </div>`
+         }
+             
+         tablaPreguntas.push(datos)
+         actualizarTablaPreguntas()
+         $("#addNewQuestion").modal("hide")
+         console.log(tablaPreguntas)
+ 
+      }
+
+      // Lista dinamica
+   
+      //Método para actualizar lista
+      function actualizarTablaPreguntas() {
+         tablaCuerpo.innerHTML = ""
+         let contenido = ""
+
+         tablaPreguntas.map((dato, index) => {
+            let fila = 
+            `<tr>
+               <td>${dato.textQuestion}</td>
+               <td>${dato.pointsQuestion}</td>
+               <td>${dato.typeQuestion}</td>
+               <td>
+                   <div class="btn-group" role="group">
+                       <button onclick="borrarItem(${index})" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip"  data-placement="top" title="Delete" >
+                           <i class="fas fa-trash-alt"></i>
+                       </button>
+                   </div>
+               </td>
+            </tr>
+            `
+               
+
+            contenido += fila
+         })
+         tablaCuerpo.innerHTML = contenido
+      }
+
+      function borrarItem(id) {
+        tablaPreguntas.splice(id,1)
+        actualizarTablaPreguntas()
+      }
+
+       // Guardar
+   
+      const clickSave = () => {
+       
+         const title= document.getElementById("title")
+         const repeats= document.getElementById("repeats")
+         const timer= document.getElementById("timer")
+         const typeDuration= document.getElementById("typeDuration")
+         const minApp= document.getElementById("minApp")
+        
+         form = {
+            titulo: title.value,
+            repeticiones: repeats.value,
+            duracion: timer.value,
+            tipoDuracion: typeDuration.value,
+            califAprobar: minApp.value,
+         
+         
+         }
+         if (editmode) {
+             updateTest(form, selectedId)
+         }
+         else {
+             createTest(form)
+         }            
+     
+      }
+           
+      const createTest = (form) => {
+          fetch("{% url 'evaluaciones' %}", {
+             ...fetchObject,
+             body: JSON.stringify({
+                data: form
+             }),
+          })
+          .then(async (res) => {
+             let result = JSON.parse(await res.text())
+             if (result.message === "Error") {
+                alerta(5)
+             }
+             alerta(1)
+          })
+          .then(() => {
+             
+      
+          })
+      }
+
+      // Sortable 
+
+      Sortable.create(tablaCuerpo, {
+         animation: 150,
+      });
+
+
+      // Combos and radios
+
+      $(function () {
+        $("#timerCB").click(function () {
+            if ($(this).is(":checked")) {
+               $("#timer").prop('disabled', false);
+               $("#typeTime").prop('disabled', false);
+            } else {
+               $("#timer").prop('disabled', true);
+               $("#typeTime").prop('disabled', true);
+            }
+        });
+      });
+
+      $(document).ready(function(index) {
+         $("input[name=scoreRB]:radio").click(function() { // attack a click event on all radio buttons with name 'radiogroup'
+            if($(this).val() == 'auto') {//check which radio button is clicked 
+               $(".question_score").prop('disabled', true);
+            
+            } else if($(this).val() == 'manual') {
+               $(".question_score").prop('disabled', false);
+            } 
+        });
+      });     
+           
+   </script>
+{% endblock javascripts %}

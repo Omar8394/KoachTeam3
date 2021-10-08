@@ -8,7 +8,7 @@ from django.urls import reverse
 from django import template
 import json
 from ..app.models import TablasConfiguracion, Estructuraprograma
-from .models import ActividadEvaluaciones, Cursos, ActividadConferencia, ActividadLeccion, ActividadTarea
+from .models import ActividadEvaluaciones, Cursos, ActividadConferencia, ActividadLeccion, ActividadTarea, EvaluacionesPreguntas
 
 # Create your views here.
 @login_required(login_url="/login/")
@@ -71,6 +71,47 @@ def test(request):
                 
     context = {}
     html_template = (loader.get_template('academic/evaluaciones.html'))
+    return HttpResponse(html_template.render(context, request))
+
+@login_required(login_url="/login/")
+def createQuestions(request):
+    context = {
+        "tipoPreguntas" : TablasConfiguracion.obtenerHijos('PregEvalua'),     
+    }
+    context['segment'] = 'academic'
+    return render(request, 'academic/createQuestions.html', context)
+
+
+@login_required(login_url="/login/")
+def saveQuestions(request):
+    if request.method == "POST":
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            try:
+                context = {}
+                data = json.load(request)["data"]
+                if "delete" in data:
+                    question = EvaluacionesPreguntas.objects.get(pk=data["id"])
+                    question.delete()
+                    return JsonResponse({"message": "Deleted"})
+                elif "idFind" in data:
+                    question = EvaluacionesPreguntas.objects.filter(pk=data["idFind"])
+                    findQuestion = list(question.values())
+                    return JsonResponse({"data":findQuestion[0]}, safe=False)
+                elif "idViejo" in data:
+                    question = EvaluacionesPreguntas.objects.get(pk=data["idViejo"])
+                else:
+                    question = EvaluacionesPreguntas()
+                question.texto_pregunta.data = data["textoPregunta"]
+                question.puntos_pregunta.data = data["puntosPregunta"]
+                question.fk_actividad_evaluaciones.data = data["fk_actividad_evaluaciones"]
+                question. fk_tipo_pregunta_evaluacion.data = data["tipoPregunta"]
+                question.save()
+                return JsonResponse({"message": "Perfect"})      
+            except:
+                return JsonResponse({"message": "Error"})
+                
+    context = {}
+    html_template = (loader.get_template('academic/createQuestions.html'))
     return HttpResponse(html_template.render(context, request))
 
 @login_required(login_url="/login/")
@@ -544,6 +585,14 @@ def getModalNewHomework(request):
 def getModalNewForum(request):
     context = {}
     html_template = (loader.get_template('components/modalAddForum.html'))
+    return HttpResponse(html_template.render(context, request))
+
+@login_required(login_url="/login/")
+def getModalQuestion(request): 
+    context = {
+        "tipoPreguntas" : TablasConfiguracion.obtenerHijos('PregEvalua'),
+    }
+    html_template = (loader.get_template('components/modalAddQuestion.html'))
     return HttpResponse(html_template.render(context, request))
 
 @login_required(login_url="/login/")

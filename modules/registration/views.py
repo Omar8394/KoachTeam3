@@ -1226,6 +1226,7 @@ def ModalPublico(request):
 #endregion
 
 # region metodos
+
 @login_required(login_url="/login/")
 def save(request):
 
@@ -1821,3 +1822,23 @@ def InsertPayTr(request):
               
 #endregion
       
+
+@login_required(login_url="/login/")
+def ModalPayDetail2(request):
+
+    structuraProg=""
+    tipoPrograma=""
+
+    return render(request, 'components/modalpaydetail2.html',{'structuraProg':structuraProg, 'tipoPrograma':tipoPrograma})
+    
+@login_required(login_url="/login/")
+def ModalPayDetail(request):
+
+    # idU=request.POST.get('un')
+    # idC=request.POST.get('cant')
+    idU="12"
+    idC="24"
+    structuraProg=""
+    tipoPrograma=""
+
+    return render(request, 'components/modalpaydetail.html',{'idU':idU, 'idC':idC})

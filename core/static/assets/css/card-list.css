@@ -77,7 +77,7 @@
    width: 0 !important;
 }
 .card-list-item-descripcion{
-   display: flex;
+   /*display: flex; */
    justify-content: start;
    align-items: center;
    position: relative;
@@ -89,6 +89,7 @@
    transition: transform 0.1s linear, outline 0.1s linear
 }
 .card-list-item-content{
+   margin: 5px;
    gap: 1.5rem;
    display: flex;
    justify-content: space-between;

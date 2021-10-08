@@ -1,0 +1,283 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %}{% endblock %}
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+{% endblock stylesheets %}
+{% block content %}
+    <div class="content">
+        <div class="page-inner animated fadeInRight">
+            <div class="page-header">
+                <h4 class="page-title">Create questions</h4>
+                <ul class="breadcrumbs">
+                    <li class="nav-home">
+                        <a href="{% url 'home' %}">
+                           <i class="flaticon-home"></i>
+                        </a>
+                    </li>
+                    <li class="separator">
+                       <i class="flaticon-right-arrow"></i>
+                    </li>
+                    <li class="nav-item">
+                       <span>Academic</span>
+                    </li>
+                    <li class="separator">
+                       <i class="flaticon-right-arrow"></i>
+                    </li>
+                    <li class="nav-item">
+                       <a href="#">Questions</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="page-category">         
+                <form action="">
+                    <div class="form-row d-flex justify-content-center">
+                        <div class="card mt-3" style="width: 80rem;" >
+                            <div class="card-header">
+                                <div class="form-row">
+                                    <div class="form-group col-md-6 d-flex justify-content-start">
+                                        <h1>Questions</h1>
+                                    </div>
+                                    <div class="form-group col-md-6 d-flex justify-content-end">
+                                        <button type="button" class="btn btn-success" onclick="openAddModalQuestion()">
+                                            Add question <i class="fas fa-plus ml-1"></i>
+                                        </button>
+                                    </div>
+                                </div>                                       
+                            </div>
+                            <div class="card-body" id="tabQuestions">
+                                <div class="table-responsive" id="renderContainer">
+                           
+                                </div>
+                                <div class="form-row text-center">
+                                    <div class="form-group col-md-12">
+                                        <table class="table table-borderless table-striped table-hover text-center table-responsive table-component ">
+                                            <thead>
+                                                <tr>
+                                                   <th class="col-md-8">
+                                                       Question text
+                                                   </th>
+                                                   <th  class="col-md-2">
+                                                       Question points
+                                                   </th>
+                                                    <th  class="col-md-2">
+                                                        Type
+                                                    </th>
+                                                
+                                                    <th  class="col-md-2">
+                                                        Actions
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody  id="tableContent">
+                                            
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                   
+                                <div class="d-flex justify-content-end p-3">     
+                                    <nav aria-label="...">
+                                        <ul class="pagination mb-0  justify-content-end">
+                                            <li class="page-item">
+                                                <a class="page-link" href="#" tabindex="-1">Previous</a>
+                                            </li>
+                                            <li class="page-item active">
+                                                <a class="page-link" href="#">1</a>
+                                            </li>
+                                            <li class="page-item">
+                                                <a class="page-link" href="#">2</a>
+                                            </li>
+                                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                            <li class="page-item">
+                                                <a class="page-link" href="#">Next</a>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                </div>                
+                            </div>
+                            <div class="card-footer d-flex justify-content-end">
+                               <button type="submit" value="Submit" class="btn btn-primary">Save<i class="fas fa-save ml-2"></i></button>
+                            </div>
+                        </div>           
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!--Modals-->
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="addNewQuestion">
+        <div class="modal-dialog modal-dialog-centered" role="document" id="modalQuestion">
+        
+            
+        </div><!-- /.modal-dialog -->
+    </div>
+{% endblock content %}
+
+{% block javascripts %}
+
+   <script>
+        // Variables
+
+        let tablaPreguntas = []
+        let tablaCuerpo = document.getElementById("tableContent")
+        const arrayTipos = [{% for type in tipoPreguntas %}{id:"{{type.id_tabla}}", descripcion:"{{type.desc_elemento}}"},{% endfor %}]
+        let hashObj = arrayTipos.reduce(function(acc, e){
+            acc[e.id]=e.descripcion
+            return acc
+        },{})
+
+        const openAddModalQuestion = () => {
+            renderModalQuestions().then(()=>{
+               editmode = false
+               $("#addNewQuestion").modal("show")
+            })
+        }    
+
+       // Guardar
+   
+        const clickSave = () => {
+       
+            const questionText= document.getElementById("questionText")
+            const questionPoints= document.getElementById("questionPoints")
+            const typeQuestion= document.getElementById("typeQuestion")
+
+            form = {
+               textoPregunta: questionText.value,
+               puntosPregunta: questionPoints.value,
+               tipoPregunta: typeQuestion.value,
+            
+            }
+            if (editmode) {
+                updateQuestion(form, selectedId)
+            }
+            else {
+                createQuestion(form)
+            }            
+     
+        }
+           
+        const createQuestion = (form) => {
+            fetch("{% url 'saveQuestions' %}", {
+                ...fetchObject,
+                body: JSON.stringify({
+                   data: form
+                }),
+            })
+            .then(async (res) => {
+                let result = JSON.parse(await res.text())
+                if (result.message === "Error") {
+                   alerta(5)
+                }
+                alerta(1)
+            })
+            .then(() => {
+             
+                $("#addNewQuestion").modal("hide");
+            })
+        }
+
+        Sortable.create(tablaCuerpo, {
+            swap: true,
+             animation: 150,
+        }); 
+
+        // // Sortable.create(tablaCuerpo, {
+        //     swap: true,
+        //     animation: 150,
+        //     store: {
+        //         // Sorting acquisition (called during initialization)
+        //         get: function (sortable) {
+        //           var question = tablaPreguntas.getItem(sortable.options.group);
+        //           return question ? question.split('|') : [];
+        //         },
+        
+        //         // Saving the acquired sorting (called each time upon sorting modification)
+        //         set: function (sortable) {
+        //           var question = sortable.toArray();
+        //           tablaPreguntas.setItem(sortable.options.group, question.join('|'));
+        //         }
+        //     }
+        // });
+
+        // Combos and radios
+
+        $(function () {
+            $("#timerCB").click(function () {
+                if ($(this).is(":checked")) {
+                    $("#timer").prop('disabled', false);
+                    $("#typeTime").prop('disabled', false);
+                } else {
+                    $("#timer").prop('disabled', true);
+                    $("#typeTime").prop('disabled', true);
+                }
+            });
+        });
+
+        $(document).ready(function(index) {
+            $("input[name=scoreRB]:radio").click(function() { // attack a click event on all radio buttons with name 'radiogroup'
+                if($(this).val() == 'auto') {//check which radio button is clicked 
+                    $(".question_score").prop('disabled', true);
+                } else if($(this).val() == 'manual') {
+                    $(".question_score").prop('disabled', false);
+                } 
+            });
+        });     
+
+        
+        // Renderizar  
+
+        const renderModalQuestions = () => {
+            return fetch("{% url 'modalAddQuestion' %}", {
+                ...fetchObject
+            })
+            .then(async (res) => {
+                document.getElementById("modalQuestion").innerHTML = await res.text()
+            }).then(()=>{
+                const formQuestion = document.getElementById("formQuestion")
+                formQuestion.addEventListener("submit", (e) => {
+                    e.preventDefault()
+                    clickSave()
+                })              
+            })
+        }   
+
+        const renderComponentTabla = async (name) => {
+            return await fetch("{% url 'component_tabla'%}",
+                {
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        "X-CSRFToken": getCookie('csrftoken')
+                    },
+                    mode: 'same-origin',
+                    method: 'POST',
+                    body: JSON.stringify({
+                        data: {
+                            name: name,
+                        }
+                    }),
+                })
+                .then(async (res) => {
+                    result = await res.text()
+                    if (result[0] != '<') {
+                        console.log(result)
+                        result = "<h3 class='display-4'>There are no items</h3>"
+                    }
+                    return result
+                })
+        }
+
+        
+        const renderTable = async() => {
+            const result = await renderComponentTabla("tablaPreguntas")
+                const contenedor = document.getElementById("renderContainer")
+                contenedor.innerHTML = result
+        }
+        renderTable()
+     
+   </script>
+{% endblock javascripts %}

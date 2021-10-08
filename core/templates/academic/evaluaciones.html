@@ -12,7 +12,7 @@
             <h4 class="page-title">Create test</h4>
             <ul class="breadcrumbs">
                <li class="nav-home">
-                  <a href="{% url 'home' %}">
+                  <a href="index.html">
                      <i class="flaticon-home"></i>
                   </a>
                </li>
@@ -20,13 +20,13 @@
                   <i class="flaticon-right-arrow"></i>
                </li>
                <li class="nav-item">
-                  <a href="{% url 'academic' %}">Academic</a>
+                  <span>Module name</span>
                </li>
                <li class="separator">
                   <i class="flaticon-right-arrow"></i>
                </li>
                <li class="nav-item">
-                  <a href="#">Create test</a>
+                  <a href="#">Page 1</a>
                </li>
             </ul>
          </div>
@@ -53,54 +53,52 @@
 
                      <div class="form-row">
                         <div class="form-group col-md-6">
-                           <label for="minApp">Minimun score to approve</label>
-                           <input type="text" name="minApp" class="form-control" id="minApp" placeholder="Enter a number">
+                           <label for="min_app">Minimun score to approve</label>
+                           <input type="text" name="min_app" class="form-control" id="min_app" placeholder="Enter a number">
                         </div>
-
+                        <div class="form-group col-md-6">
+                           <label for="desc_escala">Por definir</label>
+                           <input type="text" name="desc_escala" class="form-control" id="desc_escala" placeholder="Enter a description">
+                        </div>
+                     </div>
+                     <div class="form-row">
+                        <div class="form-group col-md-6">
+                                                             
+                           <div class="custom-control custom-checkbox">
+                              <input type="checkbox" class="custom-control-input" id="rememberme">
+                              <label class="custom-control-label" for="rememberme">Timer</label>
+                           </div>
+                           <input type="number" class="form-control" id="timer" placeholder="Enter time" disabled>                       
+                           
+                        </div>
+                       
                         <div class="form-group col-md-6">                     
                            <label class="form-label">Score split</label>
                            <div class="selectgroup w-100">
                               <label class="selectgroup-item">
-                                 <input type="radio" name="scoreRB" value="auto" class="selectgroup-input">
+                                 <input type="radio" name="value" value="50" class="selectgroup-input" checked="">
                                  <span class="selectgroup-button">Auto</span>
                               </label>
                               <label class="selectgroup-item">
-                                 <input type="radio" name="scoreRB" value="manual" class="selectgroup-input">
+                                 <input type="radio" name="value" value="100" class="selectgroup-input">
                                  <span class="selectgroup-button">Manual</span>
                               </label>                        
                            </div>                 
-                        </div>          
-                     </div>        
-                     <div class="form-row">
-
-                        <div class="form-group col-md-6">                      
-                           <div class="custom-control custom-checkbox">
-                              <input type="checkbox" class="custom-control-input" id="timerCB"  onclick="enable_disable()">
-                              <label class="custom-control-label" for="timerCB">Timer</label>
-                           </div>
-                           <input type="number" class="form-control" id="timer" placeholder="Enter time" disabled>                       
                         </div>
-
-                        <div class="form-group col-md-6">
-                           <label for="typeDuration">Type of duration</label>
-                           <select class="form-control" id="typeDuration" name="typeDuration" disabled>
-                             <option value="" selected> </option>                                      
-                           </select>
-                        </div>
-   
                      </div>
+
+            
                   </div>
                   <form action="">
-                     <div class="card-body" id="questionCard">
+                     <div class="card-body">
                         <h1>Questions</h1>
                         <ul id="simpleList" class="list-group">
-
-                           <li class="list-group-item listI" id="list-thing_1">
+                           <li class="list-group-item">
                               <div class="form-group col-md-3 col-lg-2 d-flex align-items-center">
                                  <div class="card d-flex justify-content-center" >
                                     <div class="card-header">
                                        <div class="d-flex align-items-center">
-                                          <span id="remove_1" class="stamp stamp-md bg-dark mr-3">
+                                          <span class="stamp stamp-md bg-dark2 mr-3">
                                              <i class="fas fa-bars"></i>
                                           </span>
                                           <div class="text-center">
@@ -111,17 +109,8 @@
 
                                     </div>
                                     <div class="card-body">
-                                       
-                                       <label for="question_score">Type</label>
-                                       <select name="" class="form-control" id="">
-                                          <option value="">...</option>
-                                          <option value="">...</option>
-                                       </select>
-
-                                       <br>
-                                       
-                                       <label for="question_score">Score</label>
-                                       <input type="text" name="question_score" class="form-control" id="question_score" placeholder="Enter a number">
+                                       <label for="desc_escala">Score</label>
+                                       <input type="text" name="desc_escala" class="form-control" id="desc_escala" placeholder="Enter a number">
                                        
                                     </div>
 
@@ -129,19 +118,20 @@
 
                               </div>
                               <div class="form-group col-md-10">
-                                 <textarea name="" class="form-control" id="" cols="30" rows="10"></textarea>
+                                <textarea name="" class="form-control" id="" cols="30" rows="10"></textarea>
+
                               </div>
 
+               
+
+
                               
-                           </li>    
+                           </li>
+                           <li class="list-group-item">2</li>
+                           <li class="list-group-item">3</li>
                            
                         </ul>
-                        
-                        <div class="d-flex justify-content-end p-3 addButton">
-                           <button class="btn btn-success" id="addQuestion">Add question <i class="fas fa-plus ml-2"></i></button>
 
-                        </div>
-                                        
                      <div class="card-footer d-flex justify-content-end">
                         <button type="submit" value="Submit" class="btn btn-primary">Save<i class="fas fa-save ml-2"></i></button>
                      </div>
@@ -153,171 +143,16 @@
    </div>
 {% endblock content %}
 {% block javascripts %}
-
-   <script>
-
-      // Metodos de evaluacion
-
-      const clickSave = () => {
-       
-            const title= document.getElementById("title")
-            const repeats= document.getElementById("repeats")
-            const title= document.getElementById("title")
-            const timer= document.getElementById("timer")
-            const typeDuration= document.getElementById("typeDuration")
-            const minApp= document.getElementById("minApp")
-        
-            form = {
-               titulo: title.value,
-               repeticiones: repeats.value,
-               duracion: timer.value,
-               tipoDuracion: typeDuration.value,
-               califAprobar: minApp.value,
-            
-           
-            }
-            if (editmode) {
-                updateTest(form, selectedId)
-            }
-            else {
-                createTest(form)
-            }           
-    
-     
-      }
-           
-      const createTest = (form) => {
-          fetch("{% url 'evaluaciones' %}", {
-             ...fetchObject,
-             body: JSON.stringify({
-                data: form
-             }),
-          })
-          .then(async (res) => {
-             let result = JSON.parse(await res.text())
-             if (result.message === "Error") {
-                alerta(5)
-             }
-             alerta(1)
-          })
-          .then(() => {
-             
-      
-          })
-      }
-
-      
-   </script>
    <script>
       Sortable.create(simpleList, {
-         
+        
       });
-
-      // Combos and radios
-
-      $(function () {
-        $("#timerCB").click(function () {
-            if ($(this).is(":checked")) {
-               $("#timer").prop('disabled', false);
-               $("#typeDuration").prop('disabled', false);
-            } else {
-               $("#timer").prop('disabled', true);
-               $("#typeDuration").prop('disabled', true);
-            }
-        });
-      });
-
-      $(document).ready(function() {
-         $("input[name=scoreRB]:radio").click(function() { // attack a click event on all radio buttons with name 'radiogroup'
-            if($(this).val() == 'auto') {//check which radio button is clicked 
-               $("#question_score").prop('disabled', true);
-            
-            } else if($(this).val() == 'manual') {
-               $("#question_score").prop('disabled', false);
-            } 
-        });
-      });
-
-      // Lista dinamica
-
-      $(document).ready(function(){
-         // Add new element
-         $("#addQuestion").click(function(){
-
-            event.preventDefault();
-         
-            // Finding total number of elements added
-            var total_element = $(".listI").length;
-         
-            // last <div> with element class id
-            var lastid = $(".listI:last").attr("id");
-            var split_id = lastid.split("_");
-            var nextindex = Number(split_id[1]) + 1;
-         
-            var max = 10;
-            // Check total number elements
-            if(total_element < max ){
-               // Adding new div container after last occurance of element class
-               $(".listI:last").after("<li class='list-group-item listI' id='list-thing_"+ nextindex +"'></li>");
-            
-               // Adding element to <div>
-               $("#list-thing_" + nextindex).append(
-                     '<div class="form-group col-md-3 col-lg-2 d-flex align-items-center">'+
-                     '<div class="card d-flex justify-content-center" >'+
-                        '<div class="card-header">'+
-                          '<div class="d-flex align-items-center">'+
-                              '<span id="remove_' + nextindex + '" class="stamp stamp-md bg-danger mr-3 remove">'+
-                                 ' <i class="fas fa-times"></i>'+
-                              '</span>'+
-                              '<div class="text-center">'+
-                                '<h5 class="mb-1">Question #'+ nextindex +'</h5>'+         
-                              '</div>'+
-                           '</div>'+
-                        '</div>'+
-                        '<div class="card-body">'+
-                           '<label for="question_score">Type</label>'+
-                              '<select name="" class="form-control" id="">'+
-                                 '<option value="">...</option>'+
-                                 '<option value="">...</option>'+
-                              '</select>'+
-                          '<label for="question_score">Score</label>'+
-                          '<input type="text" name="question_score" class="form-control" id="question_score" placeholder="Enter a number">'+
-                        '</div>'+
-                     '</div>'+
-                  '</div>'+
-                  '<div class="form-group col-md-10">'+
-                     '<textarea name="" class="form-control" id="" cols="30" rows="10"></textarea>'+
-                  '</div>'
-               
-               
-               );
-            
-            }
-          
-         });
-
-         // Remove element
-         $('#simpleList').on('click','.remove',function(){
-         
-          var id = this.id;
-          var split_id = id.split("_");
-          var deleteindex = split_id[1];
-         
-          // Remove <div> with id
-          $("#list-thing_" + deleteindex).remove();
-         
-         }); 
-      });
-
-
-       
-     
 
       // const contenido = document.getElementById("")
       // const asdasdq = document.createElement("li")
       // asdasdq.classList.add("list-group-item")
       // asdasdq.innerHTML = ""
 
-
+      // contenido.appendChild(asdasdq)
    </script>
 {% endblock javascripts %}

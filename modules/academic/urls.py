@@ -11,6 +11,8 @@ urlpatterns = [
    #Pruebas de sprint 2
    path('test/', views.prueba, name="academic_test"),
    path('evaluaciones/', views.evaluaciones, name="evaluaciones"),
+   path('createQuestions/', views.createQuestions, name="createQuestions"),
+   path('saveQuestions/', views.saveQuestions, name="saveQuestions"),
    #contenidos AJAX
    path('contenidoProgramas/', views.getContentProgramas, name="contenidoProgramas"),
    path('contenidoProcesos/', views.getContentProcesos, name="contenidoProcesos"),
@@ -31,6 +33,7 @@ urlpatterns = [
    path('modalNewLesson/', views.getModalNewLesson, name="modalNewLesson"),
    path('modalNewHomework/', views.getModalNewHomework, name="modalNewHomework"),
    path('modalNewForum/', views.getModalNewForum, name="modalNewForum"),
+   path('modalAddQuestion/', views.getModalQuestion, name="modalAddQuestion"),
    #urls serias
    path('<str:programa>/', views.programa, name="programa"),
    path('<str:programa>/<str:proceso>/', views.proceso, name="proceso"),

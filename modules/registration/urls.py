@@ -74,7 +74,8 @@ urlpatterns = [
 
     path('EnrollmentList/ModalPublico/', views.ModalPublico, name='ModalPublico'  ),
 
-
+    path('MyEnrollments/ModalPayDetail/', views.ModalPayDetail, name='ModalPayDetail'  ), 
+    path('MyEnrollments/ModalPayDetail2/', views.ModalPayDetail2, name='ModalPayDetail2'  ),
 
 
 

@@ -113,7 +113,7 @@ class Recurso(models.Model):
 
 class Tag(models.Model):
     id_tag = models.SmallIntegerField(primary_key=True)
-    desc_tag = models.TextField(null=True, unique=True)
+    desc_tag = models.TextField(null=True)
 
 class TagRecurso(models.Model):
     id_tag_recurso = models.AutoField(primary_key=True)
