@@ -155,3 +155,10 @@ class ActividadConferencia(models.Model):
     id_conferencia = models.TextField(null=True)
     fk_publico = models.ForeignKey(Publico, on_delete=models.CASCADE, default=None, null=True)
     fk_estructura_programa = models.OneToOneField(Estructuraprograma,on_delete=models.CASCADE,  default=None, null=True)
+
+class EvaluacionPreguntaOpciones(models.Model):
+    id_pregunta_opciones = models.AutoField(primary_key=True)
+    opcion_texto = models.TextField(null=True)
+    condicion = models.BooleanField(default=False)
+    puntos = models.DecimalField(max_digits=5, decimal_places=2, null=True)
+    fk_evaluaciones_preguntas = models.ForeignKey(EvaluacionesPreguntas, on_delete=models.CASCADE, default=None, null=True)
