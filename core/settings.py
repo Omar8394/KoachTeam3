@@ -140,5 +140,13 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 STATICFILES_DIRS = (
     os.path.join(CORE_DIR, 'core/static'),
 )
+## configuracion del correo
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'jcenergysolarteam@gmail.com'
+EMAIL_HOST_PASSWORD = "KoachTeam3" #configurar en deploy config('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = 587
+
 #############################################################
 #############################################################

@@ -1281,5 +1281,43 @@
     "mostrar_en_combos": 1,
     "maneja_lista": 0
   }
+},
+  {
+  "model": "app.tablasconfiguracion",
+  "pk": 50,
+  "fields": {
+    "desc_elemento": "Phone Type",
+    "fk_tabla_padre": 1,
+    "tipo_elemento": "1",
+    "permite_cambios": 1,
+    "valor_elemento": "tipo_telefono",
+    "mostrar_en_combos": 1,
+    "maneja_lista": 1
+  }
+},
+  {
+  "model": "app.tablasconfiguracion",
+  "pk": 51,
+  "fields": {
+    "desc_elemento": "Movil",
+    "fk_tabla_padre": 50,
+    "tipo_elemento": "2",
+    "permite_cambios": 1,
+    "valor_elemento": "tipo_telefono_Movil",
+    "mostrar_en_combos": 1,
+    "maneja_lista": 0
+  }
+},{
+  "model": "app.tablasconfiguracion",
+  "pk": 203,
+  "fields": {
+    "desc_elemento": "Estudent",
+    "fk_tabla_padre": 2,
+    "tipo_elemento": "0",
+    "permite_cambios": 1,
+    "valor_elemento": "rol_estudent",
+    "mostrar_en_combos": 1,
+    "maneja_lista": 0
+  }
 }
 ]

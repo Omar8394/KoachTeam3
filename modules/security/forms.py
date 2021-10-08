@@ -87,4 +87,4 @@ class FullRegistration(forms.ModelForm):
     class Meta:
         model = Publico
         exclude = (
-            'procedencia', 'cuenta_telegram', 'cuenta_whatsapp', 'docto_identidad', 'fk_ciudad', 'fk_contratante', 'fecha_registro')
+            'procedencia', 'cuenta_telegram', 'cuenta_whatsapp', 'fk_ciudad', 'fk_contratante', 'fecha_registro')

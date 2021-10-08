@@ -1,6 +1,11 @@
 from datetime import datetime
 from datetime import timedelta
+from modules.communication.Methods import send_mail, create_mail
+from modules.security.models import CtaUsuario
 
+
+def get_default_ctausuario():
+    pass
 
 class securityTools:
     formato = "%Y-%m-%d"
