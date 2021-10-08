@@ -5,6 +5,8 @@ from django import template
 from django.template import loader
 from modules.registration import forms
 from modules.app.models import Estructuraprograma
+from modules.security.models import ExtensionUsuario
+
 from modules.app.models import TablasConfiguracion
 from modules.app.models import Publico
 from modules.registration.models import MatriculaAlumnos, MatriculasPagos
@@ -1254,6 +1256,22 @@ def save(request):
 
         
         publico=Publico.objects.get(user=request.user)
+
+
+        
+        publico=ExtensionUsuario.objects.get(user=request.user).Publico
+
+       
+
+       
+
+
+
+        
+
+
+
+
         struct=Estructuraprograma.objects.get(idestructuraprogrmas=idEstruct)
 
         if type!=None and type!="":
