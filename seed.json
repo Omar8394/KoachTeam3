@@ -627,7 +627,7 @@
     "model": "app.TablasConfiguracion",
     "pk":68,
     "fields": {
-      "desc_elemento": "Exam",
+      "desc_elemento": "Test",
       "fk_tabla_padre_id": 9,
       "tipo_elemento": 0,
       "permite_cambios":1,
@@ -672,6 +672,48 @@
     "fields": {
       "desc_elemento": "Forum",
       "fk_tabla_padre_id": 9,
+      "tipo_elemento": 0,
+      "permite_cambios":1,
+      "valor_elemento":"",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk":72,
+    "fields": {
+      "desc_elemento": "Estatus lecciones",
+      "fk_tabla_padre_id": 1,
+      "tipo_elemento": 0,
+      "permite_cambios":1,
+      "valor_elemento":"EstLeccion",
+      "mostrar_en_combos":1,
+      "maneja_lista":1
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk":73,
+    "fields": {
+      "desc_elemento": "Enabled",
+      "fk_tabla_padre_id": 72,
+      "tipo_elemento": 0,
+      "permite_cambios":1,
+      "valor_elemento":"",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk":74,
+    "fields": {
+      "desc_elemento": "Disabled",
+      "fk_tabla_padre_id": 72,
       "tipo_elemento": 0,
       "permite_cambios":1,
       "valor_elemento":"",

@@ -82,7 +82,7 @@
 
 <!-- Modal nuevo tópico -->
 <div class="modal fade" id="addNewModal" tabindex="-1" role="dialog">
-   <div class="modal-dialog  modal-dialog-centered" role="document" id="addNewModalContent" >
+   <div class="modal-dialog  modal-dialog-centered" role="document" id="addNewModalContent">
 
    </div>
 </div>
@@ -108,15 +108,30 @@
    let query = ""
    let selectedId = ""
    let selectedActivity = ""
-   const chooseModal = async (type)=>{
+   const chooseModal = async (type) => {
       $("#addChooseActivities").modal("hide")
       await renderModalActivity()
-      if(type == "test"){
-         await renderModalNewTest()
+      let url
+      if (type == "test") {
+         url = "{% url 'modalNewTest' %}"
       }
+      if (type == "lesson") {
+         url = "{% url 'modalNewLesson' %}"
+      }
+      if (type == "homework") {
+         url = "{% url 'modalNewHomework' %}"
+      }
+      if (type == "forum") {
+         url = "{% url 'modalNewForum' %}"
+      }
+      await renderModalNewActivity(url)
    }
    const showContent = (id) => {
       let contenido = document.getElementById(`contentTopic${id}`)
+      contenido.classList.toggle("card-list-item-close")
+   }
+   const showChilds = (id) => {
+      let contenido = document.getElementById(`childsTopic${id}`)
       contenido.classList.toggle("card-list-item-close")
    }
    const renderContent = () => {
@@ -144,7 +159,8 @@
          body: JSON.stringify({
             method,
             data,
-            id
+            id,
+            padreActivity:selectedActivity
          })
       })
    }
@@ -163,53 +179,51 @@
          .then(async (res) => {
             document.getElementById("modalContentChoose").innerHTML = await res.text()
          })
-      // .then(() => {
-      //    const formScaleGe = document.getElementById("scaleGe")
-      //    formScaleGe.addEventListener("submit", (e) => {
-      //       e.preventDefault()
-
-      //    })
-
-      // })
    }
    const renderModalActivity = () => {
-         return fetch("{% url 'modalAddActividad'%}", {
-            ...fetchObject,
-            body: JSON.stringify({
-               method: "Show",
+      return fetch("{% url 'modalAddActividad'%}", {
+         ...fetchObject,
+         body: JSON.stringify({
+            method: "Show",
+         })
+      })
+         .then(async (res) => {
+            document.getElementById("addNewModalContent").innerHTML = await res.text()
+         })
+         .then(() => {
+            $("#addNewModal").modal("show")
+            const formActividad = document.getElementById("formActividad")
+            formActividad.addEventListener("submit", (e) => {
+               e.preventDefault()
+               clickSave(formActividad, "{% url 'modalAddActividad' %}")
+                  .then(() => {
+                     $("#addNewModal").modal("hide")
+                     renderContent()
+                  })
             })
          })
-            .then(async (res) => {
-               document.getElementById("addNewModalContent").innerHTML = await res.text()
-            })
-            .then(() => {
-               $("#addNewModal").modal("show")
-               const formActividad = document.getElementById("formActividad")
-               formActividad.addEventListener("submit", (e) => {
-                  e.preventDefault()
-                  clickSave(formActividad, "{% url 'modalAddActividad' %}")
-                     .then(() => {
-                        $("#addNewModal").modal("hide")
-                        renderContent()
-                     })
-               })
-            })
-      }
-   const renderModalNewTest = () => {
-      return fetch("{% url 'modalNewTest' %}", {
-         ...fetchObject
+   }
+   const renderModalNewActivity = (url) => {
+      return fetch(url, {
+         ...fetchObject,
+         body: JSON.stringify({
+            method: "Show",
+         })
       })
          .then(async (res) => {
             document.getElementById("sectionDetailed").innerHTML = await res.text()
          })
-      // .then(() => {
-      //    const formScaleGe = document.getElementById("scaleGe")
-      //    formScaleGe.addEventListener("submit", (e) => {
-      //       e.preventDefault()
-
-      //    })
-
-      // })
+         .then(() => {
+            const formActividad = document.getElementById("formActividad")
+            formActividad.addEventListener("submit", (e) => {
+               e.preventDefault()
+               clickSave(formActividad, url)
+                  .then(() => {
+                     $("#addNewModal").modal("hide")
+                     renderContent()
+                  })
+            })
+         })
    }
 
    const clickSave = (formElement, url) => {
@@ -306,7 +320,7 @@
             })
          })
    }
-   
+
    const toggleTime = () => {
       const time = document.getElementById("timeActivity")
       const duration = document.getElementById("durationActivity")

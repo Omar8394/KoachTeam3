@@ -8,7 +8,7 @@ from django.urls import reverse
 from django import template
 import json
 from ..app.models import TablasConfiguracion, Estructuraprograma
-from .models import ActividadEvaluaciones, Cursos
+from .models import ActividadEvaluaciones, Cursos, ActividadConferencia, ActividadLeccion, ActividadTarea
 
 # Create your views here.
 @login_required(login_url="/login/")
@@ -472,8 +472,8 @@ def getModalActividad(request):
                     actividad.resumen = data["data"]["resumenActivity"]
                     actividad.url = data["data"]["urlActivity"]
                     actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").filter(desc_elemento=data["tipoActividad"])[0].pk
-                    topico.peso_creditos = None
-                    topico.save()
+                    actividad.peso_creditos = None
+                    actividad.save()
                     return JsonResponse({"message":"Perfect"})
             except:
                 return JsonResponse({"message":"error"})
@@ -489,6 +489,61 @@ def getModalNewTest(request):
     tipoDuracion = TablasConfiguracion.obtenerHijos(valor="Duracion")
     context = {"tipoDuracion":tipoDuracion}
     html_template = (loader.get_template('components/modalAddTest.html'))
+    return HttpResponse(html_template.render(context, request))
+
+@login_required(login_url="/login/")
+def getModalNewLesson(request):
+    status = TablasConfiguracion.obtenerHijos(valor="EstLeccion")
+    context = {"status": status}
+    html_template = (loader.get_template('components/modalAddLesson.html'))
+    return HttpResponse(html_template.render(context, request))
+
+@login_required(login_url="/login/")
+def getModalNewHomework(request):
+    if request.method == "POST":
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            context = {}
+            modelo = {}
+            # try:
+            if request.body:
+                data = json.load(request)
+                if data["method"] == "Show":
+                    html_template = (loader.get_template('components/modalAddHomework.html'))
+                    return HttpResponse(html_template.render(context, request))
+                elif data["method"] == "Find":
+                    modelo = ActividadTarea.objects.get(fk_estructura_programa=data["id"])
+                    context = {"modelo": modelo}
+                    html_template = (loader.get_template('components/modalAddHomework.html'))
+                    return HttpResponse(html_template.render(context, request))
+                elif data["method"] == "Delete":
+                    actividad = Estructuraprograma.objects.get(pk=data["id"])
+                    actividad.delete()
+                    return JsonResponse({"message":"Deleted"})
+                elif data["method"] == "Update":
+                    actividad = Estructuraprograma.objects.get(pk=data["id"])
+                    homework = ActividadTarea.objects.get(fk_estructura_programa=data["id"])
+                elif data["method"] == "Create":
+                    actividad = Estructuraprograma()
+                    homework = ActividadTarea()
+                    actividad.valor_elemento = "Activity"
+                actividad.fk_estructura_padre_id=data["padreActivity"]
+                actividad.descripcion = data["data"]["descriptionActivity"]
+                actividad.resumen = data["data"]["resumenActivity"]
+                actividad.url = data["data"]["urlActivity"]
+                actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").get(desc_elemento="Homework").pk
+                actividad.peso_creditos = None
+                actividad.save()
+                homework.fk_estructura_programa = actividad
+                homework.fecha_entrega = data["data"]["entregaHomework"]
+                homework.save()
+                return JsonResponse({"message":"Perfect"})
+            # except:
+                return JsonResponse({"message":"error"})
+
+@login_required(login_url="/login/")
+def getModalNewForum(request):
+    context = {}
+    html_template = (loader.get_template('components/modalAddForum.html'))
     return HttpResponse(html_template.render(context, request))
 
 @login_required(login_url="/login/")

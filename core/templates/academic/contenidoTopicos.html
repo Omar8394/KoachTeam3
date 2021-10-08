@@ -60,7 +60,7 @@ results for "{{query}}"
                Credits: {{topic.peso_creditos}}
             </div>
          </div>
-         <div id="contentTopic{{topic.pk}}" class="card-list-item-content card-list-item-close">{{topic.resumen}}</div>
+         <div id="contentTopic{{topic.pk}}" class="card-list-item-descripcion card-list-item-close"><strong>Description:</strong> &nbsp;{{topic.resumen}}</div>
          <ul id="childsTopic{{topic.pk}}" class="card-list-item-close">
             {% for activity in topic.estructuraprograma_set.all %}
             {%if activity.valor_elemento == 'Activity'%}

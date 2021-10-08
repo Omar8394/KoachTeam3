@@ -1,0 +1,15 @@
+<div class="form-row">
+   <div class="form-group col-md-6">
+      <label for="disponibleLesson">Available from</label>
+      <input type="date" class="form-control" name="disponibleLesson" id="disponibleLesson" placeholder="0" required {% if modelo %} {% if modelo.disponible_desde %} value="{{ modelo.disponible_desde}}" {%else%} disabled {% endif %}{% else %} disabled {% endif %}>
+   </div>
+   <div class="form-group col-md-6">
+      <label for="estatusLesson">Status</label>
+      <select class="form-control" id="estatusLesson" name="estatusLesson">
+         <option value="null" disabled {% if not modelo %} selected {% endif %}>Select an option</option>
+         {% for item in status %}
+         <option value="{{item.pk}}" {% if modelo %} {% if modelo.estatus == item.pk %} selected {% endif %} {% endif %}>{{item.desc_elemento}}</option>
+         {% endfor %}
+      </select>
+   </div>
+</div>

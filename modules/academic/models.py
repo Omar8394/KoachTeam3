@@ -31,10 +31,9 @@ class EscalaCalificacion(models.Model):
 
 class ActividadEvaluaciones(models.Model):
     idactividad_evaluaciones = models.AutoField(primary_key=True)
-    titulo = models.TextField()
-    fk_curso_actividad = models.SmallIntegerField(null=True)
     nro_repeticiones = models.IntegerField(blank=True, null=True)
     duracion = models.DecimalField(max_digits=5, decimal_places=2, null=True)
+    fk_estructura_programa = models.OneToOneField(Estructuraprograma,on_delete=models.CASCADE,  default=None, null=True)
     fk_tipo_duracion = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE, default=None, null=True, related_name="actividad_tipo_duracion")
     fk_escala_evaluacion = models.ForeignKey(EscalaEvaluacion, on_delete=models.CASCADE,  default=None, null=True)
     calificacion_aprobar = models.IntegerField()
@@ -100,3 +99,59 @@ class EvaluacionesPreguntas(models.Model):
     puntos_pregunta = models.DecimalField(max_digits=9, decimal_places=2, blank=True, null=True)
     fk_evaluaciones_bloque = models.ForeignKey(EvaluacionesBloques, on_delete=models.CASCADE,  default=None, null=True)
     fk_tipo_pregunta_evaluacion = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE,  default=None, null=True)
+
+class Recurso(models.Model):
+    id_recurso = models.AutoField(primary_key=True)
+    titulo = models.TextField(null=True)
+    descripcion = models.TextField(null=True)
+    path = models.TextField(null=True)
+    tipo_path = models.BooleanField(default=False)
+    compartido = models.BooleanField(default=False)
+    ordenamiento = models.SmallIntegerField(null=True)
+    fk_tipo_recurso = models.ForeignKey(TablasConfiguracion,on_delete=models.CASCADE,  default=None, null=True)
+    fk_publico_autor = models.ForeignKey(Publico, on_delete=models.CASCADE,  default=None, null=True)
+
+class Tag(models.Model):
+    id_tag = models.SmallIntegerField(primary_key=True)
+    desc_tag = models.TextField(null=True, unique=True)
+
+class TagRecurso(models.Model):
+    id_tag_recurso = models.AutoField(primary_key=True)
+    fk_tag = models.ForeignKey(Tag,on_delete=models.CASCADE,  default=None, null=True)
+    fk_recurso = models.ForeignKey(Recurso,on_delete=models.CASCADE,  default=None, null=True)
+
+class RecursoPregunta(models.Model):
+    id_recurso_pregunta = models.AutoField(primary_key=True)
+    fk_recurso = models.ForeignKey(Recurso,on_delete=models.CASCADE,  default=None, null=True)
+    fk_pregunta = models.ForeignKey(EvaluacionesPreguntas,on_delete=models.CASCADE,  default=None, null=True)
+
+class ActividadLeccion(models.Model):
+    id_actividad_leccion = models.AutoField(primary_key=True)
+    disponible_desde = models.DateField(null=True)
+    estatus = models.ForeignKey(TablasConfiguracion,on_delete=models.CASCADE,  default=None, null=True)
+    fk_estructura_programa = models.OneToOneField(Estructuraprograma,on_delete=models.CASCADE,  default=None, null=True)
+
+class Paginas(models.Model):
+    id_pagina = models.AutoField(primary_key=True)
+    titulo = models.TextField(null=True)
+    ordenamiento = models.SmallIntegerField(null=True)
+    fk_estructura_programa = models.ForeignKey(Estructuraprograma,on_delete=models.CASCADE,  default=None, null=True)
+
+class RecursoPaginas(models.Model):
+    id_recurso_pagina = models.AutoField(primary_key=True)
+    fk_recurso = models.ForeignKey(Recurso,on_delete=models.CASCADE,  default=None, null=True)
+    fk_pagina = models.ForeignKey(Paginas,on_delete=models.CASCADE,  default=None, null=True)
+
+class ActividadTarea(models.Model):
+    id_actividad_tarea = models.AutoField(primary_key=True)
+    fecha_entrega = models.DateField(null=True)
+    fk_estructura_programa = models.OneToOneField(Estructuraprograma,on_delete=models.CASCADE,  default=None, null=True)
+
+class ActividadConferencia(models.Model):
+    id_actividad_conferencia = models.AutoField(primary_key=True)
+    fecha_hora = models.DateTimeField(null=True)
+    enlace = models.TextField(null=True)
+    clave = models.TextField(null=True)
+    id_conferencia = models.TextField(null=True)
+    fk_publico = models.ForeignKey(Publico, on_delete=models.CASCADE, default=None, null=True)
+    fk_estructura_programa = models.OneToOneField(Estructuraprograma,on_delete=models.CASCADE,  default=None, null=True)

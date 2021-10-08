@@ -28,6 +28,9 @@ urlpatterns = [
    path('modalAddActividad/', views.getModalActividad, name="modalAddActividad"),
    path('modalChooseActivity/', views.getModalChooseActivities, name="modalChooseActivity"),
    path('modalNewTest/', views.getModalNewTest, name="modalNewTest"),
+   path('modalNewLesson/', views.getModalNewLesson, name="modalNewLesson"),
+   path('modalNewHomework/', views.getModalNewHomework, name="modalNewHomework"),
+   path('modalNewForum/', views.getModalNewForum, name="modalNewForum"),
    #urls serias
    path('<str:programa>/', views.programa, name="programa"),
    path('<str:programa>/<str:proceso>/', views.proceso, name="proceso"),
