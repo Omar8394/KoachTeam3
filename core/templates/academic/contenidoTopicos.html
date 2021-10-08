@@ -71,7 +71,7 @@ results for "{{query}}"
                   <div class="btn-group" role="group">
                      {% if edit %}
                      <button type="button" class="btn btn-icon btn-sm btn-info ml-1" data-toggle="tooltip" data-placement="top" title="Edit"
-                        onclick="openEditActivity('{{activity.pk}}')">
+                        onclick="openEditActivity('{{activity.pk}}','{{activity.fk_categoria.desc_elemento}}')">
                         <i class="fas fa-edit"></i>
                      </button>
                      {% endif %}

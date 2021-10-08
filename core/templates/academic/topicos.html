@@ -225,6 +225,42 @@
             })
          })
    }
+   const renderModalEditActivity = (id, type) => {
+      let url
+      if (type == "Test") {
+         url = "{% url 'modalNewTest' %}"
+      }
+      if (type == "Lesson") {
+         url = "{% url 'modalNewLesson' %}"
+      }
+      if (type == "Homework") {
+         url = "{% url 'modalNewHomework' %}"
+      }
+      if (type == "Forum") {
+         url = "{% url 'modalNewForum' %}"
+      }
+      return fetch(url, {
+         ...fetchObject,
+         body: JSON.stringify({
+            method: "Find",
+            id
+         })
+      })
+         .then(async (res) => {
+            document.getElementById("sectionDetailed").innerHTML = await res.text()
+         })
+         .then(()=>{
+            const formActividad = document.getElementById("formActividad")
+            formActividad.addEventListener("submit", (e) => {
+               e.preventDefault()
+               clickSave(formActividad, url)
+                  .then(() => {
+                     $("#addNewModal").modal("hide")
+                     renderContent()
+                  })
+            })
+         })
+   }
 
    const clickSave = (formElement, url) => {
       const formData = new FormData(formElement);
@@ -249,6 +285,24 @@
             })
       }
    }
+   const openEditActivity = (id, type) => {
+         editmode = true
+         idSeleted = id
+         fetch("{% url 'modalAddActividad'%}", {
+            ...fetchObject,
+            body: JSON.stringify({
+               method: "Find",
+               id
+            })
+         })
+            .then(async (res) => {
+               document.getElementById("addNewModalContent").innerHTML = await res.text()
+               await renderModalEditActivity(id, type)
+            })
+            .then(() => {
+               $("#addNewModal").modal("show")
+            })
+      }
    const openDeleteTopic = async (id) => {
       const elimino = await alerta(3)
       if (elimino) {

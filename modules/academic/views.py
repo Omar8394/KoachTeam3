@@ -526,11 +526,11 @@ def getModalNewHomework(request):
                     actividad = Estructuraprograma()
                     homework = ActividadTarea()
                     actividad.valor_elemento = "Activity"
-                actividad.fk_estructura_padre_id=data["padreActivity"]
+                    actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").get(desc_elemento="Homework").pk
+                    actividad.fk_estructura_padre_id=data["padreActivity"]
                 actividad.descripcion = data["data"]["descriptionActivity"]
                 actividad.resumen = data["data"]["resumenActivity"]
                 actividad.url = data["data"]["urlActivity"]
-                actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").get(desc_elemento="Homework").pk
                 actividad.peso_creditos = None
                 actividad.save()
                 homework.fk_estructura_programa = actividad
