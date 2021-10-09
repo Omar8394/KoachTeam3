@@ -8,7 +8,7 @@ from django.urls import reverse
 from django import template
 import json
 from ..app.models import TablasConfiguracion, Estructuraprograma
-from .models import ActividadEvaluaciones, Cursos, ActividadConferencia, ActividadLeccion, ActividadTarea, EvaluacionesPreguntas
+from .models import ActividadEvaluaciones, Cursos, ActividadConferencia, ActividadLeccion, ActividadTarea, EscalaEvaluacion, EvaluacionesPreguntas
 
 # Create your views here.
 @login_required(login_url="/login/")
@@ -199,6 +199,8 @@ def getContentTopicos(request):
             context = {}
             if request.body:
                 data = json.load(request)    
+                take=True
+                see=True
                 edit=True
                 add=True
                 delete=True
@@ -210,7 +212,7 @@ def getContentTopicos(request):
                     lista = curso.estructuraprograma_set.all()
                 else:
                     lista = curso.estructuraprograma_set.all().filter(valor_elemento="Topic", descripcion__icontains=data["query"])
-                context = {"data":lista, "programa":programa, "proceso":proceso, "unidad":unidad, "curso":curso ,"add":add,"edit": edit, "delete":delete, "query":data["query"]}
+                context = {"data":lista, "programa":programa, "proceso":proceso, "unidad":unidad, "curso":curso ,"add":add,"edit": edit,"take": take,"see": see, "delete":delete, "query":data["query"]}
                 html_template = (loader.get_template('academic/contenidoTopicos.html'))
                 return HttpResponse(html_template.render(context, request))
 
@@ -245,7 +247,7 @@ def getModalCategorias(request):
                     html_template = (loader.get_template('components/modalAddCategoria.html'))
                     return HttpResponse(html_template.render(context, request))
             except:
-                return JsonResponse({"message":"error"})
+                return JsonResponse({"message":"error"}, status=500)
 
 @login_required(login_url="/login/")
 def getModalProgramas(request):
@@ -285,7 +287,7 @@ def getModalProgramas(request):
                     html_template = (loader.get_template('components/modalAddPrograma.html'))
                     return HttpResponse(html_template.render(context, request))
             except:
-                return JsonResponse({"message":"error"})
+                return JsonResponse({"message":"error"}, status=500)
 
 @login_required(login_url="/login/")
 def getModalProcesos(request):
@@ -325,7 +327,7 @@ def getModalProcesos(request):
                     html_template = (loader.get_template('components/modalAddProceso.html'))
                     return HttpResponse(html_template.render(context, request))
             except:
-                return JsonResponse({"message":"error"})
+                return JsonResponse({"message":"error"}, status=500)
 
 @login_required(login_url="/login/")
 def getModalUnidades(request):
@@ -368,7 +370,7 @@ def getModalUnidades(request):
                     html_template = (loader.get_template('components/modalAddUnidad.html'))
                     return HttpResponse(html_template.render(context, request))
             except:
-                return JsonResponse({"message":"error"})
+                return JsonResponse({"message":"error"}, status=500)
 
 @login_required(login_url="/login/")
 def getModalCursos(request):
@@ -437,7 +439,7 @@ def getModalCursos(request):
                 # else:
                 
             except:
-                return JsonResponse({"message":"error"})
+                return JsonResponse({"message":"error"}, status=500)
 
 
 @login_required(login_url="/login/")
@@ -480,7 +482,7 @@ def getModalTopico(request):
                     topico.save()
                     return JsonResponse({"message":"Perfect"})
             except:
-                return JsonResponse({"message":"error"})
+                return JsonResponse({"message":"error"}, status=500)
 
 @login_required(login_url="/login/")
 def getModalActividad(request):
@@ -517,7 +519,7 @@ def getModalActividad(request):
                     actividad.save()
                     return JsonResponse({"message":"Perfect"})
             except:
-                return JsonResponse({"message":"error"})
+                return JsonResponse({"message":"error"}, status=500)
 
 @login_required(login_url="/login/")
 def getModalChooseActivities(request):
@@ -527,20 +529,150 @@ def getModalChooseActivities(request):
 
 @login_required(login_url="/login/")
 def getModalNewTest(request):
-    tipoDuracion = TablasConfiguracion.obtenerHijos(valor="Duracion")
-    context = {"tipoDuracion":tipoDuracion}
-    html_template = (loader.get_template('components/modalAddTest.html'))
-    return HttpResponse(html_template.render(context, request))
+    if request.method == "POST":
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            context = {}
+            modelo = {}
+            try:
+                if request.body:
+                    data = json.load(request)
+                    tipoDuracion = TablasConfiguracion.obtenerHijos(valor="Duracion")
+                    escalas = EscalaEvaluacion.objects.all()
+                    if data["method"] == "Show":
+                        context = {"escalas":escalas, "tipoDuracion":tipoDuracion}
+                        html_template = (loader.get_template('components/modalAddTest.html'))
+                        return HttpResponse(html_template.render(context, request))
+                    elif data["method"] == "Find":
+                        modelo = ActividadEvaluaciones.objects.get(fk_estructura_programa=data["id"])
+                        context = {"modelo": modelo, "escalas":escalas, "tipoDuracion":tipoDuracion}
+                        html_template = (loader.get_template('components/modalAddTest.html'))
+                        return HttpResponse(html_template.render(context, request))
+                    elif data["method"] == "Delete":
+                        actividad = Estructuraprograma.objects.get(pk=data["id"])
+                        actividad.delete()
+                        return JsonResponse({"message":"Deleted"})
+                    elif data["method"] == "Update":
+                        actividad = Estructuraprograma.objects.get(pk=data["id"])
+                        test = ActividadEvaluaciones.objects.get(fk_estructura_programa=data["id"])
+                    elif data["method"] == "Create":
+                        actividad = Estructuraprograma()
+                        test = ActividadEvaluaciones()
+                        actividad.valor_elemento = "Activity"
+                        actividad.fk_estructura_padre_id=data["padreActivity"]
+                    actividad.descripcion = data["data"]["descriptionActivity"]
+                    actividad.resumen = data["data"]["resumenActivity"]
+                    actividad.url = data["data"]["urlActivity"]
+                    actividad.peso_creditos = None
+                    actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").get(desc_elemento="Test").pk
+                    if "checkExpertCB" in data["data"]:
+                        actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").get(desc_elemento="Expert test").pk
+                    if "durationActivity" in data["data"]:
+                        test.duracion = data["data"]["durationActivity"]
+                    else:
+                        test.duracion = None
+                    if "timeActivity" in data["data"]:
+                        test.fk_tipo_duracion_id = data["data"]["timeActivity"]
+                    else:
+                        test.fk_tipo_duracion_id = None
+                    test.nro_repeticiones = data["data"]["repeats"]
+                    test.calificacion_aprobar = data["data"]["minApp"]
+                    test.fk_escala_evaluacion_id = data["data"]["qualification"]
+                    actividad.save()
+                    test.fk_estructura_programa = actividad
+                    test.save()
+                    return JsonResponse({"message":"Perfect"})
+            except:
+                return JsonResponse({"message":"error"}, status=500)
 
 @login_required(login_url="/login/")
 def getModalNewLesson(request):
-    status = TablasConfiguracion.obtenerHijos(valor="EstLeccion")
-    context = {"status": status}
-    html_template = (loader.get_template('components/modalAddLesson.html'))
-    return HttpResponse(html_template.render(context, request))
+    if request.method == "POST":
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            context = {}
+            modelo = {}
+            try:
+                if request.body:
+                    data = json.load(request)
+                    status = TablasConfiguracion.obtenerHijos(valor="EstLeccion")
+                    if data["method"] == "Show":
+                        context = {"status":status}
+                        html_template = (loader.get_template('components/modalAddLesson.html'))
+                        return HttpResponse(html_template.render(context, request))
+                    elif data["method"] == "Find":
+                        modelo = ActividadLeccion.objects.get(fk_estructura_programa=data["id"])
+                        context = {"modelo": modelo, "status":status}
+                        html_template = (loader.get_template('components/modalAddLesson.html'))
+                        return HttpResponse(html_template.render(context, request))
+                    elif data["method"] == "Delete":
+                        actividad = Estructuraprograma.objects.get(pk=data["id"])
+                        actividad.delete()
+                        return JsonResponse({"message":"Deleted"})
+                    elif data["method"] == "Update":
+                        actividad = Estructuraprograma.objects.get(pk=data["id"])
+                        lesson = ActividadLeccion.objects.get(fk_estructura_programa=data["id"])
+                    elif data["method"] == "Create":
+                        actividad = Estructuraprograma()
+                        lesson = ActividadLeccion()
+                        actividad.valor_elemento = "Activity"
+                        actividad.fk_estructura_padre_id=data["padreActivity"]
+                    actividad.descripcion = data["data"]["descriptionActivity"]
+                    actividad.resumen = data["data"]["resumenActivity"]
+                    actividad.url = data["data"]["urlActivity"]
+                    actividad.peso_creditos = None
+                    actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").get(desc_elemento="Lesson").pk
+                    lesson.disponible_desde = data["data"]["disponibleLesson"]
+                    lesson.estatus_id = data["data"]["estatusLesson"]
+                    actividad.save()
+                    lesson.fk_estructura_programa = actividad
+                    lesson.save()
+                    return JsonResponse({"message":"Perfect"})
+            except:
+                return JsonResponse({"message":"error"}, status=500)
 
 @login_required(login_url="/login/")
 def getModalNewHomework(request):
+    if request.method == "POST":
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            context = {}
+            modelo = {}
+            try:
+                if request.body:
+                    data = json.load(request)
+                    if data["method"] == "Show":
+                        html_template = (loader.get_template('components/modalAddHomework.html'))
+                        return HttpResponse(html_template.render(context, request))
+                    elif data["method"] == "Find":
+                        modelo = ActividadTarea.objects.get(fk_estructura_programa=data["id"])
+                        context = {"modelo": modelo}
+                        html_template = (loader.get_template('components/modalAddHomework.html'))
+                        return HttpResponse(html_template.render(context, request))
+                    elif data["method"] == "Delete":
+                        actividad = Estructuraprograma.objects.get(pk=data["id"])
+                        actividad.delete()
+                        return JsonResponse({"message":"Deleted"})
+                    elif data["method"] == "Update":
+                        actividad = Estructuraprograma.objects.get(pk=data["id"])
+                        homework = ActividadTarea.objects.get(fk_estructura_programa=data["id"])
+                    elif data["method"] == "Create":
+                        actividad = Estructuraprograma()
+                        homework = ActividadTarea()
+                        actividad.valor_elemento = "Activity"
+                        actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").get(desc_elemento="Homework").pk
+                        actividad.fk_estructura_padre_id=data["padreActivity"]
+                    actividad.descripcion = data["data"]["descriptionActivity"]
+                    actividad.resumen = data["data"]["resumenActivity"]
+                    actividad.url = data["data"]["urlActivity"]
+                    actividad.peso_creditos = None
+                    actividad.save()
+                    homework.fk_estructura_programa = actividad
+                    homework.fecha_entrega = data["data"]["entregaHomework"]
+                    homework.save()
+                    return JsonResponse({"message":"Perfect"})
+            except:
+                return JsonResponse({"message":"error"}, status=500)
+
+@login_required(login_url="/login/")
+def getModalNewForum(request):
     if request.method == "POST":
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             context = {}
@@ -549,12 +681,12 @@ def getModalNewHomework(request):
             if request.body:
                 data = json.load(request)
                 if data["method"] == "Show":
-                    html_template = (loader.get_template('components/modalAddHomework.html'))
+                    html_template = (loader.get_template('components/modalAddForum.html'))
                     return HttpResponse(html_template.render(context, request))
                 elif data["method"] == "Find":
-                    modelo = ActividadTarea.objects.get(fk_estructura_programa=data["id"])
+                    modelo = ActividadConferencia.objects.get(fk_estructura_programa=data["id"])
                     context = {"modelo": modelo}
-                    html_template = (loader.get_template('components/modalAddHomework.html'))
+                    html_template = (loader.get_template('components/modalAddForum.html'))
                     return HttpResponse(html_template.render(context, request))
                 elif data["method"] == "Delete":
                     actividad = Estructuraprograma.objects.get(pk=data["id"])
@@ -562,30 +694,28 @@ def getModalNewHomework(request):
                     return JsonResponse({"message":"Deleted"})
                 elif data["method"] == "Update":
                     actividad = Estructuraprograma.objects.get(pk=data["id"])
-                    homework = ActividadTarea.objects.get(fk_estructura_programa=data["id"])
+                    forum = ActividadConferencia.objects.get(fk_estructura_programa=data["id"])
                 elif data["method"] == "Create":
                     actividad = Estructuraprograma()
-                    homework = ActividadTarea()
+                    forum = ActividadConferencia()
                     actividad.valor_elemento = "Activity"
-                    actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").get(desc_elemento="Homework").pk
+                    actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").get(desc_elemento="Forum").pk
                     actividad.fk_estructura_padre_id=data["padreActivity"]
                 actividad.descripcion = data["data"]["descriptionActivity"]
                 actividad.resumen = data["data"]["resumenActivity"]
                 actividad.url = data["data"]["urlActivity"]
                 actividad.peso_creditos = None
+                forum.fecha_hora = data["data"]["datetimeForum"]
+                forum.enlace = data["data"]["linkForum"]
+                forum.id_conferencia = data["data"]["idForum"]
+                forum.clave = data["data"]["keyForum"]
+                # forum.fk_publico
                 actividad.save()
-                homework.fk_estructura_programa = actividad
-                homework.fecha_entrega = data["data"]["entregaHomework"]
-                homework.save()
+                forum.fk_estructura_programa = actividad
+                forum.save()
                 return JsonResponse({"message":"Perfect"})
             # except:
-                return JsonResponse({"message":"error"})
-
-@login_required(login_url="/login/")
-def getModalNewForum(request):
-    context = {}
-    html_template = (loader.get_template('components/modalAddForum.html'))
-    return HttpResponse(html_template.render(context, request))
+            #     return JsonResponse({"message":"error"}, status=500)
 
 @login_required(login_url="/login/")
 def getModalQuestion(request): 
@@ -662,7 +792,7 @@ def getComboContent(request):
                     html_template = (loader.get_template('registration/ComboOptions.html'))
                     return HttpResponse(html_template.render(context, request))
             except:
-                return JsonResponse({"message":"error"})
+                return JsonResponse({"message":"error"}, status=500)
     
 @login_required(login_url="/login/")
 def pages(request):

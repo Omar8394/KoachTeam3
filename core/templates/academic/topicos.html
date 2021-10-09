@@ -166,6 +166,7 @@
    }
 
    const openAddActivity = (idPadre) => {
+      editmode = false
       selectedActivity = idPadre
       renderModalChooseActivities().then(() => {
          $("#addChooseActivities").modal("show")
@@ -192,15 +193,6 @@
          })
          .then(() => {
             $("#addNewModal").modal("show")
-            const formActividad = document.getElementById("formActividad")
-            formActividad.addEventListener("submit", (e) => {
-               e.preventDefault()
-               clickSave(formActividad, "{% url 'modalAddActividad' %}")
-                  .then(() => {
-                     $("#addNewModal").modal("hide")
-                     renderContent()
-                  })
-            })
          })
    }
    const renderModalNewActivity = (url) => {
@@ -227,7 +219,7 @@
    }
    const renderModalEditActivity = (id, type) => {
       let url
-      if (type == "Test") {
+      if (type == "Test" || type == "Expert test") {
          url = "{% url 'modalNewTest' %}"
       }
       if (type == "Lesson") {
@@ -303,6 +295,26 @@
                $("#addNewModal").modal("show")
             })
       }
+   const openDeleteActivity = async (id) => {
+      const elimino = await alerta(3)
+      if (elimino) {
+         fetch("{% url 'modalAddActividad'%}", {
+            ...fetchObject,
+            body: JSON.stringify({
+               method: "Delete",
+               id
+            })
+         })
+            .then(async (res) => {
+               const text = JSON.parse(await res.text())
+               if (text.message == "error") alerta(5)
+               else alerta(4)
+            })
+            .then(() => {
+               renderContent()
+            })
+      }
+   }
    const openDeleteTopic = async (id) => {
       const elimino = await alerta(3)
       if (elimino) {

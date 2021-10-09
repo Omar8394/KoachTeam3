@@ -153,7 +153,6 @@ class ActividadConferencia(models.Model):
     enlace = models.TextField(null=True)
     clave = models.TextField(null=True)
     id_conferencia = models.TextField(null=True)
-    fk_publico = models.ForeignKey(Publico, on_delete=models.CASCADE, default=None, null=True)
     fk_estructura_programa = models.OneToOneField(Estructuraprograma,on_delete=models.CASCADE,  default=None, null=True)
 
 class EvaluacionPreguntaOpciones(models.Model):

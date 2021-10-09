@@ -76,8 +76,13 @@
    display: none !important;
    width: 0 !important;
 }
+.card-list-item-resume{
+   flex: 1;
+}
 .card-list-item-descripcion{
-   /*display: flex; */
+   display: flex;
+   width: 100%;
+   flex: 1;
    justify-content: start;
    align-items: center;
    position: relative;
@@ -88,11 +93,14 @@
    background: #fff;
    transition: transform 0.1s linear, outline 0.1s linear
 }
+.card-list-item-icon{
+   flex: none;
+   font-size: 1.5rem;
+}
 .card-list-item-content{
    margin: 5px;
    gap: 1.5rem;
    display: flex;
-   justify-content: space-between;
    align-items: center;
    position: relative;
    height: 100%;
@@ -109,7 +117,21 @@
 .card-list-item-inner:hover >.card-list-item-extra{
    opacity: 1;
 }
-
+.deg-primary{
+   background: linear-gradient(to right, #007bffcc, #007bff22 25%, rgba(0,0,0,0) 50%);
+}
+.deg-success{
+   background: linear-gradient(to right, #28a745cc, #28a74522 25%, rgba(0,0,0,0) 50%);
+}
+.deg-danger{
+   background: linear-gradient(to right, #dc3545cc, #dc354522 25%, rgba(0,0,0,0) 50%);
+}
+.deg-warning{
+   background: linear-gradient(to right, #ffc107cc, #ffc10722 25%, rgba(0,0,0,0) 50%);
+}
+.deg-secondary{
+   background: linear-gradient(to right, #555555cc, #55555522 25%, rgba(0,0,0,0) 50%);
+}
 @media screen and (max-width: 760px){
    .card-list-item-extra{
       display: none;

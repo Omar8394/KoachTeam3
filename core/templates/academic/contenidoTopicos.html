@@ -64,11 +64,46 @@ results for "{{query}}"
          <ul id="childsTopic{{topic.pk}}" class="card-list-item-close">
             {% for activity in topic.estructuraprograma_set.all %}
             {%if activity.valor_elemento == 'Activity'%}
-            <li class="card-list-item-content">
+            <li class="card-list-item-content
+            {% if activity.fk_categoria.desc_elemento == 'Expert test'%} deg-primary{% endif %}
+            {% if activity.fk_categoria.desc_elemento == 'Test'%} deg-success{% endif %}
+            {% if activity.fk_categoria.desc_elemento == 'Homework'%} deg-warning{% endif %}
+            {% if activity.fk_categoria.desc_elemento == 'Lesson'%} deg-secondary{% endif %}
+            {% if activity.fk_categoria.desc_elemento == 'Forum'%} deg-danger{% endif %}
+            ">
+               <div class="card-list-item-icon">
+                  {% if activity.fk_categoria.desc_elemento == 'Expert test'%}
+                  <i class="fas fa-file-contract"></i>
+                  {% endif %}
+                  {% if activity.fk_categoria.desc_elemento == 'Test'%}
+                  <i class="fas fa-file-alt"></i>
+                  {% endif %}
+                  {% if activity.fk_categoria.desc_elemento == 'Homework'%}
+                  <i class="fas fa-highlighter"></i>
+                  {% endif %}
+                  {% if activity.fk_categoria.desc_elemento == 'Lesson'%}
+                  <i class="fas fa-chalkboard-teacher"></i>
+                  {% endif %}
+                  {% if activity.fk_categoria.desc_elemento == 'Forum'%}
+                  <i class="fas fa-headset"></i>
+                  {% endif %}
+               </div>
                <div class="card-list-item-subtitle">{{activity.descripcion}}</div>
-               <div class="card-list-item-description">{{activity.resumen}}</div>
+               <div class="card-list-item-resume">{{activity.resumen}}</div>
                <div class="card-list-item-actions">
                   <div class="btn-group" role="group">
+                     {% if take %}
+                     <button type="button" class="btn btn-icon btn-sm btn-success ml-1" data-toggle="tooltip" data-placement="top" title="Take"
+                        onclick="openTakeActivity('{{activity.pk}}','{{activity.fk_categoria.desc_elemento}}')">
+                        <i class="fas fa-sign-out-alt"></i>
+                     </button>
+                     {% endif %}
+                     {% if see %}
+                     <button type="button" class="btn btn-icon btn-sm btn-warning ml-1" data-toggle="tooltip" data-placement="top" title="See"
+                        onclick="openSeeActivity('{{activity.pk}}','{{activity.fk_categoria.desc_elemento}}')">
+                        <i class="fas fa-eye"></i>
+                     </button>
+                     {% endif %}
                      {% if edit %}
                      <button type="button" class="btn btn-icon btn-sm btn-info ml-1" data-toggle="tooltip" data-placement="top" title="Edit"
                         onclick="openEditActivity('{{activity.pk}}','{{activity.fk_categoria.desc_elemento}}')">
