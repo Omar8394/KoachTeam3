@@ -68,7 +68,7 @@ results for "{{query}}"
             {% if activity.fk_categoria.desc_elemento == 'Expert test'%} deg-primary{% endif %}
             {% if activity.fk_categoria.desc_elemento == 'Test'%} deg-success{% endif %}
             {% if activity.fk_categoria.desc_elemento == 'Homework'%} deg-warning{% endif %}
-            {% if activity.fk_categoria.desc_elemento == 'Lesson'%} deg-secondary{% endif %}
+            {% if activity.fk_categoria.desc_elemento == 'Lesson'%} deg-info{% endif %}
             {% if activity.fk_categoria.desc_elemento == 'Forum'%} deg-danger{% endif %}
             ">
                <div class="card-list-item-icon">
@@ -79,7 +79,7 @@ results for "{{query}}"
                   <i class="fas fa-file-alt"></i>
                   {% endif %}
                   {% if activity.fk_categoria.desc_elemento == 'Homework'%}
-                  <i class="fas fa-highlighter"></i>
+                  <i class="fas fa-pencil-alt"></i>
                   {% endif %}
                   {% if activity.fk_categoria.desc_elemento == 'Lesson'%}
                   <i class="fas fa-chalkboard-teacher"></i>

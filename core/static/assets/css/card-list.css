@@ -129,8 +129,8 @@
 .deg-warning{
    background: linear-gradient(to right, #ffc107cc, #ffc10722 25%, rgba(0,0,0,0) 50%);
 }
-.deg-secondary{
-   background: linear-gradient(to right, #555555cc, #55555522 25%, rgba(0,0,0,0) 50%);
+.deg-info{
+   background: linear-gradient(to right, #17a2b8cc, #17a2b822 25%, rgba(0,0,0,0) 50%);
 }
 @media screen and (max-width: 760px){
    .card-list-item-extra{
