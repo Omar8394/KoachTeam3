@@ -528,6 +528,12 @@ def getModalChooseActivities(request):
     return HttpResponse(html_template.render(context, request))
 
 @login_required(login_url="/login/")
+def getModalChooseTypeQuestion(request):
+    context = {}
+    html_template = (loader.get_template('components/modalTypeQuestion.html'))
+    return HttpResponse(html_template.render(context, request))
+
+@login_required(login_url="/login/")
 def getModalNewTest(request):
     if request.method == "POST":
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
@@ -723,6 +729,41 @@ def getModalQuestion(request):
         "tipoPreguntas" : TablasConfiguracion.obtenerHijos('PregEvalua'),
     }
     html_template = (loader.get_template('components/modalAddQuestion.html'))
+    return HttpResponse(html_template.render(context, request))
+
+@login_required(login_url="/login/")
+def getModalNewSimple(request):
+   
+    context = {}
+    html_template = (loader.get_template('components/modalAddSimple.html'))
+    return HttpResponse(html_template.render(context, request))
+    
+@login_required(login_url="/login/")
+def getModalNewMultiple(request):
+   
+    context ={}
+    html_template = (loader.get_template('components/modalAddMultiple.html'))
+    return HttpResponse(html_template.render(context, request))
+    
+@login_required(login_url="/login/")
+def getModalNewCompletion(request):
+   
+    context = {}
+    html_template = (loader.get_template('components/modalAddCompletion.html'))
+    return HttpResponse(html_template.render(context, request))
+    
+@login_required(login_url="/login/")
+def getModalNewAssociation(request):
+   
+    context = {}
+    html_template = (loader.get_template('components/modalAddAssociation.html'))
+    return HttpResponse(html_template.render(context, request))
+    
+@login_required(login_url="/login/")
+def getModalNewTof(request):
+   
+    context = {}
+    html_template = (loader.get_template('components/modalAddTof.html'))
     return HttpResponse(html_template.render(context, request))
 
 @login_required(login_url="/login/")

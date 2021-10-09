@@ -71,13 +71,6 @@ class CursosPrerequisitos(models.Model):
     fk_estruc_programa = models.ForeignKey(Estructuraprograma, on_delete=models.CASCADE, default=None, null=True)
     fk_curso = models.ForeignKey(Cursos, on_delete=models.CASCADE, default=None, null=True)
 
-class PreguntasOpciones(models.Model):
-    idpreguntas_opciones=models.AutoField(primary_key=True)
-    texto_opcion = models.TextField(null=True)
-    tipo_condicion = models.BooleanField(default=False)
-    puntos_porc=models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
-
-
 class EvaluacionInstrucciones(models.Model):
     idevaluacion_instrucciones=models.AutoField(primary_key=True)
     texto_instrucciones = models.TextField(null=True)
@@ -99,6 +92,13 @@ class EvaluacionesPreguntas(models.Model):
     puntos_pregunta = models.DecimalField(max_digits=9, decimal_places=2, blank=True, null=True)
     fk_evaluaciones_bloque = models.ForeignKey(EvaluacionesBloques, on_delete=models.CASCADE,  default=None, null=True)
     fk_tipo_pregunta_evaluacion = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE,  default=None, null=True)
+
+class PreguntasOpciones(models.Model):
+    idpreguntas_opciones=models.AutoField(primary_key=True)
+    fk_evaluacion_pregunta= models.ForeignKey(EvaluacionesPreguntas, on_delete=models.CASCADE, default=None, null=True)
+    texto_opcion = models.TextField(null=True)
+    tipo_condicion = models.BooleanField(default=False)
+    puntos_porc=models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
 
 class Recurso(models.Model):
     id_recurso = models.AutoField(primary_key=True)

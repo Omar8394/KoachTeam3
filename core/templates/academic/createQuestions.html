@@ -108,18 +108,29 @@
     </div>
 
     <!--Modals-->
-
-    <div class="modal fade" tabindex="-1" role="dialog" id="addNewQuestion">
-        <div class="modal-dialog modal-dialog-centered" role="document" id="modalQuestion">
+    
+    <!-- Modal escoger tipo de pregunta -->
+    <div class="modal fade" tabindex="-1" role="dialog" id="chooseTypeQuestion">
+        <div class="modal-dialog modal-dialog-centered" role="document" id="modalChooseQuestion">
         
             
-        </div><!-- /.modal-dialog -->
+        </div>
     </div>
+
+    <!-- Modal mostrar pregunta -->
+    <div class="modal fade" tabindex="-1" role="dialog" id="addNewQuestion">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document" id="modalQuestion">
+        
+            
+        </div>
+    </div>
+
 {% endblock content %}
 
 {% block javascripts %}
 
-   <script>
+    <script>
+
         // Variables
 
         let tablaPreguntas = []
@@ -130,10 +141,32 @@
             return acc
         },{})
 
+        const chooseModal = async (type) => {
+           $("#chooseTypeQuestion").modal("hide")
+           await renderModalQuestions()
+           let url
+           if (type == "simple") {
+              url = "{% url 'modalNewSimple' %}"
+           }
+           if (type == "multiple") {
+              url = "{% url 'modalNewMultiple' %}"
+           }
+           if (type == "completion") {
+              url = "{% url 'modalNewCompletion' %}"
+           }
+           if (type == "association") {
+              url = "{% url 'modalNewAssociation' %}"
+           }
+           if (type == "tof") {
+              url = "{% url 'modalNewTof' %}"
+           }
+           await renderModalNewQuestion(url)
+        }
+
         const openAddModalQuestion = () => {
-            renderModalQuestions().then(()=>{
+            renderModalTypeQuestion().then(()=>{
                editmode = false
-               $("#addNewQuestion").modal("show")
+               $("#chooseTypeQuestion").modal("show")
             })
         }    
 
@@ -230,20 +263,56 @@
         
         // Renderizar  
 
-        const renderModalQuestions = () => {
-            return fetch("{% url 'modalAddQuestion' %}", {
+        const renderModalTypeQuestion = () => {
+            return fetch("{% url 'modalTypeQuestion' %}", {
                 ...fetchObject
             })
             .then(async (res) => {
-                document.getElementById("modalQuestion").innerHTML = await res.text()
+                document.getElementById("modalChooseQuestion").innerHTML = await res.text()
             }).then(()=>{
-                const formQuestion = document.getElementById("formQuestion")
+                const formQuestion = document.getElementById("chooseContent")
                 formQuestion.addEventListener("submit", (e) => {
                     e.preventDefault()
                     clickSave()
                 })              
             })
         }   
+
+        const renderModalQuestions = () => {
+            return fetch("{% url 'modalAddQuestion' %}", {
+                ...fetchObject
+            })
+            .then(async (res) => {
+                document.getElementById("modalQuestion").innerHTML = await res.text()
+            })  .then(() => {
+            $("#addNewQuestion").modal("show")
+            const formQuestion = document.getElementById("formQuestion")
+           
+         })
+        }   
+
+        const renderModalNewQuestion = (url) => {
+        return fetch(url, {
+            ...fetchObject,
+            body: JSON.stringify({
+            method: "Show",
+            })
+        })
+        .then(async (res) => {
+            document.getElementById("seccionDetallada").innerHTML = await res.text()
+        })
+        .then(() => {
+            const formActividad = document.getElementById("formQuestion")
+            // formActividad.addEventListener("submit", (e) => {
+            //    e.preventDefault()
+            //    clickSave(formActividad, url)
+            //       .then(() => {
+            //          $("#addNewModal").modal("hide")
+            //          renderContent()
+            //       })
+            // })
+         })
+        }    
 
         const renderComponentTabla = async (name) => {
             return await fetch("{% url 'component_tabla'%}",
@@ -270,7 +339,6 @@
                     return result
                 })
         }
-
         
         const renderTable = async() => {
             const result = await renderComponentTabla("tablaPreguntas")

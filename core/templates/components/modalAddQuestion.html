@@ -1,55 +1,34 @@
 <div class="modal-content">
     <div class="modal-header">
-        <h5 style="left: initial;" class="modal-title">Add question</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="color: white;">&times;</span></button>
+        <h4 style="left: initial;" class="modal-title">New question</h4>  
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
     </div>
     <form class="form" id="formQuestion" name="formQuestion">
         <div class="modal-body">
-        
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label for="desc_escala">Title</label>
-                    <input type="text" name="desc_escala" class="form-control" id="desc_escala" placeholder="Enter a title" required>
+            <div id="seccionGeneral">
+                <div class="form-row">
+                    <h2>General</h2>
                 </div>
-                <div class="form-group col-md-6">
-                    <label for="max_score">Max score</label>
-                    <input type="text" name="max_score" class="form-control" id="max_score" placeholder="Enter a number">
-                </div>
-            </div>   
-
-            <hr>
-
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label for="desc_escala">Description</label>
-                    <input type="text" class="form-control" name="desc_calificacion" id="desc_calificacion" placeholder="Enter a description" required>
-                </div>
-                <div class="form-group col-md-6">
-                    <label for="">Qualification</label>
-                    <select class="form-control" id="fk_calificacion" name="fk_calificacion" required>
-                        <option value="null" selected disabled>Select and option</option>
-
-                        {% for cal in califs %}
-                            <option value="{{cal.id_tabla}}">{{cal}}</option>
-                        {% endfor %}
-                 
-                    </select>
-                </div>
-            </div>       
-              
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label for="max_points">Max points</label>
-                    <input type="text" class="form-control" name="max_points" id="max_points" placeholder="Enter a number" required>
-                </div>
-                <div class="form-group col-md-6 d-flex justify-content-start">
-                    <button class="btn btn-success mt-4" id="addRow">
-                        Add <i class="fas fa-arrow-down ml-1"></i>
-                    </button>
-                </div>
+    
+                <div class="form-row col-md-12">
+                    <div class="form-group col-md-12">
+                        <label for="questionText">Question text</label>
+                        <textarea name="questionText" class="form-control" id="questionText" cols="100" rows="4"></textarea>
+                    </div>                       
+                </div>    
+    
+                <div class="form-row col-md-12 mt-3">
+                    <div class="form-group col-md-12">
+                        <label for="questionPoints">Question points</label>
+                        <input type="number" name="questionPoints" class="form-control" id="questionPoints" placeholder="Enter a number">
+                    </div>        
+                </div> 
             </div>
-
-   
+            <hr>
+            <div id="seccionDetallada">
+               
+            </div>
+        </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-danger" data-dismiss="modal">
                 <i class="fas fa-arrow-left mr-2"></i>Back

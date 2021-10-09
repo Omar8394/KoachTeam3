@@ -34,6 +34,13 @@ urlpatterns = [
    path('modalNewHomework/', views.getModalNewHomework, name="modalNewHomework"),
    path('modalNewForum/', views.getModalNewForum, name="modalNewForum"),
    path('modalAddQuestion/', views.getModalQuestion, name="modalAddQuestion"),
+   path('modalChooseTypeQuestion/', views.getModalChooseTypeQuestion, name="modalTypeQuestion"),
+   path('modalNewSimple/', views.getModalNewSimple, name="modalNewSimple"),
+   path('modalNewMultiple/', views.getModalNewMultiple, name="modalNewMultiple"),
+   path('modalNewCompletion/', views.getModalNewCompletion, name="modalNewCompletion"),
+   path('modalNewAssociation/', views.getModalNewAssociation, name="modalNewAssociation"),
+   path('modalNewTof/', views.getModalNewTof, name="modalNewTof"),
+
    #urls serias
    path('<str:programa>/', views.programa, name="programa"),
    path('<str:programa>/<str:proceso>/', views.proceso, name="proceso"),
