@@ -202,6 +202,56 @@
                 })
                 $("#addRow").click(function () {
                     event.preventDefault()
+                    var SavemaxScore=parseFloat(document.getElementById("max_score").value).toFixed(2)+0
+                    
+                    for(const element of listaScales ){
+                        //console.log(document.getElementById("max_points").value)
+                        //console.log(parseFloat(document.getElementById("max_points").value).toFixed(2))
+                       // console.log(element.max_points)
+
+                        if(parseFloat(document.getElementById("max_points").value).toFixed(2)<=0){
+                         
+                         alertaMensajitos(5,'Invalid scale ',"The scale  max value can not be equal or less than 0")
+              
+                             return false
+                     } 
+
+                    if(parseFloat(document.getElementById("max_points").value)>SavemaxScore){
+                        console.log(parseFloat(document.getElementById("max_points").value).toFixed(2))
+
+                         console.log(parseFloat(document.getElementById("max_score").value).toFixed(2))
+                         alertaMensajitos(5,'Invalid Scale',"A child scale's max value can not be greater than it's parent")
+ 
+                          return
+                          
+                      }
+                    
+                     if(parseFloat(document.getElementById("max_points").value).toFixed(2)==element.max_points){
+                         
+                        alertaMensajitos(5,'Invalid Scale',"There is already a scale whitin that range")
+
+                         return
+                         
+                     }
+                     if(document.getElementById("fk_calificacion").value==element.quack){
+                        alertaMensajitos(5,'Invalid qualification',"There is already a scale with the same qualification")
+
+                            return
+
+                     }
+                     if(document.getElementById("desc_calificacion").value==element.descriptionCalif){
+                        alertaMensajitos(5,'Invalid description',"There is already a scale with the same description")
+
+                            return
+
+                     }
+                    
+                    
+                    
+                    }
+
+                   
+
                     if(!$("#scaleGe").valid())return
                     let datos = {
                         descriptionCalif: document.getElementById("desc_calificacion").value,
@@ -320,6 +370,49 @@
     }
 
     const clickSave = () => {
+        var SavemaxScore=parseFloat($("#max_score").val())
+
+        if(SavemaxScore<=0){
+                         
+            alertaMensajitos(5,'Invalid max score',"The max score can not be equal or less than 0")
+ 
+                return false
+        } 
+        var limiteMayor=false
+        for(const element of listaScales ){
+                      
+
+                    floatElement=parseFloat(element.max_points).toFixed(2)
+
+                    if(floatElement>SavemaxScore){
+                        console.log(parseFloat(element.max_points).toFixed(2))
+                        console.log(SavemaxScore)
+                         
+                         alertaMensajitos(5,'There is a invalid child scale',"A child scale's max value can not be greater than it's parent")
+ 
+                          return false
+                          
+
+                      }
+
+                      
+                    if(floatElement==SavemaxScore){
+                         
+                        limiteMayor=true
+                          
+                      }
+                  
+                  
+                    
+                    
+                    
+                    }
+
+                    if(limiteMayor==false){
+                        alertaMensajitos(5,'There are range missing',"There are not scales covering the range to the max score")
+ 
+                                return false
+                    }
 
         const description = document.getElementById("desc_escala")
         const maxScore = document.getElementById("max_score")
