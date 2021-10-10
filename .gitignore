@@ -37,3 +37,15 @@ modules/planning/migrations/
 modules/communication/migrations/
 core/db.py
 .idea/
+modules/academic/migrations/0001_initial.py
+modules/academic/migrations/0002_escalacalificacion_fk_escala_evaluacion.py
+modules/academic/migrations/0003_auto_20210922_1556.py
+modules/app/migrations/0001_initial.py
+modules/app/migrations/0002_publico_fecha_registro.py
+modules/app/migrations/0003_auto_20210922_1556.py
+modules/planning/migrations/0001_initial.py
+modules/planning/migrations/0002_auto_20210922_1556.py
+modules/registration/migrations/0001_initial.py
+modules/registration/migrations/0002_matriculaalumnos_fecha_aprobada.py
+modules/registration/migrations/0003_auto_20210922_1556.py
+modules/security/migrations/0001_initial.py
