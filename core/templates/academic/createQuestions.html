@@ -5,6 +5,8 @@
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
 {% endblock stylesheets %}
+{% load Filter %}
+
 {% block content %}
     <div class="content">
         <div class="page-inner animated fadeInRight">
@@ -106,7 +108,6 @@
             </div>
         </div>
     </div>
-
     <!--Modals-->
     
     <!-- Modal escoger tipo de pregunta -->
@@ -132,14 +133,53 @@
     <script>
 
         // Variables
-
+       let fatherId={{bloque.idevaluaciones_bloques}}
         let tablaPreguntas = []
+        let respuesta=null
         let tablaCuerpo = document.getElementById("tableContent")
-        const arrayTipos = [{% for type in tipoPreguntas %}{id:"{{type.id_tabla}}", descripcion:"{{type.desc_elemento}}"},{% endfor %}]
-        let hashObj = arrayTipos.reduce(function(acc, e){
-            acc[e.id]=e.descripcion
-            return acc
-        },{})
+        let tipoPreguntaSelected=null
+  
+        function actualizarListaSimple() {
+            tableContentSimple.innerHTML = ""
+        let contenido = ""
+
+     
+
+
+        tablaPreguntas.map((dato, index) => {
+            let fila =
+                `<tr>
+                        <td>${dato.OpcionText}</td>
+                        
+                        <td>
+                            <div class="btn-group" role="group">
+                                <input type='radio' name='listaSimpleRadio' value='${index}' checked onchange="respuestaCorrecta(this)"  >
+                            </div>
+                        </td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <button onclick="borrarItemSimple(${index})" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip"  data-placement="top" title="Delete" >
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>`
+            contenido += fila
+        })
+        tableContentSimple.innerHTML = contenido
+    }
+
+    function borrarItemSimple(id) {
+        tablaPreguntas.splice(id, 1)
+        actualizarListaSimple()
+    }
+
+    function respuestaCorrecta(radio){
+            respuesta=radio.value
+          //  alert(radio.value)
+
+        }
+    
 
         const chooseModal = async (type) => {
            $("#chooseTypeQuestion").modal("hide")
@@ -147,18 +187,27 @@
            let url
            if (type == "simple") {
               url = "{% url 'modalNewSimple' %}"
+              tipoPreguntaSelected=1
            }
            if (type == "multiple") {
               url = "{% url 'modalNewMultiple' %}"
+              tipoPreguntaSelected=2
+
            }
            if (type == "completion") {
               url = "{% url 'modalNewCompletion' %}"
+              tipoPreguntaSelected=3
+
            }
            if (type == "association") {
               url = "{% url 'modalNewAssociation' %}"
+              tipoPreguntaSelected=4
+
            }
            if (type == "tof") {
               url = "{% url 'modalNewTof' %}"
+              tipoPreguntaSelected=5
+
            }
            await renderModalNewQuestion(url)
         }
@@ -172,7 +221,7 @@
 
        // Guardar
    
-        const clickSave = () => {
+        const clickSave = (url) => {
        
             const questionText= document.getElementById("questionText")
             const questionPoints= document.getElementById("questionPoints")
@@ -181,20 +230,28 @@
             form = {
                textoPregunta: questionText.value,
                puntosPregunta: questionPoints.value,
-               tipoPregunta: typeQuestion.value,
+               //tipoPregunta: typeQuestion.value,
+               tipoPregunta:tipoPreguntaSelected,
+               hijos: tablaPreguntas,
+               seleccionada: respuestaCorrecta,
+               select2:document.querySelector('input[name="listaSimpleRadio"]:checked').value,
+               fatherId:fatherId,
+               method:'Create'
+            
+
             
             }
             if (editmode) {
                 updateQuestion(form, selectedId)
             }
             else {
-                createQuestion(form)
+                createQuestion(form,url)
             }            
      
         }
            
-        const createQuestion = (form) => {
-            fetch("{% url 'saveQuestions' %}", {
+        const createQuestion = (form,url) => {
+            fetch(url, {
                 ...fetchObject,
                 body: JSON.stringify({
                    data: form
@@ -208,7 +265,8 @@
                 alerta(1)
             })
             .then(() => {
-             
+               form=null
+               tablaPreguntas=[]
                 $("#addNewQuestion").modal("hide");
             })
         }
@@ -270,11 +328,7 @@
             .then(async (res) => {
                 document.getElementById("modalChooseQuestion").innerHTML = await res.text()
             }).then(()=>{
-                const formQuestion = document.getElementById("chooseContent")
-                formQuestion.addEventListener("submit", (e) => {
-                    e.preventDefault()
-                    clickSave()
-                })              
+                         
             })
         }   
 
@@ -295,22 +349,63 @@
         return fetch(url, {
             ...fetchObject,
             body: JSON.stringify({
-            method: "Show",
+             data: {
+                    
+                    method:'Show'
+                }
             })
         })
         .then(async (res) => {
             document.getElementById("seccionDetallada").innerHTML = await res.text()
         })
         .then(() => {
-            const formActividad = document.getElementById("formQuestion")
-            // formActividad.addEventListener("submit", (e) => {
-            //    e.preventDefault()
-            //    clickSave(formActividad, url)
-            //       .then(() => {
-            //          $("#addNewModal").modal("hide")
-            //          renderContent()
-            //       })
-            // })
+           //  const formActividad = document.getElementById("formQuestion")
+             const formQuestion = document.getElementById("addNewQuestion")
+                formQuestion.addEventListener("submit", (e) => {
+                    e.preventDefault()
+                    clickSave(url)
+                })   
+
+              
+            if(tipoPreguntaSelected==1){
+
+                $("#addRow").click(function () {
+                    event.preventDefault()
+
+
+
+                    for(const element of tablaPreguntas ){
+
+                        if(element.OpcionText==document.getElementById("optionText").value){
+
+                        alertaMensajitos(5,'Invalid description',"There is already a question with the same text")
+                        return
+
+                        }
+
+
+                    }
+                   
+
+                    let datos = {
+                        OpcionText: document.getElementById("optionText").value,
+                         id:tablaPreguntas.length,
+                        actions: `
+                        <div class="btn-group" role="group">
+                            <button onclick="borrarItem(${tablaPreguntas.length})" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip"  data-placement="top" title="Delete" >
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>`
+                    }
+
+                    tablaPreguntas.push(datos)
+                   
+                    actualizarListaSimple()
+
+                })
+
+            }
+    
          })
         }    
 

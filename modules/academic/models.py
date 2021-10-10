@@ -91,13 +91,16 @@ class EvaluacionesPreguntas(models.Model):
     texto_pregunta = models.TextField(null=True)
     puntos_pregunta = models.DecimalField(max_digits=9, decimal_places=2, blank=True, null=True)
     fk_evaluaciones_bloque = models.ForeignKey(EvaluacionesBloques, on_delete=models.CASCADE,  default=None, null=True)
-    fk_tipo_pregunta_evaluacion = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE,  default=None, null=True)
+    #fk_tipo_pregunta_evaluacion = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE,  default=None, null=True)
+    fk_tipo_pregunta_evaluacion = models.SmallIntegerField(null=True)
 
 class PreguntasOpciones(models.Model):
     idpreguntas_opciones=models.AutoField(primary_key=True)
     fk_evaluacion_pregunta= models.ForeignKey(EvaluacionesPreguntas, on_delete=models.CASCADE, default=None, null=True)
     texto_opcion = models.TextField(null=True)
     tipo_condicion = models.BooleanField(default=False)
+    respuetaCorrecta = models.BooleanField(default=False)
+
     puntos_porc=models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
 
 class Recurso(models.Model):

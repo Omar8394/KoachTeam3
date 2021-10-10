@@ -631,7 +631,7 @@
       "fk_tabla_padre_id": 9,
       "tipo_elemento": 0,
       "permite_cambios":1,
-      "valor_elemento":"",
+      "valor_elemento":"activityTest",
       "mostrar_en_combos":1,
       "maneja_lista":0
 
@@ -645,7 +645,7 @@
       "fk_tabla_padre_id": 9,
       "tipo_elemento": 0,
       "permite_cambios":1,
-      "valor_elemento":"",
+      "valor_elemento":"activityHome",
       "mostrar_en_combos":1,
       "maneja_lista":0
 
@@ -659,7 +659,7 @@
       "fk_tabla_padre_id": 9,
       "tipo_elemento": 0,
       "permite_cambios":1,
-      "valor_elemento":"",
+      "valor_elemento":"activityLesson",
       "mostrar_en_combos":1,
       "maneja_lista":0
 
@@ -674,7 +674,7 @@
       "fk_tabla_padre_id": 9,
       "tipo_elemento": 0,
       "permite_cambios":1,
-      "valor_elemento":"",
+      "valor_elemento":"activityForum",
       "mostrar_en_combos":1,
       "maneja_lista":0
 
@@ -688,7 +688,7 @@
       "fk_tabla_padre_id": 9,
       "tipo_elemento": 0,
       "permite_cambios":1,
-      "valor_elemento":"",
+      "valor_elemento":"activityExpert",
       "mostrar_en_combos":1,
       "maneja_lista":0
 

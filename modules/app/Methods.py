@@ -7,6 +7,7 @@ class origenPago:
 
 
 class MyMethod:
+
  def ReturnOrigen(id):
    if id == 1:
 	   return"Manual"
@@ -57,6 +58,39 @@ def OrigenPagoNombre(code):
    else:
 	   return None
 
+
+def TipoPregunta(id):
+   if id == 1:
+	   return"Simple"
+   elif id == 2:
+	   return"Multiple"
+   elif id == 3:
+	    return"Completation"
+   elif id == 4:
+	    return"Association"
+   elif id == 5:
+	    return"True or False"
+   
+
+   else:
+	   return"error"
+
+def OrigenPreguntaTipo(code):
+   if code == "Simple":
+	   return 1
+   elif code == "Multiple":
+	   return 2
+   elif code == "Completation":
+	    return 3
+   elif code == "Association":
+	    return 4
+   elif code == "True or False":
+	    return 5
+    
+  
+
+   else:
+	   return None
 
 def getOrigenes():
 

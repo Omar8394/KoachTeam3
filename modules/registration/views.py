@@ -1255,7 +1255,7 @@ def save(request):
               idEstruct=program
 
         
-        publico=Publico.objects.get(user=request.user)
+       # publico=Publico.objects.get(user=request.user)
 
 
         

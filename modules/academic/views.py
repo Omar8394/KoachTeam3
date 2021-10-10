@@ -6,9 +6,10 @@ from django.template import loader
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.urls import reverse
 from django import template
+from modules.app import Methods
 import json
 from ..app.models import TablasConfiguracion, Estructuraprograma
-from .models import ActividadEvaluaciones, Cursos, ActividadConferencia, ActividadLeccion, ActividadTarea, EscalaEvaluacion, EvaluacionesPreguntas
+from .models import ActividadEvaluaciones, Cursos, ActividadConferencia, ActividadLeccion, ActividadTarea, EscalaEvaluacion, EvaluacionesPreguntas, EvaluacionesBloques, PreguntasOpciones
 
 # Create your views here.
 @login_required(login_url="/login/")
@@ -65,6 +66,7 @@ def test(request):
                     test.fk_escala_calificacion.data = data[""]
                     test.calificacion_aprobar .data = data[""]
                     test.save()
+                  
                 return JsonResponse({"message": "Perfect"})      
             except:
                 return JsonResponse({"message": "Error"})
@@ -75,12 +77,41 @@ def test(request):
 
 @login_required(login_url="/login/")
 def createQuestions(request):
+    preguntaId=request.GET.get('id')
+    pregunta=ActividadEvaluaciones.objects.get(pk=preguntaId)
+    escalas = EscalaEvaluacion.objects.all()
+    bloque=EvaluacionesBloques.objects.get(fk_actividad_evaluaciones=pregunta.idactividad_evaluaciones)
+    
+
+
+    
     context = {
-        "tipoPreguntas" : TablasConfiguracion.obtenerHijos('PregEvalua'),     
+        "tipoPreguntas" : TablasConfiguracion.obtenerHijos('PregEvalua'),   
+        'modelo':pregunta , 
+        'escalas':escalas,
+        'bloque':bloque
     }
     context['segment'] = 'academic'
     return render(request, 'academic/createQuestions.html', context)
 
+
+#    if "delete" in data:
+#                     question = EvaluacionesPreguntas.objects.get(pk=data["id"])
+#                     question.delete()
+#                     return JsonResponse({"message": "Deleted"})
+#                 elif "idFind" in data:
+#                     question = EvaluacionesPreguntas.objects.filter(pk=data["idFind"])
+#                     findQuestion = list(question.values())
+#                     return JsonResponse({"data":findQuestion[0]}, safe=False)
+#                 elif "idViejo" in data:
+#                     question = EvaluacionesPreguntas.objects.get(pk=data["idViejo"])
+#                 else:
+#                     question = EvaluacionesPreguntas()
+#                 question.texto_pregunta.data = data["textoPregunta"]
+#                 question.puntos_pregunta.data = data["puntosPregunta"]
+#                 question.fk_actividad_evaluaciones.data = data["fk_actividad_evaluaciones"]
+#                 question. fk_tipo_pregunta_evaluacion.data = data["tipoPregunta"]
+#                 question.save()
 
 @login_required(login_url="/login/")
 def saveQuestions(request):
@@ -89,23 +120,31 @@ def saveQuestions(request):
             try:
                 context = {}
                 data = json.load(request)["data"]
-                if "delete" in data:
-                    question = EvaluacionesPreguntas.objects.get(pk=data["id"])
-                    question.delete()
-                    return JsonResponse({"message": "Deleted"})
-                elif "idFind" in data:
-                    question = EvaluacionesPreguntas.objects.filter(pk=data["idFind"])
-                    findQuestion = list(question.values())
-                    return JsonResponse({"data":findQuestion[0]}, safe=False)
-                elif "idViejo" in data:
-                    question = EvaluacionesPreguntas.objects.get(pk=data["idViejo"])
-                else:
-                    question = EvaluacionesPreguntas()
-                question.texto_pregunta.data = data["textoPregunta"]
-                question.puntos_pregunta.data = data["puntosPregunta"]
-                question.fk_actividad_evaluaciones.data = data["fk_actividad_evaluaciones"]
-                question. fk_tipo_pregunta_evaluacion.data = data["tipoPregunta"]
-                question.save()
+                
+                if data['tipoPregunta']==1:
+                 pregunta=EvaluacionesPreguntas.objects.create()
+                 bloque=EvaluacionesBloques.objects.get(pk=data['fatherId'])
+                 pregunta.fk_evaluaciones_bloque=bloque
+                 pregunta.texto_pregunta=data['textoPregunta']
+                 pregunta.puntos_pregunta=data['puntosPregunta']
+                 pregunta.fk_tipo_pregunta_evaluacion=data['tipoPregunta']
+                 pregunta.save
+
+                 hijos = data["hijos"]
+                 if hijos:
+                     print('jeje')
+                        # if "idViejo" in data:
+                        #     childs = EscalaCalificacion.objects.filter(fk_escala_evaluacion=newScaleGe)
+                        #     childs.delete()
+                        # for newScalePa in hijos:
+                        #     newSP = EscalaCalificacion()
+                        #     newSP.desc_calificacion=newScalePa["descriptionCalif"]
+                        #     newSP.puntos_maximo=newScalePa["max_points"] 
+                        #     newSP.fk_calificacion_id=newScalePa["quack"]
+                        #     newSP.fk_escala_evaluacion= newScaleGe
+                        #     newSP.save()    
+
+             
                 return JsonResponse({"message": "Perfect"})      
             except:
                 return JsonResponse({"message": "Error"})
@@ -565,6 +604,7 @@ def getModalNewTest(request):
                         test = ActividadEvaluaciones()
                         actividad.valor_elemento = "Activity"
                         actividad.fk_estructura_padre_id=data["padreActivity"]
+                    
                     actividad.descripcion = data["data"]["descriptionActivity"]
                     actividad.resumen = data["data"]["resumenActivity"]
                     actividad.url = data["data"]["urlActivity"]
@@ -586,6 +626,14 @@ def getModalNewTest(request):
                     actividad.save()
                     test.fk_estructura_programa = actividad
                     test.save()
+                    if data["method"] == "Create":
+                        if not "checkExpertCB" in data["data"]:
+                            bloque=EvaluacionesBloques.objects.create()
+                            bloque.titulo_bloque='Test'
+                            bloque.comentario=''
+                            bloque.fk_actividad_evaluaciones=test
+                            bloque.fk_escala_bloque=None   
+                            bloque.save()
                     return JsonResponse({"message":"Perfect"})
             except:
                 return JsonResponse({"message":"error"}, status=500)
@@ -733,6 +781,51 @@ def getModalQuestion(request):
 
 @login_required(login_url="/login/")
 def getModalNewSimple(request):
+    if request.method == "POST":
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            try:
+                context = {}
+                data = json.load(request)["data"]
+                
+                if data["method"] == "Show":
+                        context = {}
+                        html_template = (loader.get_template('components/modalAddSimple.html'))
+                        return HttpResponse(html_template.render(context, request))
+                if data["method"] == "Create":
+                    pregunta=EvaluacionesPreguntas.objects.create()
+                    bloque=EvaluacionesBloques.objects.get(pk=data['fatherId'])
+                    pregunta.fk_evaluaciones_bloque=bloque
+                    pregunta.texto_pregunta=data['textoPregunta']
+                    pregunta.puntos_pregunta=data['puntosPregunta']
+                    pregunta.fk_tipo_pregunta_evaluacion=Methods.OrigenPreguntaTipo('Simple')
+                    pregunta.save()
+
+                    hijos = data["hijos"]
+                    if hijos:
+                            print(hijos)
+                        
+                            if "idViejo" in data:
+                                 childs =None
+                                 childs.delete()
+                            selectetedOp=int(data['select2'])     
+                            for newOpcion in hijos:
+                                 print(newOpcion['OpcionText']  )
+                                 print(pregunta  )
+
+                                 print(newOpcion['id'] )
+                                 print(selectetedOp)
+
+                                
+                                 Opcion=PreguntasOpciones()
+                                 Opcion.fk_evaluacion_pregunta=pregunta
+                                 Opcion.texto_opcion=newOpcion['OpcionText']    
+                                 Opcion.respuetaCorrecta=True if newOpcion['id']==selectetedOp else False
+                                 Opcion.save()
+
+             
+                return JsonResponse({"message": "Perfect"})      
+            except:
+                return JsonResponse({"message": "Error"})
    
     context = {}
     html_template = (loader.get_template('components/modalAddSimple.html'))
