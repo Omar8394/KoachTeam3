@@ -1,11 +1,56 @@
+import hashlib
 from datetime import datetime
 from datetime import timedelta
+import random
+
+from modules.app.models import TablasConfiguracion
 from modules.communication.Methods import send_mail, create_mail
-from modules.security.models import CtaUsuario
+from modules.security.models import CtaUsuario, ExtensionUsuario, EnlaceVerificacion
+from django.contrib.auth.models import User
 
 
-def get_default_ctausuario():
-    pass
+def create_default_ctausuario():
+    fk_rol = TablasConfiguracion.objects.get(valor_elemento="rol_student")
+    fk_status = TablasConfiguracion.objects.get(valor_elemento="status_verification")
+    fk_pregunta = TablasConfiguracion.objects.get(valor_elemento="question_color")
+    cuenta = CtaUsuario.objects.create(
+        intentos_fallidos=0,
+        fk_status_cuenta=fk_status,
+        fk_rol_usuario=fk_rol, dias_cambio=90,
+        fk_pregunta_secreta=fk_pregunta)
+    return cuenta
+
+
+def getVerificationLink(user_email, host):
+    try:
+        user = User.objects.get(email__exact=user_email)
+        ext_user = ExtensionUsuario.objects.get(user=user)
+        enlacev = EnlaceVerificacion.objects.filter(usuario=ext_user)
+        if not enlacev:
+            code = generateVerificationLink(ext_user, user.email, 2)
+            if code:
+                return host + "/emailrecovery/" + code + "/"
+        else:
+            print("Este usuario ya posee un enlace de verificacion activo")
+    except Exception as e:
+        print("Error verification link:", e)
+
+
+def generateVerificationLink(user, user_email, expirationtime):
+    try:
+        x = random.randint(0, 999)
+        user_email += str(x)
+        h = hashlib.sha1(user_email.encode())
+        salt = h.hexdigest()
+        activation_key = hashlib.sha1(str(salt + user_email).encode()).hexdigest()
+        key_expires = datetime.today() + timedelta(expirationtime)
+        generate = EnlaceVerificacion.objects.create(activation_key=activation_key, key_expires=key_expires, usuario=user)
+        generate.save()
+        return activation_key
+    except Exception as e:
+        print("error generate link:", e)
+    return None
+
 
 class securityTools:
     formato = "%Y-%m-%d"

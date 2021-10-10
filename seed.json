@@ -1325,11 +1325,83 @@
   "model": "app.tablasconfiguracion",
   "pk": 203,
   "fields": {
-    "desc_elemento": "Estudent",
+    "desc_elemento": "Student",
     "fk_tabla_padre": 2,
     "tipo_elemento": "0",
     "permite_cambios": 1,
-    "valor_elemento": "rol_estudent",
+    "valor_elemento": "rol_student",
+    "mostrar_en_combos": 1,
+    "maneja_lista": 0
+  }
+},{
+  "model": "app.tablasconfiguracion",
+  "pk": 204,
+  "fields": {
+    "desc_elemento": "verification",
+    "fk_tabla_padre": 3,
+    "tipo_elemento": "0",
+    "permite_cambios": 1,
+    "valor_elemento": "status_verification",
+    "mostrar_en_combos": 1,
+    "maneja_lista": 0
+  }
+},{
+  "model": "app.tablasconfiguracion",
+  "pk": 205,
+  "fields": {
+    "desc_elemento": "active",
+    "fk_tabla_padre": 3,
+    "tipo_elemento": "0",
+    "permite_cambios": 1,
+    "valor_elemento": "status_active",
+    "mostrar_en_combos": 1,
+    "maneja_lista": 0
+  }
+},{
+  "model": "app.tablasconfiguracion",
+  "pk": 206,
+  "fields": {
+    "desc_elemento": "locked",
+    "fk_tabla_padre": 3,
+    "tipo_elemento": "0",
+    "permite_cambios": 1,
+    "valor_elemento": "status_locked",
+    "mostrar_en_combos": 1,
+    "maneja_lista": 0
+  }
+},{
+  "model": "app.tablasconfiguracion",
+  "pk": 207,
+  "fields": {
+    "desc_elemento": "what is your favorite color?",
+    "fk_tabla_padre": 4,
+    "tipo_elemento": "0",
+    "permite_cambios": 1,
+    "valor_elemento": "question_color",
+    "mostrar_en_combos": 1,
+    "maneja_lista": 0
+  }
+},{
+  "model": "app.tablasconfiguracion",
+  "pk": 208,
+  "fields": {
+    "desc_elemento": "What is the name of your pet?",
+    "fk_tabla_padre": 4,
+    "tipo_elemento": "0",
+    "permite_cambios": 1,
+    "valor_elemento": "question_pet",
+    "mostrar_en_combos": 1,
+    "maneja_lista": 0
+  }
+},{
+  "model": "app.tablasconfiguracion",
+  "pk": 206,
+  "fields": {
+    "desc_elemento": "suspended",
+    "fk_tabla_padre": 3,
+    "tipo_elemento": "0",
+    "permite_cambios": 1,
+    "valor_elemento": "status_suspended",
     "mostrar_en_combos": 1,
     "maneja_lista": 0
   }

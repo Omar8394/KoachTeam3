@@ -7,15 +7,18 @@ from django.shortcuts import render
 
 # Create your views here.
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.forms.utils import ErrorList
 from django.http import HttpResponse
 from .forms import LoginForm, SignUpForm, ResetPasswordForm, LandingPage, FullRegistration
 from modules.app.models import TablasConfiguracion
-from modules.security.models import CtaUsuario
+from modules.security.models import CtaUsuario, EnlaceVerificacion
 from modules.security import Methods
 from ..communication.Methods import create_mail, send_mail
+from modules.security.Methods import create_default_ctausuario
+from modules.security.models import ExtensionUsuario
+from modules.security.forms import RecoveryMethodForm
 
 
 def login_view(request):
@@ -29,38 +32,68 @@ def login_view(request):
         if request.method == "POST":
 
             if form.is_valid():
-                # tools = Methods.securityTools()
+                tools = Methods.securityTools()
                 username = form.cleaned_data.get("username")
                 password = form.cleaned_data.get("password")
-                # cuenta = CtaUsuario.objects.filter(codigo_cta=username)[0]
-                # cuenta = CtaUsuario.objects.get(cuenta.idcta_usuario)
-                # traer preferencias de usuario para comparar atributos
-                # bajo cualquier caso registrar en el log
-                """if cuenta:
-                    if cuenta.fk_status_cuenta == 0:  # ejemplo cambiar a valor y verificar clave foranea
-                        # usuario bloqueado
-                        # redirigir a pantalla bloqueo
-                        pass
-                    elif cuenta.intentos_fallidos < 3:  # depende de las preferecnias del usuario
-
-                        pass
-                    elif cuenta.fecha_ult_cambio is None:
-                        # primer ingreso debe cambiar contraseña si la cuenta fue creada
-                        # por el administrador
-                        pass
-                    elif tools.exp_clave(cuenta.fecha_ult_cambio, cuenta.dias_cambio):
-                        # redireccionar a pantalla de cambiar clave
-                        pass
-                    else:"""
                 user = authenticate(username=username, password=password)
                 if user is not None:
                     login(request, user)
-                    return redirect("/")
-                else:
-                    msg = 'Invalid credentials'
+                    cuenta = ExtensionUsuario.objects.get(user=user)
+                    status_cuenta = cuenta.CtaUsuario.fk_status_cuenta.desc_elemento
+                    print(status_cuenta)
+                    if status_cuenta == 'suspended':
+                        msg = 'Your account has been suspended for more information contact support.'
+                        logout(request)
+                    elif status_cuenta == 'locked':
+                        # usuario bloqueado
+                        msg = 'This account is locked, please contact support or try some recovery method.'
+                        logout(request)
+                        # redirigir a pantalla bloqueo
+                    elif status_cuenta == 'verification':
+                        msg = 'This account has not been verified, please enter your email and click on the verification link.'
+                        logout(request)
+                    elif cuenta.CtaUsuario.fecha_ult_cambio is None:
+                        # primer ingreso debe cambiar contraseña si la cuenta fue creada
+                        # por el administrador
+                        print("cambiar contraseña primera vez")
+                        logout(request)
+                        pass
+                    elif tools.exp_clave(cuenta.CtaUsuario.fecha_ult_cambio, cuenta.CtaUsuario.dias_cambio):
+                        # redireccionar a pantalla de cambiar clave
+                        logout(request)
+                        pass
+                    elif status_cuenta == 'active':
+                        cuenta.CtaUsuario.intentos_fallidos = 0
+                        cuenta.CtaUsuario.save()
+                        return redirect("/")
+
                     # registrar intentos fallidos.
                     # verificar si la cantidad de intentos es igual a la maxima y bloquear usuario
                     # registrar en el log
+                else:
+                    try:
+                        user = User.objects.get(username=username)
+                        cuenta = ExtensionUsuario.objects.get(user=user)
+                        cuenta.CtaUsuario.intentos_fallidos = cuenta.CtaUsuario.intentos_fallidos + 1
+                        cuenta.CtaUsuario.save()
+                        status_cuenta = cuenta.CtaUsuario.fk_status_cuenta.desc_elemento
+                        if not cuenta.user.is_active:
+                            if status_cuenta == 'verification':
+                                msg = 'This account has not been verified, please enter your email and click on the verification link.'
+                            else:
+                                msg = 'This account is locked, please contact support or try some recovery method'
+                        elif cuenta.CtaUsuario.intentos_fallidos >= 3 and status_cuenta != "locked":  # depende de las preferecnias del usuario
+                            cuenta.CtaUsuario.fk_status_cuenta = TablasConfiguracion.objects.get(
+                                valor_elemento="status_locked")
+                            cuenta.user.is_active = False
+                            cuenta.user.save()
+                            msg = 'your account has been blocked for security reasons'
+                        else:
+                            msg = 'Invalid credentials Remember that if you exceed the maximum number of wrong attempts' \
+                                  ' your account will be blocked'
+                    except Exception as ex:
+                        print("excepcion:", ex)
+                        msg = 'the username or password combination is incorrect'
             else:
                 msg = 'Error validating the form'
         return render(request, "security/login.html", {"form": form, "msg": msg})
@@ -92,22 +125,74 @@ def register_user(request):
 def forgot_password(request):
     msg = None
     success = False
-
     if request.method == "POST":
-        form = ResetPasswordForm(request.POST)
-        if form.is_valid():
-            email = form.cleaned_data.get("email")
-
-            msg = 'Password reset email sent! - please check your email inbox'
-            success = True
-
-            # return redirect("/login/")
+        if request.user.is_authenticated:
+            return redirect("/")
         else:
-            msg = 'Form is not valid'
+            request.session.flush()
+            form = ResetPasswordForm(request.POST)
+            if form.is_valid():
+                email = form.cleaned_data.get("email")
+                try:
+                    user = User.objects.get(email__exact=email)
+                    ext_user = ExtensionUsuario.objects.get(user=user)
+                    if ext_user.CtaUsuario.fk_status_cuenta.desc_elemento == "suspended":
+                        msg = "Your account has been suspended for more information contact support."
+                        success = False
+                    else:
+                        request.session['user_email'] = user.email
+                        return redirect("/recoverymethod/")
+                except Exception as e:
+                    msg = "The email entered is not associated with any account or this account is suspended"
+                    success = False
+            else:
+                msg = 'Form is not valid'
+                success = False
     else:
         form = ResetPasswordForm()
-
     return render(request, "security/passwordReset.html", {"form": form, "msg": msg, "success": success})
+
+
+def recovery_method(request):
+    context = None
+    if request.user.is_authenticated:
+        return redirect("/")
+    else:
+        if request.method == "GET":
+            if request.session.get("user_email"):
+                context = {"user_email": request.session.get("user_email")}
+                request.session.flush()
+            else:
+                return redirect("/passwordReset/")
+        elif request.method == "POST":
+            form = RecoveryMethodForm(request.POST or None)
+            if form.is_valid():
+                typemethod = int(form.cleaned_data.get("typeMethod"))
+                user_email = form.cleaned_data.get("email")
+                if typemethod == 1:
+                  print("verificationlink:", Methods.getVerificationLink(user_email, request.get_host()))
+
+                elif typemethod == 2:
+                    pass
+            else:
+                return redirect("/passwordReset/")
+            pass
+    return render(request, "security/recoverymethod.html", context)
+
+
+def recovery_method_link(request):
+    if request.user.is_authenticated:
+        return redirect("/")
+    else:
+        if request.method == "GET":
+
+            pass
+        else:
+            pass
+
+
+def recovery_method_question(request):
+    pass
 
 
 def lang_page(request):
@@ -146,15 +231,12 @@ def full_registration(request):
         print("form registro:", form_registration)
         if full_registration_form.is_valid() and form_registration.is_valid():
             publico = full_registration_form.save()
-            form_registration.save()
-
-            tabla = TablasConfiguracion.objects.get(pk=203)
-            CtaUsuario.objects.create(
-                intentos_fallidos=3,
-                fk_status_cuenta=tabla,
-                fk_rol_usuario_id=tabla, dias_cambio=90,
-                fk_pregunta_secreta_id=tabla)
-
+            user = form_registration.save()
+            user.is_active = False
+            user.save()
+            cuenta = create_default_ctausuario()
+            ExtensionUsuario.objects.create(CtaUsuario=cuenta, user=user, Publico=publico)
+            # send verification email
             success = True
             msg = "Registration has been completed successfully."
 
@@ -168,6 +250,15 @@ def full_registration(request):
         form_registration = SignUpForm()
     return render(request, "security/full_registration.html",
                   {"msg": msg, "reason": False, 'success': success, "tipoTelefono": tipo_telefono})
+
+
+def recovery_account_link(request, activation_key):
+    if request.method == "GET":
+        try:
+            enlace = EnlaceVerificacion.objects.get(activation_key=activation_key)
+
+        except Exception as e:
+            print("error al validar enlace:", e)
 
 
 def prueba(request):

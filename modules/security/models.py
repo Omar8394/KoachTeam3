@@ -51,3 +51,9 @@ class ExtensionUsuario(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, default=None, null=True)
     CtaUsuario = models.OneToOneField(CtaUsuario, on_delete=models.CASCADE, default=None, null=True)
     Publico = models.OneToOneField(Publico, on_delete=models.CASCADE, default=None, null=True)
+
+class EnlaceVerificacion(models.Model):
+    id_verificacion = models.AutoField(primary_key=True)
+    activation_key = models.TextField(blank=True)
+    key_expires = models.DateTimeField(auto_now_add=True)
+    usuario = models.OneToOneField(ExtensionUsuario, on_delete=models.CASCADE)

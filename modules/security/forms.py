@@ -39,6 +39,10 @@ class ResetPasswordForm(PasswordResetForm):
         ))
 
 
+class RecoveryMethodForm(ResetPasswordForm):
+    typeMethod = forms.CharField(widget=forms.NumberInput)
+
+
 class SignUpForm(UserCreationForm):
     username = forms.CharField(
         widget=forms.TextInput(
