@@ -303,23 +303,23 @@
              animation: 150,
         }); 
 
-        // // Sortable.create(tablaCuerpo, {
-        //     swap: true,
-        //     animation: 150,
-        //     store: {
-        //         // Sorting acquisition (called during initialization)
-        //         get: function (sortable) {
-        //           var question = tablaPreguntas.getItem(sortable.options.group);
-        //           return question ? question.split('|') : [];
-        //         },
+        Sortable.create(tablaCuerpo, {
+            swap: true,
+            animation: 150,
+            store: {
+                // Sorting acquisition (called during initialization)
+                get: function (sortable) {
+                  var question = tablaPreguntas.getItem(sortable.options.group);
+                  return question ? question.split('|') : [];
+                },
         
-        //         // Saving the acquired sorting (called each time upon sorting modification)
-        //         set: function (sortable) {
-        //           var question = sortable.toArray();
-        //           tablaPreguntas.setItem(sortable.options.group, question.join('|'));
-        //         }
-        //     }
-        // });
+                // Saving the acquired sorting (called each time upon sorting modification)
+                set: function (sortable) {
+                  var question = sortable.toArray();
+                  tablaPreguntas.setItem(sortable.options.group, question.join('|'));
+                }
+            }
+        });
 
         // Combos and radios
 

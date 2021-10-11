@@ -36,6 +36,8 @@ def login_view(request):
                 username = form.cleaned_data.get("username")
                 password = form.cleaned_data.get("password")
                 user = authenticate(username=username, password=password)
+                print(password)
+                print(user)
                 if user is not None:
                     login(request, user)
                     cuenta = ExtensionUsuario.objects.get(user=user)
@@ -72,6 +74,7 @@ def login_view(request):
                     # verificar si la cantidad de intentos es igual a la maxima y bloquear usuario
                     # registrar en el log
                 else:
+                    print('estoy aca')
                     try:
                         user = User.objects.get(username=username)
                         cuenta = ExtensionUsuario.objects.get(user=user)

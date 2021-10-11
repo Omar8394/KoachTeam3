@@ -9,8 +9,6 @@ from modules.academic import views
 urlpatterns = [
    path('', views.index, name='academic'),
    #Pruebas de sprint 2
-   path('test/', views.prueba, name="academic_test"),
-   path('evaluaciones/', views.evaluaciones, name="evaluaciones"),
    path('createQuestions/', views.createQuestions, name="createQuestions"),
    path('saveQuestions/', views.saveQuestions, name="saveQuestions"),
    #contenidos AJAX
