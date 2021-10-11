@@ -21,15 +21,15 @@ def create_default_ctausuario():
     return cuenta
 
 
-def getVerificationLink(user_email, host):
+def getVerificationLink(user_email, host, viewname, expirationtime):
     try:
         user = User.objects.get(email__exact=user_email)
         ext_user = ExtensionUsuario.objects.get(user=user)
         enlacev = EnlaceVerificacion.objects.filter(usuario=ext_user)
         if not enlacev:
-            code = generateVerificationLink(ext_user, user.email, 2)
+            code = generateVerificationLink(ext_user, user.email, expirationtime)
             if code:
-                return host + "/emailrecovery/" + code + "/"
+                return host + "/" + viewname + "/" + code + "/"
         else:
             print("Este usuario ya posee un enlace de verificacion activo")
     except Exception as e:
@@ -43,13 +43,21 @@ def generateVerificationLink(user, user_email, expirationtime):
         h = hashlib.sha1(user_email.encode())
         salt = h.hexdigest()
         activation_key = hashlib.sha1(str(salt + user_email).encode()).hexdigest()
-        key_expires = datetime.today() + timedelta(expirationtime)
-        generate = EnlaceVerificacion.objects.create(activation_key=activation_key, key_expires=key_expires, usuario=user)
+        key_expires = datetime.today() + timedelta(days=expirationtime)
+        # key_expires = datetime.strptime(key_expires, '%Y-%m-%d %H:%M:%S')
+        print("keyexpires:", key_expires)
+        generate = EnlaceVerificacion.objects.create(activation_key=activation_key, key_expires=key_expires,
+                                                     usuario=user)
         generate.save()
         return activation_key
     except Exception as e:
         print("error generate link:", e)
     return None
+
+
+def verificarenlace(key_expires):
+    formato = "%Y-%m-%d %H:%M:%S"
+    return datetime.strftime(key_expires, formato) >= datetime.now().strftime(formato)
 
 
 class securityTools:
@@ -65,4 +73,4 @@ class securityTools:
         return fechabase.strftime(self.formato)
 
     def exp_clave(self, fecha_ult_cambio, dias_venc):
-        return self.operaciones_dias_fecha(fecha_ult_cambio, dias_venc, False) == datetime.now().strftime(self.formato)
+        return self.operaciones_dias_fecha(fecha_ult_cambio, dias_venc, True) >= datetime.now().strftime(self.formato)

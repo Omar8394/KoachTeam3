@@ -170,7 +170,17 @@ def recovery_method(request):
                 typemethod = int(form.cleaned_data.get("typeMethod"))
                 user_email = form.cleaned_data.get("email")
                 if typemethod == 1:
-                  print("verificationlink:", Methods.getVerificationLink(user_email, request.get_host()))
+                    code = str(Methods.getVerificationLink(user_email, request.get_host(), "emailrecovery", 2))
+                    if code:
+                        enlace = "http://"+code
+                        context = {"titulo": "Account Recovery Request", "user": user_email,
+                                   "content": "We have received an account recovery request, to restore your account click on the following link: ",
+                                   "enlace": enlace, "enlaceTexto": "click here!"}
+                        send_mail(create_mail(user_email, "Account Recovery Request", "security/base_email_template_pro.html",
+                                              context))
+                        print("verificationlink has been sent:", enlace)
+                    else:
+                        print("codigo nulo")
 
                 elif typemethod == 2:
                     pass
@@ -252,16 +262,19 @@ def full_registration(request):
                   {"msg": msg, "reason": False, 'success': success, "tipoTelefono": tipo_telefono})
 
 
-def recovery_account_link(request, activation_key):
+def emailrecovery(request, activation_key):
+
     if request.method == "GET":
         try:
             enlace = EnlaceVerificacion.objects.get(activation_key=activation_key)
-
+            if Methods.verificarenlace(enlace.key_expires):
+                print("enlace valido", activation_key)
+                pass
+            else:
+                print("enlace invalido")
+                pass
         except Exception as e:
             print("error al validar enlace:", e)
+    else:
+        print("otro metodo")
 
-
-def prueba(request):
-    message = create_mail("tadifred@gmail.com", "hola", "security/base_email_template.html",
-                          {'user': 'freddy'})
-    send_mail(message)

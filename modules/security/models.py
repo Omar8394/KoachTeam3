@@ -55,5 +55,5 @@ class ExtensionUsuario(models.Model):
 class EnlaceVerificacion(models.Model):
     id_verificacion = models.AutoField(primary_key=True)
     activation_key = models.TextField(blank=True)
-    key_expires = models.DateTimeField(auto_now_add=True)
+    key_expires = models.DateTimeField()
     usuario = models.OneToOneField(ExtensionUsuario, on_delete=models.CASCADE)

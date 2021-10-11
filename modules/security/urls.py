@@ -4,7 +4,8 @@ Copyright (c) 2019 - present AppSeed.us
 """
 
 from django.urls import path
-from .views import login_view, register_user, forgot_password, lang_page, full_registration, prueba, recovery_method
+from .views import login_view, register_user, forgot_password, lang_page, full_registration, prueba,\
+    recovery_method, emailrecovery
 from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
@@ -15,5 +16,6 @@ urlpatterns = [
     path("landpage/", lang_page, name="land_page"),
     path("fullregistration/", full_registration, name="full_registration"),
     path("recoverymethod/", recovery_method, name="recovery_method"),
+    path("emailrecovery/<str:activation_key>/", emailrecovery, name="recovery_method_email"),
     path("prueba/", prueba, name='prueba')
 ]
