@@ -1,0 +1,56 @@
+<section>
+   <div class="section-header">
+      <h3 class="section-title">Pages</h3>
+   </div>
+   <ul class="card-list">
+      <li class="card-list-item">
+         <div class="card-list-item-inner">
+            <div class="card-list-item-title">Add new page</div>
+            <div class="card-list-item-actions">
+               <div onclick="openAddPage()" class="btn btn-icon btn-success btn-round add-btn btn-card-lg">
+                  <i class="fas fa-plus"></i>
+               </div>
+            </div>
+         </div>
+      </li>
+
+      {% for page in data%}
+      <li class="card-list-item">
+         <div class="card-list-item-inner">
+            <div class="card-list-item-title" onclick="showContent('{{page.pk}}')">{{page.descripcion}}</div>
+            <div class="card-list-item-actions">
+               <div class="btn-group" role="group">
+                  {% if add %}
+                  <button type="button" class="btn btn-icon btn-sm btn-success" data-placement="top" title="Add"
+                     data-toggle="tooltip" data-target="tooltip" onclick="openCreatePage('{{page.pk}}')">
+                     <i class="fas fa-plus"></i>
+                  </button>
+                  {% endif %}
+                  {% if edit %}
+                  <button type="button" class="btn btn-icon btn-sm btn-info ml-1" data-toggle="tooltip"
+                     data-placement="top" title="Edit" onclick="openEditPage('{{page.pk}}')">
+                     <i class="fas fa-edit"></i>
+                  </button>
+                  {% endif %}
+                  {% if delete %}
+                  <button type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip"
+                     data-placement="top" title="Delete" onclick="openDeletePage('{{page.pk}}')">
+                     <i class="fas fa-trash-alt"></i>
+                  </button>
+                  {% endif %}
+               </div>
+            </div>
+            <div class="card-list-item-extra">
+               Type: Fulano de tal
+               <br>
+               Requirements: topico 2 y cualquier otro
+            </div>
+         </div>
+         <div id="contentPage{{page.pk}}" class="card-list-item-descripcion card-list-item-close">
+            <strong>Description:</strong> &nbsp;{{page.resumen}}
+         </div>
+      </li>
+      {% endif %}
+      {% endfor %}
+   </ul>
+</section>

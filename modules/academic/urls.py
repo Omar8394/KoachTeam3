@@ -19,6 +19,7 @@ urlpatterns = [
    path('contenidoUnidades/', views.getContentUnidades, name="contenidoUnidades"),
    path('contenidoCursos/', views.getContentCursos, name="contenidoCursos"),
    path('contenidoTopicos/', views.getContentTopicos, name="contenidoTopicos"),
+   # path('contenidoPages/', views.getContentPages, name="contenidoPages"),
    path('comboOption/', views.getComboContent, name="contenidoCombo"),
    #modales
    path('modalAddCategoria/', views.getModalCategorias, name="modalAddCategoria"),
