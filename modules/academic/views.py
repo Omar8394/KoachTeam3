@@ -79,17 +79,25 @@ def test(request):
 def createQuestions(request):
     preguntaId=request.GET.get('id')
     pregunta=ActividadEvaluaciones.objects.get(pk=preguntaId)
+  
+
     escalas = EscalaEvaluacion.objects.all()
     bloque=EvaluacionesBloques.objects.get(fk_actividad_evaluaciones=pregunta.idactividad_evaluaciones)
+    listaPreguntas=EvaluacionesPreguntas.objects.filter(fk_evaluaciones_bloque=bloque)
+    escalaEvaluacion=pregunta.fk_escala_evaluacion
     
 
 
     
     context = {
+        'pregunta':pregunta,
         "tipoPreguntas" : TablasConfiguracion.obtenerHijos('PregEvalua'),   
         'modelo':pregunta , 
         'escalas':escalas,
-        'bloque':bloque
+        'bloque':bloque,
+        'escalaEvaluacion':escalaEvaluacion,
+        'listaPreguntas':listaPreguntas
+
     }
     context['segment'] = 'academic'
     return render(request, 'academic/createQuestions.html', context)
@@ -603,6 +611,7 @@ def getModalNewTest(request):
                         actividad = Estructuraprograma()
                         test = ActividadEvaluaciones()
                         actividad.valor_elemento = "Activity"
+                        actividad.pointUsed = 0
                         actividad.fk_estructura_padre_id=data["padreActivity"]
                     
                     actividad.descripcion = data["data"]["descriptionActivity"]
@@ -796,6 +805,8 @@ def getModalNewSimple(request):
                     bloque=EvaluacionesBloques.objects.get(pk=data['fatherId'])
                     pregunta.fk_evaluaciones_bloque=bloque
                     pregunta.texto_pregunta=data['textoPregunta']
+                    pregunta.texto_pregunta=data['tituloPregunta']
+
                     pregunta.puntos_pregunta=data['puntosPregunta']
                     pregunta.fk_tipo_pregunta_evaluacion=Methods.OrigenPreguntaTipo('Simple')
                     pregunta.save()
@@ -833,6 +844,47 @@ def getModalNewSimple(request):
     
 @login_required(login_url="/login/")
 def getModalNewMultiple(request):
+
+    if request.method == "POST":
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            try:
+                context = {}
+                data = json.load(request)["data"]
+                
+                if data["method"] == "Show":
+                        context = {}
+                        html_template = (loader.get_template('components/modalAddMultiple.html'))
+                        return HttpResponse(html_template.render(context, request))
+                if data["method"] == "Create":
+                    pregunta=EvaluacionesPreguntas.objects.create()
+                    bloque=EvaluacionesBloques.objects.get(pk=data['fatherId'])
+                    pregunta.fk_evaluaciones_bloque=bloque
+                    pregunta.texto_pregunta=data['textoPregunta']
+                    pregunta.texto_pregunta=data['tituloPregunta']
+
+                    pregunta.puntos_pregunta=data['puntosPregunta']
+                    pregunta.fk_tipo_pregunta_evaluacion=Methods.OrigenPreguntaTipo('Multiple')
+                    pregunta.save()
+
+                    hijos = data["hijos"]
+                    if hijos:
+                            print(hijos)
+                        
+                            if "idViejo" in data:
+                                 childs =None
+                                 childs.delete()
+                         
+                            for newOpcion in hijos:
+                                 Opcion=PreguntasOpciones()
+                                 Opcion.fk_evaluacion_pregunta=pregunta
+                                 Opcion.texto_opcion=newOpcion['OpcionText']    
+                                 Opcion.puntos_porc=float(newOpcion['value'])  
+                                 Opcion.save()
+
+             
+                return JsonResponse({"message": "Perfect"})      
+            except:
+                return JsonResponse({"message": "Error"})
    
     context ={}
     html_template = (loader.get_template('components/modalAddMultiple.html'))
@@ -840,20 +892,164 @@ def getModalNewMultiple(request):
     
 @login_required(login_url="/login/")
 def getModalNewCompletion(request):
+
+     if request.method == "POST":
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            try:
+                context = {}
+                data = json.load(request)["data"]
+                print(data)
+                
+                if data["method"] == "Show":
+                        context = {}
+                        html_template = (loader.get_template('components/modalAddCompletion.html'))
+                        return HttpResponse(html_template.render(context, request))
+                if data["method"] == "Create":
+                    pregunta=EvaluacionesPreguntas.objects.create()
+                    bloque=EvaluacionesBloques.objects.get(pk=data['fatherId'])
+                    pregunta.fk_evaluaciones_bloque=bloque
+                    pregunta.texto_pregunta=data['textoPregunta']
+                    pregunta.puntos_pregunta=data['puntosPregunta']
+                    pregunta.titulo_pregunta=data['tituloPregunta']
+                    pregunta.indicePalabra=data['indiceRespuesta']
+
+
+                    pregunta.fk_tipo_pregunta_evaluacion=Methods.OrigenPreguntaTipo('Completation')
+                    pregunta.save()
+
+                    hijos = data["hijos"]
+                    if hijos:
+                            print(hijos)
+                        
+                            if "idViejo" in data:
+                                 childs =None
+                                 childs.delete()
+                         
+                            for newOpcion in hijos:
+                                 Opcion=PreguntasOpciones()
+                                 Opcion.fk_evaluacion_pregunta=pregunta
+                                 Opcion.texto_opcion=newOpcion['OpcionText']    
+                                 Opcion.respuetaCorrecta=int(newOpcion['isCorrect'])  
+
+                                 Opcion.save()
+
+             
+                return JsonResponse({"message": "Perfect"})      
+            except:
+                return JsonResponse({"message": "Error"})
    
-    context = {}
-    html_template = (loader.get_template('components/modalAddCompletion.html'))
-    return HttpResponse(html_template.render(context, request))
+        context = {}
+        html_template = (loader.get_template('components/modalAddCompletion.html'))
+        return HttpResponse(html_template.render(context, request))
     
 @login_required(login_url="/login/")
 def getModalNewAssociation(request):
+    
+     if request.method == "POST":
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            try:
+                context = {}
+                data = json.load(request)["data"]
+                print(data)
+                
+                if data["method"] == "Show":
+                        context = {}
+                        html_template = (loader.get_template('components/modalAddAssociation.html'))
+                        return HttpResponse(html_template.render(context, request))
+                if data["method"] == "Create":
+                    pregunta=EvaluacionesPreguntas.objects.create()
+                    bloque=EvaluacionesBloques.objects.get(pk=data['fatherId'])
+                    pregunta.fk_evaluaciones_bloque=bloque
+                    pregunta.texto_pregunta=data['textoPregunta']
+                    pregunta.puntos_pregunta=data['puntosPregunta']
+                    pregunta.titulo_pregunta=data['tituloPregunta']
+                    
+
+
+                    pregunta.fk_tipo_pregunta_evaluacion=Methods.OrigenPreguntaTipo('Association')
+                    pregunta.save()
+
+                    hijos = data["hijos"]
+                    if hijos:
+                            print(hijos)
+                        
+                            if "idViejo" in data:
+                                 childs =None
+                                 childs.delete()
+                         
+                            for newOpcion in hijos:
+                                 OpcionA=PreguntasOpciones()
+                                 OpcionA.fk_evaluacion_pregunta=pregunta
+                                 OpcionA.texto_opcion=newOpcion['OpcionTextA']    
+                                 OpcionA.indiceAsociacion=int(newOpcion['id'])  
+                                 OpcionA.puntos_porc=int(newOpcion['value'])  
+                                 OpcionA.columnaPregunta=1
+
+                                 OpcionB=PreguntasOpciones()
+                                 OpcionB.fk_evaluacion_pregunta=pregunta
+                                 OpcionB.texto_opcion=newOpcion['OpcionTextB']    
+                                 OpcionB.indiceAsociacion=int(newOpcion['id'])  
+                                 OpcionB.puntos_porc=int(newOpcion['value'])  
+                                 OpcionB.columnaPregunta=2
+
+
+                                 OpcionA.save()
+                                 OpcionB.save()
+
+             
+                return JsonResponse({"message": "Perfect"})      
+            except:
+                return JsonResponse({"message": "Error"})
    
-    context = {}
-    html_template = (loader.get_template('components/modalAddAssociation.html'))
-    return HttpResponse(html_template.render(context, request))
+        context = {}
+        html_template = (loader.get_template('components/modalAddAssociation.html'))
+        return HttpResponse(html_template.render(context, request))
     
 @login_required(login_url="/login/")
 def getModalNewTof(request):
+    
+    if request.method == "POST":
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            try:
+                context = {}
+                data = json.load(request)["data"]
+                
+                if data["method"] == "Show":
+                        context = {}
+                        html_template = (loader.get_template('components/modalAddTof.html'))
+                        return HttpResponse(html_template.render(context, request))
+                if data["method"] == "Create":
+                    pregunta=EvaluacionesPreguntas.objects.create()
+                    bloque=EvaluacionesBloques.objects.get(pk=data['fatherId'])
+                    pregunta.fk_evaluaciones_bloque=bloque
+                    pregunta.texto_pregunta=data['textoPregunta']
+                    pregunta.puntos_pregunta=data['puntosPregunta']
+                    pregunta.texto_pregunta=data['tituloPregunta']
+
+                    pregunta.fk_tipo_pregunta_evaluacion=Methods.OrigenPreguntaTipo('True or False')
+                    pregunta.save()
+
+                    hijos = data["hijos"]
+                    if hijos:
+                            print(hijos)
+                        
+                            if "idViejo" in data:
+                                 childs =None
+                                 childs.delete()
+                         
+                            for newOpcion in hijos:
+                                 Opcion=PreguntasOpciones()
+                                 Opcion.fk_evaluacion_pregunta=pregunta
+                                 Opcion.texto_opcion=newOpcion['OpcionText']    
+                                 Opcion.puntos_porc=float(newOpcion['value'])  
+                                 Opcion.respuetaCorrecta=int(newOpcion['trueFalse'])  
+
+                                 Opcion.save()
+
+             
+                return JsonResponse({"message": "Perfect"})      
+            except:
+                return JsonResponse({"message": "Error"})
    
     context = {}
     html_template = (loader.get_template('components/modalAddTof.html'))

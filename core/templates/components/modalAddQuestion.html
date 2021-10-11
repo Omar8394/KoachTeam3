@@ -1,4 +1,5 @@
 <div class="modal-content">
+
     <div class="modal-header">
         <h4 style="left: initial;" class="modal-title">New question</h4>  
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -9,11 +10,18 @@
                 <div class="form-row">
                     <h2>General</h2>
                 </div>
+
+                 <div class="form-row col-md-12">
+                    <div class="form-group col-md-12">
+                        <label for="questionText">Question title</label>
+                        <input type='text' name="questionTilte" class="form-control" id="questionTittle" >
+                    </div>                       
+                </div>    
     
                 <div class="form-row col-md-12">
                     <div class="form-group col-md-12">
                         <label for="questionText">Question text</label>
-                        <textarea name="questionText" class="form-control" id="questionText" cols="100" rows="4"></textarea>
+                        <textarea name="questionText" class="form-control" id="questionText" cols="100" oninput="questionTextChange(this)" rows="4"></textarea>
                     </div>                       
                 </div>    
     

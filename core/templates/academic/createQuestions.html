@@ -38,10 +38,16 @@
                         <div class="card mt-3" style="width: 80rem;" >
                             <div class="card-header">
                                 <div class="form-row">
-                                    <div class="form-group col-md-6 d-flex justify-content-start">
-                                        <h1>Questions</h1>
+                                    <div class="form-group col-md-4 d-flex justify-content-start">
+                                        <h1>Questions:  {{pregunta.fk_estructura_programa.descripcion}}</h1>
                                     </div>
-                                    <div class="form-group col-md-6 d-flex justify-content-end">
+                                    <div class="form-group col-md-2 d-flex justify-content-start">
+                                        <h1>Max Point: {{escalaEvaluacion.maxima_puntuacion}}</h1>
+                                    </div>
+                                      <div class="form-group col-md-2 d-flex justify-content-start">
+                                        <h1>Point in Use: {{pregunta.pointUse}}</h1>
+                                    </div>
+                                    <div class="form-group col-md-4 d-flex justify-content-end">
                                         <button type="button" class="btn btn-success" onclick="openAddModalQuestion()">
                                             Add question <i class="fas fa-plus ml-1"></i>
                                         </button>
@@ -73,12 +79,31 @@
                                                 </tr>
                                             </thead>
                                             <tbody  id="tableContent">
+                                            {% for pregunta in listaPreguntas %}
+                                            <tr>
+                                            <td>
+                                            {{pregunta.titulo_pregunta}}
+                                            </td>
+                                              <td>
+                                              {{pregunta.puntos_pregunta}}
+                                            </td>
+                                           
+
+                                              <td>
+                                            {{pregunta.fk_tipo_pregunta_evaluacion|tipoPregunta}}
+
+                                            </td>
+                                              <td>
+                                            </td>
+
+                                            </tr>
+                                            {% endfor %}
                                             
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
-                   
+                      {% comment %}
                                 <div class="d-flex justify-content-end p-3">     
                                     <nav aria-label="...">
                                         <ul class="pagination mb-0  justify-content-end">
@@ -97,7 +122,10 @@
                                             </li>
                                         </ul>
                                     </nav>
-                                </div>                
+                                </div>    
+
+
+                                {% endcomment %}            
                             </div>
                             <div class="card-footer d-flex justify-content-end">
                                <button type="submit" value="Submit" class="btn btn-primary">Save<i class="fas fa-save ml-2"></i></button>
@@ -133,45 +161,35 @@
     <script>
 
         // Variables
-       let fatherId={{bloque.idevaluaciones_bloques}}
+        let fatherId={{bloque.idevaluaciones_bloques}}
         let tablaPreguntas = []
         let respuesta=null
         let tablaCuerpo = document.getElementById("tableContent")
         let tipoPreguntaSelected=null
+        let MaxPoint= {{escalaEvaluacion.maxima_puntuacion}}
+        let PointinUse= {{pregunta.pointUse}}
+        let indiceRespuesta= 0
+        let indicePalabra=0
+
   
-        function actualizarListaSimple() {
-            tableContentSimple.innerHTML = ""
-        let contenido = ""
-
-     
+       
 
 
-        tablaPreguntas.map((dato, index) => {
-            let fila =
-                `<tr>
-                        <td>${dato.OpcionText}</td>
-                        
-                        <td>
-                            <div class="btn-group" role="group">
-                                <input type='radio' name='listaSimpleRadio' value='${index}' checked onchange="respuestaCorrecta(this)"  >
-                            </div>
-                        </td>
-                        <td>
-                            <div class="btn-group" role="group">
-                                <button onclick="borrarItemSimple(${index})" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip"  data-placement="top" title="Delete" >
-                                    <i class="fas fa-trash-alt"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>`
-            contenido += fila
-        })
-        tableContentSimple.innerHTML = contenido
-    }
+   
 
     function borrarItemSimple(id) {
         tablaPreguntas.splice(id, 1)
+
+        if(tipoPreguntaSelected==1)
         actualizarListaSimple()
+        if(tipoPreguntaSelected==2)
+        actualizarListaMultiple()
+        if(tipoPreguntaSelected==3)
+        actualizarListaCompletations()
+        if(tipoPreguntaSelected==4)
+        actualizarListaAssociation()
+        if(tipoPreguntaSelected==5)
+        actualizarListaTF()
     }
 
     function respuestaCorrecta(radio){
@@ -213,6 +231,7 @@
         }
 
         const openAddModalQuestion = () => {
+            tablaPreguntas=[]
             renderModalTypeQuestion().then(()=>{
                editmode = false
                $("#chooseTypeQuestion").modal("show")
@@ -224,19 +243,27 @@
         const clickSave = (url) => {
        
             const questionText= document.getElementById("questionText")
+            const questionTittle= document.getElementById("questionTittle")
+
             const questionPoints= document.getElementById("questionPoints")
             const typeQuestion= document.getElementById("typeQuestion")
-
+            
+            if(tipoPreguntaSelected==1){
+                   var select2=document.querySelector('input[name="listaSimpleRadio"]:checked').value
+               }
             form = {
                textoPregunta: questionText.value,
+               tituloPregunta:questionTittle.value,
                puntosPregunta: questionPoints.value,
                //tipoPregunta: typeQuestion.value,
                tipoPregunta:tipoPreguntaSelected,
-               hijos: tablaPreguntas,
                seleccionada: respuestaCorrecta,
-               select2:document.querySelector('input[name="listaSimpleRadio"]:checked').value,
+               indiceRespuesta:indicePalabra,
+               select2:select2,
                fatherId:fatherId,
-               method:'Create'
+               method:'Create',
+               hijos: tablaPreguntas,
+
             
 
             
@@ -365,6 +392,12 @@
                     e.preventDefault()
                     clickSave(url)
                 })   
+                 
+                const questionText = document.getElementById("questionText")
+                   console.log(questionText)
+
+              
+                
 
               
             if(tipoPreguntaSelected==1){
@@ -401,6 +434,184 @@
                     tablaPreguntas.push(datos)
                    
                     actualizarListaSimple()
+
+                })
+
+            }
+
+                if(tipoPreguntaSelected==2){
+
+                $("#addRow").click(function () {
+                    event.preventDefault()
+
+
+
+                    for(const element of tablaPreguntas ){
+
+                        if(element.OpcionText==document.getElementById("optionText").value){
+
+                        alertaMensajitos(5,'Invalid description',"There is already a question with the same text")
+                        return
+
+                        }
+
+
+                    }
+                   
+
+                    let datos = {
+                        OpcionText: document.getElementById("optionText").value,
+                         id:tablaPreguntas.length,
+                         value:0,
+                         
+                        actions: `
+                        <div class="btn-group" role="group">
+                            <button onclick="borrarItem(${tablaPreguntas.length})" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip"  data-placement="top" title="Delete" >
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>`
+                    }
+
+                    tablaPreguntas.push(datos)
+                   
+                    actualizarListaMultiple()
+
+                })
+
+            }
+              if(tipoPreguntaSelected==3){
+
+                $("#addRow").click(function () {
+                    event.preventDefault()
+
+
+
+                    for(const element of tablaPreguntas ){
+
+                        if(element.OpcionText==document.getElementById("optionText").value){
+
+                        alertaMensajitos(5,'Invalid description',"There is already a question with the same text")
+                        return
+
+                        }
+
+
+                    }
+                   
+
+                    let datos = {
+                        OpcionText: document.getElementById("optionText").value,
+                         id:tablaPreguntas.length,
+                         isCorrect:0,
+                         
+                        actions: `
+                        <div class="btn-group" role="group">
+                            <button onclick="borrarItem(${tablaPreguntas.length})" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip"  data-placement="top" title="Delete" >
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>`
+                    }
+
+                    tablaPreguntas.push(datos)
+                   
+                    actualizarListaCompletations()
+
+                })
+
+            }
+            if(tipoPreguntaSelected==4){
+
+                $("#addRow").click(function () {
+                    event.preventDefault()
+
+
+                    if(document.getElementById("optionTextA").value.trim()=='' || document.getElementById("optionTextB").value.trim()==''){
+
+                        alertaMensajitos(5,'Invalid description',"The description can not be empty")
+                        return
+
+                        }
+
+
+                    for(const element of tablaPreguntas ){
+
+                        if(element.OpcionTextA==document.getElementById("optionTextA").value){
+
+                        alertaMensajitos(5,'Invalid description',"There is already a question with the same text")
+                        return
+
+                        }
+                        if(element.OpcionTextB==document.getElementById("optionTextB").value){
+
+                        alertaMensajitos(5,'Invalid description',"There is already a question with the same text")
+                        return
+
+                        }
+
+
+                    }
+                
+
+                    let datos = {
+                        OpcionTextA: document.getElementById("optionTextA").value,
+                        OpcionTextB: document.getElementById("optionTextB").value,
+
+                        id:tablaPreguntas.length,
+                        value:0,
+                        
+                        actions: `
+                        <div class="btn-group" role="group">
+                            <button onclick="borrarItem(${tablaPreguntas.length})" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip"  data-placement="top" title="Delete" >
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>`
+                    }
+
+                    tablaPreguntas.push(datos)
+                
+                    actualizarListaAssociation()
+
+                })
+
+}
+
+              if(tipoPreguntaSelected==5){
+
+                $("#addRow").click(function () {
+                    event.preventDefault()
+
+
+
+                    for(const element of tablaPreguntas ){
+
+                        if(element.OpcionText==document.getElementById("optionText").value){
+
+                        alertaMensajitos(5,'Invalid description',"There is already a question with the same text")
+                        return
+
+                        }
+
+
+                    }
+                   
+
+                    let datos = {
+                        OpcionText: document.getElementById("optionText").value,
+                         id:tablaPreguntas.length,
+                         value:0,
+                         trueFalse:1,
+                         
+                        actions: `
+                        <div class="btn-group" role="group">
+                            <button onclick="borrarItem(${tablaPreguntas.length})" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip"  data-placement="top" title="Delete" >
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>`
+                    }
+
+                    tablaPreguntas.push(datos)
+                   
+                    actualizarListaTF()
 
                 })
 
@@ -442,5 +653,336 @@
         }
         renderTable()
      
+
+     function reload(){
+
+        location.reload()
+
+     }
    </script>
+
+   <script>
+
+
+ function questionTextChange(text) {
+     if(tipoPreguntaSelected!=3){
+
+    return;
+     }
+
+     
+    
+        tablaPreguntas.forEach(function(item, index, object) {
+         if(item.isCorrect==1){
+             console.log(item);
+
+              object.splice(index, 1);
+             }
+            });
+
+
+        actualizarListaCompletations();
+
+
+     const selection = document.getElementById('wordSelect');
+     wordArray=text.value.split(' ');
+     contenido='';
+     counter=0
+
+        for(const element of wordArray ){
+
+            contenido=contenido+` <button class='' id='${counter}word' onclick='addOpcion(${counter}, "${element}")' type="button">${element}</button> `
+
+            counter++;
+        }
+     selection.innerHTML=contenido;
+     document.getElementById(`wordSelected`).innerHTML='';
+
+
+ }
+
+ function reDraw(text){
+   if(tipoPreguntaSelected!=3){
+
+    return;
+     }
+
+
+     const selection = document.getElementById('wordSelect');
+     wordArray=text.value.split(' ');
+     contenido='';
+     counter=0
+
+        for(const element of wordArray ){
+
+            contenido=contenido+` <button class='' id='${counter}word' onclick='addOpcion(${counter}, "${element}")' type="button">${element}</button> `
+
+            counter++;
+        }
+     selection.innerHTML=contenido;
+
+ }
+
+ function addOpcion(text, element) {
+
+     if(tablaPreguntas.length>0){
+
+         if(tablaPreguntas[indiceRespuesta].isCorrect==1)
+         {
+        tablaPreguntas.splice(indiceRespuesta, 1);
+     
+
+
+
+         }
+     }
+            let datos = {
+                        OpcionText: element,
+                         id:tablaPreguntas.length,
+                         isCorrect:1,
+                         
+                        actions: `
+                        <div class="btn-group" role="group">
+                          
+                        </div>`
+                    }
+
+                    tablaPreguntas.push(datos);
+                   
+                    actualizarListaCompletations();
+     indiceRespuesta=datos.id;
+     indicePalabra=text;
+     console.log((document.getElementById(`questionText`).value));
+
+    
+     reDraw(document.getElementById(`questionText`));
+     document.getElementById(`wordSelected`).innerHTML=element;
+
+    
+
+     document.getElementById(`${text}word`).style.color="blue";
+     
+
+ }
+
+
+ function actualizarValue(id, number) {
+
+
+         tablaPreguntas[id].value=number.value;
+         console.log( tablaPreguntas[id]);
+     }
+
+      function tfChange(id, tf) {
+
+
+         tablaPreguntas[id].trueFalse=tf.value;
+         console.log( tablaPreguntas[id]);
+     }
+   
+       
+
+     function actualizarListaAssociation() {
+        tableContentAssociation.innerHTML = "";
+        let contenido = "";
+
+     
+
+
+        tablaPreguntas.map((dato, index) => {
+            let fila =
+                `<tr>
+                        <td>${dato.OpcionTextA}</td>
+                        <td>   <---></td>
+                        <td>${dato.OpcionTextB}</td>
+                        <td>   </td>
+
+                        <td>
+                            <div class="btn-group" role="group">
+                                <input type='number'  value='${dato.value}' onchange="actualizarValue(${index},this)"   >
+                            </div>
+                        </td>
+                        
+                
+                        <td>
+                            <div class="btn-group" role="group">
+                                <button onclick="borrarItemSimple(${index})" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip"  data-placement="top" title="Delete" >
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>`
+            contenido += fila;
+        })
+        tableContentAssociation.innerHTML = contenido;
+    }
+
+
+
+     function actualizarListaSimple() {
+            tableContentSimple.innerHTML = "";
+        let contenido = "";
+
+     
+
+
+        tablaPreguntas.map((dato, index) => {
+            let fila =
+                `<tr>
+                        <td>${dato.OpcionText}</td>
+                        
+                        <td>
+                            <div class="btn-group" role="group">
+                                <input type='radio' name='listaSimpleRadio' value='${index}' checked onchange="respuestaCorrecta(this)"  >
+                            </div>
+                        </td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <button onclick="borrarItemSimple(${index})" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip"  data-placement="top" title="Delete" >
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>`
+            contenido += fila;
+        })
+        tableContentSimple.innerHTML = contenido;
+    }
+
+
+     function actualizarListaCompletations() {
+            tableContentCompletations.innerHTML = "";
+        let contenido = "";
+
+     
+
+
+        tablaPreguntas.map((dato, index) => {
+              let check=''
+              let tdBorrar=` <div class="btn-group" role="group">
+                                <button onclick="borrarItemSimple(${index})" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip"  data-placement="top" title="Delete" >
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>`
+
+
+
+
+            if(dato.isCorrect=='1'){
+
+             check='checked'
+             tdBorrar=''
+        
+            }  
+            let fila =
+                `<tr>
+                        <td>${dato.OpcionText}</td>
+                        
+                        <td>
+                            <div class="btn-group" role="group">
+                                <input type='radio' disabled name='listaSimpleRadio' value='${index}' `+check+` onchange="respuestaCorrecta(this)"  >
+                            </div>
+                        </td>
+                        <td>
+                           ${tdBorrar}
+                        </td>
+                    </tr>`
+            contenido += fila;
+        })
+        tableContentCompletations.innerHTML = contenido;
+    }
+
+    function actualizarListaMultiple() {
+           document.getElementById('tableMultiple').innerHTML = "";
+        let contenido = "";
+
+     
+
+
+        tablaPreguntas.map((dato, index) => {
+            let fila =
+                `<tr>
+                        <td>${dato.OpcionText}</td>
+                        
+                        <td>
+                            <div class="btn-group" role="group">
+                                <input type='number'  value='${dato.value}' onchange="actualizarValue(${index},this)"   >
+                            </div>
+                        </td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <button onclick="borrarItemSimple(${index})" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip"  data-placement="top" title="Delete" >
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>`
+            contenido += fila
+        })
+        document.getElementById('tableMultiple').innerHTML = contenido;
+    }
+    
+    function actualizarListaTF() {
+           document.getElementById('tableContentTF').innerHTML = "";
+        let contenido = "";
+
+     
+
+
+        tablaPreguntas.map((dato, index) => {
+            checkF=''
+            checkT=''
+
+
+            if(dato.trueFalse=='0'){
+
+             checkF='checked'
+        
+            }  
+             if(dato.trueFalse=='1'){
+
+             checkT='checked'
+
+            }
+
+          
+            let fila =
+                `<tr>
+                        <td>${dato.OpcionText}</td>
+
+                          <td>
+                            <div class="btn-group" role="group">
+                                <input type='radio' name='listaTF${index}' value="1"`+checkT+  ` onchange="tfChange(${index},this)"  >
+                            </div>
+                        </td>
+
+                          <td>
+                            <div class="btn-group" role="group">
+                                <input type='radio' name='listaTF${index}' value="0"  `+checkF+  ` onchange="tfChange(${index},this)"  >
+                            </div>
+                        </td>
+
+                        
+                        <td>
+                            <div class="btn-group" role="group">
+                                <input type='number'  value='${dato.value}' onchange="actualizarValue(${index},this)"   >
+                            </div>
+                        </td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <button onclick="borrarItemSimple(${index})" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip"  data-placement="top" title="Delete" >
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>`
+            contenido += fila
+           
+        })
+        document.getElementById('tableContentTF').innerHTML = contenido;
+    }
+
+
+   </script>
+
 {% endblock javascripts %}

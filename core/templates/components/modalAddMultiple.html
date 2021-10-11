@@ -9,14 +9,16 @@
    </div>
 </div>       
  
+{% comment %}    
 <div class="form-row col-md-12">
-   <div class="form-group col-md-6">
-       <div class="custom-control custom-checkbox ml-2">
-           <input type="checkbox" class="custom-control-input" name="checkCorrectOptionCB" id="checkCorrectOptionCB">
-           <label class="custom-control-label" for="checkCorrectOptionCB">Correct option?</label>
-        </div>
-   </div>
+    <div class="form-group col-md-6">
+        <div class="custom-control custom-checkbox ml-2">
+            <input type="checkbox" class="custom-control-input" name="checkCorrectOptionCB" id="checkCorrectOptionCB">
+            <label class="custom-control-label" for="checkCorrectOptionCB">Correct option?</label>
+         </div>
+    </div>
 </div>
+  {% endcomment %}
 
 <div class="form-row col-md-12">
    <div class="form-group col-md-12 d-flex justify-content-start">
@@ -35,14 +37,14 @@
                        Option text
                    </th>
                    <th>
-                       Correct option
+                       Value
                    </th>                     
                    <th>
                        Actions
                    </th>
                </tr>
            </thead>
-           <tbody  id="tableContent">
+           <tbody  id="tableMultiple" name='tableMultiple'>
               
            </tbody>
        </table>
