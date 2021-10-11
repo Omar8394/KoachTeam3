@@ -52,6 +52,10 @@ def login_view(request):
                     elif status_cuenta == 'verification':
                         msg = 'This account has not been verified, please enter your email and click on the verification link.'
                         logout(request)
+                    elif status_cuenta == 'active':
+                        cuenta.CtaUsuario.intentos_fallidos = 0
+                        cuenta.CtaUsuario.save()
+                        return redirect("/")
                     elif cuenta.CtaUsuario.fecha_ult_cambio is None:
                         # primer ingreso debe cambiar contraseña si la cuenta fue creada
                         # por el administrador
@@ -62,10 +66,7 @@ def login_view(request):
                         # redireccionar a pantalla de cambiar clave
                         logout(request)
                         pass
-                    elif status_cuenta == 'active':
-                        cuenta.CtaUsuario.intentos_fallidos = 0
-                        cuenta.CtaUsuario.save()
-                        return redirect("/")
+
 
                     # registrar intentos fallidos.
                     # verificar si la cantidad de intentos es igual a la maxima y bloquear usuario
