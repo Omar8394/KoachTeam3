@@ -61,34 +61,6 @@
 					<div class="card-body">
                         <div class="table-responsive">
                             <table class="table table-hover table-striped table-borderless text-center" id="tablaContenido">
-                                <!-- <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Public</th>
-                                        <th>Period</th>
-                                        <th>Experience</th>
-                                        <th>Competence</th>
-                                        <th>Level</th>
-                                    </tr>
-                                </thead>
-                                <tbody>  
-                                    {% for p in competencia %}  
-                                    <tr>  
-                                        <td>{{ p.idcompetencias_adq }}</td>  
-                                        <td>{{ p.fk_publico }}</td>  
-                                        <td>{{ p.periodo }}</td>  
-                                        <td>{{ p.experiencia }} {{ p.fk_tipo_duracion }}</td>  
-                                        <td>{{ p.fk_competencia }}</td>  
-                                        <td>{{ p.fk_nivel }}</td>  
-                                        <td>  
-                                            <a href="{% url 'editCompetenceAdq' p.idcompetencias_adq %}" class="btn btn-icon btn-sm btn-info"><i class="fas fa-edit align-middle mt-1"></i></a>  
-                                            <button onclick="eliminar({{p.idcompetencias_adq}})" class="btn btn-icon btn-sm btn-danger ml-1" ><i class="fas fa-trash-alt"></i></button>
-                                        </td>  
-                                    </tr>  
-                                    {% empty %}
-                                        <tr><td colspan="100%"><h2>No matching records found</h2></td></tr> 
-                                    {% endfor %} 
-                                </tbody>   -->
 
                                 {% include 'planning/contenidoTabla.html' with plan=plan %}   
                                     

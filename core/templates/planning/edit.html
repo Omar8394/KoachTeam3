@@ -3,7 +3,9 @@
 {% block title %} Dashboard {% endblock %} 
 
 <!-- Specific Page CSS goes HERE  -->
-{% block stylesheets %}{% endblock stylesheets %}
+{% block stylesheets %}
+
+{% endblock stylesheets %}
 
 {% block content %}
 
@@ -49,11 +51,11 @@
                         </div>
 					</div>
                     {% include 'planning/formularios.html' with form=form %} 
+
 				</div>        
       		</div>
 		</div>
 	</div>
-
 	
 {% endblock content %}
 
@@ -62,6 +64,7 @@
 
 <script>
 	
+	// metodos errores campos formulario
 	var t;    
 	function myCallback()
 	{
@@ -110,6 +113,64 @@
 		});
 		
 	})
+
+	// metodos filtro combo
+	$("#formulario").on('click', ".input-group-prepend", function(e){
+
+		if(document.getElementById('myBrowser')==null){
+			// console.log( $(this).attr('name'))
+
+			// console.log($(this).prev().attr('name'))
+			const d = $(this)
+			
+			$.ajax({
+					type: "POST",
+					url: "{% url 'renderListasCombos' %}", 
+					data : {    
+					clave: $(this).prev().attr('name'),
+					tipo: 'TablasConfiguracion',
+					csrfmiddlewaretoken: '{{ csrf_token }}',
+				},
+				success: function (response) {
+
+					// document.getElementById('paginas').innerHTML = response.paginas;
+					// document.getElementById('tablaContenido').innerHTML = response.contenido;
+					// // console.log(response.contenido)
+					d.before(response.lista)
+					$("#myBrowser").focus()
+
+				},
+				error: function () {}
+			});
+
+		}
+	})	
+
+	$("#formulario").on('focusout', "#myBrowser", function(e){
+
+		$('#browsers').remove()
+
+		$('#myBrowser').remove()
+
+	})
+
+
+	$("#formulario").on('input keydown', "#myBrowser", function(e){
+
+		let val = this.value;
+		let id
+
+		if($('#browsers option').filter(function(){return this.value.toUpperCase() === val.toUpperCase()}).length && e.keyCode == 13) {
+			
+			id = $('#browsers option').filter(function(){return this.value.toUpperCase() === val.toUpperCase()})[0].id
+
+			$('#myBrowser').prev().val(id)
+
+			$('#myBrowser').blur()
+
+		}
+
+	});
 
 </script>
 

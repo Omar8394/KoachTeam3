@@ -4,7 +4,13 @@
             {% for key, value in keys.items %}
                 <th id={{ key }} class={% if key == orden %}descendiente{% endif %}>{{ value }}</th>
             {% endfor %}
-            <th>Action</th>
+            
+            {% if not tipo == 'tablaSchedule' %}
+
+                <th>Action</th>
+
+            {% endif %}
+            
         </tr>
     </thead>
     <tbody>  
@@ -23,18 +29,54 @@
                         {% endif %}
                     </td>
                 {% endfor %}
-                
-                {% for key, value in keys.items %}
-                    {% if forloop.first %}
-                        <td>  
-                            <a href="{% url urlEdit p|get_attr:key %}" class="btn btn-icon btn-sm btn-info"><i class="fas fa-edit align-middle mt-1"></i></a>  
-                            <button onclick="eliminar({{  p|get_attr:key }})" class="btn btn-icon btn-sm btn-danger ml-1" ><i class="fas fa-trash-alt"></i></button>
-                        </td>  
-                    {% endif %}
-                {% endfor %}
+
+
+                {% if not tipo == 'tablaSchedule' %}
+
+                    {% for key, value in keys.items %}
+
+                        {% if forloop.first %}
+
+                            {% if not tipo  %}
+
+                                <td>  
+                                    <a href="{% url urlEdit p|get_attr:key %}" class="btn btn-icon btn-sm btn-info"><i class="fas fa-edit align-middle mt-1"></i></a>  
+                                    <button onclick="eliminar({{  p|get_attr:key }})" class="btn btn-icon btn-sm btn-danger ml-1" ><i class="fas fa-trash-alt"></i></button>
+                                </td>  
+
+                            {% elif tipo == 'Schedule' %}
+
+                                <td>  
+                                    <a href="{% url urlEdit p|get_attr:key %}" class="btn btn-icon btn-sm btn-success"><i class="fas fa-plus align-middle mt-1"></i></a>
+
+                                    {% if p|get_attr:key|hasPrograms %}
+                                
+                                        <a href="#" class="btn btn-icon btn-sm btn-warning" id="{{p|get_attr:key}}"><i class="fas fa-clipboard align-middle mt-1"></i></a>
+
+                                    {% endif %}
+
+                                </td>  
+                                
+                            {% endif %}
+
+                        {% endif %}
+
+                    {% endfor %}
+
+                {% endif %}
+
+
             </tr>  
-            {% empty %}
-                <tr><td colspan="100%"><h2>No matching records found</h2></td></tr> 
+        {% empty %}
+
+            <tr><td colspan="100%"><h2>No matching records found</h2></td></tr> 
+
         {% endfor %} 
-        <tr><td>{{ plan }}</td></tr> 
+        
+        {% if not tipo == 'tablaSchedule' %}
+
+            <tr><td>{{ plan }}</td></tr> 
+        
+        {% endif %}
+
     </tbody>  

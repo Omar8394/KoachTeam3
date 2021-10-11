@@ -1,0 +1,31 @@
+<input list="browsers" id="myBrowser" name="myBrowser" placeholder="Search..." autocomplete="off" class="form-control"/>
+<datalist id="browsers" open="open">
+            
+    {% for p in lista %}  
+        
+        {% if tipo == 'TablasConfiguracion' %}
+
+            <option id="{{ p.id_tabla }}" >{{ p.desc_elemento }}</option>
+
+            
+        {% elif tipo == 'Perfil' %}
+
+            <option id="{{ p.idperfil }}" >{{ p.deescripcion }}</option>
+
+        {% elif tipo == 'CompetenciasReq' %}
+
+            <option id="{{ p.idcompetenciasreq }}" >{{ p.desc_competencia }}</option>
+
+        {% elif tipo == 'Publico' %}
+
+            <option id="{{ p.idpublico }}" >{{ p.nombre }} {{ p.apellido }}</option>
+        
+        {% elif tipo == 'Estructuraprograma' %}
+
+            <option id="{{ p.idestructuraprogrmas }}" >{{ p.descripcion }}</option>
+
+        {% endif %}
+
+    {% endfor %} 
+
+</datalist>

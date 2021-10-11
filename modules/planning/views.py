@@ -3,22 +3,31 @@ from django.contrib import messages
 from django.shortcuts import render, redirect  
 from .forms import competenciaAdqForm, competenciaForm, perfilForm, programForm
 from .models import CompetenciasAdq, Perfil, CompetenciasReq
-from ..app.models import PublicoRelacion, TablasConfiguracion, Programascap, Publico
+from ..app.models import Estructuraprograma, TablasConfiguracion, Programascap, Publico
+from ..app.Methods import MyMethod
+from ..security.models import ExtensionUsuario
+from ..registration.models import MatriculaAlumnos
 from json import dumps
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponse, JsonResponse
 from django.template.loader import render_to_string
 from django.template.defaulttags import register
-from django.db.models import Q
+from django.db.models import Q, F, Max
 import re
 # Create your views here.
 TITULOPERFIL = {'idperfil': '#', 'deescripcion': 'Name', 'desc_corta': 'Description', 'fk_rama': 'Branch'}
 TITULOCOMPETENCIA = {'idcompetenciasreq': '#', 'desc_competencia': 'Name', 'fk_perfil': 'Profile', 'fk_tipo_competencia': 'Type', 'fk_nivel': 'Minimum Level'}
 TITULOCOMPETENCIAADQ = {'idcompetencias_adq': '#', 'fk_publico': 'Public', 'periodo': 'Period', 'experiencia': 'Experience', 'fk_tipo_duracion': 'Duration', 'fk_competencia': 'Competence', 'fk_nivel': 'Level'}
+TITULOPLAN = {'idpublico':'#', 'nombre': 'Name', 'apellido': 'Last Name'}
+TITULOPLANES = {'idmatricula_alumnos': '#', 'fk_estruc_programa': 'Program', 'fecha_matricula': 'Date', 'fk_status_matricula': 'Status'}
 
 @register.filter
 def get_attr(dictionary, key):
     return getattr(dictionary, key)
+
+@register.filter
+def get_list(dictionary, key):
+    return dictionary[key-1]
 
 @register.filter
 def replaces(value, key):
@@ -33,6 +42,11 @@ def matches(value, key):
 @register.filter
 def tostring(value):
     return str(value)
+
+@register.filter
+def hasPrograms(value):
+    
+    return len(MatriculaAlumnos.objects.filter(fk_publico = value, origenSolicitud = MyMethod.ReturnCode('Planning'))) > 0
 
 def editCompetenceAdq(request, id = None):  
 
@@ -62,10 +76,10 @@ def editCompetenceAdq(request, id = None):
             return render(request,'planning/editCompetenceAdq.html',{'form':form})
 
     form = competenciaAdqForm(instance=competence)
-
     competencias = CompetenciasReq.objects.all()
     publicos = Publico.objects.all()
-    publicos = publicos.filter(user=request.user) if not request.user.is_staff else publicos.filter(user=Publico.objects.get(idpublico=CompetenciasAdq.objects.get(idcompetencias_adq=id).fk_publico.idpublico).user) if id else publicos
+    # publicos = publicos.filter(user=request.user) if not request.user.is_staff else publicos.filter(user=Publico.objects.get(idpublico=CompetenciasAdq.objects.get(idcompetencias_adq=id).fk_publico.idpublico).user) if id else publicos
+    publicos = publicos.filter(idpublico=ExtensionUsuario.objects.get(user = request.user).Publico.idpublico) if not request.user.is_staff else publicos.filter(idpublico=ExtensionUsuario.objects.get(Publico = CompetenciasAdq.objects.get(idcompetencias_adq=id).fk_publico).Publico.idpublico) if id else publicos
     
     if(publicos and len(publicos)==1):
 
@@ -88,6 +102,7 @@ def editCompetenceAdq(request, id = None):
             if id: form.fields['fk_competencia'].initial = competencias[0].idcompetenciasreq
         
         else:
+
             print("mensaje")
             messages.error(request, 'There are no more competences to include')
             
@@ -168,9 +183,10 @@ def edit(request, id=None):
 
         return redirect('/') 
     
-def show(request):  
+def show(request): 
 
-    # if(request.user.is_staff):
+
+    if(request.user.is_staff):
         
         search_query = request.GET.get('search_box', "")
         plan = Perfil.objects.all()
@@ -181,14 +197,14 @@ def show(request):
 
         return render(request,"planning/show.html",{'plan':paginas(request, plan), 'keys' : TITULOPERFIL, 'urlEdit': 'editProfilage', 'urlRemove': 'destroyProfilage', 'search':search_query}) 
     
-    # else:
+    else:
         
-    #     return redirect('/') 
+        return redirect('/') 
 
 
 def showCompetences(request): 
 
-    # if(request.user.is_staff):
+    if(request.user.is_staff):
 
         search_query = request.GET.get('search_box', "")
         competencia = CompetenciasReq.objects.all()  
@@ -200,18 +216,18 @@ def showCompetences(request):
 
         return render(request,"planning/showCompetence.html",{'plan': paginas(request, competencia), 'keys' : TITULOCOMPETENCIA, 'urlEdit': 'editCompetence', 'urlRemove': 'destroyCompetence', 'search':search_query}) 
     
-    # else:
+    else:
 
-    #     return redirect('/') 
+        return redirect('/') 
 
 def showCompetencesAdq(request):  
 
     search_query = request.GET.get('search_box', "")
     competencia = CompetenciasAdq.objects.all()
-
+    # print(request.user)
     if not request.user.is_staff:
 
-        competencia = competencia.filter(fk_publico__user = request.user)
+        competencia = competencia.filter(fk_publico = ExtensionUsuario.objects.get(user = request.user).Publico)
 
     if(search_query and request.user.is_staff):
 
@@ -221,44 +237,12 @@ def showCompetencesAdq(request):
 
 def showProgram(request): 
      
-    program = Programascap.objects.all()  
-    return render(request,"planning/showProgram.html",{'programs':program, 'segment':'planning'}) 
-
-def addProgram(request):  
-    if request.method == "POST":  
-        form = programForm(request.POST)
-        if form.is_valid():  
-            try:  
-                # print("valid")
-                form.save()  
-                return redirect('/planning/showProgram/')  
-            except:  
-                pass  
-        # else:
-        #     print("no valid")
-
-    else:  
-        form = programForm()  
-    
-    return render(request,'planning/addProgram.html',{'form':form})
-     
-
+    search_query = request.GET.get('search_box', "")
+    program = Publico.objects.all()
+    return render(request,"planning/showProgram.html",{'plan': paginas(request, program), 'keys' : TITULOPLAN, 'urlEdit': 'editProgram', 'urlRemove': 'destroyProgram', 'search':search_query, 'tipo':'Schedule'}) 
 
 def editProgram(request, id):  
-
-    program = Programascap.objects.get(idprogramascap=id) 
-
-    if request.method == "POST":  
-
-        form = programForm(request.POST, instance = program)  
-
-        if form.is_valid():  
-
-            form.save()  
-            return redirect('/planning/showProgram/')  
-
-    form = programForm(instance=program)
-    return render(request,'planning/editProgram.html', {'form':form})  
+    return render(request,'planning/editProgram.html', {'id': id})  
     
 def destroy(request):  
 
@@ -329,28 +313,140 @@ def validate_competence(request):
     
 def renderListasPublic(request):
 
-    id = request.GET.get('id', None)
-    competence = CompetenciasReq.objects.all()
+    id = request.POST.get('id', None)
+    tipo = request.POST.get('tipo', None)
 
-    for publico in CompetenciasAdq.objects.filter(fk_publico = id):
+    if(not tipo):
+
+        competence = CompetenciasReq.objects.all()
+
+        for publico in CompetenciasAdq.objects.filter(fk_publico = id):
+            
+            competence = competence.exclude(idcompetenciasreq=publico.fk_competencia.idcompetenciasreq)
+
+        html = render_to_string('planning/lista.html', {'lista': competence, 'defecto': "Select a competence" if len(competence) > 0 else "There is no more competences to add", 'tipo' : 'CompetenciasReq'})
+
+    elif (tipo == 'Perfil'):
+
+        competence = CompetenciasReq.objects.all()
+
+        perfil = Perfil.objects.all()
+
+        for publico in Perfil.objects.all():
+
+            if(len(competence.filter(fk_perfil__idperfil=publico.idperfil))<=0):
+
+                perfil = perfil.exclude(idperfil=publico.idperfil)
         
-        competence = competence.exclude(idcompetenciasreq=publico.fk_competencia.idcompetenciasreq)
+        html = render_to_string('planning/lista.html', {'lista': perfil, 'defecto': "Select a profile" if len(perfil) > 0 else 'There are no more profiles with competences asociated', 'tipo': 'Profile'})
 
-    niveles = TablasConfiguracion.obtenerHijos("NivelComp")
-    html = render_to_string('planning/lista.html', {'lista': competence, 'defecto': "Select a competence" if len(competence) > 0 else "There is no more competences to add", 'tipo' : 'CompetenciasReq'})
-    lvl = render_to_string('planning/lista.html', {'lista': niveles, 'defecto': "Skill level" if len(niveles) > 0 else "There is no more levels to add", 'tipo' : 'NivelComp'})
+        
+    elif (tipo == 'Estructuraprograma'):
+
+        structuras=Estructuraprograma.objects.all()
+        structuras=structuras.annotate(precio=F('prize__precio'), fechaIngreso=F('prize__fecha_registro'), id=F('prize__idprograma_precios'), descuento=F('prize__PorcentajeDescuento'), max=Max('prize__idprograma_precios'), amountDiscount=Max('prize__idprograma_precios')  ).filter(id=Max('prize__idprograma_precios')  )
+        # structuras=structuras.filter(fk_estructura_padre=None)
+
+        html = render_to_string('planning/lista.html', {'lista': structuras, 'defecto': "Select a program" if len(structuras) > 0 else 'There are no more program for this public', 'tipo': 'Estructuraprograma'})
 
     response = {
 
         'competence': html,
-        'levels': lvl
+        # 'levels': lvl
 
     }
 
     return JsonResponse(response)
+
+
+
+def renderCompetencesPublic(request):
+
+    id = request.POST.get('id', None)
+    idPublic = request.POST.get('idPublic', None)
+    competence = CompetenciasReq.objects.all()
+    competenceadq = CompetenciasAdq.objects.all()
+
+    if(id and idPublic):
+
+        competence = competence.filter(fk_perfil__idperfil=id) 
+        competenceadq = competenceadq.filter(fk_publico__idpublico=idPublic) 
+        list = []
+        
+        for publico in competence:
+
+            if not competenceadq:
+
+                list.append(False)
+
+            elif(len(competenceadq.filter(fk_competencia__idcompetenciasreq=publico.idcompetenciasreq))<=0):
+
+                list.append(False)
+
+            elif(publico.fk_nivel.tipo_elemento>competenceadq.get(fk_competencia__idcompetenciasreq=publico.idcompetenciasreq).fk_nivel.tipo_elemento):
+
+                list.append(False)
+            
+            else:
+                
+                list.append(True)
+
+    print(list)
+
+    html = render_to_string('planning/lista.html', {'lista': competence, 'tipo' : 'Schedule', 'resultados': list})
+
+    response = {
+
+        'competence': html,
+        # 'levels': lvl
+
+    }
+
+    return JsonResponse(response)
+
+
+    
+def renderListasCombos(request):
+
+    clave = request.POST.get('clave', None)
+    tipo = request.POST.get('tipo', None)
+    print(tipo)
+    
+    if(tipo and clave and tipo == 'TablasConfiguracion'):
+
+        lista = TablasConfiguracion.obtenerHijos('Rama' if clave == 'fk_rama' else 'NivelComp' if clave == 'fk_nivel' else 'Tipo Competencia' if clave == 'fk_tipo_competencia' else 'Duracion' if clave == 'fk_tipo_duracion' else '')
+
+    if(tipo and clave and tipo == 'Perfil'):
+
+        lista = Perfil.objects.all()
+
+    if(tipo and clave and tipo == 'CompetenciasReq'):
+
+        lista = CompetenciasReq.objects.all()
+
+    if(tipo and clave and tipo == 'Publico'):
+
+        lista = Publico.objects.all()
+
+    if(tipo and clave and tipo == 'Estructuraprograma'):
+
+        lista = Estructuraprograma.objects.all()
+
+    html = render_to_string('planning/comboFiltro.html', {'lista': lista, 'tipo': tipo})
+
+    response = {
+
+        'lista': html
+
+    }
+
+    return JsonResponse(response)
+
+
     
 def paginar(request):
     
+    public = request.POST.get('id', None)
     tipo = request.POST.get('tipo', None)
     filtro = request.POST.get('filtro', None)
     orden = request.POST.get('orden', None)
@@ -363,6 +459,18 @@ def paginar(request):
     elif tipo and tipo == 'competenciaadq':
 
         plan = CompetenciasAdq.objects.all()
+
+        if not request.user.is_staff:
+            
+            plan = plan.filter(fk_publico = ExtensionUsuario.objects.get(user = request.user).Publico)
+
+    elif tipo and tipo == 'Schedule':
+
+        plan = Publico.objects.all()
+
+    elif tipo and tipo == 'tablaSchedule':
+        
+        plan = MatriculaAlumnos.objects.filter(fk_publico__idpublico=public, origenSolicitud=MyMethod.ReturnCode("Planning"))
 
     else:
 
@@ -380,6 +488,10 @@ def paginar(request):
         elif tipo and tipo == 'competenciaadq':
 
             plan = plan.filter(Q(periodo__icontains=filtro) | Q(experiencia__icontains=filtro) | Q(fk_publico__nombre__icontains=filtro) | Q(fk_competencia__desc_competencia__icontains=filtro) | Q(fk_nivel__desc_elemento__icontains=filtro) | Q(fk_tipo_duracion__desc_elemento__icontains=filtro))
+
+        elif tipo and tipo == 'Schedule':
+            
+            plan = plan.filter(Q(nombre__icontains=filtro) | Q(apellido__icontains=filtro))
     
         else:
 
@@ -406,10 +518,20 @@ def paginar(request):
         pagina = render_to_string('planning/paginas.html', {'plan': paginas(request, plan)})
         tabla = render_to_string('planning/contenidoTabla.html', {'plan': paginas(request, plan), 'keys' : TITULOCOMPETENCIAADQ, 'urlEdit': 'editCompetenceAdq', 'urlRemove': 'destroyCompetenceAdq', 'search':filtro, 'orden':orden, 'tipoOrden': tipoOrden})
 
+    elif tipo and tipo == 'Schedule':
+
+        pagina = render_to_string('planning/paginas.html', {'plan': paginas(request, plan)})
+        tabla = render_to_string('planning/contenidoTabla.html', {'plan': paginas(request, plan), 'keys' : TITULOPLAN, 'urlEdit': 'editProgram', 'urlRemove': 'destroyProgram', 'search':filtro, 'orden':orden, 'tipoOrden': tipoOrden, 'tipo': 'Schedule'})
+   
+    elif tipo and tipo == 'tablaSchedule':
+
+        pagina = None
+        tabla = render_to_string('planning/contenidoTabla.html', {'plan': plan, 'keys' : TITULOPLANES, 'tipo': tipo})
+
     else:
 
         pagina = render_to_string('planning/paginas.html', {'plan': paginas(request, plan)})
-        tabla = render_to_string('planning/contenidoTabla.html', {'plan': paginas(request, plan), 'keys' : TITULOPERFIL, 'urlEdit': 'editProfilage', 'urlRemove': 'destroyProfilage', 'search':filtro, 'orden':orden, 'tipoOrden': tipoOrden })
+        tabla = render_to_string('planning/contenidoTabla.html', {'plan': paginas(request, plan), 'keys' : TITULOPERFIL, 'urlEdit': 'editProfilage', 'urlRemove': 'destroyProfilage', 'search':filtro, 'orden':orden, 'tipoOrden': tipoOrden})
     # print(tabla)
 
     response = {
@@ -442,3 +564,53 @@ def paginas(request, obj):
         pages = paginator.page(paginator.num_pages)
 
     return pages
+
+
+
+
+
+
+
+
+    # # structuraProg=Estructuraprograma.objects.filter(fk_estructura_padre=None)
+    # structuras=Estructuraprograma.objects.all()
+
+    # structuras=structuras.annotate(precio=F('prize__precio'), fechaIngreso=F('prize__fecha_registro'), id=F('prize__idprograma_precios'), descuento=F('prize__PorcentajeDescuento'), max=Max('prize__idprograma_precios'), amountDiscount=Max('prize__idprograma_precios')  ).filter(id=Max('prize__idprograma_precios')  )
+    # structuras=structuras.filter(fk_estructura_padre=None)
+    # tipoPrograma=TablasConfiguracion.obtenerHijos("Tipo matricula")
+    # estatus=TablasConfiguracion.obtenerHijos("EstMatricula")
+
+
+    # return render(request, 'components/modalAddMatricula.html',{'structuraProg':structuras, 'tipoPrograma':tipoPrograma, 'status':estatus})
+
+    
+def saveProgram(request):  
+
+    if request.method == "POST":  
+
+        try:
+
+            publico=request.POST.get('idPublico')
+            idEstruct=request.POST.get('idEstructura')
+            perfil=request.POST.get('idPerfil')
+            fecha=request.POST.get('fecha')
+
+            publico=Publico.objects.get(idpublico=publico)
+
+            struct=Estructuraprograma.objects.get(idestructuraprogrmas=idEstruct)
+
+            statusDB=TablasConfiguracion.objects.get(valor_elemento='EstatusRevision')
+            
+
+
+            
+            matricula=MatriculaAlumnos.objects.create(fk_publico=publico,fk_estruc_programa=struct, fecha_matricula=fecha, fk_tipo_matricula=None ,fk_status_matricula=statusDB,fecha_aprobada=None, origenSolicitud = MyMethod.ReturnCode('Planning'))
+            matricula.save()
+            messages.info(request, 'Training Program Added Succefuly')
+            return JsonResponse({"mensaje" : "exito"})
+
+        except:
+
+            return JsonResponse({"mensaje" : "Error, try again later"})
+
+

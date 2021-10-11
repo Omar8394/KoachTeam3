@@ -3,14 +3,16 @@
 {% block title %} Dashboard {% endblock %} 
 
 <!-- Specific Page CSS goes HERE  -->
-{% block stylesheets %}{% endblock stylesheets %}
+{% block stylesheets %}
+
+{% endblock stylesheets %}
 
 {% block content %}
 
     <div class="content">
 		<div class="page-inner">
 			<div class="page-header">
-				<h4 class="page-title">Profilages</h4>
+				<h4 class="page-title">Schedule</h4>
 				<ul class="breadcrumbs">
 					<li class="nav-home">
 						<a href="{% url 'home' %}">
@@ -27,7 +29,7 @@
 						<i class="flaticon-right-arrow"></i>
 					</li>
 					<li class="nav-item">
-						<a href="{% url 'showProgram' %}">Program</a>
+						<a href="{% url 'showProgram' %}">Schedule</a>
 					</li>
 					<li class="separator">
 						<i class="flaticon-right-arrow"></i>
@@ -43,84 +45,361 @@
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <h2 class="card-text mt-2">
-                                   Set program
+                                   Set schedule
                                 </h2>
                             </div>
                         </div>
 					</div>
-					<div class="card-body">
-                        <form method="post" action="">
-            
+                    
+
+
+
+
+                    <div class="card-body">
+                        <form method="post" action="" id="formulario">
+                    
                             {% csrf_token %}
-            
+                    
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-12">
-            
                                         <div class="form-group">
-                                            <div class="input-group mb-3">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text">
-                                                        <i class="icon-user"></i>
-                                                    </span>
-                                                </div>
-                                            {{ form.desc_programas }} 
-                                            </div>
-                                        </div>
-                                        
-            
-                                        <div class="form-group">
-                                            <div class="input-group mb-3">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text">
-                                                        <i class="far fa-edit"></i>
-                                                    </span>
-                                                </div>
-                                                {{ form.objetivo }}
-                                            </div>
-                                        </div>
 
-                                        <div class="form-group">
                                             <div class="input-group mb-3">
+                                                <select name="selectPerfil" id="selectPerfil"class="form-control"></select>
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text">
-                                                        <i class="fas fa-list"></i>
+                                                        <i class="fas fa-search"></i>
                                                     </span>
                                                 </div>
-                                                {{ form.alcance }}  
                                             </div>
-                                        </div>
 
-                                        <div class="form-group">
-                                            <div class="input-group mb-3">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text">
-                                                        <i class="fas fa-list"></i>
-                                                    </span>
-                                                </div>
-                                                {{ form.fecha_apertura }}  
+                                            <div class="input-group mb-3" id="opcionesProgram">
+                                                
                                             </div>
+
                                         </div>
-                                   
-            
-            
                                     </div>
                                 </div>
                             </div>
-                            <div class="card-action">
-                                <button type="submit" class="btn bg-dark2 btn-lg btn-block text-center" style="color: white">Submit</button>
-                            </div>
+                            <!-- <div class="card-action">
+                                <button type="submit" class="btn bg-dark2 btn-lg btn-block d-flex" style="color: white">Submit</button>
+                            </div> -->
                         </form>
-					</div>
+                    
+                    
+                    </div>
+                    
+
+
+
+
+
+
 				</div>        
       		</div>
 		</div>
 	</div>
+	
+
+    <div class="modal fade" tabindex="-1" id="myModal" role="dialog" aria-hidden="true">
+        <div id="addNewModalContent" class="modal-dialog modal-dialog-centered" role="document">
+
+          <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Schedule</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="form-group mb-3" id="groupSelect">
+                        <label for="estatusLesson">Training program:</label>
+                        <div class="input-group">
+                                    
+                            <select class="form-control" id="estatusLesson" name="estatusLesson"></select>
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="groupDate">
+                        <label for="fechaInicialPersona">Request date:</label>
+                        <input id="fechaInicialPersona" name="fechaInicialPersona" value="" type="date" class="form-control">
+                    </div>
+
+                </div>
+
+                <div class="modal-footer mt-3">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-arrow-left mr-2"></i>Back</button>
+                    <button type="button" class="btn btn-primary" id="botonGuardar"><i class="fas fa-save mr-2"></i>Save</button>
+                </div>
+
+            </div>
+            
+        </div>
+    </div>
+
 
 {% endblock content %}
 
-<!-- Specific Page JS goes HERE  -->
+<!-- Specific Page JS goes HERE  planning/edit-->
 {% block javascripts %}
 
+<script>
+
+    let idCompetencia, idPerfil
+
+    //metodos para las validaciones
+    $(document).on('hide.bs.modal', '#myModal', function () {
+
+        
+        $('#groupSelect').removeClass('has-error');
+        $('#groupDate').removeClass('has-error');
+        $('input').val('');
+        $('#myModal select').prop('selectedIndex',0);
+        $("#error1").remove()
+        $("#error2").remove()
+
+
+    });
+
+    $(document).on('change', "#estatusLesson", function(e){
+
+        $('#groupSelect').removeClass('has-error');
+        $("#error1").remove()
+
+
+    })
+
+    $(document).on('change', "#fechaInicialPersona", function(e){
+
+        $('#groupDate').removeClass('has-error');
+        $("#error2").remove()
+
+    })
+
+	//cargo la lista con los perfiles disponibles
+    $(document).ready(function () {
+
+        $.ajax({
+            type: "POST",
+            data: {
+                "id": "{{ id }}", 
+                'tipo': 'Perfil',
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+
+            },
+            url: "{% url 'renderListasPublic' %}",
+            success: function (response) {
+
+                document.getElementById('selectPerfil').innerHTML = response.competence
+
+            },
+            error: function (response) {
+                console.log(response.responseJSON.errors)
+            }
+        });
+            
+    })
+
+    //metodo para cargar las competencias adquiridas y requeridas
+    $(document).on('change', "#selectPerfil", function(e){
+
+        if($(this).val()){
+            
+            $.ajax({
+                type: "POST",
+                data: {
+                    "id": $(this).val(), 
+                    'idPublic': "{{id}}",
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+
+                },
+                url: "{% url 'renderCompetencesPublic' %}",
+                success: function (response) {
+
+                    document.getElementById('opcionesProgram').innerHTML = response.competence
+
+                },
+                error: function (response) {
+                    console.log(response.responseJSON.errors)
+                }
+            });
+
+        }
+
+    });
+
+    //aqui se hace la solicitud para capacitar las competencias que no son aprovadas
+    $(document).on('click', ".listaCompetencia", function(e){
+
+        if($(this).children().children().hasClass("fa-check-circle")) {
+            swal({
+                title: "Great!",
+                text: "This competence does not nedd any capacitation",
+                icon: "success",
+                button: "Ok",
+            });
+        }else{
+
+            $.ajax({
+                type: "POST",
+                data: {
+                    'tipo': "Estructuraprograma",
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+
+                },
+                url: "{% url 'renderListasPublic' %}",
+                success: function (response) {
+
+                    document.getElementById('estatusLesson').innerHTML = response.competence
+
+                },
+                error: function (response) {
+                    console.log(response.responseJSON.errors)
+                }
+            });
+
+            $('#myModal').modal('show')
+        }
+        
+    });
+    
+    //aqui valido y guardo solicitud
+    $(document).on('click', "#botonGuardar", function(e){
+
+        if(!$("#estatusLesson").val() || !$("#fechaInicialPersona").val() || $("#fechaInicialPersona").val() && Date.parse($("#fechaInicialPersona").val()) < Date.now()) {
+
+            if(!$("#estatusLesson").val()){
+                
+                $("#error1").remove()
+                $('#groupSelect').addClass('has-error');
+                $("#groupSelect .input-group").after('<label for="estatusLesson" id="error1">Select a profile</label>')
+
+            }
+
+            if(!$("#fechaInicialPersona").val()){
+                
+                $("#error2").remove()
+                $('#groupDate').addClass('has-error');
+                $("#fechaInicialPersona").after('<label for="estatusLesson" id="error2">Enter a date</label>')
+               
+                
+            }else if (Date.parse($("#fechaInicialPersona").val()) < Date.now()){
+                
+                $("#error2").remove()
+                $('#groupDate').addClass('has-error');
+                $("#fechaInicialPersona").after('<label for="estatusLesson" id="error2">Enter a future date</label>')
+                
+            }
+
+        }else{
+            
+            $.ajax({
+                type: "POST",
+                data: {
+                    'idPublico': "{{id}}",
+                    'idEstructura': $("#estatusLesson option:selected").val(),
+                    'idPerfil': $("#selectPerfil option:selected").val(),
+                    'fecha': $("#fechaInicialPersona").val(),
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+
+                },
+                url: "{% url 'saveProgram' %}",
+                success: function (response) {
+
+                    window.location.href = "{% url 'showProgram' %}"
+
+                },
+                error: function (response) {
+                    console.log(response.responseJSON.errors)
+                }
+
+            });
+
+        }
+
+    });
+
+    // metodos filtro combo
+    $(document).on('click', ".input-group-prepend", function(e){
+
+        if(document.getElementById('myBrowser')==null){
+            // console.log( $(this).attr('name'))
+
+            // console.log($(this).prev().attr('name'))
+            const d = $(this)
+            
+            $.ajax({
+                    type: "POST",
+                    url: "{% url 'renderListasCombos' %}", 
+                    data : {    
+                    clave: $(this).prev().attr('name'),
+                    tipo: $(this).prev().attr('name')==='selectPerfil'? 'Perfil' : 'Estructuraprograma',
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                },
+                success: function (response) {
+
+                    // document.getElementById('paginas').innerHTML = response.paginas;
+                    // document.getElementById('tablaContenido').innerHTML = response.contenido;
+                    // // console.log(response.contenido)
+                    d.before(response.lista)
+                    $("#myBrowser").focus()
+
+                },
+                error: function () {}
+            });
+
+        }
+    })	
+
+    $(document).on('focusout', "#myBrowser", function(e){
+
+        $('#browsers').remove()
+
+        $('#myBrowser').remove()
+
+    })
+
+    $(document).on('input keydown', "#myBrowser", function(e){
+
+        let val = this.value;
+        let id
+
+        if($('#browsers option').filter(function(){return this.value.toUpperCase() === val.toUpperCase()}).length && e.keyCode == 13) {
+            
+            id = $('#browsers option').filter(function(){return this.value.toUpperCase() === val.toUpperCase()})[0].id
+
+            $('#myBrowser').prev().val(id)
+
+            if($('#myBrowser').prev().attr('id') === 'selectPerfil'){
+                
+                $('#myBrowser').prev().trigger('change')
+
+            }
+
+
+            $('#myBrowser').blur()
+
+            $('#groupSelect').removeClass('has-error');
+
+            $("#error1").remove()
+
+
+        }
+
+    });
+
+
+
+</script>
 
 {% endblock javascripts %}
