@@ -17,7 +17,7 @@
       {% for page in data%}
       <li class="card-list-item">
          <div class="card-list-item-inner">
-            <div class="card-list-item-title" onclick="showContent('{{page.pk}}')">{{page.descripcion}}</div>
+            <div class="card-list-item-title">Page #{{page.ordenamiento}}</div>
             <div class="card-list-item-actions">
                <div class="btn-group" role="group">
                   {% if add %}
@@ -38,19 +38,23 @@
                      <i class="fas fa-trash-alt"></i>
                   </button>
                   {% endif %}
+                  {% if page.contenido %}
+                  <button type="button" class="btn btn-icon btn-sm btn-warning ml-1" data-toggle="tooltip" data-placement="top"
+                     title="Show/Hide" onclick="showContent('{{topic.pk}}')">
+                     <i class="fas fa-clipboard"></i>
+                  </button>
+                  {% endif %}
                </div>
             </div>
-            <div class="card-list-item-extra">
+            <!-- <div class="card-list-item-extra">
                Type: Fulano de tal
                <br>
                Requirements: topico 2 y cualquier otro
-            </div>
+            </div> -->
          </div>
          <div id="contentPage{{page.pk}}" class="card-list-item-descripcion card-list-item-close">
-            <strong>Description:</strong> &nbsp;{{page.resumen}}
          </div>
       </li>
-      {% endif %}
       {% endfor %}
    </ul>
 </section>

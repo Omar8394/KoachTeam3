@@ -98,6 +98,12 @@ results for "{{query}}"
                         <i class="fas fa-sign-out-alt"></i>
                      </button>
                      {% endif %}
+                     {% if go %}
+                     <button type="button" class="btn btn-icon btn-sm btn-success ml-1" data-toggle="tooltip" data-placement="top" title="Go"
+                        onclick="openGoActivity('{{activity.pk}}','{{activity.fk_categoria.desc_elemento}}')">
+                        <i class="fas fa-door-open"></i>
+                     </button>
+                     {% endif %}
                      {% if see %}
                      <button type="button" class="btn btn-icon btn-sm btn-warning ml-1" data-toggle="tooltip" data-placement="top" title="See"
                         onclick="openSeeActivity('{{activity.pk}}','{{activity.fk_categoria.desc_elemento}}')">

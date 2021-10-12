@@ -10,6 +10,7 @@ urlpatterns = [
    path('', views.index, name='academic'),
    #Pruebas de sprint 2
    path('createQuestions/', views.createQuestions, name="createQuestions"),
+   path('createLessons/', views.createLessons, name="createLessons"),
    path('saveQuestions/', views.saveQuestions, name="saveQuestions"),
    #contenidos AJAX
    path('contenidoProgramas/', views.getContentProgramas, name="contenidoProgramas"),
@@ -17,7 +18,7 @@ urlpatterns = [
    path('contenidoUnidades/', views.getContentUnidades, name="contenidoUnidades"),
    path('contenidoCursos/', views.getContentCursos, name="contenidoCursos"),
    path('contenidoTopicos/', views.getContentTopicos, name="contenidoTopicos"),
-   # path('contenidoPages/', views.getContentPages, name="contenidoPages"),
+   path('contenidoLecciones/', views.getContentLecciones, name="contenidoLecciones"),
    path('comboOption/', views.getComboContent, name="contenidoCombo"),
    #modales
    path('modalAddCategoria/', views.getModalCategorias, name="modalAddCategoria"),
@@ -45,7 +46,6 @@ urlpatterns = [
    path('<str:programa>/<str:proceso>/', views.proceso, name="proceso"),
    path('<str:programa>/<str:proceso>/<str:unidad>/', views.unidad, name="unidad"),
    path('<str:programa>/<str:proceso>/<str:unidad>/<str:curso>/', views.curso, name="curso"),
-   path('<str:programa>/<str:proceso>/<str:unidad>/<str:curso>/<str:topico>/', views.topico, name="topico"),
    path('<str:programa>/<str:proceso>/<str:unidad>/<str:curso>/<str:topico>/<int:idActividad>/', views.actividad, name="actividad"),
    #demas paginas
    re_path(r'^.*\.*', views.pages, name='pages'),

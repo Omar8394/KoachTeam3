@@ -277,6 +277,23 @@
             })
       }
    }
+   const openGoActivity = (id, type)=>{
+      if (type === "Test") {
+         window.location.href = `{% url 'createQuestions' %}?id=${id}`;
+      }
+      if (type === "Expert test") {
+         return
+      }
+      if (type === "Lesson") {
+         window.location.href = `{% url 'createLessons' %}?id=${id}`;
+      }
+      if (type === "Homework") {
+         return
+      }
+      if (type === "Forum") {
+         return
+      }
+   }
    const openEditActivity = (id, type) => {
          editmode = true
          idSeleted = id

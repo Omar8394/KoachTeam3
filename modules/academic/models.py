@@ -140,6 +140,7 @@ class ActividadLeccion(models.Model):
 class Paginas(models.Model):
     id_pagina = models.AutoField(primary_key=True)
     titulo = models.TextField(null=True)
+    contenido = models.TextField(null=True)
     ordenamiento = models.SmallIntegerField(null=True)
     fk_estructura_programa = models.ForeignKey(Estructuraprograma,on_delete=models.CASCADE,  default=None, null=True)
 

@@ -25,9 +25,49 @@ def index(request):
 
 
 @login_required(login_url="/login/")
+def createLessons(request):
+    if request.method == "POST":
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            context = {}
+            try:
+                if request.body:
+                    data = json.load(request)
+                    # config = TablasConfiguracion.objects.filter(valor_elemento="CatPrograma")
+                    # padre = list(config.values())[0]
+                    # if data["method"] == "Delete":
+                    #     category = TablasConfiguracion.objects.get(id_tabla=data["id"])
+                    #     category.delete()
+                    #     return JsonResponse({"message":"Deleted"})
+                    # elif data["method"] == "Update":
+                    #     category = TablasConfiguracion.objects.get(id_tabla=data["id"])
+                    # elif data["method"] == "Create":
+                    #     category = TablasConfiguracion()
+                    #     category.tipo_elemento=0 
+                    #     category.permite_cambios=1
+                    #     category.valor_elemento=None
+                    #     category.mostrar_en_combos=1
+                    #     category.maneja_lista=0
+                    #     category.fk_tabla_padre_id=padre["id_tabla"]
+                    # category.desc_elemento = data["data"]["descriptionCat"]
+                    # category.save()
+                    return JsonResponse({"message":"Perfect"})
+                else:
+                    html_template = (loader.get_template('academic/createLessons.html'))
+                    return HttpResponse(html_template.render(context, request))
+            except:
+                return JsonResponse({"message":"error"}, status=500)
+    lessonId=request.GET.get('id')
+    context = {}
+    leccion=ActividadLeccion.objects.get(fk_estructura_programa=lessonId)
+    context['segment'] = 'academic'
+    context['lesson'] = leccion
+    return render(request, 'academic/createLessons.html', context)
+
+@login_required(login_url="/login/")
 def createQuestions(request):
     preguntaId=request.GET.get('id')
-    pregunta=ActividadEvaluaciones.objects.get(pk=preguntaId)
+    #la modificacion es para que los busque por el id de estructuras programa (me facilita la vida)
+    pregunta=ActividadEvaluaciones.objects.get(fk_estructura_programa=preguntaId)
   
 
     escalas = EscalaEvaluacion.objects.all()
@@ -196,6 +236,7 @@ def getContentTopicos(request):
             if request.body:
                 data = json.load(request)    
                 take=True
+                go=True
                 see=True
                 edit=True
                 add=True
@@ -208,8 +249,32 @@ def getContentTopicos(request):
                     lista = curso.estructuraprograma_set.all()
                 else:
                     lista = curso.estructuraprograma_set.all().filter(valor_elemento="Topic", descripcion__icontains=data["query"])
-                context = {"data":lista, "programa":programa, "proceso":proceso, "unidad":unidad, "curso":curso ,"add":add,"edit": edit,"take": take,"see": see, "delete":delete, "query":data["query"]}
+                context = {"data":lista, "programa":programa, "proceso":proceso, "unidad":unidad, "curso":curso ,"add":add,"edit": edit,"take": take,"see": see, "delete":delete, "go":go, "query":data["query"]}
                 html_template = (loader.get_template('academic/contenidoTopicos.html'))
+                return HttpResponse(html_template.render(context, request))
+
+@login_required(login_url="/login/")
+def getContentLecciones(request):
+    if request.method == "POST":
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            context = {}
+            if request.body:
+                data = json.load(request)    
+                take=True
+                go=True
+                see=True
+                edit=True
+                add=True
+                delete=True
+                leccionId = data["id"]
+                leccion = ActividadLeccion.objects.get(pk=leccionId)
+                actividad = leccion.fk_estructura_programa
+                if data["query"] == "" or data["query"] == None:
+                    lista = actividad.paginas_set.all()
+                else:
+                    lista = actividad.paginas_set.all().filter(titulo__icontains=data["query"])
+                context = {"data":lista, "lesson":leccion ,"add":add,"edit": edit,"take": take,"see": see, "delete":delete, "go":go, "query":data["query"]}
+                html_template = (loader.get_template('academic/contenidoLecciones.html'))
                 return HttpResponse(html_template.render(context, request))
 
 @login_required(login_url="/login/")
@@ -1047,9 +1112,7 @@ def curso(request, programa, proceso, unidad, curso):
     html_template = (loader.get_template('academic/topicos.html'))
     #Vista del profesor
     return HttpResponse(html_template.render(context, request))
-@login_required(login_url="/login/")
-def topico(request):
-    return
+
 @login_required(login_url="/login/")
 def actividad(request):
     return

@@ -1,0 +1,133 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %}{% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+
+{% endblock stylesheets %}
+
+{% block content %}
+
+<div class="content">
+   <div class="page-inner animated fadeInRight">
+      <div class="page-header">
+         <h4 class="page-title">Create lessons</h4>
+         <ul class="breadcrumbs">
+            <li class="nav-home">
+               <a href="{% url 'home' %}">
+                  <i class="flaticon-home"></i>
+               </a>
+            </li>
+            <li class="separator">
+               <i class="flaticon-right-arrow"></i>
+            </li>
+            <li class="nav-item">
+               <a href="{% url 'academic' %}">Academic</a>
+            </li>
+            <li class="separator">
+               <i class="flaticon-right-arrow"></i>
+            </li>
+            <li class="nav-item">
+               <span>Lessons</span>
+            </li>
+         </ul>
+      </div>
+      <div class="page-category">
+         <div class="card">
+            <div class="card-header">
+               <h2>{{lesson.fk_estructura_programa.descripcion}}</h2>
+               <div class="form-group w-100 d-flex justify-content-end">
+                  <div class="input-group">
+                     <input id="txtSearch" type="text" class="form-control" placeholder="Search for...">
+                     <div class="input-group-append">
+                        <span id="clearBtn" class="btn btn-danger">
+                           <i class="fa fa-broom"></i>
+                        </span>
+                        <span id="searchBtn" class="btn btn-primary">
+                           <i class="fa fa-search"></i>
+                        </span>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <main class="card-body is-loading-lg">
+
+            </main>
+         </div>
+      </div>
+   </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="addNewModal" tabindex="-1" role="dialog">
+   <div class="modal-dialog  modal-dialog-centered" role="document" id="addNewModalContent">
+
+   </div>
+</div>
+
+{% endblock content %}
+
+{% block javascripts %}
+<script>
+   let query = ""
+   const renderContent = () => {
+      document.querySelector("main.card-body").classList.add("is-loading")
+      fetch("{% url 'contenidoLecciones'%}", {
+         ...fetchObject,
+         body: JSON.stringify({
+            id: "{{lesson.pk}}",
+            query
+         })
+      })
+         .then(async (res) => {
+            result = await res.text()
+            document.querySelector("main.card-body").classList.remove("is-loading")
+            document.querySelector("main.card-body").innerHTML = result
+         })
+   }
+   renderContent()
+   const openAddPage = () => {
+      document.querySelector("main.card-body").classList.add("is-loading")
+      fetch("{% url 'createLessons'%}", {
+         ...fetchObject,
+         body: JSON.stringify({
+            id: "{{lesson.pk}}",
+            method: "Create",
+            query
+         })
+      }).then(async (res) => {
+         const text = JSON.parse(await res.text())
+         if (text.message == "error") alerta(5)
+         else alerta(1)
+      }).then(async (res) => {
+         renderContent()
+      })
+   }
+   const searchFor = (text) => {
+      let output = text.trim()
+      if (output.length > 20) return
+      query = output
+      renderContent()
+   }
+
+   const searchBar = document.querySelector('#txtSearch')
+   const clearBtn = document.querySelector('#clearBtn')
+   const searchBtn = document.querySelector('#searchBtn')
+
+   clearBtn.addEventListener('click', () => {
+      searchBar.value = ""
+      query = ""
+      searchFor("")
+   })
+   searchBtn.addEventListener('click', () => {
+      searchFor(searchBar.value)
+   })
+   searchBar.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+         searchFor(searchBar.value)
+      }
+   });
+</script>
+{% endblock javascripts %}
