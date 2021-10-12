@@ -92,3 +92,60 @@ class FullRegistration(forms.ModelForm):
         model = Publico
         exclude = (
             'procedencia', 'cuenta_telegram', 'cuenta_whatsapp', 'fk_ciudad', 'fk_contratante', 'fecha_registro')
+
+
+class editProfiles(forms.ModelForm):
+
+    nombre = forms.CharField(label='Name',
+        widget=forms.TextInput(
+            attrs={
+                "placeholder" : "Add your name",                
+                "class": "form-control form-control-line", 
+                'maxlength':15,
+
+            }
+        ))
+
+    apellido = forms.CharField(label='Last Name',
+        widget=forms.TextInput(
+            attrs={
+                "placeholder" : "Add your last name",                
+                "class": "form-control form-control-line",
+                'maxlength':100,
+                "name":"Last Name"
+            }
+        ))
+
+        
+    direccion = forms.CharField(label='Adress',
+        widget=forms.TextInput(
+            attrs={
+                "placeholder" : "Add a adress",                
+                "class": "form-control form-control-line",
+                'maxlength':200
+            }
+        ))
+
+    telefonos = forms.CharField(label='Alternative phone', required=False,
+        widget=forms.NumberInput(
+            attrs={
+                "placeholder" : "Add a alternative phone number",                
+                "class": "form-control form-control-line",
+                'maxlength':100
+            }
+        ))
+
+    correos = forms.CharField(label='Alternative email', required=False,
+        widget=forms.EmailInput(
+            attrs={
+                "placeholder" : "Add a alternative email",                
+                "class": "form-control form-control-line",
+                'maxlength':100
+            }
+        ))
+
+
+    class Meta:
+        model = Publico
+        exclude = (
+            'procedencia', 'cuenta_telegram', 'cuenta_whatsapp', 'fk_ciudad', 'fk_contratante', 'fecha_registro', 'docto_identidad')

@@ -1,0 +1,120 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Dashboard {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<div class="content">
+    <div class="row">
+        <div class="col-lg-4 col-xlg-3 col-md-5">
+            <div class="card">
+                <div class="card-body">
+                    <center class="mt-4"> 
+                        
+                        <form action="" enctype="multipart/form-data">
+   
+                            <div class="image-upload">
+                                <label for="file-input">
+                                    <img src="/static/assets/img/default-user-icon.png" class="rounded-circle border" width="150" id="imagenPerfil">
+                                </label>
+                            
+                                <input id="file-input" type="file" style="display: none;" accept="image/*" />
+                            </div> 
+
+                        </form>
+
+
+                        <h4 class="card-title my-2">
+                            {{request.user.username}}
+                        </h4>
+                        <h6 class="card-subtitle">
+                            {{ request.user.email }}
+                        </h6>
+                    </center>
+                </div>
+                <div>
+                    <hr> </div>
+                <div class="card-body"> <small class="text-muted">Email address </small>
+                    <h6>{{ request.user.email }}</h6> 
+                    <small class="text-muted pt-4 db">Phone</small>
+                    <h6>{{form.telefonos.value}}</h6> <small class="text-muted pt-4 db">Address</small>
+                    <h6>{{form.direccion.value}}</h6>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-lg-8 col-xlg-9 col-md-7">
+            <div class="card">
+                <div class="card-header bg-dark2">
+                    <span class="h1 text-white d-flex justify-content-center">My Information.</span>
+                </div>
+                <div class="card-body m-0 p-0">
+                    <form method="post" action="">
+                        {% csrf_token %}
+
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12">
+        
+                                    {% for p in form %}  
+
+                                        <div class="form-group">
+                                            <label for="{{ p.auto_id }}" >{{p.label}}</label>
+                                            <div class="input-group">
+                                                {{ p }}   
+                                            </div>
+                                        </div>
+
+                                    {% endfor %} 
+        
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-action">
+                            <button type="submit" class="btn bg-dark2 btn-lg btn-block text-white">Submit</button>
+                        </div>
+                    </form>
+
+
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+<script>
+
+$(document).on('change', "#file-input", function(e){
+    // console.log(document.getElementById("file-input").files[0].fullName)
+    // $('#imagenPerfil').attr('src', document.getElementById("file-input").files[0].path);
+    
+  const file = document.querySelector('#file-input').files[0];
+
+  if(file){
+      
+  const reader = new FileReader();
+            reader.onload = imageIsLoaded;
+            reader.readAsDataURL(file);
+  }else
+  console.log("nada")
+
+});
+
+function imageIsLoaded(e) {
+
+    $('#imagenPerfil').attr('src', e.target.result );
+
+}
+</script>
+{% endblock javascripts %}

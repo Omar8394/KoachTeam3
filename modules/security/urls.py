@@ -5,7 +5,7 @@ Copyright (c) 2019 - present AppSeed.us
 
 from django.urls import path
 from .views import login_view, register_user, forgot_password, lang_page, full_registration,\
-    recovery_method, emailrecovery
+    recovery_method, emailrecovery, editProfile
 from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
@@ -18,4 +18,5 @@ urlpatterns = [
     path("recoverymethod/", recovery_method, name="recovery_method"),
     path("emailrecovery/<str:activation_key>/", emailrecovery, name="recovery_method_email"),
 
+    path("editProfile/", editProfile, name='editProfile')
 ]

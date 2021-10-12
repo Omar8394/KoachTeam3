@@ -11,7 +11,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.forms.utils import ErrorList
 from django.http import HttpResponse
-from .forms import LoginForm, SignUpForm, ResetPasswordForm, LandingPage, FullRegistration
+from .forms import LoginForm, SignUpForm, ResetPasswordForm, LandingPage, FullRegistration, editProfiles
 from modules.app.models import TablasConfiguracion
 from modules.security.models import CtaUsuario, EnlaceVerificacion
 from modules.security import Methods
@@ -19,6 +19,7 @@ from ..communication.Methods import create_mail, send_mail
 from modules.security.Methods import create_default_ctausuario
 from modules.security.models import ExtensionUsuario
 from modules.security.forms import RecoveryMethodForm
+from ..app.models import Publico
 
 
 def login_view(request):
@@ -282,3 +283,35 @@ def emailrecovery(request, activation_key):
     else:
         print("otro metodo")
 
+
+def editProfile(request):
+
+    profile = Publico.objects.get(idpublico = ExtensionUsuario.objects.get(user = request.user).Publico.idpublico)
+
+    if request.method == "POST":  
+
+        form = editProfiles(request.POST, instance = profile) 
+
+        if form.is_valid():  
+
+            form.save()  
+            print("saved")
+            # if id:
+
+            #     messages.info(request, 'Changes applied to %s successfully' %(form.data['deescripcion']))
+
+            # else:
+                
+            #     messages.info(request, 'Profile Named %s Added Succefuly ' %(form.data['deescripcion']))
+
+            return redirect('/')  
+
+        else:
+
+            # messages.warning(request, 'An error has occurred!')
+            return render(request,'planning/edit.html',{'form':form})
+
+
+    form = editProfiles(instance = profile) 
+
+    return render(request, "security/profilePage.html", {'form': form})
