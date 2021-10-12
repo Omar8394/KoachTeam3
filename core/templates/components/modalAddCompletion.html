@@ -1,10 +1,13 @@
+<div class="form-row">
+    <h2>Options</h2>
+</div>
+
 <div class="form-row col-md-12">
     <div class="form-group col-md-12">
-        <label for="wordSelect">Select word</label>
+        <label for="wordSelect">Select a word</label>
         <div id='wordSelect'>
         
-         </div>
-
+        </div>
 
     </div>
 </div>   
@@ -20,16 +23,14 @@
     </div>
 </div>   
 
-<div class="form-row">
-    <h2>Options</h2>
-</div>
 
 <div class="form-row col-md-12">
     <div class="form-group col-md-12">
-        <label for="optionText">Option text</label>
+        <label for="optionText">Write here the others completion words for the question:</label>
         <textarea name="optionText" class="form-control" id="optionText" cols="100" rows="4"></textarea>
     </div>
 </div>   
+
 {% comment %}    
 <div class="form-row col-md-12">
     <div class="form-group col-md-6">
@@ -44,7 +45,7 @@
 <div class="form-row col-md-12">
     <div class="form-group col-md-12 d-flex justify-content-start">
         <button class="btn btn-success mt-4" id="addRow">
-            Add <i class="fas fa-arrow-down ml-1"></i>
+            Add option <i class="fas fa-arrow-down ml-1"></i>
         </button>
     </div>
 </div>
@@ -54,7 +55,7 @@
         <table class="table table-sm table-bordered table-striped table-hover table-responsive">
             <thead>
                 <tr>
-                    <th>
+                    <th class="col-md-8">
                         Option text
                     </th>
                     <th>

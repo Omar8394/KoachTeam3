@@ -38,21 +38,24 @@
                         <div class="card mt-3" style="width: 80rem;" >
                             <div class="card-header">
                                 <div class="form-row">
-                                    <div class="form-group col-md-4 d-flex justify-content-start">
-                                        <h1>Questions:  {{pregunta.fk_estructura_programa.descripcion}}</h1>
+                                    <div class="form-group col-md-6 d-flex justify-content-start">
+                                        <h2>{{pregunta.fk_estructura_programa.descripcion}}</h2>
                                     </div>
-                                    <div class="form-group col-md-2 d-flex justify-content-start">
-                                        <h1>Max Point: {{escalaEvaluacion.maxima_puntuacion}}</h1>
-                                    </div>
-                                      <div class="form-group col-md-2 d-flex justify-content-start">
-                                        <h1>Point in Use: {{pregunta.pointUse}}</h1>
-                                    </div>
-                                    <div class="form-group col-md-4 d-flex justify-content-end">
+                                    
+                                    <div class="form-group col-md-6 d-flex justify-content-end">
                                         <button type="button" class="btn btn-success" onclick="openAddModalQuestion()">
                                             Add question <i class="fas fa-plus ml-1"></i>
                                         </button>
                                     </div>
-                                </div>                                       
+                                </div>   
+                                <div class="form-row">
+                                    <div class="form-group col-md-6 d-flex justify-content-center">
+                                        <h2>Max Point: {{escalaEvaluacion.maxima_puntuacion}}</h2>
+                                    </div>
+                                    <div class="form-group col-md-6 d-flex justify-content-center">
+                                        <h2>Point in Use: {{pregunta.pointUse}}</h2>
+                                    </div>
+                                </div>                                    
                             </div>
                             <div class="card-body" id="tabQuestions">
                                 <div class="table-responsive" id="renderContainer">
@@ -303,23 +306,23 @@
              animation: 150,
         }); 
 
-        Sortable.create(tablaCuerpo, {
-            swap: true,
-            animation: 150,
-            store: {
-                // Sorting acquisition (called during initialization)
-                get: function (sortable) {
-                  var question = tablaPreguntas.getItem(sortable.options.group);
-                  return question ? question.split('|') : [];
-                },
+        // // Sortable.create(tablaCuerpo, {
+        //     swap: true,
+        //     animation: 150,
+        //     store: {
+        //         // Sorting acquisition (called during initialization)
+        //         get: function (sortable) {
+        //           var question = tablaPreguntas.getItem(sortable.options.group);
+        //           return question ? question.split('|') : [];
+        //         },
         
-                // Saving the acquired sorting (called each time upon sorting modification)
-                set: function (sortable) {
-                  var question = sortable.toArray();
-                  tablaPreguntas.setItem(sortable.options.group, question.join('|'));
-                }
-            }
-        });
+        //         // Saving the acquired sorting (called each time upon sorting modification)
+        //         set: function (sortable) {
+        //           var question = sortable.toArray();
+        //           tablaPreguntas.setItem(sortable.options.group, question.join('|'));
+        //         }
+        //     }
+        // });
 
         // Combos and radios
 
@@ -691,7 +694,7 @@
 
         for(const element of wordArray ){
 
-            contenido=contenido+` <button class='' id='${counter}word' onclick='addOpcion(${counter}, "${element}")' type="button">${element}</button> `
+            contenido=contenido+` <button class='btn btn-primary' id='${counter}word' onclick='addOpcion(${counter}, "${element}")' type="button">${element}</button> `
 
             counter++;
         }
@@ -715,7 +718,7 @@
 
         for(const element of wordArray ){
 
-            contenido=contenido+` <button class='' id='${counter}word' onclick='addOpcion(${counter}, "${element}")' type="button">${element}</button> `
+            contenido=contenido+` <button class='btn btn-primary' id='${counter}word' onclick='addOpcion(${counter}, "${element}")' type="button">${element}</button> `
 
             counter++;
         }
@@ -793,7 +796,7 @@
             let fila =
                 `<tr>
                         <td>${dato.OpcionTextA}</td>
-                        <td>   <---></td>
+                        <td>   <----></td>
                         <td>${dato.OpcionTextB}</td>
                         <td>   </td>
 
@@ -829,21 +832,23 @@
         tablaPreguntas.map((dato, index) => {
             let fila =
                 `<tr>
-                        <td>${dato.OpcionText}</td>
+                    <td>
+                        ${dato.OpcionText}
+                    </td>
                         
-                        <td>
-                            <div class="btn-group" role="group">
-                                <input type='radio' name='listaSimpleRadio' value='${index}' checked onchange="respuestaCorrecta(this)"  >
-                            </div>
-                        </td>
-                        <td>
-                            <div class="btn-group" role="group">
-                                <button onclick="borrarItemSimple(${index})" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip"  data-placement="top" title="Delete" >
-                                    <i class="fas fa-trash-alt"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>`
+                    <td>
+                        <div class="btn-group" role="group">
+                            <input type='radio' name='listaSimpleRadio' value='${index}' checked onchange="respuestaCorrecta(this)"  >
+                        </div>
+                    </td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <button onclick="borrarItemSimple(${index})" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip"  data-placement="top" title="Delete" >
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </td>              
+                </tr>`
             contenido += fila;
         })
         tableContentSimple.innerHTML = contenido;
