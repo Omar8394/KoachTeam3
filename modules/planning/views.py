@@ -195,7 +195,7 @@ def show(request):
 
             plan = plan.filter(deescripcion__icontains=search_query) 
 
-        return render(request,"planning/show.html",{'plan':paginas(request, plan), 'keys' : TITULOPERFIL, 'urlEdit': 'editProfilage', 'urlRemove': 'destroyProfilage', 'search':search_query}) 
+        return render(request,"planning/show.html",{'plan':paginas(request, plan), 'keys' : TITULOPERFIL, 'urlEdit': 'editProfilage', 'urlRemove': 'destroyProfilage', 'search':search_query, 'segment':'planning'}) 
     
     else:
         
@@ -214,7 +214,7 @@ def showCompetences(request):
 
             competencia = competencia.filter(desc_competencia__icontains=search_query) 
 
-        return render(request,"planning/showCompetence.html",{'plan': paginas(request, competencia), 'keys' : TITULOCOMPETENCIA, 'urlEdit': 'editCompetence', 'urlRemove': 'destroyCompetence', 'search':search_query}) 
+        return render(request,"planning/showCompetence.html",{'plan': paginas(request, competencia), 'keys' : TITULOCOMPETENCIA, 'urlEdit': 'editCompetence', 'urlRemove': 'destroyCompetence', 'search':search_query, 'segment':'planning'}) 
     
     else:
 
@@ -239,7 +239,7 @@ def showProgram(request):
      
     search_query = request.GET.get('search_box', "")
     program = Publico.objects.all()
-    return render(request,"planning/showProgram.html",{'plan': paginas(request, program), 'keys' : TITULOPLAN, 'urlEdit': 'editProgram', 'urlRemove': 'destroyProgram', 'search':search_query, 'tipo':'Schedule'}) 
+    return render(request,"planning/showProgram.html",{'plan': paginas(request, program), 'keys' : TITULOPLAN, 'urlEdit': 'editProgram', 'urlRemove': 'destroyProgram', 'search':search_query, 'tipo':'Schedule', 'segment':'planning'}) 
 
 def editProgram(request, id):  
     return render(request,'planning/editProgram.html', {'id': id})  

@@ -11,7 +11,7 @@
 	<div class="content">
 		<div class="page-inner">
 			<div class="page-header">
-				<h4 class="page-title">Starter page</h4>
+				<h4 class="page-title">Payments</h4>
 				<ul class="breadcrumbs">
 					<li class="nav-home">
 						<a href="index.html">
@@ -22,288 +22,238 @@
 						<i class="flaticon-right-arrow"></i>
 					</li>
 					<li class="nav-item">
-						<span>Module name</span>
+						<span>Registration</span>
 					</li>
 					<li class="separator">
 						<i class="flaticon-right-arrow"></i>
 					</li>
 					<li class="nav-item">
-						<a href="#">Page 1</a>
+						<a href="{% url 'ViewPayments' %}">Payments</a>
 					</li>
 				</ul>
 			</div>
 			<div class="page-category">
-        <h2>Enrollment Applications</h2>
-		<div > 
-			<div class="dropdown" id="panelBuscar">
-                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                    <i class="glyphicon glyphicon-search"></i> Filter
-                   
-                </button>
-                <div class="dropdown-menu">
-                    <div class="panel">
-                        <div class="panel-body">
-                            <form id="buscar" name="buscar" method="POST" action=".">
-				{% csrf_token %}
-                                 
-                            <table style="width:100%">
-                           
-                                <tr>
-                                    <td>Initial Date</td>
-                                    <td></td>
-                                    <td>
-                                        <input id="fechaInicialPago" name="fechaInicialPago" type="date" class="form-control" >
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Final Date</td>
-                                    <td></td>
-                                    <td>
-                                        <input id="fechaFinalPago" name="fechaFinalPago" id type="date" class="form-control" >
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Payment Status</td>
-                                    <td></td>
-                                    <td>
-                                        <select id="idStatusPago" name="idStatusPago" class="form-control" >
-                                            <option value=""></option>
 
-                                            {% for mat in statusPago %}
-                                            <option value="{{mat.id_tabla}}" {% if mat.id_tabla == idStatusPago %} selected {% endif %}    >{{mat}}</option>
-
-
-                                            {% endfor %}
-
-
-                                        </select>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Origen</td>
-                                    <td></td>
-                                    <td>
-                                        <select id="idOrigenPago" name="idOrigenPago"  class="form-control" >
-                                            <option value=""></option>
-
-                                            {% for mat in origenes %}
-                                            <option value="{{mat.id}}"  {% if mat.id == idOrigenPago %} selected {% endif %}    >{{mat.origen}}</option>
-
-
-                                            {% endfor %}
-
-
-                                        </select>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>User</td>
-                                    <td></td>
-                                    <td>
-                                        <input id="userPago" name="userPago" id type="text" value="{{userPago}}"  readonly class="form-control" >
-                                        <input   type="hidden" readonly id="userPagoId" name="userPagoId" value="{{userPagoId}}" >
-
-                                    </td>
-                                    <td>
-                                        <a href="javascript:void(0);"  onclick="modalBuscarPersona()">   <span class="fas fa-search">     </span></a> 
-                                       </td>
-                                </tr>
-                                <tr>
-                                    <td>Reference</td>
-                                    <td></td>
-                                    <td>
-                                        <input id="refPago" name="refPago" value="{{refPago}}" id type="text" class="form-control" >
-                                    </td>
-                                </tr>
-                               
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td>
-                                        
-
-                                        <input type="submit" class="btn btn-primary" value="Filter" >
-                                        &nbsp;
-                                        <input type="button" onclick="reload()" class="btn btn-default" value="Clean">
-
-                                    </td>
-                                </tr>
-                            </table>
-                        </form>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-             <input type="hidden" id="dato" value= "{{ listaPrecio }}"/>
+            <input type="hidden" id="dato" value= "{{ listaPrecio }}"/>
             <div class="animated fadeInRight">
                 <div class="ibox float-e-margins">
                     <div class="ibox-content">
 
-
-                         
-                        <table class="table table-striped table-hover">
-                            <thead>
-                               <input type="hidden" id="dato2" value= "{{ ax }}"/>
-                                <tr>
-                                    <th style="width: 65px;"></th>
-                                   
-                                    <th>Users</th>
-                                    <th>Date</th>
-                                    
-                                    <th>Reference</th>
-                                    <th>Method</th>
-                                    <th>Amount</th>
-                                    {% comment %} <th>Hash</th> {% endcomment %}
-                                    <th>Status</th>
-                                    
-                                    
-                                    <th></th>
-
-                                  
-                                </tr>
-                            </thead>
-                            <tbody class="data-cargando">
-                           
-                           
-                                {% for mat in structuras %}
-                                <tr style="cursor:pointer;" id=""  onclick="" >
-                                    <td ></td>
-                                   <td>{{mat.fk_matricula_alumnos.fk_publico }}  </td>
-                                   <td>{{mat.fecha_pago}}</td>
-                                    
-                                   <td>{{mat.referencia}}  </td>
-                                   <td>
-                               {{ mat.fk_metodopago_id|Origen}}
-                                   </td>
-                                    
-                                  <td >
-                                      
-                                      
-                                          
-                                          
-                                          {{ mat.monto_cancel }}
-                                          
-
-
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="dropdown" id="panelBuscar">
+                                    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                        <i class="glyphicon glyphicon-search"></i> Filter
                                        
-                                   </td>
-
-                                   {% comment %} 
-                                   
-                                   <td>{{mat.codigo_hash}}</td>
-                                   
-                                   <td onclick="verI('{{mat.url_imagen}}')">
-                                    {{mat.url_imagen}}</td>
-                                   
-                                   {% endcomment %}
-
-
-                                   <td id="precio" name="precio" >
-                                   
-                                    {{mat.status_pay}}
-                                    </td>
-
-                                  
-                                   
-                                        
-                                        
-
-                                    <td>
-                                        <button  class="btn btn-primary" onclick="Review('{{mat.idmatricula_pagos}}','{{mat.fk_metodopago_id}}')">Review<i class="fas fa-edit ml-2"></i></button>
-
-                                   
-                                    </td>
-                                </tr>
-
-
-                                {% endfor %}
-                            </tbody>
-                        </table>
-
-                     
-                       
-
-                        <nav aria-label="Page navigation example">
-                            <ul class="pagination justify-content-center">
-                            {% if structuras.has_previous %}
-                            <li class="page-item">
-                                <a class="page-link" href="?page=1">&laquo; First</a>
-
-                               </li>
-                                <li class="page-item">
-                                  
-
-                                <a class="page-link" href="?page={{ structuras.previous_page_number }}">Previous</a>
-                              </li>
-                            {% else %}
-                                <li class="page-item disabled">
-                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-                              </li>
-                            {% endif %}
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <div class="panel">
+                                            <div class="panel-body">
+                                                <form id="buscar" name="buscar" method="POST" action=".">
+                                    {% csrf_token %}
+                                                     
+                                                <table style="width:100%">
+                                               
+                                                    <tr>
+                                                        <td class="p-2">Initial Date</td>
+                                                        <td></td>
+                                                        <td class="p-2">
+                                                            <input id="fechaInicialPago" name="fechaInicialPago" type="date" class="form-control" >
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="p-2">Final Date</td>
+                                                        <td></td>
+                                                        <td class="p-2">
+                                                            <input id="fechaFinalPago" name="fechaFinalPago" id type="date" class="form-control" >
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="p-2">Payment Status</td>
+                                                        <td></td>
+                                                        <td class="p-2">
+                                                            <select id="idStatusPago" name="idStatusPago" class="form-control" >
+                                                                <option value=""></option>
                     
-                            {% if structuras.number|add:'-4' > 1 %}
-                                <li class="page-item"><a class="page-link" href="?page={{ structuras.number|add:'-5' }}">&hellip;</a></li>
-                            {% endif %}
+                                                                {% for mat in statusPago %}
+                                                                <option value="{{mat.id_tabla}}" {% if mat.id_tabla == idStatusPago %} selected {% endif %}    >{{mat}}</option>
                     
-                            {% for i in structuras.paginator.page_range %}
-                                {% if structuras.number == i %}
-                                    <li class="page-item active" aria-current="page">
-                                  <span class="page-link">
-                                    {{ i }}
-                                    <span class="sr-only">(current)</span>
-                                  </span>
-                                </li>
-                                {% elif i > structuras.number|add:'-5' and i < structuras.number|add:'5' %}
-                                     <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
-                                {% endif %}
-                            {% endfor %}
                     
-                            {% if structuras.paginator.num_pages > structuras.number|add:'4' %}
-                               <li class="page-item"><a class="page-link" href="?page={{ structuras.number|add:'5' }}">&hellip;</a></li>
-                            {% endif %}
+                                                                {% endfor %}
                     
-                            {% if structuras.has_next %}
-                                <li class="page-item">
-                                <a class="page-link" href="?page={{ structuras.next_page_number }}">Next</a>
-                              </li>
-                              <li class="page-item">
-                                <a class="page-link" href="?page={{ structuras.paginator.num_pages }}">Last &raquo;</a>
-                              </li>
-
-                            {% else %}
-                                <li class="page-item disabled">
-                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Next</a>
-                              </li>
-                            {% endif %}
-                          </ul>
-                        </nav>
-
-                   
-            
+                    
+                                                            </select>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="p-2">Origen</td>
+                                                        <td></td>
+                                                        <td class="p-2">
+                                                            <select id="idOrigenPago" name="idOrigenPago"  class="form-control" >
+                                                                <option value=""></option>
+                    
+                                                                {% for mat in origenes %}
+                                                                <option value="{{mat.id}}"  {% if mat.id == idOrigenPago %} selected {% endif %}    >{{mat.origen}}</option>
+                    
+                    
+                                                                {% endfor %}
+                    
+                    
+                                                            </select>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="p-2">User</td>
+                                                        <td></td>
+                                                        <td class="p-2">
+                                                            <input id="userPago" name="userPago" id type="text" value="{{userPago}}"  readonly class="form-control" >
+                                                            <input   type="hidden" readonly id="userPagoId" name="userPagoId" value="{{userPagoId}}" >
+                    
+                                                        </td>
+                                                        <td class="p-2">
+                                                            <a href="javascript:void(0);"  onclick="modalBuscarPersona()">   <span class="fas fa-search">     </span></a> 
+                                                           </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="p-2">Reference</td>
+                                                        <td></td>
+                                                        <td class="p-2">
+                                                            <input id="refPago" name="refPago" value="{{refPago}}" id type="text" class="form-control" >
+                                                        </td>
+                                                    </tr>
+                                                   
+                                                    <tr>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td class="p-2">
+                                                            <input type="submit" class="btn btn-primary" value="Filter" >
+                                                            &nbsp;
+                                                            <input type="button" onclick="reload()" class="btn btn-default" value="Clean">
+                    
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-striped table-hover table-component-like table-responsive">
+                                    <thead>
+                                       <input type="hidden" id="dato2" value= "{{ ax }}"/>
+                                        <tr>
+                                            <th style="width: 65px;"></th>
+                                            <th class="col-md-2">Users</th>
+                                            <th class="col-md-2">Date</th>
+                                            <th class="col-md-2">Reference</th>
+                                            <th class="col-md-2">Method</th>
+                                            <th class="col-md-2">Amount</th>
+                                            {% comment %} <th>Hash</th> {% endcomment %}
+                                            <th class="col-md-2">Status</th>
+                                            <th class="col-md-2"></th>      
+                                        </tr>
+                                    </thead>
+                                    <tbody class="data-cargando">
+                                        {% for mat in structuras %}
+                                        <tr style="cursor:pointer;" id=""  onclick="" >
+                                            <td ></td>
+                                            <td>{{mat.fk_matricula_alumnos.fk_publico }}  </td>
+                                            <td>{{mat.fecha_pago}}</td>
+                                            
+                                            <td>{{mat.referencia}}  </td>
+                                            <td>
+                                                {{ mat.fk_metodopago_id|Origen}}
+                                            </td>
+                                            <td>                  
+                                                {{ mat.monto_cancel }}
+                                            </td>
+        
+                                           {% comment %} 
+                                           
+                                           <td>{{mat.codigo_hash}}</td>
+                                           
+                                           <td onclick="verI('{{mat.url_imagen}}')">
+                                            {{mat.url_imagen}}</td>
+                                           
+                                           {% endcomment %}
+        
+        
+                                           <td id="precio" name="precio" >
+                                           
+                                            {{mat.status_pay}}
+                                            </td>
+        
+                                            <td>
+                                                <button  class="btn btn-primary" onclick="Review('{{mat.idmatricula_pagos}}','{{mat.fk_metodopago_id}}')">Review<i class="fas fa-edit ml-2"></i></button>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="card-footer">
+                                <nav aria-label="Page navigation example">
+                                    <ul class="pagination justify-content-center">
+                                    {% if structuras.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=1">&laquo; First</a>
+        
+                                       </li>
+                                        <li class="page-item">
+                                          
+        
+                                        <a class="page-link" href="?page={{ structuras.previous_page_number }}">Previous</a>
+                                      </li>
+                                    {% else %}
+                                        <li class="page-item disabled">
+                                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                                      </li>
+                                    {% endif %}
+                            
+                                    {% if structuras.number|add:'-4' > 1 %}
+                                        <li class="page-item"><a class="page-link" href="?page={{ structuras.number|add:'-5' }}">&hellip;</a></li>
+                                    {% endif %}
+                            
+                                    {% for i in structuras.paginator.page_range %}
+                                        {% if structuras.number == i %}
+                                            <li class="page-item active" aria-current="page">
+                                          <span class="page-link">
+                                            {{ i }}
+                                            <span class="sr-only">(current)</span>
+                                          </span>
+                                        </li>
+                                        {% elif i > structuras.number|add:'-5' and i < structuras.number|add:'5' %}
+                                             <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                                        {% endif %}
+                                    {% endfor %}
+                            
+                                    {% if structuras.paginator.num_pages > structuras.number|add:'4' %}
+                                       <li class="page-item"><a class="page-link" href="?page={{ structuras.number|add:'5' }}">&hellip;</a></li>
+                                    {% endif %}
+                            
+                                    {% if structuras.has_next %}
+                                        <li class="page-item">
+                                        <a class="page-link" href="?page={{ structuras.next_page_number }}">Next</a>
+                                      </li>
+                                      <li class="page-item">
+                                        <a class="page-link" href="?page={{ structuras.paginator.num_pages }}">Last &raquo;</a>
+                                      </li>
+        
+                                    {% else %}
+                                        <li class="page-item disabled">
+                                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Next</a>
+                                      </li>
+                                    {% endif %}
+                                  </ul>
+                                </nav>
+                            </div>
+                        </div>                      
                     </div>
-                </div>
-            
-            
+                </div> 
+            </div>		            
             </div>
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	   
-		</div>			            
-      </div>
 		</div>
 	</div>
 

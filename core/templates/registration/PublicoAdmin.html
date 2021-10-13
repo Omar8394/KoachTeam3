@@ -48,62 +48,40 @@
                                                     <form id="buscar" name="buscar" method="POST" action=".">
                                                         {% csrf_token %}
                     
-                                                        <div class="form-row">
-                                                            <div class="form-group col-md-6">
-                                                                <span>Names</span>
-                                                            </div>
-                                                            <div class="form-group col-md-6">
-                            
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-row">
-                            
-                                                        </div>
-                                                        <div class="form-row">
-                            
-                                                        </div>
-                                                        <div class="form-row">
-                            
-                                                        </div>
-                                                        <div class="form-row">
-                            
-                                                        </div>
-                                                     
-                                                        <table style="width:100%">
-                                               
-                                                            <tr class="mt-3">
-                                                                <td>Initial Date for Registration</td>
+                                                        <table style="width:100%">                                            
+                                                            <tr>
+                                                                <td class="p-2">Initial Date for Registration</td>
                                                                 <td></td>
-                                                                <td>
+                                                                <td class="p-2">
                                                                     <input id="fechaInicialPersona" name="fechaInicialPersona" value="{{fechaInicialPersona}}" type="date" class="form-control" >
                                                                 </td>
                                                             </tr>
-                                                            <tr class="mt-3">
-                                                                <td>Final Date for Registration</td>
+                                                            <tr>
+                                                                <td class="p-2">Final Date for Registration</td>
                                                                 <td></td>
-                                                                <td>
+                                                                <td class="p-2">
                                                                     <input id="fechaFinalPersona" name="fechaFinalPersona" value="{{fechaFinalPersona}}" type="date" class="form-control" >
                                                                 </td>
                                                             </tr>
-                                                            <tr class="mt-3">
-                                                                <td>Name</td>
+                                                            <tr>
+                                                                <td class="p-2">Name</td>
                                                                 <td></td>
-                                                                <td>
+                                                                <td class="p-2">
                                                                     <input id="personaBuscarNombrePersona" name="personaBuscarNombrePersona" value="{{personaBuscarNombrePersona}}" type="text" class="form-control" >
                                                                 </td>
                                                             </tr>
-                                                            <tr class="mt-3">
-                                                                <td>Id Number</td>
+                                                            <tr>
+                                                                <td class="p-2">Id Number</td>
                                                                 <td></td>
-                                                                <td>
+                                                                <td class="p-2">
                                                                     <input id="idNumberPersona" name="idNumberPersona" value="{{idNumberPersona}}"  type="text" class="form-control" >
                                                                 </td>
                                                             </tr>
                                                    
-                                                            <tr class="mt-3">
+                                                            <tr>
                                                                 <td></td>
                                                                 <td></td>
-                                                                <td>
+                                                                <td class="p-2">
                                                                     <input type="submit" class="btn btn-primary" value="Filter" >
                                                                     &nbsp;
                                                                     <input type="button" onclick="reload()" class="btn btn-default" value="Clean">
@@ -117,7 +95,7 @@
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    <table class="table table-hover table-component table-borderless text-center">
+                                    <table class="table table-hover table-component-like table-responsivetable-borderless text-center">
                                         <thead>
                                             <tr>
                                                 <th style="width: 65px;"></th>
