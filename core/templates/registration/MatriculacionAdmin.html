@@ -8,7 +8,7 @@
 {% block content %}
 
 	<div class="content">
-		<div class="page-inner">
+		<div class="page-inner animated fadeInRight">
 			<div class="page-header">
 				<h4 class="page-title">Enrollment List</h4>
 				<ul class="breadcrumbs">
@@ -33,7 +33,7 @@
 			</div>
 
 			<div class="page-category">	
-            <div class="animated fadeInRight">
+            <div>
                 <div class="ibox float-e-margins">
                     <div class="ibox-content">
                         <div class="card">
@@ -140,34 +140,37 @@
                                 </div>
                             </div>
                             <div class="card-body">
-                                <table class="table table-striped table-hover table-component-like table-responsive">
-                                    <thead>
-                                        <tr>
-                                            <th style="width: 65px;"></th>
-                                            <th class="col-md-4">Applicant</th>
-                                            <th class="col-md-4">Status </th>
-                                            <th class="col-md-4">Date of application</th>
-                                            <th class="col-md-4">Program</th>
-                                            <th class="col-md-4"></th>       
-                                        </tr>
-                                    </thead>
-                                    <tbody class="data-cargando">
-                                        {% for mat in matriculasList %}
-                    
-                                        <tr style="cursor:pointer;" id="{{mat.idmatricula_alumnos}}"  onclick="showModal(id)" >
-                                            <td></td>
-                                            <td>{{mat.fk_publico}}</td>
-                                            <td>{{mat.fk_status_matricula}}</td>
-                                            <td>{{mat.fecha_matricula}}</td>
-                                            <td>{{mat.fk_estruc_programa}}</td>
-                                            <td>
-                                
-                                            </td>
-                                        </tr>
-        
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-hover table-component-like table-borderless text-center">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 65px;"></th>
+                                                <th>Applicant</th>
+                                                <th>Status </th>
+                                                <th>Date of application</th>
+                                                <th>Program</th>
+                                                <th></th>       
+                                            </tr>
+                                        </thead>
+                                        <tbody class="data-cargando">
+                                            {% for mat in matriculasList %}
+                        
+                                            <tr style="cursor:pointer;" id="{{mat.idmatricula_alumnos}}"  onclick="showModal(id)" >
+                                                <td></td>
+                                                <td>{{mat.fk_publico}}</td>
+                                                <td>{{mat.fk_status_matricula}}</td>
+                                                <td>{{mat.fecha_matricula}}</td>
+                                                <td>{{mat.fk_estruc_programa}}</td>
+                                                <td>
+                                    
+                                                </td>
+                                            </tr>
+            
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+
+                                </div>
             
                             </div>
                             <div class="card-footer">

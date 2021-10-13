@@ -21,6 +21,15 @@ def index(request):
     return HttpResponse(html_template.render(context, request))
 
 @login_required(login_url="/login/")
+def indexSettings(request):
+    
+    context = {}
+    context['segment'] = 'settings'
+
+    html_template = loader.get_template( 'app/settings/indexSettings.html' )
+    return HttpResponse(html_template.render(context, request))
+
+@login_required(login_url="/login/")
 def calendar(request):
     
     context = {}

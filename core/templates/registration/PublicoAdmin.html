@@ -8,7 +8,7 @@
 {% block content %}
 
 	<div class="content">
-		<div class="page-inner">
+		<div class="page-inner animated fadeInRight">
 			<div class="page-header">
 				<h4 class="page-title">Enrollment Applications</h4>
 				<ul class="breadcrumbs">
@@ -32,7 +32,7 @@
 				</ul>
 			</div>
 			<div class="page-category">
-                <div class="animated fadeInRight">
+                <div class="">
                     <div class="ibox float-e-margins">
                         <div class="ibox-content">
                             <div class="card">
@@ -95,46 +95,49 @@
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    <table class="table table-hover table-component-like table-responsivetable-borderless text-center">
-                                        <thead>
-                                            <tr>
-                                                <th style="width: 65px;"></th>
-                                                <th>Names</th>
-                                                <th>Id Number</th>
-                                                <th>Date of Registration</th>
-                                                <th></th>
-                                                <th></th>             
-                                            </tr>
-                                        </thead>
-                                        <tbody class="data-cargando">
-                                            {% for person in publicoObject %}
-                        
-                                            <tr style="cursor:pointer;"  >
-                                                <td ></td>
-                                               <td>{{person}}</td>
-                                               <td>{{person.docto_identidad}}</td>
-                                               <td>{{person.fecha_registro}}</td>
-                                               <td> 
-                                                    <a href="javascript:void(0);"  id="{{person.idpublico}}"  onclick="showModal(id)" ><i class="fa fa-plus"></i> Add Enrollment</a>
-                                                </td>
-                                               <td>  
-                                                    <form id="PersonaForm" name="PersonaForm" action="{% url 'EnrollmentList'%}" onsubmit=" return ManagePersonas('{{person.idpublico}}')" method="POST">
-                                                        {% csrf_token %}
-                                                        <input type="hidden" value="0" id="PersonId"
-                                                        name="PersonId">
-                                                    
-            
-                                                        <a  href="javascript:void(0);" onclick="sendForm('{{person.idpublico}}')" id="{{person.idpublico}}" ><i class="fa fa-tasks"></i> Manage Enrollments</a>
-            
-                                                    </form>
-                                                </td>
-                                                <td>
-                                                </td>
-                                            </tr>
-            
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover table-component-like table-borderless text-center">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width: 65px;"></th>
+                                                    <th>Names</th>
+                                                    <th>Id Number</th>
+                                                    <th>Date of Registration</th>
+                                                    <th></th>
+                                                    <th></th>             
+                                                </tr>
+                                            </thead>
+                                            <tbody class="data-cargando">
+                                                {% for person in publicoObject %}
+                            
+                                                <tr style="cursor:pointer;"  >
+                                                    <td ></td>
+                                                   <td>{{person}}</td>
+                                                   <td>{{person.docto_identidad}}</td>
+                                                   <td>{{person.fecha_registro}}</td>
+                                                   <td> 
+                                                        <a href="javascript:void(0);"  id="{{person.idpublico}}"  onclick="showModal(id)" ><i class="fa fa-plus"></i> Add Enrollment</a>
+                                                    </td>
+                                                   <td>  
+                                                        <form id="PersonaForm" name="PersonaForm" action="{% url 'EnrollmentList'%}" onsubmit=" return ManagePersonas('{{person.idpublico}}')" method="POST">
+                                                            {% csrf_token %}
+                                                            <input type="hidden" value="0" id="PersonId"
+                                                            name="PersonId">
+                                                        
+                
+                                                            <a  href="javascript:void(0);" onclick="sendForm('{{person.idpublico}}')" id="{{person.idpublico}}" ><i class="fa fa-tasks"></i> Manage Enrollments</a>
+                
+                                                        </form>
+                                                    </td>
+                                                    <td>
+                                                    </td>
+                                                </tr>
+                
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+
+                                    </div>
                                 </div>
                                 <div class="card-footer">
                                     
