@@ -3,7 +3,10 @@
 Copyright (c) 2019 - present AppSeed.us
 """
 
+from django.http import response
+from django.http.response import JsonResponse
 from django.shortcuts import render
+from django import forms  
 
 # Create your views here.
 from django.shortcuts import render, redirect
@@ -20,6 +23,13 @@ from modules.security.Methods import create_default_ctausuario
 from modules.security.models import ExtensionUsuario
 from modules.security.forms import RecoveryMethodForm
 from ..app.models import Publico
+import uuid
+import os
+from core import settings
+from pathlib import Path
+from django.core.files.storage import FileSystemStorage
+import imghdr
+from django.contrib import messages
 
 
 def login_view(request):
@@ -312,6 +322,68 @@ def editProfile(request):
             return render(request,'planning/edit.html',{'form':form})
 
 
-    form = editProfiles(instance = profile) 
+    form = editProfiles(instance = profile)  
+    # form.fields['procedencia'] = forms.ChoiceField(choices= list(counties().items()), label="Country of Origin")
+    # form.fields['procedencia'].widget.attrs.update({
+    #     'class': 'form-control countryList'
+    # })
 
     return render(request, "security/profilePage.html", {'form': form})
+
+
+    
+def images(request):
+
+    if request.method == "POST":  
+
+        myfile = request.FILES['file-input']
+
+        if imghdr.what(myfile):
+
+            fs = FileSystemStorage(location=settings.UPLOAD_ROOT )
+            nombreImagen=str(request.user.id)+".png"
+            Ruta=settings.UPLOAD_ROOT + '/user'
+
+            try:
+
+                os.mkdir(os.path.join(Ruta))
+
+            except:
+
+                pass
+
+            fs.delete(Ruta+'/'+nombreImagen)
+            fs.save(Ruta+'/'+nombreImagen, myfile)
+
+            ctauser = CtaUsuario.objects.filter(idcta_usuario=ExtensionUsuario.objects.get(user=request.user).CtaUsuario.idcta_usuario)
+
+            if ctauser:
+
+                ctauser.update(url_imagen=nombreImagen)
+
+        else:
+            
+            messages.error(request, 'This file is not a valid image')
+
+    return redirect("/editProfile/")
+
+    
+    
+def rootImages(request):
+
+    if request.method == "POST":  
+        
+        ctauser = CtaUsuario.objects.get(idcta_usuario=ExtensionUsuario.objects.get(user=request.user).CtaUsuario.idcta_usuario)
+        
+        Ruta = settings.UPLOAD_URL + 'user/' + ctauser.url_imagen if ctauser else None
+        root = settings.UPLOAD_ROOT + '/user/' + ctauser.url_imagen if ctauser else None
+        
+        if not os.path.exists(root):
+
+            Ruta = None
+
+    response = {
+        'ruta':Ruta
+    }
+
+    return JsonResponse(response)

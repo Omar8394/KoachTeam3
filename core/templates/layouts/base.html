@@ -85,6 +85,30 @@
 					})
 				}
 			}
+
+			$(document).ready(function(){
+
+				$.ajax({
+						type: "POST",
+						url: "{% url 'rootImages' %}", 
+						data : {    
+						csrfmiddlewaretoken: '{{ csrf_token }}',
+					},
+					success: function (response) {
+
+						if(response.ruta){
+						
+							$(".avatar-img").attr('src', response.ruta)
+							$("#imagenPerfil").attr('src', response.ruta)
+							
+						}
+
+					},
+					error: function () {}
+				});
+
+			});
+
 		</script>
 
 	</body>

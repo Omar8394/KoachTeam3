@@ -14,14 +14,15 @@
                 <div class="card-body">
                     <center class="mt-4"> 
                         
-                        <form action="" enctype="multipart/form-data">
+                        <form action="{% url 'images' %}" enctype="multipart/form-data" id="fileForm" method="post">
    
+                            {% csrf_token %}
                             <div class="image-upload">
                                 <label for="file-input">
                                     <img src="/static/assets/img/default-user-icon.png" class="rounded-circle border" width="150" id="imagenPerfil">
                                 </label>
                             
-                                <input id="file-input" type="file" style="display: none;" accept="image/*" />
+                                <input id="file-input" name="file-input" type="file" style="display: none;" accept="image/*" />
                             </div> 
 
                         </form>
@@ -53,7 +54,7 @@
                     <span class="h1 text-white d-flex justify-content-center">My Information.</span>
                 </div>
                 <div class="card-body m-0 p-0">
-                    <form method="post" action="">
+                    <form method="post" action="" id="formulario">
                         {% csrf_token %}
 
                         <div class="card-body">
@@ -66,7 +67,17 @@
                                             <label for="{{ p.auto_id }}" >{{p.label}}</label>
                                             <div class="input-group">
                                                 {{ p }}   
+                                                {% if p.field.widget.input_type == 'select' %}
+                                                    
+                                                    <div class="input-group-prepend" id="{{ p.auto_id }}" >
+                                                        <span class="input-group-text">
+                                                            <i class="fas fa-search"></i>
+                                                        </span>
+                                                    </div>
+
+                                                {% endif %}
                                             </div>
+                                            
                                         </div>
 
                                     {% endfor %} 
@@ -87,6 +98,7 @@
     </div>
 </div>
 
+{% include 'planning/mensajes.html' %}  
 
 {% endblock content %}
 
@@ -96,25 +108,90 @@
 <script>
 
 $(document).on('change', "#file-input", function(e){
-    // console.log(document.getElementById("file-input").files[0].fullName)
-    // $('#imagenPerfil').attr('src', document.getElementById("file-input").files[0].path);
+//     // console.log(document.getElementById("file-input").files[0].fullName)
+//     // $('#imagenPerfil').attr('src', document.getElementById("file-input").files[0].path);
     
-  const file = document.querySelector('#file-input').files[0];
+//   const file = document.querySelector('#file-input').files[0];
 
-  if(file){
+//   if(file){
       
-  const reader = new FileReader();
-            reader.onload = imageIsLoaded;
-            reader.readAsDataURL(file);
-  }else
-  console.log("nada")
+//   const reader = new FileReader();
+//             reader.onload = imageIsLoaded;
+//             reader.readAsDataURL(file);
+//   }else
+//   console.log("nada")
+
+    $('#fileForm').submit()
 
 });
 
-function imageIsLoaded(e) {
+// function imageIsLoaded(e) {
 
-    $('#imagenPerfil').attr('src', e.target.result );
+//     $('#imagenPerfil').attr('src', e.target.result );
 
-}
+// }
+
+
+	
+
+	// metodos filtro combo
+	$("#formulario").on('click', ".input-group-prepend", function(e){
+
+        if(document.getElementById('myBrowser')==null){
+            // console.log( $(this).attr('name'))
+
+            // console.log($(this).prev().attr('name'))
+            
+            console.log($(this).prev().is('.countryList'))
+            const d = $(this)
+            
+            $.ajax({
+                    type: "POST",
+                    url: "{% url 'renderListasCombos' %}", 
+                    data : {    
+                    clave: $(this).prev().attr('name'),
+                    tipo: $(this).prev().is('.countryList')? 'countries' :'TablasConfiguracion',
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                },
+                success: function (response) {
+
+                    // document.getElementById('paginas').innerHTML = response.paginas;
+                    // document.getElementById('tablaContenido').innerHTML = response.contenido;
+                    // // console.log(response.contenido)
+                    d.before(response.lista)
+                    $("#myBrowser").focus()
+
+                },
+                error: function () {}
+            });
+
+        }
+    })	
+
+    $("#formulario").on('focusout', "#myBrowser", function(e){
+
+        $('#browsers').remove()
+
+        $('#myBrowser').remove()
+
+    })
+
+    $("#formulario").on('input keydown', "#myBrowser", function(e){
+
+        let val = this.value;
+        let id
+
+        if($('#browsers option').filter(function(){return this.value.toUpperCase() === val.toUpperCase()}).length && e.keyCode == 13) {
+            
+            id = $('#browsers option').filter(function(){return this.value.toUpperCase() === val.toUpperCase()})[0].id
+
+            $('#myBrowser').prev().val(id)
+
+            $('#myBrowser').blur()
+
+        }
+
+    });
+
 </script>
 {% endblock javascripts %}

@@ -117,6 +117,15 @@ class editProfiles(forms.ModelForm):
         ))
 
         
+    # procedencia = forms.CharField(label='Country',
+    #     widget=forms.TextInput(
+    #         attrs={
+    #             "placeholder" : "Add a adress",                
+    #             "class": "form-control form-control-line",
+    #             'maxlength':200
+    #         }
+    #     ))
+
     direccion = forms.CharField(label='Adress',
         widget=forms.TextInput(
             attrs={
