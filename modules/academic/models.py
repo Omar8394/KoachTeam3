@@ -36,8 +36,10 @@ class ActividadEvaluaciones(models.Model):
     duracion = models.DecimalField(max_digits=5, decimal_places=2, null=True)
     fk_estructura_programa = models.OneToOneField(Estructuraprograma,on_delete=models.CASCADE,  default=None, null=True)
     fk_tipo_duracion = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE, default=None, null=True, related_name="actividad_tipo_duracion")
-    fk_escala_evaluacion = models.ForeignKey(EscalaEvaluacion, on_delete=models.CASCADE,  default=None, null=True)
-    calificacion_aprobar = models.IntegerField()
+    fk_escala_evaluacion = models.ForeignKey(EscalaEvaluacion, on_delete=models.CASCADE,  default=None, null=True, related_name='escalaEvaluacion')
+    fk_escala_bloque = models.ForeignKey(EscalaEvaluacion, on_delete=models.CASCADE, default=None, null=True, related_name='escalaBloque')
+
+    calificacion_aprobar = models.IntegerField(blank=True, null=True)
 
 
 
@@ -80,7 +82,6 @@ class EvaluacionesBloques(models.Model):
     idevaluaciones_bloques=models.AutoField(primary_key=True)
     titulo_bloque = models.TextField(null=True)
     comentario = models.TextField(null=True)
-    fk_escala_bloque = models.ForeignKey(EscalaEvaluacion, on_delete=models.CASCADE, default=None, null=True)
     fk_actividad_evaluaciones = models.ForeignKey(ActividadEvaluaciones, on_delete=models.CASCADE, default=None, null=True)
 
     def __str__(self):

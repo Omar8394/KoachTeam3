@@ -651,8 +651,8 @@ def getModalNewTest(request):
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             context = {}
             modelo = {}
-            try:
-                if request.body:
+        
+            if request.body:
                     data = json.load(request)
                     tipoDuracion = TablasConfiguracion.obtenerHijos(valor="Duracion")
                     escalas = EscalaEvaluacion.objects.all()
@@ -686,6 +686,12 @@ def getModalNewTest(request):
                     actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").get(desc_elemento="Test").pk
                     if "checkExpertCB" in data["data"]:
                         actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").get(desc_elemento="Expert test").pk
+                        scale=EscalaEvaluacion.objects.get(pk=int(data["data"]["Blockqualification"]))
+                        test.fk_escala_bloque = scale
+                    else:   
+                         test.nro_repeticiones = data["data"]["repeats"]
+                         test.calificacion_aprobar = data["data"]["minApp"]
+
                     if "durationActivity" in data["data"]:
                         test.duracion = data["data"]["durationActivity"]
                     else:
@@ -694,8 +700,7 @@ def getModalNewTest(request):
                         test.fk_tipo_duracion_id = data["data"]["timeActivity"]
                     else:
                         test.fk_tipo_duracion_id = None
-                    test.nro_repeticiones = data["data"]["repeats"]
-                    test.calificacion_aprobar = data["data"]["minApp"]
+                   
                     test.fk_escala_evaluacion_id = data["data"]["qualification"]
                     actividad.save()
                     test.fk_estructura_programa = actividad
@@ -710,8 +715,7 @@ def getModalNewTest(request):
                             bloque.fk_escala_bloque=None   
                             bloque.save()
                     return JsonResponse({"message":"Perfect"})
-            except:
-                return JsonResponse({"message":"error"}, status=500)
+         
 
 @login_required(login_url="/login/")
 def getModalNewLesson(request):

@@ -112,7 +112,7 @@
                                                    </button>
                                                 
                                               
-                                                   <button onclick="openDeleteModal('{{pregunta.pk}}')" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="modal"
+                                                   <button onclick="openDeleteModal('{{pregunta.pk}}' ,{{pregunta.fk_tipo_pregunta_evaluacion}} )" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="modal"
                                                       data-target="#newModal">
                                                       <i class="fas fa-trash-alt"></i>
                                                    </button>
@@ -427,10 +427,37 @@
          })
         }   
 
-        const openDeleteModal = async (id) => {
+        const openDeleteModal = async (id, type) => {
         const elimino = await alerta(3)
+        console.log(type)
         if (elimino) {
-            const res = await deleteScaleGe(id)
+
+            let urlDelete=''
+          if (type == 1 ){
+            urlDelete = "{% url 'modalNewSimple' %}"
+              tipoPreguntaSelected=1
+           }
+           if (type == 2) {
+            urlDelete = "{% url 'modalNewMultiple' %}"
+              tipoPreguntaSelected=2
+
+           }
+           if (type == 3) {
+            urlDelete = "{% url 'modalNewCompletion' %}"
+              tipoPreguntaSelected=3
+
+           }
+           if (type == 4) {
+            urlDelete = "{% url 'modalNewAssociation' %}"
+              tipoPreguntaSelected=4
+
+           }
+           if (type == 5) {
+            urlDelete = "{% url 'modalNewTof' %}"
+              tipoPreguntaSelected=5
+
+           }
+            const res = await matarPregunta(id, urlDelete)
             if (res) {
                 alerta(4)
             }
@@ -439,6 +466,32 @@
             }
         }
     }
+
+    const matarPregunta = (id, url) => {
+        
+
+        return fetch(url, {
+            ...fetchObject,
+            body: JSON.stringify({
+                data: {
+                    delete: true,
+                    id
+                }
+            }),
+        })
+            .then(async (res) => {
+                let result = JSON.parse(await res.text())
+                if (result.message === "Error") {
+                    return false
+                }
+                return true
+            })
+            .then((result) => {
+               // renderTable()
+                return result
+            })
+    }
+
 
         // Actualizar
 
