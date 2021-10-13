@@ -13,15 +13,16 @@
             </div>
          </div>
       </li>
-
+   </ul>
+   <ul class="card-list" id="listaPaginas">
       {% for page in data%}
       <li class="card-list-item">
          <div class="card-list-item-inner">
-            <div class="card-list-item-title">Page #{{page.ordenamiento}}</div>
+            <div class="card-list-item-title">#{{page.ordenamiento}} {{page.titulo}}</div>
             <div class="card-list-item-actions">
                <div class="btn-group" role="group">
                   {% if add %}
-                  <button type="button" class="btn btn-icon btn-sm btn-success" data-placement="top" title="Add"
+                  <button type="button" id="openCreateBtn{{page.pk}}" class="btn btn-icon btn-sm btn-success" data-placement="top" title="Add"
                      data-toggle="tooltip" data-target="tooltip" onclick="openCreatePage('{{page.pk}}')">
                      <i class="fas fa-plus"></i>
                   </button>
@@ -39,8 +40,8 @@
                   </button>
                   {% endif %}
                   {% if page.contenido %}
-                  <button type="button" class="btn btn-icon btn-sm btn-warning ml-1" data-toggle="tooltip" data-placement="top"
-                     title="Show/Hide" onclick="showContent('{{topic.pk}}')">
+                  <button type="button" class="btn btn-icon btn-sm btn-warning ml-1" data-toggle="tooltip"
+                     data-placement="top" title="Show/Hide" onclick="showContent('{{topic.pk}}')">
                      <i class="fas fa-clipboard"></i>
                   </button>
                   {% endif %}

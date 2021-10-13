@@ -1,0 +1,18 @@
+<form class="form w-100" id="formPagina">
+   <div class="form-row">
+      <div class="form-group col-12">
+         <label for="titlePage" class="col-form-label">Title</label>
+         <input type="text" class="form-control" name="titlePage" id="titlePage" placeholder="Enter a title" required
+         value="{% if modelo %}{{ modelo.titulo}}{% endif %}">
+      </div>
+      <div class="form-group col-12">
+         <label for="summernote" class="col-form-label">Content</label>
+         <textarea id="summernote" class="form-control" name="editordata">{% if modelo %}{{ modelo.contenido}}{% endif %}</textarea>
+      </div>
+   </div>
+   <div class="form-row">
+      <div class="form-group">
+         <button type="submit" class="btn btn-primary">Save<i class="fas fa-save ml-2"></i></button>
+      </div>
+   </div>
+</form>

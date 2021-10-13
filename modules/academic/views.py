@@ -9,7 +9,7 @@ from django import template
 from modules.app import Methods
 import json
 from ..app.models import TablasConfiguracion, Estructuraprograma
-from .models import ActividadEvaluaciones, Cursos, ActividadConferencia, ActividadLeccion, ActividadTarea, EscalaEvaluacion, EvaluacionesPreguntas, EvaluacionesBloques, PreguntasOpciones
+from .models import ActividadEvaluaciones, Cursos, ActividadConferencia, ActividadLeccion, ActividadTarea, EscalaEvaluacion, EvaluacionesPreguntas, EvaluacionesBloques, Paginas, PreguntasOpciones
 
 # Create your views here.
 @login_required(login_url="/login/")
@@ -29,33 +29,46 @@ def createLessons(request):
     if request.method == "POST":
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             context = {}
-            try:
-                if request.body:
-                    data = json.load(request)
-                    # config = TablasConfiguracion.objects.filter(valor_elemento="CatPrograma")
-                    # padre = list(config.values())[0]
-                    # if data["method"] == "Delete":
-                    #     category = TablasConfiguracion.objects.get(id_tabla=data["id"])
-                    #     category.delete()
-                    #     return JsonResponse({"message":"Deleted"})
-                    # elif data["method"] == "Update":
-                    #     category = TablasConfiguracion.objects.get(id_tabla=data["id"])
-                    # elif data["method"] == "Create":
-                    #     category = TablasConfiguracion()
-                    #     category.tipo_elemento=0 
-                    #     category.permite_cambios=1
-                    #     category.valor_elemento=None
-                    #     category.mostrar_en_combos=1
-                    #     category.maneja_lista=0
-                    #     category.fk_tabla_padre_id=padre["id_tabla"]
-                    # category.desc_elemento = data["data"]["descriptionCat"]
-                    # category.save()
+            # try:
+            if request.body:
+                data = json.load(request)
+                if data["method"] == "Delete":
+                    pagina = Paginas.objects.get(pk=data["id"])
+                    leccion = pagina.fk_estructura_programa
+                    pagina.delete()
+                    #update order
+                    paginas = leccion.paginas_set.all().order_by('ordenamiento')
+                    for idx, value in enumerate(paginas, start=1):
+                        value.ordenamiento = idx
+                        value.save()
+                    return JsonResponse({"message":"Deleted"})
+                elif data["method"] == "Sort":
+                    for item in data["order"]:
+                        tempPage = Paginas.objects.get(pk=item["pk"])
+                        tempPage.ordenamiento = item["order"]
+                        tempPage.save()
                     return JsonResponse({"message":"Perfect"})
-                else:
-                    html_template = (loader.get_template('academic/createLessons.html'))
-                    return HttpResponse(html_template.render(context, request))
-            except:
-                return JsonResponse({"message":"error"}, status=500)
+                elif data["method"] == "Update":
+                    pass
+                elif data["method"] == "Create":
+                    leccion = ActividadLeccion.objects.get(pk=data["id"]).fk_estructura_programa
+                    paginas = leccion.paginas_set.all().order_by('ordenamiento')
+                    ordenamiento = paginas.count()
+                    for idx, value in enumerate(paginas, start=1):
+                        value.ordenamiento = idx
+                        value.save()
+                    pagina = Paginas()
+                    pagina.titulo = ""
+                    pagina.contenido = ""
+                    pagina.ordenamiento = ordenamiento + 1
+                    pagina.fk_estructura_programa = leccion
+                pagina.save()
+                return JsonResponse({"message":"Perfect"})
+            else:
+                html_template = (loader.get_template('academic/createLessons.html'))
+                return HttpResponse(html_template.render(context, request))
+            # except:
+            #     return JsonResponse({"message":"error"}, status=500)
     lessonId=request.GET.get('id')
     context = {}
     leccion=ActividadLeccion.objects.get(fk_estructura_programa=lessonId)
@@ -270,9 +283,9 @@ def getContentLecciones(request):
                 leccion = ActividadLeccion.objects.get(pk=leccionId)
                 actividad = leccion.fk_estructura_programa
                 if data["query"] == "" or data["query"] == None:
-                    lista = actividad.paginas_set.all()
+                    lista = actividad.paginas_set.all().order_by("ordenamiento")
                 else:
-                    lista = actividad.paginas_set.all().filter(titulo__icontains=data["query"])
+                    lista = actividad.paginas_set.all().filter(titulo__icontains=data["query"]).order_by("ordenamiento")
                 context = {"data":lista, "lesson":leccion ,"add":add,"edit": edit,"take": take,"see": see, "delete":delete, "go":go, "query":data["query"]}
                 html_template = (loader.get_template('academic/contenidoLecciones.html'))
                 return HttpResponse(html_template.render(context, request))
@@ -561,6 +574,43 @@ def getModalActividad(request):
                         modelo = Estructuraprograma.objects.get(pk=data["id"])
                         context = {"modelo": modelo}
                         html_template = (loader.get_template('components/modalAddActividad.html'))
+                        return HttpResponse(html_template.render(context, request))
+                    elif data["method"] == "Delete":
+                        actividad = Estructuraprograma.objects.get(pk=data["id"])
+                        actividad.delete()
+                        return JsonResponse({"message":"Deleted"})
+                    elif data["method"] == "Update":
+                        actividad = Estructuraprograma.objects.get(pk=data["id"])
+                    elif data["method"] == "Create":
+                        actividad = Estructuraprograma()
+                        actividad.valor_elemento = "Activity"
+                    actividad.fk_estructura_padre_id=data["padreActivity"]
+                    actividad.descripcion = data["data"]["descriptionActivity"]
+                    actividad.resumen = data["data"]["resumenActivity"]
+                    actividad.url = data["data"]["urlActivity"]
+                    actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").filter(desc_elemento=data["tipoActividad"])[0].pk
+                    actividad.peso_creditos = None
+                    actividad.save()
+                    return JsonResponse({"message":"Perfect"})
+            except:
+                return JsonResponse({"message":"error"}, status=500)
+
+@login_required(login_url="/login/")
+def getModalPagina(request):
+    if request.method == "POST":
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            context = {}
+            modelo = {}
+            try:
+                if request.body:
+                    data = json.load(request)
+                    if data["method"] == "Show":
+                        html_template = (loader.get_template('components/modalAddPagina.html'))
+                        return HttpResponse(html_template.render(context, request))
+                    elif data["method"] == "Find":
+                        modelo = Estructuraprograma.objects.get(pk=data["id"])
+                        context = {"modelo": modelo}
+                        html_template = (loader.get_template('components/modalAddPagina.html'))
                         return HttpResponse(html_template.render(context, request))
                     elif data["method"] == "Delete":
                         actividad = Estructuraprograma.objects.get(pk=data["id"])
