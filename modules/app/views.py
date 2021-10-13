@@ -8,14 +8,25 @@ import json, math
 from django.core.paginator import Paginator
 from .models import TablasConfiguracion
 from ..academic.models import EscalaCalificacion, EscalaEvaluacion
+from core import settings
 
 @login_required(login_url="/login/")
 def index(request):
     
     context = {}
     context['segment'] = 'index'
+    context['url'] = settings.UPLOAD_URL + 'user/'
 
     html_template = loader.get_template( 'index.html' )
+    return HttpResponse(html_template.render(context, request))
+
+@login_required(login_url="/login/")
+def calendar(request):
+    
+    context = {}
+    context['segment'] = 'calendar'
+
+    html_template = loader.get_template( 'calendar.html' )
     return HttpResponse(html_template.render(context, request))
 
 def componentLista(request):

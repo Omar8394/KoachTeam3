@@ -18,6 +18,7 @@ class CtaUsuario(models.Model):
     respuesta_secreta = models.TextField(blank=True, null=True)
     fk_status_cuenta = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE, related_name='estado_cuenta')
     dias_cambio = models.IntegerField()
+    url_imagen  = models.CharField(max_length=100, default=None, blank=True, null=True)
 
 
 class ContratantesRol(models.Model):

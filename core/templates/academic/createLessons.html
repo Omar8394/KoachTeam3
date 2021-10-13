@@ -48,6 +48,10 @@
                         <span id="searchBtn" class="btn btn-primary">
                            <i class="fa fa-search"></i>
                         </span>
+                        <span id="sortableBtn" class="btn btn-success">
+                           <i class="fas fa-lock mr-1"></i>
+                           Sort
+                        </span>
                      </div>
                   </div>
                </div>
@@ -72,6 +76,19 @@
 {% block javascripts %}
 <script>
    let query = ""
+   let sortable = false
+   let ordenamientoArray = []
+   const updateOrder = () => {
+      let paginas = document.querySelectorAll(".card-list-item-descripcion")
+      ordenamientoArray = []
+      paginas.forEach((pagina, index) => {
+         let orderObj = {
+            pk: pagina.id.slice(11),
+            order: index + 1
+         }
+         ordenamientoArray.push(orderObj)
+      })
+   }
    const renderContent = () => {
       document.querySelector("main.card-body").classList.add("is-loading")
       fetch("{% url 'contenidoLecciones'%}", {
@@ -85,9 +102,26 @@
             result = await res.text()
             document.querySelector("main.card-body").classList.remove("is-loading")
             document.querySelector("main.card-body").innerHTML = result
+            updateOrder()
          })
    }
    renderContent()
+   const renderSortedContent = () => {
+      updateOrder()
+      document.querySelector("main.card-body").classList.add("is-loading")
+      fetch("{% url 'createLessons'%}", {
+         ...fetchObject,
+         body: JSON.stringify({
+            id: "{{lesson.pk}}",
+            query,
+            method: "Sort",
+            order: ordenamientoArray
+         })
+      })
+         .then(async (res) => {
+            renderContent()
+         })
+   }
    const openAddPage = () => {
       document.querySelector("main.card-body").classList.add("is-loading")
       fetch("{% url 'createLessons'%}", {
@@ -105,6 +139,62 @@
          renderContent()
       })
    }
+   const openCreatePage = (id) => {
+      const content = document.getElementById(`contentPage${id}`)
+      const createBtn = document.getElementById(`openCreateBtn${id}`)
+      if(content.innerHTML.trim()){
+         content.classList.add("card-list-item-close")
+         content.innerHTML=""
+         createBtn.innerHTML=`<i class="fas fa-plus"></i>`
+         return
+      }
+      document.querySelector("main.card-body").classList.add("is-loading")
+      fetch("{% url 'modalAddPagina'%}", {
+         ...fetchObject,
+         body: JSON.stringify({
+            id: "{{lesson.pk}}",
+            method: "Show",
+            query
+         })
+      }).then(async (res) => {
+         content.innerHTML = await res.text()
+         // $(document).ready(function () {
+         //    $('#summernote').summernote();
+         // });
+         content.classList.remove("card-list-item-close")
+         createBtn.innerHTML = `<i class="fas fa-minus"></i>`
+      }).then(() => {
+         document.querySelector("main.card-body").classList.remove("is-loading")
+         const formPagina = document.getElementById("formPagina")
+         formPagina.addEventListener("submit", (e) => {
+            e.preventDefault()
+            clickSave(formPagina, "{% url 'modalAddPagina' %}")
+               .then(() => {
+                  renderContent()
+               })
+         })
+      })
+   }
+   const openDeletePage = async (id) => {
+      const elimino = await alerta(3)
+      if (elimino) {
+         fetch("{% url 'createLessons'%}", {
+            ...fetchObject,
+            body: JSON.stringify({
+               method: "Delete",
+               id
+            })
+         })
+            .then(async (res) => {
+               const text = JSON.parse(await res.text())
+               if (text.message == "error") alerta(5)
+               else alerta(4)
+            })
+            .then(() => {
+               renderContent()
+            })
+      }
+   }
    const searchFor = (text) => {
       let output = text.trim()
       if (output.length > 20) return
@@ -115,7 +205,29 @@
    const searchBar = document.querySelector('#txtSearch')
    const clearBtn = document.querySelector('#clearBtn')
    const searchBtn = document.querySelector('#searchBtn')
+   const sortableBtn = document.querySelector('#sortableBtn')
 
+   sortableBtn.addEventListener('click', () => {
+      sortable = !sortable
+      const listaPaginas = document.getElementById("listaPaginas")
+      if (sortable) {
+         sortableBtn.innerHTML = `<i class="fas fa-lock-open mr-1"></i> Sort`
+         for (let item of listaPaginas.children) {
+            item.children[0].classList.add("card-list-item-sortable")
+         }
+         new Sortable(listaPaginas, {
+            animation: 150,
+            ghostClass: 'blue-background-class'
+         });
+         return
+      }
+      sortableBtn.innerHTML = `<i class="fas fa-lock mr-1"></i> Sort`
+      for (let item of listaPaginas.children) {
+         item.children[0].classList.remove("card-list-item-sortable")
+      }
+      renderSortedContent()
+
+   })
    clearBtn.addEventListener('click', () => {
       searchBar.value = ""
       query = ""

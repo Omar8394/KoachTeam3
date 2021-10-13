@@ -127,7 +127,7 @@
 						<ul class="nav nav-collapse">
 							<li>
 								<a href="{% url 'showProfilage' %}">
-									<span class="sub-item">Profilages</span>
+									<span class="sub-item">Profiles</span>
 								</a>
 							</li>
 							<li>
@@ -175,7 +175,7 @@
 
 				<!--Calendar-->
 				<li class="nav-item {% if 'calendar' in segment %} active {% endif %}">
-					<a href="#">
+					<a href="{% url 'calendar' %}">
 						<i class="fas fa-calendar-alt"></i>
 						<p>Calendar</p>
 					</a>

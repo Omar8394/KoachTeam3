@@ -1,31 +1,43 @@
 <input list="browsers" id="myBrowser" name="myBrowser" placeholder="Search..." autocomplete="off" class="form-control"/>
 <datalist id="browsers" open="open">
+       
+    {% if not tipo == 'countries' %}
+
+        {% for p in lista %}  
             
-    {% for p in lista %}  
-        
-        {% if tipo == 'TablasConfiguracion' %}
+            {% if tipo == 'TablasConfiguracion' %}
 
-            <option id="{{ p.id_tabla }}" >{{ p.desc_elemento }}</option>
+                <option id="{{ p.id_tabla }}" >{{ p.desc_elemento }}</option>
 
+                
+            {% elif tipo == 'Perfil' %}
+
+                <option id="{{ p.idperfil }}" >{{ p.deescripcion }}</option>
+
+            {% elif tipo == 'CompetenciasReq' %}
+
+                <option id="{{ p.idcompetenciasreq }}" >{{ p.desc_competencia }}</option>
+
+            {% elif tipo == 'Publico' %}
+
+                <option id="{{ p.idpublico }}" >{{ p.nombre }} {{ p.apellido }}</option>
             
-        {% elif tipo == 'Perfil' %}
+            {% elif tipo == 'Estructuraprograma' %}
 
-            <option id="{{ p.idperfil }}" >{{ p.deescripcion }}</option>
+                <option id="{{ p.idestructuraprogrmas }}" >{{ p.descripcion }}</option>
 
-        {% elif tipo == 'CompetenciasReq' %}
+            {% endif %}
 
-            <option id="{{ p.idcompetenciasreq }}" >{{ p.desc_competencia }}</option>
+        {% endfor %} 
+    
+    {% else %}
 
-        {% elif tipo == 'Publico' %}
-
-            <option id="{{ p.idpublico }}" >{{ p.nombre }} {{ p.apellido }}</option>
+        {% for key, value in lista.items %}
         
-        {% elif tipo == 'Estructuraprograma' %}
+            <option id="{{ key }}" >{{ value }}</option>
+        
+        {% endfor %}
 
-            <option id="{{ p.idestructuraprogrmas }}" >{{ p.descripcion }}</option>
-
-        {% endif %}
-
-    {% endfor %} 
+    {% endif %}
 
 </datalist>
