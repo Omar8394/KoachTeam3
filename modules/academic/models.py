@@ -76,6 +76,7 @@ class EvaluacionInstrucciones(models.Model):
     fk_actividad_evaluaciones = models.ForeignKey(ActividadEvaluaciones, on_delete=models.CASCADE, default=None, null=True)
 
 class EvaluacionesBloques(models.Model):
+    orden=models.IntegerField(null=True)
     idevaluaciones_bloques=models.AutoField(primary_key=True)
     titulo_bloque = models.TextField(null=True)
     comentario = models.TextField(null=True)
@@ -92,7 +93,7 @@ class EvaluacionesPreguntas(models.Model):
     indicePalabra = models.IntegerField(null=True)
     texto_pregunta = models.TextField(null=True)
     puntos_pregunta = models.DecimalField(max_digits=9, decimal_places=2, blank=True, null=True)
-    fk_evaluaciones_bloque = models.ForeignKey(EvaluacionesBloques, on_delete=models.CASCADE,  default=None, null=True)
+    fk_evaluaciones_bloque = models.ForeignKey(EvaluacionesBloques, on_delete=models.CASCADE,  default=None, null=True, related_name='bloque_pregunta')
     #fk_tipo_pregunta_evaluacion = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE,  default=None, null=True)
     fk_tipo_pregunta_evaluacion = models.SmallIntegerField(null=True)
 
@@ -103,8 +104,9 @@ class PreguntasOpciones(models.Model):
     fk_evaluacion_pregunta= models.ForeignKey(EvaluacionesPreguntas, on_delete=models.CASCADE, default=None, null=True)
     texto_opcion = models.TextField(null=True)
     tipo_condicion = models.BooleanField(default=False)
+    idLista = models.IntegerField(null=True)
     respuetaCorrecta = models.BooleanField(default=False, null=True)
-    puntos_porc=models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
+    puntos_porc=models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)
 
 class Recurso(models.Model):
     id_recurso = models.AutoField(primary_key=True)

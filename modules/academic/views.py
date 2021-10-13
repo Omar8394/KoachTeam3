@@ -1,6 +1,7 @@
 from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
 from django.db.models import query
+from django.db.models.aggregates import Count
 from django.shortcuts import render
 from django.template import loader
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
@@ -72,7 +73,7 @@ def createQuestions(request):
 
     escalas = EscalaEvaluacion.objects.all()
     bloque=EvaluacionesBloques.objects.get(fk_actividad_evaluaciones=pregunta.idactividad_evaluaciones)
-    listaPreguntas=EvaluacionesPreguntas.objects.filter(fk_evaluaciones_bloque=bloque)
+    listaPreguntas=EvaluacionesPreguntas.objects.filter(fk_evaluaciones_bloque=bloque).order_by('orden')
     escalaEvaluacion=pregunta.fk_escala_evaluacion
     
 
@@ -653,6 +654,7 @@ def getModalNewTest(request):
                         if not "checkExpertCB" in data["data"]:
                             bloque=EvaluacionesBloques.objects.create()
                             bloque.titulo_bloque='Test'
+                            bloque.orden=1
                             bloque.comentario=''
                             bloque.fk_actividad_evaluaciones=test
                             bloque.fk_escala_bloque=None   
@@ -807,19 +809,72 @@ def getModalNewSimple(request):
     if request.method == "POST":
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             try:
+            
                 context = {}
                 data = json.load(request)["data"]
+
+                if "delete" in data:
+                    pregunta=EvaluacionesPreguntas.objects.get(pk=data["id"])
+                    pregunta.delete()
+                    return JsonResponse({"message": "Deleted"})
+                if "idFind" in data:
+                    print(data)
+                    pregunta=EvaluacionesPreguntas.objects.filter(pk=data["idFind"])
+                    findpregunta = list(pregunta.values())
+                    childs = PreguntasOpciones.objects.filter(fk_evaluacion_pregunta=data["idFind"])
+                    listaChilds = list(childs.values())
+                    return JsonResponse({"data":findpregunta[0], "childs":listaChilds}, safe=False)
                 
                 if data["method"] == "Show":
                         context = {}
                         html_template = (loader.get_template('components/modalAddSimple.html'))
                         return HttpResponse(html_template.render(context, request))
-                if data["method"] == "Create":
-                    pregunta=EvaluacionesPreguntas.objects.create()
-                    bloque=EvaluacionesBloques.objects.get(pk=data['fatherId'])
+
+                if data["method"] == "Update":
+                    pregunta=EvaluacionesPreguntas.objects.get(pk=data["idViejo"])
+                    bloque=EvaluacionesBloques.objects.annotate(num_child=Count('bloque_pregunta', distinct=True) ).get(pk=data['fatherId'])
+                  
+                    pregunta.orden=pregunta.orden
+
                     pregunta.fk_evaluaciones_bloque=bloque
                     pregunta.texto_pregunta=data['textoPregunta']
-                    pregunta.texto_pregunta=data['tituloPregunta']
+                    pregunta.titulo_pregunta=data['tituloPregunta']
+
+
+                    pregunta.puntos_pregunta=data['puntosPregunta']
+                    pregunta.fk_tipo_pregunta_evaluacion=Methods.OrigenPreguntaTipo('Simple')
+                    pregunta.save()
+                    childs = PreguntasOpciones.objects.filter(fk_evaluacion_pregunta=data["idViejo"])
+                    
+                    hijos = data["hijos"]
+                    if hijos:
+                            print(hijos)
+                        
+                            if "idViejo" in data:
+                                 
+                                 childs.delete()
+                            selectetedOp=int(data['select2'])     
+                            for newOpcion in hijos:
+                                
+                                 Opcion=PreguntasOpciones()
+                                 Opcion.fk_evaluacion_pregunta=pregunta
+                                 Opcion.texto_opcion=newOpcion['OpcionText']   
+                                 Opcion.idLista=newOpcion['id']    
+                                 Opcion.respuetaCorrecta=True if newOpcion['id']==selectetedOp else False
+                                 Opcion.save()
+
+                if data["method"] == "Create":
+                    pregunta=EvaluacionesPreguntas.objects.create()
+
+                    print(data)
+                    bloque=EvaluacionesBloques.objects.annotate(num_child=Count('bloque_pregunta', distinct=True) ).get(pk=data['fatherId'])
+                    newOrden=bloque.num_child+1
+                    pregunta.orden=newOrden
+
+                    pregunta.fk_evaluaciones_bloque=bloque
+                    pregunta.texto_pregunta=data['textoPregunta']
+                    pregunta.titulo_pregunta=data['tituloPregunta']
+
 
                     pregunta.puntos_pregunta=data['puntosPregunta']
                     pregunta.fk_tipo_pregunta_evaluacion=Methods.OrigenPreguntaTipo('Simple')
@@ -830,27 +885,23 @@ def getModalNewSimple(request):
                             print(hijos)
                         
                             if "idViejo" in data:
-                                 childs =None
+                        
                                  childs.delete()
                             selectetedOp=int(data['select2'])     
                             for newOpcion in hijos:
-                                 print(newOpcion['OpcionText']  )
-                                 print(pregunta  )
-
-                                 print(newOpcion['id'] )
-                                 print(selectetedOp)
-
                                 
                                  Opcion=PreguntasOpciones()
                                  Opcion.fk_evaluacion_pregunta=pregunta
-                                 Opcion.texto_opcion=newOpcion['OpcionText']    
+                                 Opcion.texto_opcion=newOpcion['OpcionText']   
+                                 Opcion.idLista=newOpcion['id']    
                                  Opcion.respuetaCorrecta=True if newOpcion['id']==selectetedOp else False
                                  Opcion.save()
 
              
-                return JsonResponse({"message": "Perfect"})      
+                return JsonResponse({"message": "Perfect"})     
             except:
-                return JsonResponse({"message": "Error"})
+                return JsonResponse({"message": "Error"}) 
+           
    
     context = {}
     html_template = (loader.get_template('components/modalAddSimple.html'))
@@ -864,17 +915,65 @@ def getModalNewMultiple(request):
             try:
                 context = {}
                 data = json.load(request)["data"]
+                if "delete" in data:
+                    pregunta=EvaluacionesPreguntas.objects.get(pk=data["id"])
+                    pregunta.delete()
+                    return JsonResponse({"message": "Deleted"})
                 
+               
+                if "idFind" in data:
+                    print(data)
+                    pregunta=EvaluacionesPreguntas.objects.filter(pk=data["idFind"])
+                    findpregunta = list(pregunta.values())
+                    childs = PreguntasOpciones.objects.filter(fk_evaluacion_pregunta=data["idFind"])
+                    listaChilds = list(childs.values())
+                    return JsonResponse({"data":findpregunta[0], "childs":listaChilds}, safe=False)
                 if data["method"] == "Show":
                         context = {}
                         html_template = (loader.get_template('components/modalAddMultiple.html'))
                         return HttpResponse(html_template.render(context, request))
-                if data["method"] == "Create":
-                    pregunta=EvaluacionesPreguntas.objects.create()
-                    bloque=EvaluacionesBloques.objects.get(pk=data['fatherId'])
+                if data["method"] == "Update":
+                    pregunta=EvaluacionesPreguntas.objects.get(pk=data["idViejo"])
+                    bloque=EvaluacionesBloques.objects.annotate(num_child=Count('bloque_pregunta', distinct=True) ).get(pk=data['fatherId'])
+                  
+                    pregunta.orden=pregunta.orden
+
                     pregunta.fk_evaluaciones_bloque=bloque
                     pregunta.texto_pregunta=data['textoPregunta']
-                    pregunta.texto_pregunta=data['tituloPregunta']
+                    pregunta.titulo_pregunta=data['tituloPregunta']
+
+
+                    pregunta.puntos_pregunta=data['puntosPregunta']
+                    pregunta.fk_tipo_pregunta_evaluacion=Methods.OrigenPreguntaTipo('Multiple')
+                    pregunta.save()
+                    childs = PreguntasOpciones.objects.filter(fk_evaluacion_pregunta=data["idViejo"])
+                    
+                    hijos = data["hijos"]
+                    if hijos:
+                            print(hijos)
+                        
+                            if "idViejo" in data:
+                                 
+                                 childs.delete()
+            
+                            for newOpcion in hijos:
+                                
+                                 Opcion=PreguntasOpciones()
+                                 Opcion.fk_evaluacion_pregunta=pregunta
+                                 Opcion.texto_opcion=newOpcion['OpcionText']   
+                                 Opcion.idLista=newOpcion['id']    
+                                 Opcion.puntos_porc=float(newOpcion['value'])  
+
+                                 Opcion.save()
+                
+                if data["method"] == "Create":
+                    pregunta=EvaluacionesPreguntas.objects.create()
+                    bloque=EvaluacionesBloques.objects.annotate(num_child=Count('bloque_pregunta', distinct=True) ).get(pk=data['fatherId'])
+                    newOrden=bloque.num_child+1
+                    pregunta.orden=newOrden
+                    pregunta.fk_evaluaciones_bloque=bloque
+                    pregunta.texto_pregunta=data['textoPregunta']
+                    pregunta.titulo_pregunta=data['tituloPregunta']
 
                     pregunta.puntos_pregunta=data['puntosPregunta']
                     pregunta.fk_tipo_pregunta_evaluacion=Methods.OrigenPreguntaTipo('Multiple')
@@ -891,6 +990,8 @@ def getModalNewMultiple(request):
                             for newOpcion in hijos:
                                  Opcion=PreguntasOpciones()
                                  Opcion.fk_evaluacion_pregunta=pregunta
+                                 Opcion.idLista=newOpcion['id']    
+
                                  Opcion.texto_opcion=newOpcion['OpcionText']    
                                  Opcion.puntos_porc=float(newOpcion['value'])  
                                  Opcion.save()
@@ -913,21 +1014,68 @@ def getModalNewCompletion(request):
                 context = {}
                 data = json.load(request)["data"]
                 print(data)
+                if "delete" in data:
+                    pregunta=EvaluacionesPreguntas.objects.get(pk=data["id"])
+                    pregunta.delete()
+                    return JsonResponse({"message": "Deleted"})
+                
+               
+                if "idFind" in data:
+                    print(data)
+                    pregunta=EvaluacionesPreguntas.objects.filter(pk=data["idFind"])
+                    findpregunta = list(pregunta.values())
+                    childs = PreguntasOpciones.objects.filter(fk_evaluacion_pregunta=data["idFind"])
+                    listaChilds = list(childs.values())
+                    return JsonResponse({"data":findpregunta[0], "childs":listaChilds}, safe=False)
                 
                 if data["method"] == "Show":
                         context = {}
                         html_template = (loader.get_template('components/modalAddCompletion.html'))
                         return HttpResponse(html_template.render(context, request))
+                if data["method"] == "Update":
+                    pregunta=EvaluacionesPreguntas.objects.get(pk=data["idViejo"])
+                    bloque=EvaluacionesBloques.objects.annotate(num_child=Count('bloque_pregunta', distinct=True) ).get(pk=data['fatherId'])
+                  
+                    pregunta.orden=pregunta.orden
+
+                    pregunta.fk_evaluaciones_bloque=bloque
+                    pregunta.texto_pregunta=data['textoPregunta']
+                    pregunta.titulo_pregunta=data['tituloPregunta']
+                    pregunta.indicePalabra=data['indiceRespuesta']
+                    pregunta.puntos_pregunta=data['puntosPregunta']
+                    pregunta.fk_tipo_pregunta_evaluacion=Methods.OrigenPreguntaTipo('Completation')
+                    pregunta.save()
+                    childs = PreguntasOpciones.objects.filter(fk_evaluacion_pregunta=data["idViejo"])
+                    hijos = data["hijos"]
+                    if hijos:
+                            print(hijos)
+                        
+                            if "idViejo" in data:
+                                 
+                                 childs.delete()
+            
+                            for newOpcion in hijos:
+                                
+                                 Opcion=PreguntasOpciones()
+                                 Opcion.fk_evaluacion_pregunta=pregunta
+                                 Opcion.fk_evaluacion_pregunta=pregunta
+                                 Opcion.texto_opcion=newOpcion['OpcionText']   
+                                 Opcion.idLista=newOpcion['id']    
+
+                                 Opcion.respuetaCorrecta=int(newOpcion['isCorrect']) 
+
+                                 Opcion.save()
+                
                 if data["method"] == "Create":
                     pregunta=EvaluacionesPreguntas.objects.create()
-                    bloque=EvaluacionesBloques.objects.get(pk=data['fatherId'])
+                    bloque=EvaluacionesBloques.objects.annotate(num_child=Count('bloque_pregunta', distinct=True) ).get(pk=data['fatherId'])
+                    newOrden=bloque.num_child+1
+                    pregunta.orden=newOrden
                     pregunta.fk_evaluaciones_bloque=bloque
                     pregunta.texto_pregunta=data['textoPregunta']
                     pregunta.puntos_pregunta=data['puntosPregunta']
                     pregunta.titulo_pregunta=data['tituloPregunta']
                     pregunta.indicePalabra=data['indiceRespuesta']
-
-
                     pregunta.fk_tipo_pregunta_evaluacion=Methods.OrigenPreguntaTipo('Completation')
                     pregunta.save()
 
@@ -935,14 +1083,14 @@ def getModalNewCompletion(request):
                     if hijos:
                             print(hijos)
                         
-                            if "idViejo" in data:
-                                 childs =None
-                                 childs.delete()
+                        
                          
                             for newOpcion in hijos:
                                  Opcion=PreguntasOpciones()
                                  Opcion.fk_evaluacion_pregunta=pregunta
-                                 Opcion.texto_opcion=newOpcion['OpcionText']    
+                                 Opcion.texto_opcion=newOpcion['OpcionText']   
+                                 Opcion.idLista=newOpcion['id']    
+
                                  Opcion.respuetaCorrecta=int(newOpcion['isCorrect'])  
 
                                  Opcion.save()
@@ -965,14 +1113,80 @@ def getModalNewAssociation(request):
                 context = {}
                 data = json.load(request)["data"]
                 print(data)
+                if "delete" in data:
+                    pregunta=EvaluacionesPreguntas.objects.get(pk=data["id"])
+                    pregunta.delete()
+                    return JsonResponse({"message": "Deleted"})
+                
+               
+                if "idFind" in data:
+                    print(data)
+                    pregunta=EvaluacionesPreguntas.objects.filter(pk=data["idFind"])
+                    findpregunta = list(pregunta.values())
+                    childs = PreguntasOpciones.objects.filter(fk_evaluacion_pregunta=data["idFind"])
+                    childsA = PreguntasOpciones.objects.filter(fk_evaluacion_pregunta=data["idFind"] ).filter(columnaPregunta=1)
+                    childsB = PreguntasOpciones.objects.filter(fk_evaluacion_pregunta=data["idFind"]).filter(columnaPregunta=2)
+
+                    listaChilds = list(childs.values())
+                    listaChildsA = list(childsA.values())
+                    listaChildsB = list(childsB.values())
+
+                    return JsonResponse({"data":findpregunta[0], "childs":listaChilds, "childsA":listaChildsA, "childsB":listaChildsB}, safe=False)
+                
                 
                 if data["method"] == "Show":
                         context = {}
                         html_template = (loader.get_template('components/modalAddAssociation.html'))
                         return HttpResponse(html_template.render(context, request))
+                if data["method"] == "Update":
+                    pregunta=EvaluacionesPreguntas.objects.get(pk=data["idViejo"])
+                    bloque=EvaluacionesBloques.objects.annotate(num_child=Count('bloque_pregunta', distinct=True) ).get(pk=data['fatherId'])
+                  
+                    pregunta.orden=pregunta.orden
+
+                    pregunta.fk_evaluaciones_bloque=bloque
+                    pregunta.texto_pregunta=data['textoPregunta']
+                    pregunta.titulo_pregunta=data['tituloPregunta']
+                    
+                    pregunta.puntos_pregunta=data['puntosPregunta']
+                    pregunta.fk_tipo_pregunta_evaluacion=Methods.OrigenPreguntaTipo('Association')
+                    pregunta.save()
+                    childs = PreguntasOpciones.objects.filter(fk_evaluacion_pregunta=data["idViejo"])
+                    hijos = data["hijos"]
+                    if hijos:
+                            print(hijos)
+                        
+                            if "idViejo" in data:
+                                 
+                                 childs.delete()
+            
+                            for newOpcion in hijos:
+                                 OpcionA=PreguntasOpciones()
+                                 OpcionA.fk_evaluacion_pregunta=pregunta
+                                 OpcionA.texto_opcion=newOpcion['OpcionTextA']    
+                                 OpcionA.indiceAsociacion=int(newOpcion['id'])  
+                                 OpcionA.puntos_porc=float(newOpcion['value'])  
+                                    
+
+                                 OpcionA.columnaPregunta=1
+
+
+                                 OpcionB=PreguntasOpciones()
+                                 OpcionB.fk_evaluacion_pregunta=pregunta
+                                 OpcionB.texto_opcion=newOpcion['OpcionTextB']    
+                                 OpcionB.indiceAsociacion=int(newOpcion['id'])  
+                                 OpcionB.puntos_porc=float(newOpcion['value'])  
+                                 OpcionB.columnaPregunta=2
+
+
+                                 OpcionA.save()
+                                 OpcionB.save()
+                
                 if data["method"] == "Create":
                     pregunta=EvaluacionesPreguntas.objects.create()
-                    bloque=EvaluacionesBloques.objects.get(pk=data['fatherId'])
+                    bloque=EvaluacionesBloques.objects.annotate(num_child=Count('bloque_pregunta', distinct=True) ).get(pk=data['fatherId'])
+                    newOrden=bloque.num_child+1
+                    pregunta.orden=newOrden
                     pregunta.fk_evaluaciones_bloque=bloque
                     pregunta.texto_pregunta=data['textoPregunta']
                     pregunta.puntos_pregunta=data['puntosPregunta']
@@ -987,23 +1201,23 @@ def getModalNewAssociation(request):
                     if hijos:
                             print(hijos)
                         
-                            if "idViejo" in data:
-                                 childs =None
-                                 childs.delete()
                          
                             for newOpcion in hijos:
                                  OpcionA=PreguntasOpciones()
                                  OpcionA.fk_evaluacion_pregunta=pregunta
                                  OpcionA.texto_opcion=newOpcion['OpcionTextA']    
                                  OpcionA.indiceAsociacion=int(newOpcion['id'])  
-                                 OpcionA.puntos_porc=int(newOpcion['value'])  
+                                 OpcionA.puntos_porc=float(newOpcion['value'])  
+                                    
+
                                  OpcionA.columnaPregunta=1
+
 
                                  OpcionB=PreguntasOpciones()
                                  OpcionB.fk_evaluacion_pregunta=pregunta
                                  OpcionB.texto_opcion=newOpcion['OpcionTextB']    
                                  OpcionB.indiceAsociacion=int(newOpcion['id'])  
-                                 OpcionB.puntos_porc=int(newOpcion['value'])  
+                                 OpcionB.puntos_porc=float(newOpcion['value'])  
                                  OpcionB.columnaPregunta=2
 
 
@@ -1027,29 +1241,76 @@ def getModalNewTof(request):
             try:
                 context = {}
                 data = json.load(request)["data"]
+                if "delete" in data:
+                    pregunta=EvaluacionesPreguntas.objects.get(pk=data["id"])
+                    pregunta.delete()
+                    return JsonResponse({"message": "Deleted"})
+                
+               
+                if "idFind" in data:
+                    print(data)
+                    pregunta=EvaluacionesPreguntas.objects.filter(pk=data["idFind"])
+                    findpregunta = list(pregunta.values())
+                    childs = PreguntasOpciones.objects.filter(fk_evaluacion_pregunta=data["idFind"])
+                    listaChilds = list(childs.values())
+                    return JsonResponse({"data":findpregunta[0], "childs":listaChilds}, safe=False)
+                
                 
                 if data["method"] == "Show":
                         context = {}
                         html_template = (loader.get_template('components/modalAddTof.html'))
                         return HttpResponse(html_template.render(context, request))
+                if data["method"] == "Update":
+                    pregunta=EvaluacionesPreguntas.objects.get(pk=data["idViejo"])
+                    bloque=EvaluacionesBloques.objects.annotate(num_child=Count('bloque_pregunta', distinct=True) ).get(pk=data['fatherId'])
+                  
+                    pregunta.orden=pregunta.orden
+
+                    pregunta.fk_evaluaciones_bloque=bloque
+                    pregunta.texto_pregunta=data['textoPregunta']
+                    pregunta.titulo_pregunta=data['tituloPregunta']
+
+
+                    pregunta.puntos_pregunta=data['puntosPregunta']
+                    pregunta.fk_tipo_pregunta_evaluacion=Methods.OrigenPreguntaTipo('True or False')
+                    pregunta.save()
+                    childs = PreguntasOpciones.objects.filter(fk_evaluacion_pregunta=data["idViejo"])
+                    
+                    hijos = data["hijos"]
+                    if hijos:
+                            print(hijos)
+                        
+                            if "idViejo" in data:
+                                 
+                                 childs.delete()
+            
+                            for newOpcion in hijos:
+                                
+                                 Opcion=PreguntasOpciones()
+                                 Opcion.fk_evaluacion_pregunta=pregunta
+                                 Opcion.texto_opcion=newOpcion['OpcionText']    
+                                 Opcion.puntos_porc=float(newOpcion['value'])  
+                                 Opcion.respuetaCorrecta=int(newOpcion['trueFalse'])  
+                                 Opcion.idLista=newOpcion['id']    
+
+
+                                 Opcion.save()
+                
                 if data["method"] == "Create":
                     pregunta=EvaluacionesPreguntas.objects.create()
-                    bloque=EvaluacionesBloques.objects.get(pk=data['fatherId'])
+                    bloque=EvaluacionesBloques.objects.annotate(num_child=Count('bloque_pregunta', distinct=True) ).get(pk=data['fatherId'])
+                    newOrden=bloque.num_child+1
+                    pregunta.orden=newOrden
                     pregunta.fk_evaluaciones_bloque=bloque
                     pregunta.texto_pregunta=data['textoPregunta']
                     pregunta.puntos_pregunta=data['puntosPregunta']
-                    pregunta.texto_pregunta=data['tituloPregunta']
+                    pregunta.titulo_pregunta=data['tituloPregunta']
 
                     pregunta.fk_tipo_pregunta_evaluacion=Methods.OrigenPreguntaTipo('True or False')
                     pregunta.save()
 
                     hijos = data["hijos"]
                     if hijos:
-                            print(hijos)
-                        
-                            if "idViejo" in data:
-                                 childs =None
-                                 childs.delete()
                          
                             for newOpcion in hijos:
                                  Opcion=PreguntasOpciones()
@@ -1057,6 +1318,7 @@ def getModalNewTof(request):
                                  Opcion.texto_opcion=newOpcion['OpcionText']    
                                  Opcion.puntos_porc=float(newOpcion['value'])  
                                  Opcion.respuetaCorrecta=int(newOpcion['trueFalse'])  
+                                 Opcion.idLista=newOpcion['id']    
 
                                  Opcion.save()
 

@@ -66,8 +66,11 @@
                                         <table class="table table-borderless table-striped table-hover text-center table-responsive table-component ">
                                             <thead>
                                                 <tr>
-                                                   <th class="col-md-8">
-                                                       Question text
+                                                    <th class="col-md-1">
+                                                        N°
+                                                    </th>
+                                                   <th class="col-md-7">
+                                                       Question title
                                                    </th>
                                                    <th  class="col-md-2">
                                                        Question points
@@ -84,6 +87,11 @@
                                             <tbody  id="tableContent">
                                             {% for pregunta in listaPreguntas %}
                                             <tr>
+                                                <td>
+                                                    {{pregunta.orden}}
+                                                    </td>
+
+
                                             <td>
                                             {{pregunta.titulo_pregunta}}
                                             </td>
@@ -96,8 +104,22 @@
                                             {{pregunta.fk_tipo_pregunta_evaluacion|tipoPregunta}}
 
                                             </td>
-                                              <td>
-                                            </td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                             
+                                                   <button onclick="openEditModal('{{pregunta.pk}}',{{pregunta.fk_tipo_pregunta_evaluacion}} )" type="button" class="btn btn-icon btn-sm btn-info ml-1" data-toggle="tooltip"  data-placement="top" title="Edit">
+                                                      <i class="fas fa-edit"></i>
+                                                   </button>
+                                                
+                                              
+                                                   <button onclick="openDeleteModal('{{pregunta.pk}}')" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="modal"
+                                                      data-target="#newModal">
+                                                      <i class="fas fa-trash-alt"></i>
+                                                   </button>
+                                                 
+                                              
+                                                </div>
+                                             </td>
 
                                             </tr>
                                             {% endfor %}
@@ -173,6 +195,9 @@
         let PointinUse= {{pregunta.pointUse}}
         let indiceRespuesta= 0
         let indicePalabra=0
+        let selectedId=null
+        let editmode = false
+
 
   
        
@@ -254,6 +279,9 @@
             if(tipoPreguntaSelected==1){
                    var select2=document.querySelector('input[name="listaSimpleRadio"]:checked').value
                }
+               
+               const metodo=editmode?'Update':'Create'
+              
             form = {
                textoPregunta: questionText.value,
                tituloPregunta:questionTittle.value,
@@ -264,7 +292,7 @@
                indiceRespuesta:indicePalabra,
                select2:select2,
                fatherId:fatherId,
-               method:'Create',
+               method:metodo,
                hijos: tablaPreguntas,
 
             
@@ -272,7 +300,7 @@
             
             }
             if (editmode) {
-                updateQuestion(form, selectedId)
+                updateQuestion(form, selectedId, url)
             }
             else {
                 createQuestion(form,url)
@@ -280,6 +308,29 @@
      
         }
            
+
+        const updateQuestion = (form, idViejo, url) => {
+        fetch(url, {
+            ...fetchObject,
+            body: JSON.stringify({
+                data: {
+                    ...form,
+                    idViejo
+                }
+            }),
+        })
+            .then(async (res) => {
+                let result = JSON.parse(await res.text())
+                if (result.message === "Error") {
+                    alerta(5)
+                }
+                alerta(2)
+            })
+            .then(() => {
+               // renderTable()
+                $("#addNewQuestion").modal("hide");
+            })
+    }
         const createQuestion = (form,url) => {
             fetch(url, {
                 ...fetchObject,
@@ -352,6 +403,7 @@
         // Renderizar  
 
         const renderModalTypeQuestion = () => {
+            limpiarModalOpciones()
             return fetch("{% url 'modalTypeQuestion' %}", {
                 ...fetchObject
             })
@@ -374,6 +426,249 @@
            
          })
         }   
+
+        const openDeleteModal = async (id) => {
+        const elimino = await alerta(3)
+        if (elimino) {
+            const res = await deleteScaleGe(id)
+            if (res) {
+                alerta(4)
+            }
+            else {
+                alerta(5)
+            }
+        }
+    }
+
+        // Actualizar
+
+        const openEditModal = (id, type) => {
+        selectedId = id
+        let url
+           if (type == 1 ){
+              url = "{% url 'modalNewSimple' %}"
+              tipoPreguntaSelected=1
+           }
+           if (type == 2) {
+              url = "{% url 'modalNewMultiple' %}"
+              tipoPreguntaSelected=2
+
+           }
+           if (type == 3) {
+              url = "{% url 'modalNewCompletion' %}"
+              tipoPreguntaSelected=3
+
+           }
+           if (type == 4) {
+              url = "{% url 'modalNewAssociation' %}"
+              tipoPreguntaSelected=4
+
+           }
+           if (type == 5) {
+              url = "{% url 'modalNewTof' %}"
+              tipoPreguntaSelected=5
+
+           }
+        fetch(url, {
+            ...fetchObject,
+            body: JSON.stringify({
+                data: {
+                    idFind: id
+                }
+            }),
+        })
+            .then(async (res) => {
+                await renderModalQuestions()
+                await renderModalNewQuestion (url) 
+
+
+               limpiarModalOpciones()
+                let PreguntaDatos = JSON.parse(await res.text())
+                
+                document.getElementById("questionText").value=PreguntaDatos.data.texto_pregunta
+                document.getElementById("questionTittle").value=PreguntaDatos.data.titulo_pregunta
+
+                 document.getElementById("questionPoints").value=PreguntaDatos.data.puntos_pregunta
+                
+
+                let listaLoca = PreguntaDatos.childs
+                if(listaLoca){
+                    if (type==1){
+
+                    
+                    listaLoca.map((el)=>{
+                     
+                        
+
+                        let datos = {
+                            selected:el.respuetaCorrecta,
+                            id: el.idLista,
+                            OpcionText: el.texto_opcion,
+                            actions: `
+                            <div class="btn-group" role="group">
+                                <button onclick="borrarItem(${tablaPreguntas.length})" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip"  data-placement="top" title="Delete" >
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>`
+                        }
+                        tablaPreguntas.push(datos)
+                        console.log(datos)
+
+                    })
+
+                    actualizarListaSimple()
+
+                }
+
+                if (type==2){
+
+                                                
+                            listaLoca.map((el)=>{
+                            
+                                
+
+                                let datos = {
+                                    value:el.puntos_porc,
+                                    id: el.idLista,
+                                    OpcionText: el.texto_opcion,
+                                    actions: `
+                                    <div class="btn-group" role="group">
+                                        <button onclick="borrarItem(${tablaPreguntas.length})" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip"  data-placement="top" title="Delete" >
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </div>`
+                                }
+                                tablaPreguntas.push(datos)
+                                console.log(datos)
+
+                            })
+
+                            actualizarListaMultiple()
+
+                            }
+
+                            if (type==3){
+                                                                                
+                                listaLoca.map((el)=>{
+
+                                    if (el.respuetaCorrecta==true){
+
+
+
+                                    indiceRespuesta=el.idLista
+                                    indicePalabra=PreguntaDatos.data.indicePalabra
+                                   
+
+                                   
+                                    }
+
+                                    let datos = {
+                                        isCorrect:el.respuetaCorrecta,
+                                        id: el.idLista,
+                                        OpcionText: el.texto_opcion,
+                                        actions: `
+                                        <div class="btn-group" role="group">
+                                            <button onclick="borrarItem(${tablaPreguntas.length})" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip"  data-placement="top" title="Delete" >
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </div>`
+                                    }
+                                    tablaPreguntas.push(datos)
+                                    console.log(datos)
+
+                                })
+
+                                actualizarListaCompletations()
+                                 reDraw(document.getElementById("questionText"))
+
+
+                                }
+                
+
+                           if (type==4){
+
+                             let listaLocaA = PreguntaDatos.childsA
+                             let listaLocaB = PreguntaDatos.childsB
+
+
+
+                                                
+                            listaLocaA.map((el)=>{
+                            
+                                
+
+                                let datos = {
+                                    value:el.puntos_porc,
+                                    id: el.indiceAsociacion,
+                                    OpcionTextA: el.texto_opcion,
+                                    OpcionTextB: listaLocaB[el.indiceAsociacion].texto_opcion,
+
+                                    actions: `
+                                    <div class="btn-group" role="group">
+                                        <button onclick="borrarItem(${tablaPreguntas.length})" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip"  data-placement="top" title="Delete" >
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </div>`
+                                }
+                                tablaPreguntas.push(datos)
+                                console.log(datos)
+
+                            })
+
+                            actualizarListaAssociation()
+
+                            }
+
+                            if (type==5){
+
+                           
+                                                
+                                listaLoca.map((el)=>{
+
+                                
+
+                                let datos = {
+                                    value:el.puntos_porc,
+                                    id: el.indiceAsociacion,
+                                    OpcionText: el.texto_opcion,
+                                    trueFalse:el.respuetaCorrecta==true?1:0,
+                                   
+
+                                    actions: `
+                                    <div class="btn-group" role="group">
+                                        <button onclick="borrarItem(${tablaPreguntas.length})" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip"  data-placement="top" title="Delete" >
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </div>`
+                                }
+                                tablaPreguntas.push(datos)
+                                console.log(datos)
+
+                                })
+
+                                actualizarListaTF()
+
+}
+
+                }
+                
+
+                editmode = true
+            })
+            .then(() => {
+                //$("#addNewScaleGe").modal("show")
+
+                if (tipoPreguntaSelected==3){
+                    console.log(indicePalabra)
+
+                                    
+                    document.getElementById(`wordSelected`).innerHTML=document.getElementById(`${indicePalabra}word`).innerHTML
+
+                    document.getElementById(`${indicePalabra}word`).style.color="blue"
+                }
+            })
+    }
+
 
         const renderModalNewQuestion = (url) => {
         return fetch(url, {
@@ -398,230 +693,23 @@
                  
                 const questionText = document.getElementById("questionText")
                    console.log(questionText)
-
-              
-                
-
-              
-            if(tipoPreguntaSelected==1){
-
-                $("#addRow").click(function () {
-                    event.preventDefault()
-
-
-
-                    for(const element of tablaPreguntas ){
-
-                        if(element.OpcionText==document.getElementById("optionText").value){
-
-                        alertaMensajitos(5,'Invalid description',"There is already a question with the same text")
-                        return
-
-                        }
-
-
-                    }
-                   
-
-                    let datos = {
-                        OpcionText: document.getElementById("optionText").value,
-                         id:tablaPreguntas.length,
-                        actions: `
-                        <div class="btn-group" role="group">
-                            <button onclick="borrarItem(${tablaPreguntas.length})" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip"  data-placement="top" title="Delete" >
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                        </div>`
-                    }
-
-                    tablaPreguntas.push(datos)
-                   
-                    actualizarListaSimple()
-
-                })
-
-            }
-
-                if(tipoPreguntaSelected==2){
-
-                $("#addRow").click(function () {
-                    event.preventDefault()
-
-
-
-                    for(const element of tablaPreguntas ){
-
-                        if(element.OpcionText==document.getElementById("optionText").value){
-
-                        alertaMensajitos(5,'Invalid description',"There is already a question with the same text")
-                        return
-
-                        }
-
-
-                    }
-                   
-
-                    let datos = {
-                        OpcionText: document.getElementById("optionText").value,
-                         id:tablaPreguntas.length,
-                         value:0,
-                         
-                        actions: `
-                        <div class="btn-group" role="group">
-                            <button onclick="borrarItem(${tablaPreguntas.length})" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip"  data-placement="top" title="Delete" >
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                        </div>`
-                    }
-
-                    tablaPreguntas.push(datos)
-                   
-                    actualizarListaMultiple()
-
-                })
-
-            }
-              if(tipoPreguntaSelected==3){
-
-                $("#addRow").click(function () {
-                    event.preventDefault()
-
-
-
-                    for(const element of tablaPreguntas ){
-
-                        if(element.OpcionText==document.getElementById("optionText").value){
-
-                        alertaMensajitos(5,'Invalid description',"There is already a question with the same text")
-                        return
-
-                        }
-
-
-                    }
-                   
-
-                    let datos = {
-                        OpcionText: document.getElementById("optionText").value,
-                         id:tablaPreguntas.length,
-                         isCorrect:0,
-                         
-                        actions: `
-                        <div class="btn-group" role="group">
-                            <button onclick="borrarItem(${tablaPreguntas.length})" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip"  data-placement="top" title="Delete" >
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                        </div>`
-                    }
-
-                    tablaPreguntas.push(datos)
-                   
-                    actualizarListaCompletations()
-
-                })
-
-            }
-            if(tipoPreguntaSelected==4){
-
-                $("#addRow").click(function () {
-                    event.preventDefault()
-
-
-                    if(document.getElementById("optionTextA").value.trim()=='' || document.getElementById("optionTextB").value.trim()==''){
-
-                        alertaMensajitos(5,'Invalid description',"The description can not be empty")
-                        return
-
-                        }
-
-
-                    for(const element of tablaPreguntas ){
-
-                        if(element.OpcionTextA==document.getElementById("optionTextA").value){
-
-                        alertaMensajitos(5,'Invalid description',"There is already a question with the same text")
-                        return
-
-                        }
-                        if(element.OpcionTextB==document.getElementById("optionTextB").value){
-
-                        alertaMensajitos(5,'Invalid description',"There is already a question with the same text")
-                        return
-
-                        }
-
-
-                    }
-                
-
-                    let datos = {
-                        OpcionTextA: document.getElementById("optionTextA").value,
-                        OpcionTextB: document.getElementById("optionTextB").value,
-
-                        id:tablaPreguntas.length,
-                        value:0,
-                        
-                        actions: `
-                        <div class="btn-group" role="group">
-                            <button onclick="borrarItem(${tablaPreguntas.length})" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip"  data-placement="top" title="Delete" >
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                        </div>`
-                    }
-
-                    tablaPreguntas.push(datos)
-                
-                    actualizarListaAssociation()
-
-                })
-
-}
-
-              if(tipoPreguntaSelected==5){
-
-                $("#addRow").click(function () {
-                    event.preventDefault()
-
-
-
-                    for(const element of tablaPreguntas ){
-
-                        if(element.OpcionText==document.getElementById("optionText").value){
-
-                        alertaMensajitos(5,'Invalid description',"There is already a question with the same text")
-                        return
-
-                        }
-
-
-                    }
-                   
-
-                    let datos = {
-                        OpcionText: document.getElementById("optionText").value,
-                         id:tablaPreguntas.length,
-                         value:0,
-                         trueFalse:1,
-                         
-                        actions: `
-                        <div class="btn-group" role="group">
-                            <button onclick="borrarItem(${tablaPreguntas.length})" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip"  data-placement="top" title="Delete" >
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                        </div>`
-                    }
-
-                    tablaPreguntas.push(datos)
-                   
-                    actualizarListaTF()
-
-                })
-
-            }
-    
+                   CargarModalOpciones()    
+
+             
+             
+            
          })
         }    
+
+        function limpiarModalOpciones(){
+             tablaPreguntas=[]
+             respuesta=null
+             indicePalabra=null
+             indiceRespuesta= null
+             indicePalabra=null
+             editmode = false
+
+        }
 
         const renderComponentTabla = async (name) => {
             return await fetch("{% url 'component_tabla'%}",
@@ -662,6 +750,231 @@
         location.reload()
 
      }
+
+    function CargarModalOpciones(){
+
+        
+              
+            if(tipoPreguntaSelected==1){
+
+            $("#addRow").click(function () {
+                event.preventDefault()
+
+
+
+                for(const element of tablaPreguntas ){
+
+                    if(element.OpcionText==document.getElementById("optionText").value){
+
+                    alertaMensajitos(5,'Invalid description',"There is already a question with the same text")
+                    return
+
+                    }
+
+
+                }
+            
+
+                let datos = {
+                    OpcionText: document.getElementById("optionText").value,
+                    selected:false,
+                    id:tablaPreguntas.length,
+                    actions: `
+                    <div class="btn-group" role="group">
+                        <button onclick="borrarItem(${tablaPreguntas.length})" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip"  data-placement="top" title="Delete" >
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>`
+                }
+
+                tablaPreguntas.push(datos)
+            
+                actualizarListaSimple()
+
+            })
+
+            }
+
+            if(tipoPreguntaSelected==2){
+
+            $("#addRow").click(function () {
+                event.preventDefault()
+
+
+
+                for(const element of tablaPreguntas ){
+
+                    if(element.OpcionText==document.getElementById("optionText").value){
+
+                    alertaMensajitos(5,'Invalid description',"There is already a question with the same text")
+                    return
+
+                    }
+
+
+                }
+            
+
+                let datos = {
+                    OpcionText: document.getElementById("optionText").value,
+                    id:tablaPreguntas.length,
+                    value:0,
+                    
+                    actions: `
+                    <div class="btn-group" role="group">
+                        <button onclick="borrarItem(${tablaPreguntas.length})" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip"  data-placement="top" title="Delete" >
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>`
+                }
+
+                tablaPreguntas.push(datos)
+            
+                actualizarListaMultiple()
+
+            })
+
+            }
+            if(tipoPreguntaSelected==3){
+
+            $("#addRow").click(function () {
+                event.preventDefault()
+
+
+
+                for(const element of tablaPreguntas ){
+
+                    if(element.OpcionText==document.getElementById("optionText").value){
+
+                    alertaMensajitos(5,'Invalid description',"There is already a question with the same text")
+                    return
+
+                    }
+
+
+                }
+            
+
+                let datos = {
+                    OpcionText: document.getElementById("optionText").value,
+                    id:tablaPreguntas.length,
+                    isCorrect:0,
+                    
+                    actions: `
+                    <div class="btn-group" role="group">
+                        <button onclick="borrarItem(${tablaPreguntas.length})" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip"  data-placement="top" title="Delete" >
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>`
+                }
+
+                tablaPreguntas.push(datos)
+            
+                actualizarListaCompletations()
+
+            })
+
+            }
+            if(tipoPreguntaSelected==4){
+
+            $("#addRow").click(function () {
+                event.preventDefault()
+
+
+                if(document.getElementById("optionTextA").value.trim()=='' || document.getElementById("optionTextB").value.trim()==''){
+
+                    alertaMensajitos(5,'Invalid description',"The description can not be empty")
+                    return
+
+                    }
+
+
+                for(const element of tablaPreguntas ){
+
+                    if(element.OpcionTextA==document.getElementById("optionTextA").value){
+
+                    alertaMensajitos(5,'Invalid description',"There is already a question with the same text")
+                    return
+
+                    }
+                    if(element.OpcionTextB==document.getElementById("optionTextB").value){
+
+                    alertaMensajitos(5,'Invalid description',"There is already a question with the same text")
+                    return
+
+                    }
+
+
+                }
+
+
+                let datos = {
+                    OpcionTextA: document.getElementById("optionTextA").value,
+                    OpcionTextB: document.getElementById("optionTextB").value,
+
+                    id:tablaPreguntas.length,
+                    value:0,
+                    
+                    actions: `
+                    <div class="btn-group" role="group">
+                        <button onclick="borrarItem(${tablaPreguntas.length})" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip"  data-placement="top" title="Delete" >
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>`
+                }
+
+                tablaPreguntas.push(datos)
+
+                actualizarListaAssociation()
+
+            })
+
+            }
+
+            if(tipoPreguntaSelected==5){
+
+            $("#addRow").click(function () {
+                event.preventDefault()
+
+
+
+                for(const element of tablaPreguntas ){
+
+                    if(element.OpcionText==document.getElementById("optionText").value){
+
+                    alertaMensajitos(5,'Invalid description',"There is already a question with the same text")
+                    return
+
+                    }
+
+
+                }
+            
+
+                let datos = {
+                    OpcionText: document.getElementById("optionText").value,
+                    id:tablaPreguntas.length,
+                    value:0,
+                    trueFalse:1,
+                    
+                    actions: `
+                    <div class="btn-group" role="group">
+                        <button onclick="borrarItem(${tablaPreguntas.length})" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip"  data-placement="top" title="Delete" >
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>`
+                }
+
+                tablaPreguntas.push(datos)
+            
+                actualizarListaTF()
+
+            })
+
+            }
+
+    }
+
    </script>
 
    <script>
@@ -830,6 +1143,8 @@
 
 
         tablaPreguntas.map((dato, index) => {
+            let checked=dato.selected? 'checked':''
+            console.log(dato)
             let fila =
                 `<tr>
                     <td>
@@ -838,7 +1153,7 @@
                         
                     <td>
                         <div class="btn-group" role="group">
-                            <input type='radio' name='listaSimpleRadio' value='${index}' checked onchange="respuestaCorrecta(this)"  >
+                            <input type='radio' name='listaSimpleRadio' ${checked} value='${index}'  onchange="respuestaCorrecta(this)"  >
                         </div>
                     </td>
                     <td>

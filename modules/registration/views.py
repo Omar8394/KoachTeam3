@@ -524,12 +524,6 @@ def MyEnrollments(request):
           if idStatus!=None and idStatus!="":
            matriculaList=matriculaList.filter(fk_status_matricula=idStatus)
 
-
-           
-
-
-
-
     if request.method == "POST":
         
         if (is_cookie_set == 1): 
@@ -1260,17 +1254,6 @@ def save(request):
 
         
         publico=ExtensionUsuario.objects.get(user=request.user).Publico
-
-       
-
-       
-
-
-
-        
-
-
-
 
         struct=Estructuraprograma.objects.get(idestructuraprogrmas=idEstruct)
 
