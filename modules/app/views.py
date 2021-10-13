@@ -20,6 +20,15 @@ def index(request):
     html_template = loader.get_template( 'index.html' )
     return HttpResponse(html_template.render(context, request))
 
+@login_required(login_url="/login/")
+def calendar(request):
+    
+    context = {}
+    context['segment'] = 'calendar'
+
+    html_template = loader.get_template( 'calendar.html' )
+    return HttpResponse(html_template.render(context, request))
+
 def componentLista(request):
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         context = {}

@@ -13,7 +13,10 @@ urlpatterns = [
     path('modalAddSetting/', views.getModalSetting, name="modalAddSetting"),
     path('settings/tables', views.tables, name='system_tables'),
 
-     # Scales
+    #Calendar
+    path('calendar/', views.calendar, name='calendar'),
+
+    # Scales
     path('settings/scales', views.scales, name='scales'),
     path('settings/scales/scalesGeAddModal/', views.scalesGeAddModal, name='modalScaleGeAdd'),
 
