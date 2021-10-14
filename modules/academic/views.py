@@ -82,14 +82,26 @@ def createQuestions(request):
     preguntaId=request.GET.get('id')
     #la modificacion es para que los busque por el id de estructuras programa (me facilita la vida)
     pregunta=ActividadEvaluaciones.objects.get(fk_estructura_programa=preguntaId)
-  
-
     escalas = EscalaEvaluacion.objects.all()
-    bloque=EvaluacionesBloques.objects.get(fk_actividad_evaluaciones=pregunta.idactividad_evaluaciones)
-    listaPreguntas=EvaluacionesPreguntas.objects.filter(fk_evaluaciones_bloque=bloque).order_by('orden')
-    escalaEvaluacion=pregunta.fk_escala_evaluacion
     
+    escalaEvaluacion=pregunta.fk_escala_evaluacion
+    escalaBloque=pregunta.fk_escala_bloque
 
+    escalaBloque=pregunta.fk_escala_bloque
+
+    listaPreguntas=None
+    boque=None
+
+    if(Estructuraprograma.objects.get(pk=preguntaId).fk_categoria.valor_elemento=='activityExpert'):
+     bloque=EvaluacionesBloques.objects.filter(fk_actividad_evaluaciones=pregunta.idactividad_evaluaciones)
+     
+    else:
+     bloque=EvaluacionesBloques.objects.get(fk_actividad_evaluaciones=pregunta.idactividad_evaluaciones)
+     listaPreguntas=EvaluacionesPreguntas.objects.filter(fk_evaluaciones_bloque=bloque).order_by('orden')
+
+
+
+     
 
     
     context = {
@@ -99,10 +111,14 @@ def createQuestions(request):
         'escalas':escalas,
         'bloque':bloque,
         'escalaEvaluacion':escalaEvaluacion,
-        'listaPreguntas':listaPreguntas
+        'listaPreguntas':listaPreguntas,
+        'escalaBloque':escalaBloque
 
     }
     context['segment'] = 'academic'
+    if(Estructuraprograma.objects.get(pk=preguntaId).fk_categoria.valor_elemento=='activityExpert'):
+     return render(request, 'academic/createExpert.html', context)
+
     return render(request, 'academic/createQuestions.html', context)
 
 
@@ -646,76 +662,136 @@ def getModalChooseTypeQuestion(request):
     return HttpResponse(html_template.render(context, request))
 
 @login_required(login_url="/login/")
+def getModalAddBlock(request):
+    if request.method == "POST":
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            try:
+            
+                context = {}
+                data = json.load(request)["data"]
+
+                if "delete" in data:
+                    bloque=EvaluacionesBloques.objects.get(pk=data["id"])
+                    bloque.delete()
+                    return JsonResponse({"message": "Deleted"})
+                if "idFind" in data:
+                    
+                    bloque=EvaluacionesBloques.objects.filter(pk=data["idFind"])
+                    findBloque = list(bloque.values())
+                    
+                    return JsonResponse({"data":findBloque[0]}, safe=False)
+                
+                if data["method"] == "Show":
+                        context = {}
+                        html_template = (loader.get_template('components/modalAddBlock.html'))
+                        return HttpResponse(html_template.render(context, request))
+
+                if data["method"] == "Update":
+                    bloque=EvaluacionesBloques.objects.filter(pk=data["idFind"])
+                    
+                    bloque.comentario=data['textoBloque']
+                    bloque.titulo_bloque=data['tituloBloque']
+                    bloque.save()
+
+
+
+                if data["method"] == "Create":
+                    actividad=ActividadEvaluaciones.objects.annotate(num_child=Count('bloque_actividad', distinct=True) ).get(pk=data['ActivityId'])
+                    bloque=EvaluacionesBloques.objects.create()
+
+                    newOrden=actividad.num_child+1
+                    bloque.orden=newOrden
+                    print('aquitoy')
+
+                    bloque.fk_actividad_evaluaciones=actividad
+                    bloque.comentario=data['textoBloque']
+                    bloque.titulo_bloque=data['tituloBloque']
+                    print('eeeee')
+
+                    bloque.save()
+
+
+             
+                return JsonResponse({"message": "Perfect"})     
+            except:
+                return JsonResponse({"message": "Error"}) 
+           
+    context = {}
+    html_template = (loader.get_template('components/modalAddBlock.html'))
+    return HttpResponse(html_template.render(context, request))
+
+@login_required(login_url="/login/")
 def getModalNewTest(request):
     if request.method == "POST":
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             context = {}
             modelo = {}
-        
-            if request.body:
-                    data = json.load(request)
-                    tipoDuracion = TablasConfiguracion.obtenerHijos(valor="Duracion")
-                    escalas = EscalaEvaluacion.objects.all()
-                    if data["method"] == "Show":
-                        context = {"escalas":escalas, "tipoDuracion":tipoDuracion}
-                        html_template = (loader.get_template('components/modalAddTest.html'))
-                        return HttpResponse(html_template.render(context, request))
-                    elif data["method"] == "Find":
-                        modelo = ActividadEvaluaciones.objects.get(fk_estructura_programa=data["id"])
-                        context = {"modelo": modelo, "escalas":escalas, "tipoDuracion":tipoDuracion}
-                        html_template = (loader.get_template('components/modalAddTest.html'))
-                        return HttpResponse(html_template.render(context, request))
-                    elif data["method"] == "Delete":
-                        actividad = Estructuraprograma.objects.get(pk=data["id"])
-                        actividad.delete()
-                        return JsonResponse({"message":"Deleted"})
-                    elif data["method"] == "Update":
-                        actividad = Estructuraprograma.objects.get(pk=data["id"])
-                        test = ActividadEvaluaciones.objects.get(fk_estructura_programa=data["id"])
-                    elif data["method"] == "Create":
-                        actividad = Estructuraprograma()
-                        test = ActividadEvaluaciones()
-                        actividad.valor_elemento = "Activity"
-                        actividad.pointUsed = 0
-                        actividad.fk_estructura_padre_id=data["padreActivity"]
-                    
-                    actividad.descripcion = data["data"]["descriptionActivity"]
-                    actividad.resumen = data["data"]["resumenActivity"]
-                    actividad.url = data["data"]["urlActivity"]
-                    actividad.peso_creditos = None
-                    actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").get(desc_elemento="Test").pk
-                    if "checkExpertCB" in data["data"]:
-                        actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").get(desc_elemento="Expert test").pk
-                        scale=EscalaEvaluacion.objects.get(pk=int(data["data"]["Blockqualification"]))
-                        test.fk_escala_bloque = scale
-                    else:   
-                         test.nro_repeticiones = data["data"]["repeats"]
-                         test.calificacion_aprobar = data["data"]["minApp"]
+            try:
+                if request.body:
+                        data = json.load(request)
+                        tipoDuracion = TablasConfiguracion.obtenerHijos(valor="Duracion")
+                        escalas = EscalaEvaluacion.objects.all()
+                        if data["method"] == "Show":
+                            context = {"escalas":escalas, "tipoDuracion":tipoDuracion}
+                            html_template = (loader.get_template('components/modalAddTest.html'))
+                            return HttpResponse(html_template.render(context, request))
+                        elif data["method"] == "Find":
+                            modelo = ActividadEvaluaciones.objects.get(fk_estructura_programa=data["id"])
+                            context = {"modelo": modelo, "escalas":escalas, "tipoDuracion":tipoDuracion}
+                            html_template = (loader.get_template('components/modalAddTest.html'))
+                            return HttpResponse(html_template.render(context, request))
+                        elif data["method"] == "Delete":
+                            actividad = Estructuraprograma.objects.get(pk=data["id"])
+                            actividad.delete()
+                            return JsonResponse({"message":"Deleted"})
+                        elif data["method"] == "Update":
+                            actividad = Estructuraprograma.objects.get(pk=data["id"])
+                            test = ActividadEvaluaciones.objects.get(fk_estructura_programa=data["id"])
+                        elif data["method"] == "Create":
+                            actividad = Estructuraprograma()
+                            test = ActividadEvaluaciones()
+                            actividad.valor_elemento = "Activity"
+                            actividad.pointUsed = 0
+                            actividad.fk_estructura_padre_id=data["padreActivity"]
+                        
+                        actividad.descripcion = data["data"]["descriptionActivity"]
+                        actividad.resumen = data["data"]["resumenActivity"]
+                        actividad.url = data["data"]["urlActivity"]
+                        actividad.peso_creditos = None
+                        actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").get(desc_elemento="Test").pk
+                        if "checkExpertCB" in data["data"]:
+                            actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").get(desc_elemento="Expert test").pk
+                            scale=EscalaEvaluacion.objects.get(pk=int(data["data"]["Blockqualification"]))
+                            test.fk_escala_bloque = scale
+                        else:   
+                            test.nro_repeticiones = data["data"]["repeats"]
+                            test.calificacion_aprobar = data["data"]["minApp"]
 
-                    if "durationActivity" in data["data"]:
-                        test.duracion = data["data"]["durationActivity"]
-                    else:
-                        test.duracion = None
-                    if "timeActivity" in data["data"]:
-                        test.fk_tipo_duracion_id = data["data"]["timeActivity"]
-                    else:
-                        test.fk_tipo_duracion_id = None
-                   
-                    test.fk_escala_evaluacion_id = data["data"]["qualification"]
-                    actividad.save()
-                    test.fk_estructura_programa = actividad
-                    test.save()
-                    if data["method"] == "Create":
-                        if not "checkExpertCB" in data["data"]:
-                            bloque=EvaluacionesBloques.objects.create()
-                            bloque.titulo_bloque='Test'
-                            bloque.orden=1
-                            bloque.comentario=''
-                            bloque.fk_actividad_evaluaciones=test
-                            bloque.fk_escala_bloque=None   
-                            bloque.save()
-                    return JsonResponse({"message":"Perfect"})
-         
+                        if "durationActivity" in data["data"]:
+                            test.duracion = data["data"]["durationActivity"]
+                        else:
+                            test.duracion = None
+                        if "timeActivity" in data["data"]:
+                            test.fk_tipo_duracion_id = data["data"]["timeActivity"]
+                        else:
+                            test.fk_tipo_duracion_id = None
+                    
+                        test.fk_escala_evaluacion_id = data["data"]["qualification"]
+                        actividad.save()
+                        test.fk_estructura_programa = actividad
+                        test.save()
+                        if data["method"] == "Create":
+                            if not "checkExpertCB" in data["data"]:
+                                bloque=EvaluacionesBloques.objects.create()
+                                bloque.titulo_bloque='Test'
+                                bloque.orden=1
+                                bloque.comentario=''
+                                bloque.fk_actividad_evaluaciones=test
+                                bloque.fk_escala_bloque=None   
+                                bloque.save()
+                        return JsonResponse({"message":"Perfect"})
+            except:
+                 return JsonResponse({"message":"error"}, status=500)
 
 @login_required(login_url="/login/")
 def getModalNewLesson(request):

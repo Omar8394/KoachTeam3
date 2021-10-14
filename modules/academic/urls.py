@@ -36,6 +36,8 @@ urlpatterns = [
    path('modalNewForum/', views.getModalNewForum, name="modalNewForum"),
    path('modalAddQuestion/', views.getModalQuestion, name="modalAddQuestion"),
    path('modalChooseTypeQuestion/', views.getModalChooseTypeQuestion, name="modalTypeQuestion"),
+   path('modalAddBlock/', views.getModalAddBlock, name="getModalAddBlock"),
+
    path('modalNewSimple/', views.getModalNewSimple, name="modalNewSimple"),
    path('modalNewMultiple/', views.getModalNewMultiple, name="modalNewMultiple"),
    path('modalNewCompletion/', views.getModalNewCompletion, name="modalNewCompletion"),

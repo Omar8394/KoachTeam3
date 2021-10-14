@@ -80,9 +80,11 @@ class EvaluacionInstrucciones(models.Model):
 class EvaluacionesBloques(models.Model):
     orden=models.IntegerField(null=True)
     idevaluaciones_bloques=models.AutoField(primary_key=True)
+    pointUse = models.IntegerField(blank=True, null=True, default=0)
+
     titulo_bloque = models.TextField(null=True)
     comentario = models.TextField(null=True)
-    fk_actividad_evaluaciones = models.ForeignKey(ActividadEvaluaciones, on_delete=models.CASCADE, default=None, null=True)
+    fk_actividad_evaluaciones = models.ForeignKey(ActividadEvaluaciones, on_delete=models.CASCADE, default=None, null=True, related_name='bloque_actividad')
 
     def __str__(self):
         return self.titulo_bloque

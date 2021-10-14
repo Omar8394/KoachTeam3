@@ -282,7 +282,8 @@
          window.location.href = `{% url 'createQuestions' %}?id=${id}`;
       }
       if (type === "Expert test") {
-         return
+          window.location.href = `{% url 'createQuestions' %}?id=${id}`;
+
       }
       if (type === "Lesson") {
          window.location.href = `{% url 'createLessons' %}?id=${id}`;
