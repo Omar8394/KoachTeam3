@@ -76,6 +76,8 @@
 {% block javascripts %}
 <script>
    let query = ""
+   let selectedId = ""
+   let editmode = false
    let sortable = false
    let ordenamientoArray = []
    const updateOrder = () => {
@@ -122,6 +124,39 @@
             renderContent()
          })
    }
+   const clickSave = (formElement, url) => {
+      const formData = new FormData(formElement);
+      const data = {}
+      for (var [key, value] of formData.entries()) {
+         data[key] = value
+      }
+      if (editmode) {
+         return updateModel(url, "Update", data, selectedId)
+            .then(async (res) => {
+               const text = JSON.parse(await res.text())
+               if (text.message == "error") alerta(5)
+               else alerta(2)
+            })
+      }
+      else {
+         return updateModel(url, "Create", data, null)
+            .then(async (res) => {
+               const text = JSON.parse(await res.text())
+               if (text.message == "error") alerta(5)
+               else alerta(1)
+            })
+      }
+   }
+   const updateModel = (url, method, data, id) => {
+      return fetch(url, {
+         ...fetchObject,
+         body: JSON.stringify({
+            method,
+            data,
+            id
+         })
+      })
+   }
    const openAddPage = () => {
       document.querySelector("main.card-body").classList.add("is-loading")
       fetch("{% url 'createLessons'%}", {
@@ -142,25 +177,29 @@
    const openCreatePage = (id) => {
       const content = document.getElementById(`contentPage${id}`)
       const createBtn = document.getElementById(`openCreateBtn${id}`)
-      if(content.innerHTML.trim()){
+      selectedId = id
+      if (content.innerHTML.trim()) {
          content.classList.add("card-list-item-close")
-         content.innerHTML=""
-         createBtn.innerHTML=`<i class="fas fa-plus"></i>`
+         content.innerHTML = ""
+         createBtn.innerHTML = `<i class="fas fa-plus"></i>`
          return
       }
+      editmode = true
       document.querySelector("main.card-body").classList.add("is-loading")
       fetch("{% url 'modalAddPagina'%}", {
          ...fetchObject,
          body: JSON.stringify({
             id: "{{lesson.pk}}",
-            method: "Show",
-            query
+            method: "Show"
          })
       }).then(async (res) => {
          content.innerHTML = await res.text()
-         // $(document).ready(function () {
-         //    $('#summernote').summernote();
-         // });
+         $(document).ready(function () {
+            $('#summernote').summernote({
+               dialogsInBody: true,
+               height: 200,
+            });
+         });
          content.classList.remove("card-list-item-close")
          createBtn.innerHTML = `<i class="fas fa-minus"></i>`
       }).then(() => {
@@ -168,6 +207,49 @@
          const formPagina = document.getElementById("formPagina")
          formPagina.addEventListener("submit", (e) => {
             e.preventDefault()
+            $('#summernote').html($('#summernote').summernote('code'))
+            clickSave(formPagina, "{% url 'modalAddPagina' %}")
+               .then(() => {
+                  renderContent()
+               })
+         })
+      })
+   }
+   const openEditPage = (id) => {
+      const content = document.getElementById(`contentPage${id}`)
+      const editBtn = document.getElementById(`openEditBtn${id}`)
+      selectedId = id
+      if (content.innerHTML.trim()) {
+         content.classList.add("card-list-item-close")
+         content.innerHTML = ""
+         editBtn.innerHTML = `<i class="fas fa-edit"></i>`
+         return
+      }
+      editmode = true
+      document.querySelector("main.card-body").classList.add("is-loading")
+      fetch("{% url 'modalAddPagina'%}", {
+         ...fetchObject,
+         body: JSON.stringify({
+            method: "Find",
+            id
+         })
+      }).then(async (res) => {
+         content.innerHTML = await res.text()
+         $(document).ready(function () {
+            $('#summernote').summernote({
+               dialogsInBody: true,
+               height: 200,
+            });
+            $('#summernote').summernote("code", $('#summernote').html());
+         });
+         content.classList.remove("card-list-item-close")
+         editBtn.innerHTML = `<i class="fas fa-minus"></i>`
+      }).then(() => {
+         document.querySelector("main.card-body").classList.remove("is-loading")
+         const formPagina = document.getElementById("formPagina")
+         formPagina.addEventListener("submit", (e) => {
+            e.preventDefault()
+            $('#summernote').html($('#summernote').summernote('code'))
             clickSave(formPagina, "{% url 'modalAddPagina' %}")
                .then(() => {
                   renderContent()

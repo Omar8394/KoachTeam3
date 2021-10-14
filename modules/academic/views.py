@@ -609,26 +609,21 @@ def getModalPagina(request):
                         html_template = (loader.get_template('components/modalAddPagina.html'))
                         return HttpResponse(html_template.render(context, request))
                     elif data["method"] == "Find":
-                        modelo = Estructuraprograma.objects.get(pk=data["id"])
+                        modelo = Paginas.objects.get(pk=data["id"])
                         context = {"modelo": modelo}
                         html_template = (loader.get_template('components/modalAddPagina.html'))
                         return HttpResponse(html_template.render(context, request))
                     elif data["method"] == "Delete":
-                        actividad = Estructuraprograma.objects.get(pk=data["id"])
-                        actividad.delete()
+                        pagina = Paginas.objects.get(pk=data["id"])
+                        pagina.delete()
                         return JsonResponse({"message":"Deleted"})
                     elif data["method"] == "Update":
-                        actividad = Estructuraprograma.objects.get(pk=data["id"])
+                        pagina = Paginas.objects.get(pk=data["id"])
                     elif data["method"] == "Create":
-                        actividad = Estructuraprograma()
-                        actividad.valor_elemento = "Activity"
-                    actividad.fk_estructura_padre_id=data["padreActivity"]
-                    actividad.descripcion = data["data"]["descriptionActivity"]
-                    actividad.resumen = data["data"]["resumenActivity"]
-                    actividad.url = data["data"]["urlActivity"]
-                    actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").filter(desc_elemento=data["tipoActividad"])[0].pk
-                    actividad.peso_creditos = None
-                    actividad.save()
+                        pagina = Paginas()
+                    pagina.titulo = data["data"]["titlePage"]
+                    pagina.contenido = data["data"]["summernote"]
+                    pagina.save()
                     return JsonResponse({"message":"Perfect"})
             except:
                 return JsonResponse({"message":"error"}, status=500)
