@@ -20,7 +20,9 @@ urlpatterns = [
    path('contenidoTopicos/', views.getContentTopicos, name="contenidoTopicos"),
    path('contenidoLecciones/', views.getContentLecciones, name="contenidoLecciones"),
    path('comboOption/', views.getComboContent, name="contenidoCombo"),
+   path('previewLeccion/', views.getPreviewLeccion, name="previewLeccion"),
    #modales
+   path('modalResourcesBank/', views.getModalResourcesBank, name="modalResourcesBank"),
    path('modalAddCategoria/', views.getModalCategorias, name="modalAddCategoria"),
    path('modalAddPrograma/', views.getModalProgramas, name="modalAddPrograma"),
    path('modalAddProceso/', views.getModalProcesos, name="modalAddProceso"),

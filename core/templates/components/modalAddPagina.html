@@ -1,4 +1,4 @@
-<form class="form w-100" id="formPagina">
+<form class="form w-100" id="formPagina{{modelo.pk}}">
    <div class="form-row">
       <div class="form-group col-12">
          <label for="titlePage" class="col-form-label">Title</label>
@@ -7,7 +7,7 @@
       </div>
       <div class="form-group col-12">
          <label for="summernote" class="col-form-label">Content</label>
-         <textarea id="summernote" class="form-control" name="summernote">{% if modelo %}{{ modelo.contenido}}{% endif %}</textarea>
+         <textarea id="summernote{{modelo.pk}}" class="form-control" name="summernote">{% if modelo %}{% if modelo.contenido %}{{ modelo.contenido}}{% endif %}{% endif %}</textarea>
       </div>
    </div>
    <div class="form-row d-flex justify-content-end">

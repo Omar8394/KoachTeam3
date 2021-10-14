@@ -41,17 +41,12 @@
                   {% endif %}
                   {% if page.contenido %}
                   <button type="button" class="btn btn-icon btn-sm btn-warning ml-1" data-toggle="tooltip"
-                     data-placement="top" title="Show/Hide" onclick="showContent('{{topic.pk}}')">
+                     data-placement="top" title="Show/Hide" onclick="showContent('{{page.pk}}')">
                      <i class="fas fa-clipboard"></i>
                   </button>
                   {% endif %}
                </div>
             </div>
-            <!-- <div class="card-list-item-extra">
-               Type: Fulano de tal
-               <br>
-               Requirements: topico 2 y cualquier otro
-            </div> -->
          </div>
          <div id="contentPage{{page.pk}}" class="card-list-item-descripcion card-list-item-close">
          </div>
