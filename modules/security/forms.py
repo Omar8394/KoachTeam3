@@ -78,6 +78,15 @@ class SignUpForm(UserCreationForm):
         fields = ('username', 'email', 'password1', 'password2')
 
 
+class RecoveryMethodEmail(forms.Form):
+    password1 = forms.CharField()
+    password2 = forms.CharField()
+
+
+class RecoveryMethodQuestion(forms.Form):
+    secrettext = forms.CharField()
+
+
 class LandingPage(forms.ModelForm):
     class Meta:
         model = LandPage
@@ -95,66 +104,65 @@ class FullRegistration(forms.ModelForm):
 
 
 class editProfiles(forms.ModelForm):
-
     nombre = forms.CharField(label='Name',
-        widget=forms.TextInput(
-            attrs={
-                "placeholder" : "Add your name",                
-                "class": "form-control form-control-line", 
-                'maxlength':15,
+                             widget=forms.TextInput(
+                                 attrs={
+                                     "placeholder": "Add your name",
+                                     "class": "form-control form-control-line",
+                                     'maxlength': 15,
 
-            }
-        ))
+                                 }
+                             ))
 
     apellido = forms.CharField(label='Last Name',
-        widget=forms.TextInput(
-            attrs={
-                "placeholder" : "Add your last name",                
-                "class": "form-control form-control-line",
-                'maxlength':100,
-                "name":"Last Name"
-            }
-        ))
+                               widget=forms.TextInput(
+                                   attrs={
+                                       "placeholder": "Add your last name",
+                                       "class": "form-control form-control-line",
+                                       'maxlength': 100,
+                                       "name": "Last Name"
+                                   }
+                               ))
 
-        
     # procedencia = forms.CharField(label='Country',
     #     widget=forms.TextInput(
     #         attrs={
-    #             "placeholder" : "Add a adress",                
+    #             "placeholder" : "Add a adress",
     #             "class": "form-control form-control-line",
     #             'maxlength':200
     #         }
     #     ))
 
     direccion = forms.CharField(label='Adress',
-        widget=forms.TextInput(
-            attrs={
-                "placeholder" : "Add a adress",                
-                "class": "form-control form-control-line",
-                'maxlength':200
-            }
-        ))
+                                widget=forms.TextInput(
+                                    attrs={
+                                        "placeholder": "Add a adress",
+                                        "class": "form-control form-control-line",
+                                        'maxlength': 200
+                                    }
+                                ))
 
     telefonos = forms.CharField(label='Alternative phone', required=False,
-        widget=forms.NumberInput(
-            attrs={
-                "placeholder" : "Add a alternative phone number",                
-                "class": "form-control form-control-line",
-                'maxlength':100
-            }
-        ))
+                                widget=forms.NumberInput(
+                                    attrs={
+                                        "placeholder": "Add a alternative phone number",
+                                        "class": "form-control form-control-line",
+                                        'maxlength': 100
+                                    }
+                                ))
 
     correos = forms.CharField(label='Alternative email', required=False,
-        widget=forms.EmailInput(
-            attrs={
-                "placeholder" : "Add a alternative email",                
-                "class": "form-control form-control-line",
-                'maxlength':100
-            }
-        ))
-
+                              widget=forms.EmailInput(
+                                  attrs={
+                                      "placeholder": "Add a alternative email",
+                                      "class": "form-control form-control-line",
+                                      'maxlength': 100
+                                  }
+                              ))
 
     class Meta:
         model = Publico
         exclude = (
-            'procedencia', 'cuenta_telegram', 'cuenta_whatsapp', 'fk_ciudad', 'fk_contratante', 'fecha_registro', 'docto_identidad')
+            'procedencia', 'cuenta_telegram', 'cuenta_whatsapp', 'fk_ciudad', 'fk_contratante', 'fecha_registro',
+            'docto_identidad')
+

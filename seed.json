@@ -1395,7 +1395,7 @@
   }
 },{
   "model": "app.tablasconfiguracion",
-  "pk": 206,
+  "pk": 209,
   "fields": {
     "desc_elemento": "suspended",
     "fk_tabla_padre": 3,

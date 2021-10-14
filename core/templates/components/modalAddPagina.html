@@ -7,10 +7,10 @@
       </div>
       <div class="form-group col-12">
          <label for="summernote" class="col-form-label">Content</label>
-         <textarea id="summernote" class="form-control" name="editordata">{% if modelo %}{{ modelo.contenido}}{% endif %}</textarea>
+         <textarea id="summernote" class="form-control" name="summernote">{% if modelo %}{{ modelo.contenido}}{% endif %}</textarea>
       </div>
    </div>
-   <div class="form-row">
+   <div class="form-row d-flex justify-content-end">
       <div class="form-group">
          <button type="submit" class="btn btn-primary">Save<i class="fas fa-save ml-2"></i></button>
       </div>

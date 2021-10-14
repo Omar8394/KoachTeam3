@@ -21,14 +21,14 @@
             <div class="card-list-item-title">#{{page.ordenamiento}} {{page.titulo}}</div>
             <div class="card-list-item-actions">
                <div class="btn-group" role="group">
-                  {% if add %}
+                  {% if not page.titulo and add %}
                   <button type="button" id="openCreateBtn{{page.pk}}" class="btn btn-icon btn-sm btn-success" data-placement="top" title="Add"
                      data-toggle="tooltip" data-target="tooltip" onclick="openCreatePage('{{page.pk}}')">
                      <i class="fas fa-plus"></i>
                   </button>
                   {% endif %}
-                  {% if edit %}
-                  <button type="button" class="btn btn-icon btn-sm btn-info ml-1" data-toggle="tooltip"
+                  {% if page.titulo and edit %}
+                  <button type="button" id="openEditBtn{{page.pk}}" class="btn btn-icon btn-sm btn-info ml-1" data-toggle="tooltip"
                      data-placement="top" title="Edit" onclick="openEditPage('{{page.pk}}')">
                      <i class="fas fa-edit"></i>
                   </button>
