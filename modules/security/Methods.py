@@ -21,7 +21,26 @@ def create_default_ctausuario():
     return cuenta
 
 
-def getVerificationLink(user_email, host, viewname, expirationtime):
+def change_password(enlace, password):
+    enlace.usuario.user.set_password(password)
+    enlace.save()
+    # validar las claves anteriores
+    restabler_cuenta(enlace)
+
+
+def restabler_cuenta(enlace):
+    enlace.usuario.user.is_active = True
+    enlace.usuario.CtaUsuario.fk_status_cuenta = TablasConfiguracion.objects.get(
+        valor_elemento="status_active")
+    enlace.usuario.CtaUsuario.intentos_fallidos = 0
+    enlace.usuario.CtaUsuario.fecha_ult_cambio = datetime.today()
+    enlace.usuario.user.save()
+    enlace.usuario.CtaUsuario.save()
+    enlace.delete()
+
+
+
+def getVerificationLink(user_email, expirationtime):
     try:
         user = User.objects.get(email__exact=user_email)
         ext_user = ExtensionUsuario.objects.get(user=user)
@@ -29,7 +48,7 @@ def getVerificationLink(user_email, host, viewname, expirationtime):
         if not enlacev:
             code = generateVerificationLink(ext_user, user.email, expirationtime)
             if code:
-                return host + "/" + viewname + "/" + code + "/"
+                return code
         else:
             print("Este usuario ya posee un enlace de verificacion activo")
     except Exception as e:
@@ -73,4 +92,4 @@ class securityTools:
         return fechabase.strftime(self.formato)
 
     def exp_clave(self, fecha_ult_cambio, dias_venc):
-        return self.operaciones_dias_fecha(fecha_ult_cambio, dias_venc, True) >= datetime.now().strftime(self.formato)
+        return datetime.now().strftime(self.formato) >= self.operaciones_dias_fecha(fecha_ult_cambio, dias_venc, True)

@@ -2,27 +2,27 @@
 """
 Copyright (c) 2019 - present AppSeed.us
 """
+from datetime import datetime
 
-from django.http import response
-from django.http.response import JsonResponse
 from django.shortcuts import render
-from django import forms  
-
+from django.http.response import JsonResponse
 # Create your views here.
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.forms.utils import ErrorList
 from django.http import HttpResponse
-from .forms import LoginForm, SignUpForm, ResetPasswordForm, LandingPage, FullRegistration, editProfiles
+from django.urls import reverse
+
+from .forms import LoginForm, SignUpForm, ResetPasswordForm, LandingPage, FullRegistration,editProfiles
 from modules.app.models import TablasConfiguracion
 from modules.security.models import CtaUsuario, EnlaceVerificacion
 from modules.security import Methods
 from ..communication.Methods import create_mail, send_mail
 from modules.security.Methods import create_default_ctausuario
 from modules.security.models import ExtensionUsuario
-from modules.security.forms import RecoveryMethodForm
-from ..app.models import Publico
+from modules.security.forms import RecoveryMethodForm, RecoveryMethodEmail, RecoveryMethodQuestion
+from django.http import Http404
 import uuid
 import os
 from core import settings
@@ -30,7 +30,7 @@ from pathlib import Path
 from django.core.files.storage import FileSystemStorage
 import imghdr
 from django.contrib import messages
-
+from ..app.models import Publico
 
 def login_view(request):
     if request.user.is_authenticated:
@@ -47,8 +47,6 @@ def login_view(request):
                 username = form.cleaned_data.get("username")
                 password = form.cleaned_data.get("password")
                 user = authenticate(username=username, password=password)
-                print(password)
-                print(user)
                 if user is not None:
                     login(request, user)
                     cuenta = ExtensionUsuario.objects.get(user=user)
@@ -65,27 +63,36 @@ def login_view(request):
                     elif status_cuenta == 'verification':
                         msg = 'This account has not been verified, please enter your email and click on the verification link.'
                         logout(request)
-                    elif status_cuenta == 'active':
-                        cuenta.CtaUsuario.intentos_fallidos = 0
-                        cuenta.CtaUsuario.save()
-                        return redirect("/")
                     elif cuenta.CtaUsuario.fecha_ult_cambio is None:
                         # primer ingreso debe cambiar contraseña si la cuenta fue creada
                         # por el administrador
+                        code = str(Methods.getVerificationLink(user.email, 1))
                         print("cambiar contraseña primera vez")
                         logout(request)
-                        pass
-                    elif tools.exp_clave(cuenta.CtaUsuario.fecha_ult_cambio, cuenta.CtaUsuario.dias_cambio):
-                        # redireccionar a pantalla de cambiar clave
+                        if code:
+                            return redirect("/emailrecovery/" + code + "/")
+                        else:
+                            msg = "Error to generate code activaction"
+                        return redirect("/emailrecovery/" + code + "/")
+                    elif tools.exp_clave(str(cuenta.CtaUsuario.fecha_ult_cambio), cuenta.CtaUsuario.dias_cambio):
+                        print("cambiar contraseña por expiracion")
                         logout(request)
-                        pass
+                        code = str(Methods.getVerificationLink(user.email, 1))
+                        if code:
+                            return redirect("/emailrecovery/" + code + "/")
+                        else:
+                            msg = "Error to generate code activaction"
 
-
+                    elif status_cuenta == 'active':
+                        print("entrando")
+                        cuenta.CtaUsuario.intentos_fallidos = 0
+                        cuenta.CtaUsuario.save()
+                        return redirect("/")
                     # registrar intentos fallidos.
                     # verificar si la cantidad de intentos es igual a la maxima y bloquear usuario
                     # registrar en el log
                 else:
-                    print('estoy aca')
+                    print("else")
                     try:
                         user = User.objects.get(username=username)
                         cuenta = ExtensionUsuario.objects.get(user=user)
@@ -140,10 +147,10 @@ def register_user(request):
 def forgot_password(request):
     msg = None
     success = False
-    if request.method == "POST":
-        if request.user.is_authenticated:
-            return redirect("/")
-        else:
+    if request.user.is_authenticated:
+        return redirect("/")
+    else:
+        if request.method == "POST":
             request.session.flush()
             form = ResetPasswordForm(request.POST)
             if form.is_valid():
@@ -163,9 +170,9 @@ def forgot_password(request):
             else:
                 msg = 'Form is not valid'
                 success = False
-    else:
-        form = ResetPasswordForm()
-    return render(request, "security/passwordReset.html", {"form": form, "msg": msg, "success": success})
+        else:
+            form = ResetPasswordForm()
+        return render(request, "security/passwordReset.html", {"form": form, "msg": msg, "success": success})
 
 
 def recovery_method(request):
@@ -185,19 +192,26 @@ def recovery_method(request):
                 typemethod = int(form.cleaned_data.get("typeMethod"))
                 user_email = form.cleaned_data.get("email")
                 if typemethod == 1:
-                    code = str(Methods.getVerificationLink(user_email, request.get_host(), "emailrecovery", 2))
+                    code = str(Methods.getVerificationLink(user_email, 2))
                     if code:
-                        enlace = "http://"+code
+                        enlace = request.get_raw_uri().split("//")[0] + "//" + \
+                                 request.get_host() + "/emailrecovery/" + code + "/"
                         context = {"titulo": "Account Recovery Request", "user": user_email,
                                    "content": "We have received an account recovery request, to restore your account click on the following link: ",
                                    "enlace": enlace, "enlaceTexto": "click here!"}
-                        send_mail(create_mail(user_email, "Account Recovery Request", "security/base_email_template_pro.html",
-                                              context))
-                        print("verificationlink has been sent:", enlace)
+                        send_mail(
+                            create_mail(user_email, "Account Recovery Request", "security/base_email_template_pro.html",
+                                        context))
+                        request.session.flush()
+                        information = {"mensaje": "We have sent an email with a recovery link to your account.",
+                                       "titulo": "Verification email sending"}
+                        return render(request, "security/information_view.html", information)
                     else:
                         print("codigo nulo")
 
                 elif typemethod == 2:
+                    request.session['user_email'] = user_email
+                    return redirect("/recoverymethodquestion/")
                     pass
             else:
                 return redirect("/passwordReset/")
@@ -205,19 +219,48 @@ def recovery_method(request):
     return render(request, "security/recoverymethod.html", context)
 
 
-def recovery_method_link(request):
+def recovery_method_question(request):
     if request.user.is_authenticated:
         return redirect("/")
     else:
-        if request.method == "GET":
+        if request.session.get("user_email"):
+            email = request.session.get("user_email")
+            context = {"user_email": email}
+            request.session.flush()
+            try:
+                user = User.objects.get(email__exact=email)
+                ext_user = ExtensionUsuario.objects.get(user=user)
+                if ext_user.CtaUsuario.fk_status_cuenta.desc_elemento == "suspended":
+                    raise Http404("This account is suspended, please contact support")
+                elif ext_user.CtaUsuario.respuesta_secreta is None:
+                    information = {"mensaje": "This recovery method has not been established in the account.",
+                                   "titulo": "Method not configured"}
+                    return render(request, "security/information_view.html", information)
+                else:
+                    msg = None
+                    if request.method == "GET":
+                        request.session['user_email'] = email
+                    elif request.method == "POST":
+                        form = RecoveryMethodQuestion(request.POST or None)
+                        if form.is_valid():
+                            answer = form.cleaned_data.get("secrettext")
+                            if answer == ext_user.CtaUsuario.respuesta_secreta:
+                                code = str(Methods.getVerificationLink(email, 1))
+                                if code:
+                                    return redirect("/emailrecovery/" + code + "/")
+                                else:
+                                    msg = "Error to generate code activaction"
+                            else:
+                                msg = "The secret answer is wrong please try again"
+                        else:
+                            msg = "form invalid please fill all fields"
+                    context = {"question": ext_user.CtaUsuario.fk_pregunta_secreta.desc_elemento, "msg": msg}
+                    return render(request, "security/questionrecovery.html", context)
 
-            pass
+            except User.DoesNotExist:
+                raise Http404("The email entered is not associated with any account or this account is suspended")
         else:
-            pass
-
-
-def recovery_method_question(request):
-    pass
+            return redirect("/passwordReset/")
 
 
 def lang_page(request):
@@ -263,12 +306,27 @@ def full_registration(request):
             ExtensionUsuario.objects.create(CtaUsuario=cuenta, user=user, Publico=publico)
             # send verification email
             success = True
-            msg = "Registration has been completed successfully."
-
+            code = str(Methods.getVerificationLink(user.email, 2))
+            if code:
+                enlace = request.get_raw_uri().split("//")[0] + "//" + \
+                         request.get_host() + "/verificationaccount/" + code + "/"
+                context = {"titulo": "Account Verification", "user": user.email,
+                           "content": "thank you for joining the energy solar team, follow the link below to validate your account:",
+                           "enlace": enlace, "enlaceTexto": "click here!"}
+                send_mail(
+                    create_mail(user.email, "Account Verification", "security/base_email_template_pro.html",
+                                context))
+                msg = "Registration has been completed successfully."
+                information = {"mensaje": "We have sent an account verification link to your email",
+                               "titulo": "Registration has been completed successfully."}
+                return render(request, "security/information_view.html", information)
+            else:
+                msg = "Error to generate code link verification"
 
         else:
             tipo_telefono = TablasConfiguracion.obtenerHijos("tipo_telefono")
             msg = 'Error validating the form'
+
     else:
         tipo_telefono = TablasConfiguracion.obtenerHijos("tipo_telefono")
         full_registration_form = LandingPage()
@@ -277,52 +335,82 @@ def full_registration(request):
                   {"msg": msg, "reason": False, 'success': success, "tipoTelefono": tipo_telefono})
 
 
-def emailrecovery(request, activation_key):
-
-    if request.method == "GET":
-        try:
-            enlace = EnlaceVerificacion.objects.get(activation_key=activation_key)
+def verificationaccount(request, activation_key):
+    try:
+        enlace = EnlaceVerificacion.objects.get(activation_key=activation_key)
+        if enlace.usuario.CtaUsuario.fk_status_cuenta != "suspend":
             if Methods.verificarenlace(enlace.key_expires):
                 print("enlace valido", activation_key)
-                pass
+                context = {"user": enlace.usuario.user.username}
+                if request.method == "POST":
+                    Methods.restabler_cuenta(enlace)
+                    loginlink = request.get_raw_uri().split("//")[0] + "//" + \
+                                request.get_host() + "/login/"
+                    information = {"mensaje": "Thanks for verifying your account, now you can login" + loginlink,
+                                   "titulo": "Your account has been verified"}
+                    return render(request, "security/information_view.html", context)
             else:
-                print("enlace invalido")
-                pass
-        except Exception as e:
-            print("error al validar enlace:", e)
-    else:
-        print("otro metodo")
+                raise Http404("This link has expired please request another link")
+        else:
+            raise Http404("This account is locked, please contact support")
+    except EnlaceVerificacion.DoesNotExist:
+        raise Http404("This verification link is invalid or has expired")
+
+
+def emailrecovery(request, activation_key):
+    try:
+        enlace = EnlaceVerificacion.objects.get(activation_key=activation_key)
+        if enlace.usuario.CtaUsuario.fk_status_cuenta != "suspend":
+            if Methods.verificarenlace(enlace.key_expires):
+                print("enlace valido", activation_key)
+                context = {"user": enlace.usuario.user.username}
+                if request.method == "POST":
+                    form = RecoveryMethodEmail(request.POST or None)
+                    if form.is_valid():
+                        print("form is valid and key link is valid")
+                        Methods.change_password(enlace, form.cleaned_data['password1'])
+                        return redirect("/login/", kwargs={'msg':
+                                                               'Your credentials have been changed correctly, '
+                                                               'try to login'})
+                    else:
+                        print(form)
+                        print("invalid form")
+            else:
+                raise Http404("This link has expired please request another link")
+        else:
+            raise Http404("This account is locked, please contact support")
+    except EnlaceVerificacion.DoesNotExist:
+        raise Http404("This verification link is invalid or has expired")
+    return render(request, "security/emailrecovery.html", context)
 
 
 def editProfile(request):
+    profile = Publico.objects.get(idpublico=ExtensionUsuario.objects.get(user=request.user).Publico.idpublico)
 
-    profile = Publico.objects.get(idpublico = ExtensionUsuario.objects.get(user = request.user).Publico.idpublico)
+    if request.method == "POST":
 
-    if request.method == "POST":  
+        form = editProfiles(request.POST, instance=profile)
 
-        form = editProfiles(request.POST, instance = profile) 
+        if form.is_valid():
 
-        if form.is_valid():  
-
-            form.save()  
+            form.save()
             print("saved")
             # if id:
 
             #     messages.info(request, 'Changes applied to %s successfully' %(form.data['deescripcion']))
 
             # else:
-                
+
             #     messages.info(request, 'Profile Named %s Added Succefuly ' %(form.data['deescripcion']))
 
-            return redirect('/')  
+            return redirect('/')
 
         else:
 
             # messages.warning(request, 'An error has occurred!')
-            return render(request,'planning/edit.html',{'form':form})
+            return render(request, 'planning/edit.html', {'form': form})
 
-
-    form = editProfiles(instance = profile)  
+    form = editProfiles(instance=profile)
     # form.fields['procedencia'] = forms.ChoiceField(choices= list(counties().items()), label="Country of Origin")
     # form.fields['procedencia'].widget.attrs.update({
     #     'class': 'form-control countryList'
@@ -331,18 +419,16 @@ def editProfile(request):
     return render(request, "security/profilePage.html", {'form': form})
 
 
-    
 def images(request):
-
-    if request.method == "POST":  
+    if request.method == "POST":
 
         myfile = request.FILES['file-input']
 
         if imghdr.what(myfile):
 
-            fs = FileSystemStorage(location=settings.UPLOAD_ROOT )
-            nombreImagen=str(request.user.id)+".png"
-            Ruta=settings.UPLOAD_ROOT + '/user'
+            fs = FileSystemStorage(location=settings.UPLOAD_ROOT)
+            nombreImagen = str(request.user.id) + ".png"
+            Ruta = settings.UPLOAD_ROOT + '/user'
 
             try:
 
@@ -352,38 +438,36 @@ def images(request):
 
                 pass
 
-            fs.delete(Ruta+'/'+nombreImagen)
-            fs.save(Ruta+'/'+nombreImagen, myfile)
+            fs.delete(Ruta + '/' + nombreImagen)
+            fs.save(Ruta + '/' + nombreImagen, myfile)
 
-            ctauser = CtaUsuario.objects.filter(idcta_usuario=ExtensionUsuario.objects.get(user=request.user).CtaUsuario.idcta_usuario)
+            ctauser = CtaUsuario.objects.filter(
+                idcta_usuario=ExtensionUsuario.objects.get(user=request.user).CtaUsuario.idcta_usuario)
 
             if ctauser:
-
                 ctauser.update(url_imagen=nombreImagen)
 
         else:
-            
+
             messages.error(request, 'This file is not a valid image')
 
     return redirect("/editProfile/")
 
-    
-    
-def rootImages(request):
 
-    if request.method == "POST":  
-        
-        ctauser = CtaUsuario.objects.get(idcta_usuario=ExtensionUsuario.objects.get(user=request.user).CtaUsuario.idcta_usuario)
-        
+def rootImages(request):
+    if request.method == "POST":
+
+        ctauser = CtaUsuario.objects.get(
+            idcta_usuario=ExtensionUsuario.objects.get(user=request.user).CtaUsuario.idcta_usuario)
+
         Ruta = settings.UPLOAD_URL + 'user/' + ctauser.url_imagen if ctauser else None
         root = settings.UPLOAD_ROOT + '/user/' + ctauser.url_imagen if ctauser else None
-        
-        if not os.path.exists(root):
 
+        if not os.path.exists(root):
             Ruta = None
 
     response = {
-        'ruta':Ruta
+        'ruta': Ruta
     }
 
     return JsonResponse(response)

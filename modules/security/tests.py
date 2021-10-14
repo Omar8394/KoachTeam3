@@ -9,22 +9,14 @@ from datetime import timedelta
 import random
 
 
-def getVerificationLink(user_email):
-    x = random.randint(0, 999)
-    user_email += str(x)
-    h = hashlib.sha1(user_email.encode())
-    salt = h.hexdigest()
-    print("salt", salt)
-    activation_key = hashlib.sha1(str(salt + user_email).encode()).hexdigest()
-    key_expires = datetime.today() + timedelta(2)
-    print("activation_key:", activation_key)
-    print("key expiration:", key_expires)
 
+def operaciones_dias_fecha(fechabase, cantidad, operacion):
+    formato = "%Y-%m-%d"
+    fechabase = datetime.strptime(fechabase,formato)
+    if operacion:  # true suma
+        fechabase = fechabase + timedelta(days=cantidad)
+    else:  # false resta
+        fechabase = fechabase - timedelta(days=cantidad)
+    return fechabase.strftime(formato)
 
-print("tadifred link")
-getVerificationLink("tadifred@gmail.com")
-print("kass link")
-getVerificationLink("kassandra.arellano17@gmail.com")
-
-
-
+print(operaciones_dias_fecha("2021-10-13", 90, True))

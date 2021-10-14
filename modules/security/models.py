@@ -18,7 +18,7 @@ class CtaUsuario(models.Model):
     respuesta_secreta = models.TextField(blank=True, null=True)
     fk_status_cuenta = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE, related_name='estado_cuenta')
     dias_cambio = models.IntegerField()
-    url_imagen  = models.CharField(max_length=100, default=None, blank=True, null=True)
+    url_imagen = models.CharField(max_length=100, default=None, blank=True, null=True)
 
 
 class ContratantesRol(models.Model):
@@ -37,9 +37,7 @@ class LandPage(models.Model):
     correos = models.TextField()
     motivo_solicitud = models.TextField()
     status_solicitud = models.BooleanField(default=False)
-    codigo_aprobacion = models.IntegerField(null=True)
     fecha_solicitud = models.DateField(auto_now_add=True, null=True)
-    fec_cod_expiracion = models.DateField(null=True)
 
 
 class LogSeguridad(models.Model):
@@ -60,4 +58,4 @@ class EnlaceVerificacion(models.Model):
     id_verificacion = models.AutoField(primary_key=True)
     activation_key = models.TextField(blank=True)
     key_expires = models.DateTimeField()
-    usuario = models.OneToOneField(ExtensionUsuario, on_delete=models.CASCADE)
+    usuario = models.OneToOneField(ExtensionUsuario, on_delete=models.CASCADE, null=True)

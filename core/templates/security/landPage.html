@@ -28,7 +28,7 @@
                               <h2 class="h2">{% block titulo %}Access Request Form{% endblock %}</h2>
                             </span>
                         {% endif %}
-
+     <span class="text-danger">{{ form.email.errors }}</span>
     </div>
     <div class="card-body">
         <form  method="post" id="lanpageform" role="form" onsubmit="return getEmail() && getPhone() && getPasswordValidation()">
