@@ -1,1 +1,86 @@
-aqui va un banco de recursos bien mamon
+<div class="modal-content">
+   <div class="modal-header">
+      <h5 class="modal-title">Resources bank</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+         <span aria-hidden="true">&times;</span>
+      </button>
+   </div>
+   <div class="modal-body">
+      <nav>
+         <div class="nav nav-tabs" id="nav-tab" role="tablist">
+            <a class="nav-link active" id="nav-recent-tab" data-toggle="tab" href="#nav-recent" role="tab"
+               aria-controls="nav-recent" aria-selected="true">Recent</a>
+            <a class="nav-link" id="nav-bank-tab" data-toggle="tab" href="#nav-bank" role="tab" aria-controls="nav-bank"
+               aria-selected="false">Bank</a>
+            <a class="nav-link" id="nav-upload-tab" data-toggle="tab" href="#nav-upload" role="tab"
+               aria-controls="nav-upload" aria-selected="false">Upload</a>
+         </div>
+      </nav>
+      <div class="tab-content" id="nav-tabContent">
+         <div class="tab-pane fade show active" id="nav-recent" role="tabpanel" aria-labelledby="nav-recent-tab">
+            <ul class="breadcrumbs">
+               <li class="separator">
+                  <i class="flaticon-right-arrow"></i>
+               </li>
+               <li class="nav-home">
+                  <span>
+                     Recent
+                  </span>
+               </li>
+            </ul>
+         </div>
+         <div class="tab-pane fade" id="nav-bank" role="tabpanel" aria-labelledby="nav-bank-tab">
+            <ul class="breadcrumbs">
+               <li class="separator">
+                  <i class="flaticon-right-arrow"></i>
+               </li>
+               <li class="nav-home">
+                  <span>
+                     <i class="flaticon-home"></i>
+                  </span>
+               </li>
+               <li class="separator">
+                  <i class="flaticon-right-arrow"></i>
+               </li>
+               <li class="nav-item">
+                  <span>
+                     Program
+                  </span>
+               </li>
+            </ul>
+         </div>
+         <div class="tab-pane fade" id="nav-upload" role="tabpanel" aria-labelledby="nav-upload-tab">
+            <form class="form">
+               <div class="form-row">
+                  <div class="form-group col-12">
+                     <label for="tagResource" class="col-form-label">Tags</label>
+                     <input type="text" class="form-control" id="tagResource" name="tagResource"
+                        placeholder="Enter some tags" required>
+                  </div>
+               </div>
+               <div class="form-row">
+                  <div class="form-group col-12">
+                     <div class="custom-control custom-checkbox ml-2">
+                        <label class="custom-control-label" for="checkSharedCB">Shared resource</label>
+                        <input type="checkbox" class="custom-control-input" name="checkSharedCB" id="checkSharedCB">
+                     </div>
+                  </div>
+               </div>
+               <div class="form-row">
+                  <div class="form-group col-12">
+                     <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="customFile">
+                        <label class="custom-file-label" for="customFile">Choose file</label>
+                     </div>
+                  </div>
+               </div>
+               <div class="form-row">
+                  <div class="form-group">
+                     <button type="submit" class="btn btn-primary">Insert<i class="fas fa-save ml-2"></i></button>
+                  </div>
+               </div>
+            </form>
+         </div>
+      </div>
+   </div>
+</div>
