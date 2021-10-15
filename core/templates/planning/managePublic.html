@@ -1,0 +1,290 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}{% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+
+{% endblock stylesheets %} 
+{% block content %}
+
+	<div class="content" id="contenedor">
+		<div class="page-inner animated fadeInRight">
+			<div class="page-header">
+				<h4 class="page-title">Public</h4>
+				<ul class="breadcrumbs">
+					<li class="nav-home">
+						<a href="{% url 'home' %}">
+							<i class="flaticon-home"></i>
+						</a>
+					</li>
+					<li class="separator">
+						<i class="flaticon-right-arrow"></i>
+					</li>
+					<li class="nav-item">
+						<a href="{% url 'indexSettings' %}">Settings</a>
+					</li>
+					<li class="separator">
+						<i class="flaticon-right-arrow"></i>
+					</li>
+					<li class="nav-item">
+						<a href=".">Public</a>
+					</li>
+				</ul>
+			</div>
+            {% include 'planning/filtro.html' %}
+			<div class="page-category" id="prueba">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="form-row">
+                            <div class="form-group d-flex">
+                                <h2 class="card-text mt-2">
+                                List of public
+                                </h2>
+
+                            </div>
+
+                        </div>
+                        
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-striped table-borderless table-component-like text-center" id="tablaContenido">
+
+                                {% include 'planning/contenidoTablaPublic.html' with plan=plan tipo=tipo %}   
+
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card-footer" id="paginas"> 
+
+                        {% include 'planning/paginas.html' with plan=plan %} 
+
+                    </div> 
+                </div>           
+      		</div>
+		</div>
+	</div>
+
+    {% include 'planning/mensajes.html' %}
+
+
+
+{% endblock content %}
+	
+<!-- Specific Page JS goes HERE  planning-->
+{% block javascripts %}
+
+
+
+<script>
+        
+
+        const bloquear = (id) => {
+
+            swal({
+                    title: "Are you sure?",
+                    text: "Do you want to lock this user?",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+
+            }).then((willDelete) => {
+
+                    if(willDelete){
+                            $.ajax({
+                            type: "POST",
+                            url: "{% url urlRemove %}",
+                            data: {
+                                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                                'id': id,
+                            },
+                            dataType: "json",
+                            success: function (data) {
+                                window.location = "{% url 'managePublic' %}"
+                                
+                            },
+                            failure: function () {
+                                swal("failure");
+                            }
+                        });
+
+                    }
+                });
+            } 
+        const desbloquear = (id) => {
+
+            swal({
+                    title: "Are you sure?",
+                    text: "Do you want to unlock this user?",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+
+            }).then((willDelete) => {
+
+                    if(willDelete){
+                            $.ajax({
+                            type: "POST",
+                            url: "{% url urlEdit %}",
+                            data: {
+                                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                                'id': id,
+                            },
+                            dataType: "json",
+                            success: function (data) {
+                                window.location = "{% url 'managePublic' %}"
+                                
+                            },
+                            failure: function () {
+                                swal("failure");
+                            }
+                        });
+
+                    }
+                });
+            } 
+            
+    //paginaciones
+    $('#paginas').on('click', ".page-link", function(e){
+        e.preventDefault();
+        let page = $(this).attr('href').replace ( /[^\d.]/g, '' );
+            $.ajax({
+                    type: "POST",
+                    url: "{% url 'paginar' %}", 
+                    data : {    
+                    page : page, 
+                    filtro : $('#search_box').val(), 
+                    tipo: "Public",
+                    orden: orden,
+                    tipoOrden: $("#tablaContenido").hasClass("descendiente")?"-":"",
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                },
+                success: function (response) {
+
+                    document.getElementById('paginas').innerHTML = response.paginas;
+                    document.getElementById('tablaContenido').innerHTML = response.contenido;
+                    // console.log(response.contenido)
+
+                },
+                error: function () {}
+            });
+
+    }); 
+
+    //metodos para filtro
+    let t;    
+        function myCallback()
+        {
+            let txt = $('#search_box').val();
+                $.ajax({
+                        type: "POST",
+                        url: "{% url 'paginar' %}", 
+                        data : {    
+                        filtro : txt, 
+                        tipo: "Public",
+                        csrfmiddlewaretoken: '{{ csrf_token }}',
+                    },
+                    success: function (response) {
+
+                        document.getElementById('paginas').innerHTML = response.paginas;
+                        document.getElementById('tablaContenido').innerHTML = response.contenido;
+                        // // console.log(response.contenido)
+
+                    },
+                    error: function () {}
+                });
+        }
+
+    $(document).ready(function () {
+        $('#search_box').keyup(function (e) {  
+
+            if (e.keyCode === 13) {
+
+                if (t){
+                    
+                    clearTimeout( t );
+                    t = null;
+                    myCallback();
+                }
+
+            }
+
+            else
+
+                if ( t )
+                {
+                    clearTimeout( t );
+                    t = setTimeout( myCallback, 1000 );
+                }
+                else
+                {
+                    t = setTimeout( myCallback, 1000 );
+                }
+
+            return false;
+        });
+        
+    })
+    //llama boton x
+    document.getElementById('search_box').addEventListener('input', function(e) { 
+        if(e.currentTarget.value == "") {
+            myCallback();
+        }
+    })
+
+    
+    let orden="", tipoOrden="";
+    
+    //metodos para ordenar las tablas por columna
+    $("#tablaContenido").on('click', "th", function(e){
+
+        if($(this).attr("id"))
+            var ord=""
+        if($("#tablaContenido").hasClass("descendiente"))
+
+            $('#tablaContenido').removeClass('descendiente');
+
+        else{
+            ord="-"
+            $('#tablaContenido').addClass('descendiente');
+        }
+
+        orden = $(this).attr("id")
+        if(orden === 'telefonos' || orden === 'idpublico' || orden === 'nombre' || orden === 'apellido' || orden === 'correos') orden = 'Publico__'+orden
+        if(orden === 'fk_rol_usuario' || orden === 'fk_status_cuenta') orden = 'CtaUsuario__'+orden
+        // let page = $('#paginas .page-item.active').children('a').attr('href').replace ( /[^\d.]/g, '' );
+        $.ajax({
+                type: "POST",
+                url: "{% url 'paginar' %}", 
+                data : {    
+                orden: orden,
+                // page: page,
+                tipoOrden: ord,
+                filtro : $('#search_box').val(), 
+                tipo: "Public",
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+            },
+            success: function (response) {
+
+                document.getElementById('paginas').innerHTML = response.paginas;
+                document.getElementById('tablaContenido').innerHTML = response.contenido;
+                // console.log(response.contenido)
+
+            },
+            error: function () {}
+        });
+
+    });
+
+
+    
+</script>
+
+{% endblock javascripts %}
+
+
+
+
+
+

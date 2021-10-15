@@ -31,6 +31,7 @@ from django.core.files.storage import FileSystemStorage
 import imghdr
 from django.contrib import messages
 from ..app.models import Publico
+import json
 
 def login_view(request):
     if request.user.is_authenticated:
@@ -385,38 +386,64 @@ def emailrecovery(request, activation_key):
 
 
 def editProfile(request):
-    profile = Publico.objects.get(idpublico=ExtensionUsuario.objects.get(user=request.user).Publico.idpublico)
 
+    profile = Publico.objects.get(idpublico=ExtensionUsuario.objects.get(user=request.user).Publico.idpublico)
+    telefono = profile.telefonos
+    correo = profile.correos
+    
     if request.method == "POST":
 
         form = editProfiles(request.POST, instance=profile)
 
         if form.is_valid():
 
-            form.save()
-            print("saved")
-            # if id:
+            obj = form.save(commit=False)
 
-            #     messages.info(request, 'Changes applied to %s successfully' %(form.data['deescripcion']))
+            if obj.telefonos:
 
-            # else:
+                telefonoAlt = json.loads(telefono)
+                telefonoAlt['telefonoAlternativo'] = obj.telefonos
+                obj.telefonos = json.dumps(telefonoAlt)
 
-            #     messages.info(request, 'Profile Named %s Added Succefuly ' %(form.data['deescripcion']))
+            elif 'telefonoAlternativo' in json.loads(telefono):
 
-            return redirect('/')
+                telefonoAlt = json.loads(telefono)
+                telefonoAlt.pop('telefonoAlternativo')
+                obj.telefonos = json.dumps(telefonoAlt)
+
+            else:
+                
+                obj.telefonos = telefono
+
+            if obj.correos:
+
+                correoAlt = json.loads(correo)
+                correoAlt['emailAlternativo'] = obj.correos
+                obj.correos = json.dumps(correoAlt)
+            
+            elif 'emailAlternativo' in json.loads(correo):
+
+                correoAlt = json.loads(correo)
+                correoAlt.pop('emailAlternativo')
+                obj.correos = json.dumps(correoAlt)
+
+            else:
+
+                obj.correos = correo
+
+            obj.save()
+
+            messages.info(request, 'Changes applied successfully')
+
+            return render(request, "security/profilePage.html", {'form': form,  'telefono': json.loads(telefono)['telefonoPrincipal'] if 'telefonoPrincipal' in json.loads(telefono) else None})
 
         else:
 
-            # messages.warning(request, 'An error has occurred!')
-            return render(request, 'planning/edit.html', {'form': form})
-
-    form = editProfiles(instance=profile)
-    # form.fields['procedencia'] = forms.ChoiceField(choices= list(counties().items()), label="Country of Origin")
-    # form.fields['procedencia'].widget.attrs.update({
-    #     'class': 'form-control countryList'
-    # })
-
-    return render(request, "security/profilePage.html", {'form': form})
+            messages.warning(request, 'An error has occurred!')
+            return render(request, "security/profilePage.html", {'form': form,  'telefono': json.loads(telefono)['telefonoPrincipal'] if 'telefonoPrincipal' in json.loads(telefono) else None})
+            
+    form = editProfiles(instance=profile, initial={'telefonos': json.loads(telefono)['telefonoAlternativo'] if 'telefonoAlternativo' in json.loads(telefono) else None, 'correos': json.loads(correo)['emailAlternativo'] if 'emailAlternativo' in json.loads(correo) else None})
+    return render(request, "security/profilePage.html", {'form': form, 'telefono': json.loads(telefono)['telefonoPrincipal'] if 'telefonoPrincipal' in json.loads(telefono) else None})
 
 
 def images(request):
@@ -445,7 +472,9 @@ def images(request):
                 idcta_usuario=ExtensionUsuario.objects.get(user=request.user).CtaUsuario.idcta_usuario)
 
             if ctauser:
+
                 ctauser.update(url_imagen=nombreImagen)
+                messages.info(request, 'Changes applied successfully')
 
         else:
 

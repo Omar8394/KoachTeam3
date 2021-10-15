@@ -5,7 +5,7 @@ from .forms import competenciaAdqForm, competenciaForm, perfilForm, programForm
 from .models import CompetenciasAdq, Perfil, CompetenciasReq
 from ..app.models import Estructuraprograma, TablasConfiguracion, Programascap, Publico
 from ..app.Methods import MyMethod
-from ..security.models import ExtensionUsuario
+from ..security.models import ExtensionUsuario, CtaUsuario
 from ..registration.models import MatriculaAlumnos
 from json import dumps
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -14,16 +14,20 @@ from django.template.loader import render_to_string
 from django.template.defaulttags import register
 from django.db.models import Q, F, Max
 import re
+from django.core import serializers
+from django.http import HttpResponse
+import json
 # Create your views here.
 TITULOPERFIL = {'idperfil': '#', 'deescripcion': 'Name', 'desc_corta': 'Description', 'fk_rama': 'Branch'}
 TITULOCOMPETENCIA = {'idcompetenciasreq': '#', 'desc_competencia': 'Name', 'fk_perfil': 'Profile', 'fk_tipo_competencia': 'Type', 'fk_nivel': 'Minimum Level'}
 TITULOCOMPETENCIAADQ = {'idcompetencias_adq': '#', 'fk_publico': 'Public', 'periodo': 'Period', 'experiencia': 'Experience', 'fk_tipo_duracion': 'Duration', 'fk_competencia': 'Competence', 'fk_nivel': 'Level'}
 TITULOPLAN = {'idpublico':'#', 'nombre': 'Name', 'apellido': 'Last Name'}
 TITULOPLANES = {'idmatricula_alumnos': '#', 'fk_estruc_programa': 'Program', 'fecha_matricula': 'Date', 'fk_status_matricula': 'Status'}
+TITULOPUBLIC = {'idpublico':'#', 'nombre': 'Name', 'apellido': 'Last Name', 'fk_rol_usuario': 'Role', 'telefonos': 'Primary Phone', 'correos': 'Primary Email:', 'fk_status_cuenta': 'Status'}
 
 @register.filter
 def get_attr(dictionary, key):
-    return getattr(dictionary, key)
+    return(getattr(dictionary, key))
 
 @register.filter
 def get_list(dictionary, key):
@@ -45,8 +49,15 @@ def tostring(value):
 
 @register.filter
 def hasPrograms(value):
-    
     return len(MatriculaAlumnos.objects.filter(fk_publico = value, origenSolicitud = MyMethod.ReturnCode('Planning'))) > 0
+
+@register.filter
+def tostringJson(value, key):
+    try:
+        txt = json.loads(value)
+        return txt[key] if txt[key] else ""
+    except:
+        return ""
 
 def editCompetenceAdq(request, id = None):  
 
@@ -62,11 +73,11 @@ def editCompetenceAdq(request, id = None):
 
             if id:
 
-                messages.info(request, 'Changes applied successfully')
+                messages.info(request, 'Changes applied Successfully')
                 
             else:
                 
-                messages.info(request, 'Competence Added Succefuly')
+                messages.info(request, 'Competence Added Successfully')
 
             return redirect('/planning/showCompetenceAdq/') 
 
@@ -130,7 +141,7 @@ def editCompetence(request, id = None):
                     
                 else:
                     
-                    messages.info(request, 'Competence Named %s Added Succefuly ' %(form.data['desc_competencia']))
+                    messages.info(request, 'Competence Named %s Added Successfully ' %(form.data['desc_competencia']))
 
                 return redirect('/planning/showCompetence/') 
 
@@ -167,7 +178,7 @@ def edit(request, id=None):
 
                 else:
                     
-                    messages.info(request, 'Profile Named %s Added Succefuly ' %(form.data['deescripcion']))
+                    messages.info(request, 'Profile Named %s Added Successfully ' %(form.data['deescripcion']))
 
                 return redirect('/planning/show/')  
 
@@ -472,10 +483,17 @@ def paginar(request):
         
         plan = MatriculaAlumnos.objects.filter(fk_publico__idpublico=public, origenSolicitud=MyMethod.ReturnCode("Planning"))
 
+    elif tipo and tipo == 'Public':
+        
+        plan = ExtensionUsuario.objects.select_related().all()
+        # extension = ExtensionUsuario.objects.select_related().all()
+        # for ext in extension:
+        #     if ext.CtaUsuario:
+        #         print(ext.Publico.nombre)
+
     else:
 
         plan = Perfil.objects.all()
-
 
     if filtro:
 
@@ -492,6 +510,10 @@ def paginar(request):
         elif tipo and tipo == 'Schedule':
             
             plan = plan.filter(Q(nombre__icontains=filtro) | Q(apellido__icontains=filtro))
+
+        elif tipo and tipo == 'Public':
+            
+            plan = plan.filter(Q(Publico__idpublico__icontains=filtro) | Q(Publico__nombre__icontains=filtro) | Q(Publico__apellido__icontains=filtro) | Q(CtaUsuario__fk_rol_usuario__desc_elemento__icontains=filtro) | Q(Publico__correos__icontains=filtro) | Q(Publico__telefonos__icontains=filtro) | Q(CtaUsuario__fk_status_cuenta__desc_elemento__icontains=filtro))
     
         else:
 
@@ -499,7 +521,7 @@ def paginar(request):
 
 
     if(orden):
-        # print(tipoOrden + orden)
+
         plan = plan.order_by(tipoOrden + orden)
 
 
@@ -528,8 +550,12 @@ def paginar(request):
         pagina = None
         tabla = render_to_string('planning/contenidoTabla.html', {'plan': plan, 'keys' : TITULOPLANES, 'tipo': tipo})
 
-    else:
+    elif tipo and tipo == 'Public':
 
+        pagina = render_to_string('planning/paginas.html', {'plan': paginas(request, plan)})
+        tabla = render_to_string('planning/contenidoTablaPublic.html', {'plan': paginas(request, plan), 'keys' : TITULOPUBLIC, 'urlEdit': 'unlockPublic', 'urlRemove': 'lockPublic', 'search':filtro, 'orden':orden, 'tipoOrden': tipoOrden, 'tipo': 'Public'})
+
+    else:
         pagina = render_to_string('planning/paginas.html', {'plan': paginas(request, plan)})
         tabla = render_to_string('planning/contenidoTabla.html', {'plan': paginas(request, plan), 'keys' : TITULOPERFIL, 'urlEdit': 'editProfilage', 'urlRemove': 'destroyProfilage', 'search':filtro, 'orden':orden, 'tipoOrden': tipoOrden})
     # print(tabla)
@@ -606,7 +632,7 @@ def saveProgram(request):
             
             matricula=MatriculaAlumnos.objects.create(fk_publico=publico,fk_estruc_programa=struct, fecha_matricula=fecha, fk_tipo_matricula=None ,fk_status_matricula=statusDB,fecha_aprobada=None, origenSolicitud = MyMethod.ReturnCode('Planning'))
             matricula.save()
-            messages.info(request, 'Training Program Added Succefuly')
+            messages.info(request, 'Training Program Added Successfully')
             return JsonResponse({"mensaje" : "exito"})
 
         except:
@@ -614,3 +640,51 @@ def saveProgram(request):
             return JsonResponse({"mensaje" : "Error, try again later"})
 
 
+
+def managePublic(request):
+
+    search_query = request.GET.get('search_box', "")
+    program = ExtensionUsuario.objects.select_related().all()
+    return render(request,"planning/managePublic.html",{'plan': paginas(request, program), 'keys' : TITULOPUBLIC, 'urlEdit': 'unlockPublic', 'urlRemove': 'lockPublic', 'search':search_query, 'tipo':'Public', 'segment':'settings'}) 
+
+    
+def lockPublic(request):
+
+    if request.method == "POST":  
+
+        try:
+
+            id=request.POST.get('id')
+
+            ctauser = CtaUsuario.objects.filter(idcta_usuario=ExtensionUsuario.objects.get(Publico=Publico.objects.get(idpublico=id)).CtaUsuario.idcta_usuario)
+
+
+            ctauser.update(fk_status_cuenta= TablasConfiguracion.objects.get(valor_elemento='status_locked').id_tabla)
+
+            messages.info(request, 'Public Locked Successfully')
+            return JsonResponse({"mensaje" : "exito"})
+
+        except:
+
+            return JsonResponse({"mensaje" : "Error, try again later"})
+
+    
+def unlockPublic(request):
+
+    if request.method == "POST":  
+
+        try:
+
+            id=request.POST.get('id')
+
+            ctauser = CtaUsuario.objects.filter(idcta_usuario=ExtensionUsuario.objects.get(Publico=Publico.objects.get(idpublico=id)).CtaUsuario.idcta_usuario)
+
+
+            ctauser.update(fk_status_cuenta= TablasConfiguracion.objects.get(valor_elemento='status_active').id_tabla)
+
+            messages.info(request, 'Public Unlocked Successfully')
+            return JsonResponse({"mensaje" : "exito"})
+
+        except:
+
+            return JsonResponse({"mensaje" : "Error, try again later"})

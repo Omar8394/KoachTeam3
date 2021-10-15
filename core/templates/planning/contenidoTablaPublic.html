@@ -1,0 +1,115 @@
+
+    <thead id="tablaHead">
+        <tr>
+            {% for key, value in keys.items %}
+
+                <th id={{ key }} class={% if key == orden %}descendiente{% endif %}>{{ value }}</th>
+
+            {% endfor %}
+
+            <th>Action</th>
+
+        </tr>
+    </thead>
+    <tbody>  
+        {% for p in plan %}  
+
+            <tr>
+                
+                {% if search and p.Publico.idpublico|tostring|matches:search %}
+
+                    <td>{{ p.Publico.idpublico|tostring|replaces:search|safe }}</td>
+                
+                {% else %}
+
+                    <td>{{p.Publico.idpublico}}</td>
+
+                {% endif %}
+                
+                {% if search and p.Publico.nombre|tostring|matches:search %}
+
+                    <td>{{ p.Publico.nombre|tostring|replaces:search|safe }}</td>
+                
+                {% else %}
+
+                    <td>{{p.Publico.nombre}}</td>
+
+                {% endif %}
+                
+                {% if search and p.Publico.apellido|tostring|matches:search %}
+
+                    <td>{{ p.Publico.apellido|tostring|replaces:search|safe }}</td>
+                
+                {% else %}
+
+                    <td>{{p.Publico.apellido}}</td>
+
+                {% endif %}
+                
+                {% if search and p.CtaUsuario.fk_rol_usuario.desc_elemento|tostring|matches:search %}
+
+                    <td>{{ p.CtaUsuario.fk_rol_usuario.desc_elemento|tostring|replaces:search|safe }}</td>
+                
+                {% else %}
+
+                    <td>{{p.CtaUsuario.fk_rol_usuario.desc_elemento}}</td>
+
+                {% endif %}
+                
+                {% if search and p.Publico.telefonos|tostringJson:'telefonoPrincipal'|tostring|matches:search %}
+
+                    <td>{{ p.Publico.telefonos|tostringJson:'telefonoPrincipal'|tostring|replaces:search|safe }}</td>
+                
+                {% else %}
+
+                    <td>{{p.Publico.telefonos|tostringJson:'telefonoPrincipal'|tostring}}</td>
+
+                {% endif %}
+                
+                {% if search and p.Publico.correos|tostringJson:'emailPrincipal'|tostring|matches:search %}
+
+                    <td>{{ p.Publico.correos|tostringJson:'emailPrincipal'|tostring|tostring|replaces:search|safe }}</td>
+                
+                {% else %}
+
+                    <td>{{p.Publico.correos|tostringJson:'emailPrincipal'|tostring}}</td>
+
+                {% endif %}
+                
+                {% if search and p.CtaUsuario.fk_status_cuenta.desc_elemento|tostring|matches:search %}
+
+                    <td>{{ p.CtaUsuario.fk_status_cuenta.desc_elemento|tostring|replaces:search|safe }}</td>
+                
+                {% else %}
+
+                    <td>{{p.CtaUsuario.fk_status_cuenta.desc_elemento}}</td>
+
+                {% endif %}
+
+                
+                <td>
+
+                        {% if p.CtaUsuario.fk_status_cuenta.desc_elemento|tostring and p.CtaUsuario.fk_status_cuenta.desc_elemento|tostring == 'active' %}
+
+                            <button onclick="bloquear({{  p.Publico.idpublico }})" class="btn btn-icon btn-sm btn-danger ml-1" ><i class="fas fa-lock"></i></button>
+                        
+                        {% else %}
+
+                            <button onclick="desbloquear({{  p.Publico.idpublico }})" class="btn btn-icon btn-sm btn-success ml-1" ><i class="fas fa-lock-open"></i></button>
+
+                        {% endif %}
+
+
+                </td>  
+
+            </tr>
+
+        {% empty %}
+
+            <tr><td colspan="100%"><h2>No matching records found</h2></td></tr> 
+
+        {% endfor %} 
+        
+        <tr><td>{{ plan }}</td></tr> 
+
+    </tbody>  
