@@ -92,6 +92,11 @@
             result = await res.text()
             document.querySelector("#addNewModalContent").innerHTML = result
             $("#addNewModal").modal("show")
+            $("form#my-awesome-dropzone").dropzone({ url: "{% url 'modalResourcesBank' %}", autoProcessQueue:false });
+            $('#tagResource').tagsinput({
+            tagClass: 'badge-primary w-100',
+            allowDuplicates: false
+         });
       })
 
    }

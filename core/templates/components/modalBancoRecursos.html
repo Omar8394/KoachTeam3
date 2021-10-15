@@ -14,64 +14,99 @@
                aria-selected="false">Bank</a>
             <a class="nav-link" id="nav-upload-tab" data-toggle="tab" href="#nav-upload" role="tab"
                aria-controls="nav-upload" aria-selected="false">Upload</a>
+            <a class="nav-link" id="nav-youtube-tab" data-toggle="tab" href="#nav-youtube" role="tab"
+               aria-controls="nav-youtube" aria-selected="false">YouTube</a>
          </div>
       </nav>
       <div class="tab-content" id="nav-tabContent">
          <div class="tab-pane fade show active" id="nav-recent" role="tabpanel" aria-labelledby="nav-recent-tab">
-            <ul class="breadcrumbs">
-               <li class="separator">
-                  <i class="flaticon-right-arrow"></i>
-               </li>
-               <li class="nav-home">
-                  <span>
-                     Recent
-                  </span>
-               </li>
-            </ul>
+            <div class="mt-2">
+               <ul class="breadcrumbs m-0">
+                  <li class="separator">
+                     <i class="flaticon-right-arrow"></i>
+                  </li>
+                  <li class="nav-home">
+                     <span>
+                        Recent
+                     </span>
+                  </li>
+               </ul>
+            </div>
+            <div class="container-resources-bank">
+
+            </div>
          </div>
          <div class="tab-pane fade" id="nav-bank" role="tabpanel" aria-labelledby="nav-bank-tab">
-            <ul class="breadcrumbs">
-               <li class="separator">
-                  <i class="flaticon-right-arrow"></i>
-               </li>
-               <li class="nav-home">
-                  <span>
-                     <i class="flaticon-home"></i>
-                  </span>
-               </li>
-               <li class="separator">
-                  <i class="flaticon-right-arrow"></i>
-               </li>
-               <li class="nav-item">
-                  <span>
-                     Program
-                  </span>
-               </li>
-            </ul>
+            <div class="mt-2">
+               <ul class="breadcrumbs m-0">
+                  <li class="separator">
+                     <i class="flaticon-right-arrow"></i>
+                  </li>
+                  <li class="nav-home">
+                     <span>
+                        <i class="flaticon-home"></i>
+                     </span>
+                  </li>
+                  <li class="separator">
+                     <i class="flaticon-right-arrow"></i>
+                  </li>
+                  <li class="nav-item">
+                     <span>
+                        Program
+                     </span>
+                  </li>
+               </ul>
+            </div>
+            <div class="container-resources-bank">
+
+            </div>
          </div>
          <div class="tab-pane fade" id="nav-upload" role="tabpanel" aria-labelledby="nav-upload-tab">
+            <div class="form-row">
+               <div class="form-group col-12">
+                  <label class="col-form-label">Upload your files</label>
+               </div>
+            </div>
+            <form class="dropzone" id="my-awesome-dropzone">
+               {% csrf_token %}
+               <div class="dz-message" data-dz-message>
+                  <div class="icon">
+                     <i class="flaticon-file"></i>
+                  </div>
+                  <h4 class="message">Drag and Drop files here</h4>
+               </div>
+            </form>
             <form class="form">
                <div class="form-row">
                   <div class="form-group col-12">
-                     <label for="tagResource" class="col-form-label">Tags</label>
-                     <input type="text" class="form-control" id="tagResource" name="tagResource"
-                        placeholder="Enter some tags" required>
-                  </div>
-               </div>
-               <div class="form-row">
-                  <div class="form-group col-12">
                      <div class="custom-control custom-checkbox ml-2">
-                        <label class="custom-control-label" for="checkSharedCB">Shared resource</label>
                         <input type="checkbox" class="custom-control-input" name="checkSharedCB" id="checkSharedCB">
+                        <label class="custom-control-label" for="checkSharedCB">Shared resource</label>
                      </div>
                   </div>
                </div>
                <div class="form-row">
                   <div class="form-group col-12">
-                     <div class="custom-file">
-                        <input type="file" class="custom-file-input" id="customFile">
-                        <label class="custom-file-label" for="customFile">Choose file</label>
-                     </div>
+                     <input type="text" id="tagResource" name="tagResource" class="form-control" data-role="tagsinput">
+                  </div>
+               </div>
+               <div class="form-row">
+                  <div class="form-group">
+                     <button type="submit" class="btn btn-primary">Insert<i class="fas fa-save ml-2"></i></button>
+                  </div>
+                  <div class="form-group">
+                     <button class="btn btn-danger">Clean<i class="fas fa-broom ml-2"></i></button>
+                  </div>
+               </div>
+            </form>
+         </div>
+         <div class="tab-pane fade" id="nav-youtube" role="tabpanel" aria-labelledby="nav-youtube-tab">
+            <form class="form">
+               <div class="form-row">
+                  <div class="form-group col-12">
+                     <label class="col-form-label" for="urlResource">YoutTube URL</label>
+                     <input type="text" class="form-control" id="urlResource" name="urlResource"
+                        placeholder="Enter URL">
                   </div>
                </div>
                <div class="form-row">
