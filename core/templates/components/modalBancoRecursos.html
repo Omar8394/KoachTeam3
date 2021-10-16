@@ -76,27 +76,20 @@
                   <h4 class="message">Drag and Drop files here</h4>
                </div>
             </form>
-            <form class="form">
+            <form class="form" id="formTags">
                <div class="form-row">
-                  <div class="form-group col-12">
+                  <div class="form-group col-md-5 m-auto">
                      <div class="custom-control custom-checkbox ml-2">
                         <input type="checkbox" class="custom-control-input" name="checkSharedCB" id="checkSharedCB">
                         <label class="custom-control-label" for="checkSharedCB">Shared resource</label>
                      </div>
                   </div>
-               </div>
-               <div class="form-row">
-                  <div class="form-group col-12">
+                  <div class="form-group col-md-7">
+                     <label class="col-form-label mr-1" for="tagResource">Tags</label>
                      <input type="text" id="tagResource" name="tagResource" class="form-control" data-role="tagsinput">
                   </div>
                </div>
                <div class="form-row">
-                  <div class="form-group">
-                     <button type="submit" class="btn btn-primary">Insert<i class="fas fa-save ml-2"></i></button>
-                  </div>
-                  <div class="form-group">
-                     <button class="btn btn-danger">Clean<i class="fas fa-broom ml-2"></i></button>
-                  </div>
                </div>
             </form>
          </div>
@@ -104,18 +97,25 @@
             <form class="form">
                <div class="form-row">
                   <div class="form-group col-12">
-                     <label class="col-form-label" for="urlResource">YoutTube URL</label>
+                     <label class="col-form-label" for="urlResource">YouTube URL</label>
                      <input type="text" class="form-control" id="urlResource" name="urlResource"
                         placeholder="Enter URL">
-                  </div>
-               </div>
-               <div class="form-row">
-                  <div class="form-group">
-                     <button type="submit" class="btn btn-primary">Insert<i class="fas fa-save ml-2"></i></button>
                   </div>
                </div>
             </form>
          </div>
       </div>
+   </div>
+   <div class="modal-footer">
+      <form class="form" id="formBotones">
+         <div class="form-row">
+            <div class="form-group">
+               <button class="btn btn-danger" id="cleanBankBtn">Clean<i class="fas fa-broom ml-2"></i></button>
+            </div>
+            <div class="form-group">
+               <button type="submit" class="btn btn-primary">Insert<i class="fas fa-save ml-2"></i></button>
+            </div>
+         </div>
+      </form>
    </div>
 </div>
