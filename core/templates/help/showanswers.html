@@ -1,0 +1,94 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Show Answers {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+<link rel="stylesheet" href="/static/help-style/stylequestions.css">
+{% endblock stylesheets %}
+
+{% block content %}
+
+	<div class="content">
+		<div class="page-inner">
+			<div class="page-header">
+				<h4 class="page-title">Help</h4>
+				<ul class="breadcrumbs">
+					<li class="nav-home">
+						<a href="index.html">
+							<i class="flaticon-home"></i>
+						</a>
+					</li>
+					<li class="separator">
+						<i class="flaticon-right-arrow"></i>
+					</li>
+					<li class="nav-item">
+						<span>Frequent Ask</span>
+					</li>
+					<li class="separator">
+						<i class="flaticon-right-arrow"></i>
+					</li>
+					<li class="nav-item">
+						<a href="#">Show Answers</a>
+					</li>
+				</ul>
+			
+			</div>
+
+			         <div class="page-category">
+                     
+            
+			  <h1 class="titulo" >Show Answers</h1>
+			
+                
+             {% for p in form %}       
+			<div class="preguntas">
+              <div class="contenedor-preguntas activo" data-categoria="metodos-pago">
+                <div class="contenedor-pregunta">
+                    <p class="pregunta">¿{{ p.texto_pregunta }}? <img src="/static/help-style/hepl_imag/suma.svg"></p>
+                    <p class="respuesta">{{ p.texto_respuesta }}</p>
+                </div>
+			</div> 
+           </div>
+            {% endfor %} 
+				 
+				 
+
+            </div> 
+              	           
+             </div>
+		</div>
+	</div>
+
+{% endblock content %}
+	
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+<script>
+const preguntas = document.querySelectorAll('.preguntas .contenedor-pregunta');
+preguntas.forEach(pregunta => {
+
+    pregunta.addEventListener('click', function(e) {
+
+        e.currentTarget.classList.toggle('activo');
+        const respuesta = pregunta.querySelector('.respuesta');
+        const alturarealrespuesta = respuesta.scrollHeight;
+        if (!respuesta.style.maxHeight) {
+            respuesta.style.maxHeight = alturarealrespuesta + 'px';
+        } else {
+            respuesta.style.maxHeight = null;
+        }
+        preguntas.forEach(elemento => {
+            if (pregunta !== elemento) {
+                elemento.classList.remove('activo')
+                elemento.querySelector('.respuesta').style.maxHeight = null;
+            }
+
+
+
+        });
+
+    });
+});
+</script>
+{% endblock javascripts %}

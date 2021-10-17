@@ -1,0 +1,116 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Save Questions{% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+	<div class="content">
+		<div class="page-inner">
+			<div class="page-header">
+				<h4 class="page-title">Help</h4>
+				<ul class="breadcrumbs">
+					<li class="nav-home">
+						<a href="{% url 'home' %}">
+							<i class="flaticon-home"></i>
+						</a>
+					</li>
+					<li class="separator">
+						<i class="flaticon-right-arrow"></i>
+					</li>
+					<li class="nav-item">
+						<span>Help</span>
+					</li>
+					<li class="separator">
+						<i class="flaticon-right-arrow"></i>
+					</li>
+					<li class="nav-item">
+						<a href="#">Manage Ask</a>
+					</li>
+				</ul>
+               
+			</div>
+            <div class="page-category">
+           	 	<div class="card">
+					<div class="card-header">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <h2 class="card-text mt-2">
+                                   Register Questions
+                                </h2>
+                            </div>
+                             <div class="form-group col-md-6 d-flex justify-content-end">
+                               
+                                <a href="{% url 'Showhelps' %}" class="btn btn-success">View Questions <i class="fa fa-search"></i></a>
+    
+                            </div>
+                        </div>
+
+					</div>
+			<div class="card-body">
+                        <form method="post" action="">
+            
+                            {% csrf_token %}
+            
+                          
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+            
+                                        <div class="form-group">
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">
+                                                        <i class="far fa-edit"></i>
+                                                    </span>
+                                                </div>
+                                                {{ form.texto_pregunta }}
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">
+                                                        <i class="far fa-edit"></i>
+                                                    </span>
+                                                </div>
+                                                {{ form.texto_respuesta }}  
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">
+                                                        <i class="icon-envelope mr-3"></i>Type
+                                                    </span>
+                                                </div>
+                                                {{ form.fk_tipo_pregunta_frecuente }}  
+                                            </div>
+                                        </div>
+
+                                       
+                                        
+                                       
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-action">
+                                <button type="submit" class="btn bg-dark2 btn-lg btn-block" style="color: white">Submit</button>
+                            </div>
+				
+                        </form>
+					</div>
+				</div>        
+      		</div>
+		   
+         </div>
+		</div>
+	
+{% endblock content %}
+	
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+{% endblock javascripts %}
