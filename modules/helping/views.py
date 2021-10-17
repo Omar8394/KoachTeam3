@@ -66,7 +66,7 @@ def helpsedit(request,id):
 def helpsdelete(request,id):
     helps=PreguntasFrecuentes.objects.get(idpregunta_frecuente=id)
     helps.delete()  
-    return redirect('/help_app/Questions/')
+    return redirect('/help_app/ver/')
  
 def show_questions(request):
      
