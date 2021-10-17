@@ -6,7 +6,9 @@ Copyright (c) 2019 - present AppSeed.us
 from django.urls import path, re_path
 # from .views import hello
 from django.urls import path  
-from .views import show, showCompetences, edit, destroy, editCompetence, destroyCompetence, showCompetencesAdq, editCompetenceAdq, destroyCompetenceAdq, showProgram, editProgram, destroyProgram, validate_username, validate_competence, renderListasPublic, paginar, renderListasCombos, renderCompetencesPublic, saveProgram
+from .views import show, showCompetences, edit, destroy, editCompetence, destroyCompetence, showCompetencesAdq, editCompetenceAdq, destroyCompetenceAdq, \
+showProgram, editProgram, destroyProgram, validate_username, validate_competence, renderListasPublic, paginar, renderListasCombos, renderCompetencesPublic, \
+saveProgram, managePublic, lockPublic, unlockPublic
 # from .views import edit
 # from modules.planning import views
 
@@ -24,7 +26,8 @@ urlpatterns = [
     path('editCompetence/<int:id>', editCompetence, name="editCompetence"), 
     path('editCompetenceAdq/', editCompetenceAdq, name="addCompetenceAdq"), 
     path('editCompetenceAdq/<int:id>', editCompetenceAdq, name="editCompetenceAdq"),  
-    path('editProgram/<int:id>', editProgram, name="editProgram"),  
+    path('editProgram/<int:id>', editProgram, name="editProgram"),
+    path("managePublic/", managePublic, name='managePublic'),
 
     
     path('delete/', destroy, name="destroyProfilage"),  
@@ -38,5 +41,7 @@ urlpatterns = [
     path('renderListasCombos', renderListasCombos, name='renderListasCombos'),
     path('renderCompetencesPublic', renderCompetencesPublic, name='renderCompetencesPublic'),
     path('saveProgram', saveProgram, name='saveProgram'),
+    path('lockPublic', lockPublic, name='lockPublic'),
+    path('unlockPublic', unlockPublic, name='unlockPublic'),
     
 ]

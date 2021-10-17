@@ -996,11 +996,36 @@ def getModalPagina(request):
                     elif data["method"] == "Create":
                         pagina = Paginas()
                     pagina.titulo = data["data"]["titlePage"]
-                    pagina.contenido = data["data"]["summernote"]
+                    if data["data"]["summernote"] != "<p><br></p>":
+                        pagina.contenido = data["data"]["summernote"]
                     pagina.save()
                     return JsonResponse({"message":"Perfect"})
             except:
                 return JsonResponse({"message":"error"}, status=500)
+
+@login_required(login_url="/login/")
+def getPreviewLeccion(request):
+    if request.method == "POST":
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            context = {}
+            modelo = {}
+            try:
+                if request.body:
+                    data = json.load(request)
+                    if data["method"] == "Find":
+                        modelo = Paginas.objects.get(pk=data["id"])
+                        context = {"modelo":modelo.contenido}
+                        html_template = (loader.get_template('academic/previewLeccion.html'))
+                        return HttpResponse(html_template.render(context, request))
+                    return JsonResponse({"message":"Perfect"})
+            except:
+                return JsonResponse({"message":"error"}, status=500)
+
+@login_required(login_url="/login/")
+def getModalResourcesBank(request):
+    context = {}
+    html_template = (loader.get_template('components/modalBancoRecursos.html'))
+    return HttpResponse(html_template.render(context, request))
 
 @login_required(login_url="/login/")
 def getModalChooseActivities(request):
