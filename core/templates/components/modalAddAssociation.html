@@ -17,76 +17,76 @@
 </div>   
 
 
-<div class="form-row col-md-12">
+<div class="form-row col-md-12 mt-2">
     <div class="form-group col-md-12 d-flex justify-content-start">
-        <button class="btn btn-success mt-4" id="addRow">
+        <button class="btn btn-success" id="addRow">
             Add Pair <i class="fas fa-arrow-down ml-1"></i>
-        </button>
-							 
-                             <button class="btn btn-primary mt-4" onclick="distribuir()"> Distribute Points </button>
-
-    </div>
+        </button>							
+        <button class="btn btn-primary ml-3" onclick="distribuir()"> Distribute Points </button>
 </div>
 
 <div class="form-row col-md-12 text-center">
     <div class="form-group col-md-12">
-        <table class="table table-sm table-bordered  table-hover table-responsive">
-            <thead>
-
-                 <tr>
-                    <th>
-                       A
-                    </th>
-
-                    <th>
-                        
-                    </th>  
-
-                    <th>
-                        B
-                    </th>  
-
-                    <th>
-                   
-                    </th>  
-                    
-                    
-                    <th  rowspan='2'>
-                        Value
-                    </th>       
-
-                    <th rowspan='2'>
-                        Actions
-                    </th>   
-                        
-                               
-                   
-                </tr>
-                <tr>
-                    <th class="col-md-6">
-                        Option text
-                    </th>
+        <div class="table-responsive">
+            <table class="table table-sm table-bordered table-hover">
+                <thead>
+    
+                     <tr>
+                        <th>
+                           A
+                        </th>
+    
+                        <th>
+                            
+                        </th>  
+    
+                        <th>
+                            B
+                        </th>  
+    
+                        <th>
                        
-                      <th>
+                        </th>  
+                        
+                        
+                        <th  rowspan='2'>
+                            Value
+                        </th>       
+    
+                        <th rowspan='2'>
+                            Actions
+                        </th>   
+                            
+                                   
+                       
+                    </tr>
+                    <tr>
+                        <th>
+                            Option text
+                        </th>
+                           
+                          <th>
+                       
+                        </th>  
+    
+                         <th>
+                            Option text
+                        </th>
+                      
+    
+                        
+                                   
+                           <th>
+                        </th>  
+                                                                        
+                    </tr>
+                </thead>
+                <tbody  id="tableContentAssociation">
                    
-                    </th>  
+                </tbody>
+            </table>  
 
-                     <th class="col-md-6">
-                        Option text
-                    </th>
-                  
-
-                    
-                               
-                       <th>
-                    </th>  
-                                                                    
-                </tr>
-            </thead>
-            <tbody  id="tableContentAssociation">
-               
-            </tbody>
-        </table>  
+        </div>
     </div>
 </div>  
     
