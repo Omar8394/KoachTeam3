@@ -1405,5 +1405,17 @@
     "mostrar_en_combos": 1,
     "maneja_lista": 0
   }
+},{
+  "model": "app.tablasconfiguracion",
+  "pk": 210,
+  "fields": {
+    "desc_elemento": "Admin",
+    "fk_tabla_padre": 2,
+    "tipo_elemento": "0",
+    "permite_cambios": 1,
+    "valor_elemento": "rol_admin",
+    "mostrar_en_combos": 1,
+    "maneja_lista": 0
+  }
 }
 ]

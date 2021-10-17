@@ -55,7 +55,7 @@ class SignUpForm(UserCreationForm):
         widget=forms.EmailInput(
             attrs={
                 "placeholder": "Email",
-                "class": "form-control"
+                "class": "form-control",
             }
         ))
     password1 = forms.CharField(

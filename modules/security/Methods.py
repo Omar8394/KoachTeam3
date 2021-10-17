@@ -9,15 +9,15 @@ from modules.security.models import CtaUsuario, ExtensionUsuario, EnlaceVerifica
 from django.contrib.auth.models import User
 
 
-def create_default_ctausuario():
-    fk_rol = TablasConfiguracion.objects.get(valor_elemento="rol_student")
-    fk_status = TablasConfiguracion.objects.get(valor_elemento="status_verification")
+def create_default_ctausuario(status_user, rol):
+    fk_rol = TablasConfiguracion.objects.get(valor_elemento=rol)
+    fk_status = TablasConfiguracion.objects.get(valor_elemento=status_user)
     fk_pregunta = TablasConfiguracion.objects.get(valor_elemento="question_color")
     cuenta = CtaUsuario.objects.create(
         intentos_fallidos=0,
         fk_status_cuenta=fk_status,
         fk_rol_usuario=fk_rol, dias_cambio=90,
-        fk_pregunta_secreta=fk_pregunta)
+        fk_pregunta_secreta=fk_pregunta, fecha_ult_cambio=datetime.today().strftime("%Y-%m-%d"))
     return cuenta
 
 
@@ -92,4 +92,4 @@ class securityTools:
         return fechabase.strftime(self.formato)
 
     def exp_clave(self, fecha_ult_cambio, dias_venc):
-        return datetime.now().strftime(self.formato) >= self.operaciones_dias_fecha(fecha_ult_cambio, dias_venc, True)
+        return datetime.today().strftime(self.formato) >= self.operaciones_dias_fecha(fecha_ult_cambio, dias_venc, True)
