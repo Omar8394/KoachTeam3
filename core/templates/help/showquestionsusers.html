@@ -1,0 +1,75 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Frequent Ask{% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+<link rel="stylesheet" href="/static/help-style/stylequestions.css">
+ <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=
+    swap">
+    <link rel="stylesheet" href="http://translate.google.com/translate_tools?hl=es">
+{% endblock stylesheets %}
+ 
+
+{% block content %}
+
+	<div class="content">
+		<div class="page-inner">
+			<div class="page-header">
+				<h4 class="page-title">Help</h4>
+				<ul class="breadcrumbs">
+					<li class="nav-home">
+						<a href="index.html">
+							<i class="flaticon-home"></i>
+						</a>
+					</li>
+					<li class="separator">
+						<i class="flaticon-right-arrow"></i>
+					</li>
+					<li class="nav-item">
+						<span>Frequent ask</span>
+					</li>
+					<li class="separator">
+						<i class="flaticon-right-arrow"></i>
+					</li>
+					<li class="nav-item">
+						<a href="#">show</a>
+					</li>
+				</ul>
+			</div>
+			<div class="page-category">
+            
+ 
+            <h1 class="titulo" >Frequent Ask</h1>
+          
+    <
+	<div class="card-body">
+    <div class="cards-container">
+    {% for p in form %}
+      <div class="card-new">
+         <div class="card-new-content">
+            <h2 class="card-new-title">{{ p.desc_elemento }}</h2>
+            <div class="card-new-body">
+              <a href="{% url 'showanswers'  p.id_tabla %}" class="btn btn-icon btn-success btn-round add-btn btn-card-xl"><i class="fas fa-question-circle"></i></a>
+                 
+               </div>
+            </div>
+         </div>
+    {% endfor %}
+      </div>
+  </div>
+       
+           
+      
+     
+		</div>
+	</div>
+	</div>
+
+{% endblock content %}
+	
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+{% endblock javascripts %})
