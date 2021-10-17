@@ -1,0 +1,565 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}{% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+{% load Filter %}
+
+{% block content %}
+
+	<div class="content" id='Contenido'>
+		<style>
+			.center {
+			margin: auto;
+			width: 70%;
+			
+			padding: 10px;
+			}
+
+			.centerB {
+			margin: auto;
+			width: 100%;
+			text-align: center;
+			
+			padding: 10px;
+			}
+			h4{
+				text-align: center;
+
+			}
+
+		</style>
+	
+			<div class="page-category col-md-12 d-flex justify-content-center">
+				<div class="d-flex justify-content-center mt-2"> 
+	   			
+						<div class="card" style="width: 30rem;">
+							<div class="card-header" style="background-color: #1a2035 !important;
+							color: white;">
+								<h2>Evaluation: {{pregunta.fk_estructura_programa.descripcion}}</h2>
+							</div>
+							<div class="card-body" style='height: 500px;'>
+							{% if examen.count == 0 %}
+
+								<div class="center">
+									<div class="centerB">
+							
+                             <button class="btn btn-primary" onclick="takeTest()"> Take Test </button>
+									</div>
+							 <br>
+							 <br>
+
+							 <p>
+								<b>  Max Points</b>: {{escalaEvaluacion.maxima_puntuacion}}
+							  <br>
+							  <b>  Minimum to Approve</b>: {{pregunta.calificacion_aprobar}}
+							  <br>
+							  {% if pregunta.duracion %}
+							  <b>  Duration</b>: {{pregunta.duracion}}&nbsp; {{pregunta.fk_tipo_duracion}}
+							  {% endif %}
+							  <br>
+							  <b>  Number of repetitions</b>: {{pregunta.nro_repeticiones}}
+							  <br>
+							  
+                               
+
+
+							 </p>
+							</div>
+							 {% else %}
+
+							 {% if examen.0.estadoExamen == 2 %}
+
+							 <div class="center">
+
+								<div class="centerB">
+
+							 <button class="btn btn-primary" onclick="ContinueTest()"> Continue Test </button>
+								</div>
+							 <br>
+							 <br>
+
+							 <p>
+
+							 <b>Started </b>: {{examen.0.fechaInicio}}
+							  <br>
+							  <b> Max Points </b>: {{escalaEvaluacion.maxima_puntuacion}}
+							  <br>
+							 
+							  <b> Minimum to Approve </b>: {{pregunta.calificacion_aprobar}}
+							  <br>
+							  {% if pregunta.duracion %}
+							  <b> Duration </b>: {{pregunta.duracion}}&nbsp; {{pregunta.fk_tipo_duracion}}
+							  {% endif %}
+							  <br>
+							  <b> Number of repetitions </b>: {{pregunta.nro_repeticiones}}
+							  <br>
+							  
+                               
+
+
+							 </p>
+							 	</div>
+							 {% endif %}
+
+
+							 {% if examen.0.estadoExamen == 3 %}
+							 <div class="center">
+
+							 <h4  >Test Finished</h4>
+							 <br>
+
+							 <div class="centerB">
+
+							 <button class="btn btn-primary" onclick="ReviewTest()"> Review Test </button>
+							 </div>
+							 <br>
+							 <br>
+
+							 <p>
+
+							  <b>Started</b>: {{examen.0.fechaInicio}}
+							  <br>
+							  <b> Max Points</b>: {{escalaEvaluacion.maxima_puntuacion}}
+							  <br>
+							  <b> Minimum to Approve</b>: {{pregunta.calificacion_aprobar}}
+							  <br>
+							 
+							  <b>  Finished Date</b>: {{examen.0.fechaTermino}}
+							  <br>
+							  <b> Score</b>: {{examen.0.PuntuacionFinal}}
+							  <br>
+							  {% if pregunta.duracion %}
+							  <b>  Duration </b>: {{pregunta.duracion}}&nbsp; {{pregunta.fk_tipo_duracion}}
+							  {% endif %}
+							  <br>
+							  <b>  Number of repetitions allow </b> {{pregunta.nro_repeticiones}}
+							  <br>
+							  
+                               
+
+
+							 </p>
+							 </div>
+							 {% endif %}
+
+							{% endif %}
+							
+
+							</div>
+						
+						</div>		
+	   				</form>
+				</div>			            
+     		</div>
+	
+	</div>
+
+
+{% endblock content %}
+
+{% block javascripts %}
+<script>
+	idActividad={{pregunta.pk}};
+	preguntas=[];
+	respuestas=[];
+
+	preguntasOpciones=[];
+	let hayVacias=false;
+
+
+
+	examenId='{{examen.0.pk}}';
+
+	{% for bloque in pregunta.bloque_actividad.all   %}
+     var count=0;
+	 {% for pregunta in bloque.bloque_pregunta.all %}
+
+             datosPregunta={
+                orden: {{pregunta.orden}},
+                id: {{pregunta.pk}},
+                texto_pregunta: '{{pregunta.texto_pregunta}}',
+				indicePalabra:{{pregunta.indicePalabra|Nuller}},
+				puntos_pregunta:{{pregunta.puntos_pregunta}},
+				tipo:{{pregunta.fk_tipo_pregunta_evaluacion}},
+				bloque:{{pregunta.fk_evaluaciones_bloque.pk}},
+
+				titulo_pregunta:'{{pregunta.titulo_pregunta}}',
+				opciones:[]
+          
+
+			}
+			preguntas.push(datosPregunta)
+            
+							{% for opciones in pregunta.soyUnaOpcion.all %}
+
+
+							datosOpciones={
+							
+								id: {{opciones.pk}},
+								value:{{opciones.puntos_porc|Nuller}},
+                                OpcionText: '{{opciones.texto_opcion}}',
+                                isCorrect: {{opciones.respuetaCorrecta|tf}},
+                                colummna: {{opciones.columnaPregunta|Nuller}},
+								indiceAsociacion:{{opciones.indiceAsociacion|Nuller}},
+								padre:{{opciones.fk_evaluacion_pregunta.pk}},
+
+
+							
+						
+
+							}
+							preguntas[ count ].opciones.push(datosOpciones)
+								
+								
+								{% endfor %}
+				count++;
+       
+	{% endfor %}
+
+     
+	{% endfor %}
+	
+	console.log(preguntas)
+  
+  const takeTest = () => {
+        
+            createTest().then(async () => {
+			await renderContent();
+            })
+        }    
+
+	  const ContinueTest = () => {
+        
+            
+			 renderContent();
+           
+        }    	
+
+		async function ReviewTest () {
+        
+            
+			fetch("{% url 'reviewExamen' %}", {
+            ...fetchObject,
+            body: JSON.stringify({
+                data: {
+					method:'Show',
+					testId:examenId,
+					ActivityId:idActividad
+
+
+                }
+            }),
+        }).then(async (res) => {
+                document.getElementById("Contenido").innerHTML= await res.text()
+
+            
+            })
+            .then(() => {
+			
+          
+            })
+	  
+   }    	
+
+
+		const createTest = () => {
+           
+		   return fetch("{% url 'contenidoExamen' %}", {
+			   ...fetchObject,
+			   body: JSON.stringify({
+			data: {
+				   
+				   method:'Create',
+				   ActivityId:idActividad
+
+			   }
+		   })
+		   })
+		   .then(async (res) => {
+			 idTest= JSON.parse(await res.text());
+			examenId=idTest.id;
+			
+		   }).then(()=>{
+			 
+		   })
+	   }   
+
+
+	   const renderContent= ()=>{
+		fetch("{% url 'contenidoExamen' %}", {
+            ...fetchObject,
+            body: JSON.stringify({
+                data: {
+					method:'Show',
+					ActivityId:idActividad
+
+
+                }
+            }),
+        }).then(async (res) => {
+                document.getElementById("Contenido").innerHTML= await res.text()
+
+            
+            })
+            .then(() => {
+				const questionsForm = document.getElementById("questionsForm")
+                questionsForm.addEventListener("submit", (e) => {
+                    e.preventDefault()
+                    clickSave()
+                })   
+          
+            })
+
+
+	   }
+
+
+	       async function clickSave ()  {
+
+			   await reviewRespuestas();
+			   let guardar=true;
+			   if(hayVacias){
+
+				const save = await alertaMensajitos(6,'There are Questions without answer', 'Continue Anyway?')
+				if(!save){
+				guardar=false;
+				return;
+				}
+			   }
+
+			   if(guardar){
+					form={
+
+						method:'Save',
+						respuestas:respuestas,
+						ActivityId:idActividad,
+						examenId:examenId,
+					}
+               
+					saveTest(form);
+
+			   }
+       
+
+   }
+
+
+   async function saveTest(form){
+
+	fetch("{% url 'contenidoExamen' %}", {
+                ...fetchObject,
+                body: JSON.stringify({
+                   data: form
+                }),
+               
+            })
+            .then(async (res) => {
+                let result = JSON.parse(await res.text())
+                if (result.message === "Error") {
+                   alerta(5)
+                }
+                alerta(1)
+            })
+            .then(() => {
+             
+            })
+   }
+
+   async function reviewRespuestas(){
+
+
+  preguntas.forEach(function(item, index, object) {
+
+					if(item.tipo==1){
+						const select=document.querySelector(`input[name="Simple${item.id}"]:checked`);
+
+						if( select!=null){
+							var	datos={
+									opcionID:select.value,
+									isCorrect:false,
+									idRelacional:null,
+									idpadre:null,
+									idPregunta:item.id,
+									tipoPregunta:1,
+									bloques:item.bloque
+
+
+								
+
+								}
+                         respuestas.push(datos);
+
+						}else{
+
+							hayVacias=true;
+						}
+
+
+
+					}
+
+						if(item.tipo==2){
+					
+  						item.opciones.forEach(function(opciones, index, object) {
+							  console.log(`Multiple${opciones.id}`)
+							  const elemento=document.getElementById(`Multiple${opciones.id}`)
+
+							  if(elemento.checked ==true){
+								var	datos={
+									opcionID:elemento.value,
+									isCorrect:false,
+									idRelacional:null,
+									idpadre:null,
+									idPregunta:item.id,
+									tipoPregunta:2,
+									bloques:item.bloque
+
+
+								
+
+								}
+                         respuestas.push(datos);
+
+
+							  }
+
+				
+   								});
+
+
+					}
+			if(item.tipo==3){
+					
+							  const elemento=document.getElementById(`Completar${item.id}`);
+							  console.log(elemento)
+							
+
+							    if(elemento.value !=""  && elemento.selectedIndex  >-1){
+								var	datos={
+									opcionID:elemento.value,
+									isCorrect:null,
+									idRelacional:null,
+									idpadre:null,
+									idPregunta:item.id,
+									tipoPregunta:3,
+									bloques:item.bloque
+
+
+								
+
+									}
+
+                         respuestas.push(datos);
+
+								 }else{
+
+									 hayVacias=true;
+								 }
+					
+
+
+					}
+
+
+				if(item.tipo==4){
+					
+							 item.opciones.forEach(function(opciones, index, object) {
+							   
+							   if(opciones.colummna==1){
+							    const elemento=document.getElementById(`Asociar${opciones.id}`);
+
+							  	    if(elemento.value !=""  && elemento.selectedIndex  >-1){
+										var	datos={
+											opcionID:elemento.value,
+											isCorrect:null,
+											idRelacional:opciones.id,
+											idpadre:null,
+											idPregunta:item.id,
+									      tipoPregunta:4,
+										  bloques:item.bloque
+
+
+										
+
+											}
+
+								  respuestas.push(datos);
+
+								 }else{
+
+									 hayVacias=true;
+								 }
+
+								   
+
+
+							   }
+
+				
+   								});
+
+
+					}	
+
+						if(item.tipo==5){
+					
+							 item.opciones.forEach(function(opciones, index, object) {
+						   const select=document.querySelector(`input[name="tf${opciones.id}"]:checked`);
+							
+							if( select!=null){
+										var	datos={
+											opcionID:opciones.id,
+											isCorrect:select.value==1?true:false,
+											idRelacional:null,
+											idpadre:null,
+											idPregunta:item.id,
+											tipoPregunta:5,
+											bloques:item.bloque
+
+
+										
+
+											}
+
+								  respuestas.push(datos);
+
+								 }else{
+
+									 hayVacias=true;
+								 }
+
+				
+   								});
+
+
+					}
+		
+		console.log(respuestas);
+ 
+            });
+
+   }
+     
+    
+
+
+
+	       const showContentBlock = (id) => {
+      let contenido = document.getElementById(`contentBlock${id}`)
+      contenido.classList.toggle("card-list-item-close")
+   }
+   
+     const showChilds = (id) => {
+      let contenido = document.getElementById(`childsBlock${id}`)
+      contenido.classList.toggle("card-list-item-close")
+   }
+       
+
+
+
+
+</script>
+
+{% endblock javascripts %}

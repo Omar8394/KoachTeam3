@@ -195,6 +195,7 @@
         let PointinUse= {{pregunta.pointUse}}
         let indiceRespuesta= 0
         let indicePalabra=0
+        let editModePoints=0
         let selectedId=null
         let editmode = false
 
@@ -268,18 +269,69 @@
 
        // Guardar
    
-        const clickSave = (url) => {
-       
+        async function clickSave (url)  {
+
+            
             const questionText= document.getElementById("questionText")
             const questionTittle= document.getElementById("questionTittle")
 
             const questionPoints= document.getElementById("questionPoints")
-            const typeQuestion= document.getElementById("typeQuestion")
+            
+
+            if(isEmpty(questionPoints.value) || isEmpty(questionText.value) || isEmpty(questionTittle.value)){
+                alertaMensajitos(5,'There are empty filds', 'You can not save a questions with empty filds')
+                return;
+            }
+
+            if(tablaPreguntas.length<=0){
+                alertaMensajitos(5,'There are no any options', 'You can not save a questions with no options')
+                return;
+            }
+
+            if(questionPoints.value<=0){
+                alertaMensajitos(5,'Invalid value', 'The questions points can not be negative or 0')
+                return;
+            }
+
+           
+       
+
+            
+                if(editmode==false){
+                    if(MaxPoint-PointinUse<questionPoints.value){
+                alertaMensajitos(5,'Invalid value', 'The questions points exceed the total points available');
+                return;
+                    }
+
+            }
+            else{
+                console.log('aqui')
+                console.log(editModePoints)
+                console.log(MaxPoint-PointinUse+editModePoints)
+               todal=Number(MaxPoint)+Number(editModePoints)-Number(PointinUse)
+               console.log(todal)
+
+
+                if(todal<questionPoints.value){
+                alertaMensajitos(5,'Invalid value', 'The questions points exceed the total points available');
+                return;
+                    }
+
+
+
+            }
+
+
+            
             
             if(tipoPreguntaSelected==1){
                    var select2=document.querySelector('input[name="listaSimpleRadio"]:checked').value
                }
-               
+
+               error= await verificaOpciones();  
+               if(error)   {
+                   return;
+               }     
                const metodo=editmode?'Update':'Create'
               
             form = {
@@ -542,6 +594,7 @@
                 document.getElementById("questionTittle").value=PreguntaDatos.data.titulo_pregunta
 
                  document.getElementById("questionPoints").value=PreguntaDatos.data.puntos_pregunta
+                 editModePoints=PreguntaDatos.data.puntos_pregunta
                 
 
                 let listaLoca = PreguntaDatos.childs
@@ -1032,6 +1085,58 @@
 
    <script>
 
+       async function verificaOpciones(){
+           console.log('sss');
+           let HayCorrectos=false;
+           let totalValue=0;
+
+        for(const element of tablaPreguntas ){
+            if(tipoPreguntaSelected==1 || tipoPreguntaSelected==3 ){
+                if(element.isCorrect==true){
+                    HayCorrectos=true;
+                }
+
+
+            }
+            if(tipoPreguntaSelected==2 || tipoPreguntaSelected==4 ||   tipoPreguntaSelected==5  )
+            {
+                if(element.value<0){
+                    alertaMensajitos(5,'Invalid Option','An option value can not be less than 0');
+                    return true;
+
+
+                }
+                totalValue=Number(totalValue)+Number(element.value);
+
+
+            }
+          
+        }
+
+        if(totalValue>document.getElementById("questionPoints").value){
+                    alertaMensajitos(5,'Invalid Options Value','The options total value can not surpass the question max points');
+                    return true;
+
+
+                }
+                if(tipoPreguntaSelected==1 || tipoPreguntaSelected==3 ){
+                if(!HayCorrectos){
+                    alertaMensajitos(5,'Invalid Options ','The options do not have any marked as correct');
+                    return true;
+
+
+                }
+            }
+
+       }
+
+
+       function isEmpty(str) {
+    return (!str || str.trim().length === 0 );
+}
+function isEmptyOrSpaces(str){
+    return str === null || str.match(/^ *$/) !== null;
+}
 
  function questionTextChange(text) {
      if(tipoPreguntaSelected!=3){
@@ -1060,6 +1165,7 @@
 
         for(const element of wordArray ){
 
+           
             contenido=contenido+` <button class='btn btn-primary' id='${counter}word' onclick='addOpcion(${counter}, "${element}")' type="button">${element}</button> `
 
             counter++;
@@ -1093,17 +1199,22 @@
  }
 
  function addOpcion(text, element) {
+     if(element=='' || element==" "){
+         alertaMensajitos(5,'Invalid Option','You can not select a empty option');
+         return;
+     }
 
      if(tablaPreguntas.length>0){
+         if(indiceRespuesta){
 
          if(tablaPreguntas[indiceRespuesta].isCorrect==1)
          {
         tablaPreguntas.splice(indiceRespuesta, 1);
      
-
-
-
          }
+
+        }
+        
      }
             let datos = {
                         OpcionText: element,

@@ -70,7 +70,8 @@ def TipoPregunta(id):
 	    return"Association"
    elif id == 5:
 	    return"True or False"
-   
+   elif id == 6:
+	    return"Expert"
 
    else:
 	   return"error"
@@ -86,6 +87,34 @@ def OrigenPreguntaTipo(code):
 	    return 4
    elif code == "True or False":
 	    return 5
+   elif code == "Expert":
+	    return 6
+    
+  
+
+   else:
+	   return None
+
+
+def TipoExamen(id):
+   if id == 1:
+	   return"Start"
+   elif id == 2:
+	   return"in Progress"
+   elif id == 3:
+	    return"Finished"
+  
+   else:
+	   return"error"
+
+def OrigenTipoExamen(code):
+   if code == "Start":
+	   return 1
+   elif code == "in Progress":
+	   return 2
+   elif code == "Finished":
+	    return 3
+
     
   
 

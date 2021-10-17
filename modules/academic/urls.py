@@ -12,6 +12,18 @@ urlpatterns = [
    path('createQuestions/', views.createQuestions, name="createQuestions"),
    path('createLessons/', views.createLessons, name="createLessons"),
    path('saveQuestions/', views.saveQuestions, name="saveQuestions"),
+   path('takeExam/', views.takeExam, name="takeExam"),
+   path('contenidoExamen/', views.contenidoExamen, name="contenidoExamen"),
+   path('reviewExamen/', views.reviewExamen, name="reviewExamen"),
+   path('TestList/', views.TestList, name="TestList"),
+   path('SeeTest/', views.SeeTest, name="SeeTest"),
+   path('MyTest/', views.MyTest, name="MyTest"),
+
+
+
+
+
+
    #contenidos AJAX
    path('contenidoProgramas/', views.getContentProgramas, name="contenidoProgramas"),
    path('contenidoProcesos/', views.getContentProcesos, name="contenidoProcesos"),
@@ -37,6 +49,9 @@ urlpatterns = [
    path('modalAddQuestion/', views.getModalQuestion, name="modalAddQuestion"),
    path('modalChooseTypeQuestion/', views.getModalChooseTypeQuestion, name="modalTypeQuestion"),
    path('modalAddBlock/', views.getModalAddBlock, name="getModalAddBlock"),
+   path('modalNewExpert/', views.getModalNewExpert, name="getModalNewExpert"),
+
+   
 
    path('modalNewSimple/', views.getModalNewSimple, name="modalNewSimple"),
    path('modalNewMultiple/', views.getModalNewMultiple, name="modalNewMultiple"),

@@ -1,0 +1,402 @@
+{% load Filter %}
+
+<section>
+   <form class="form" id="questionsForm" name="questionsForm">
+   <div class="page-inner animated fadeInRight">
+            <div class="page-header">
+                <h4 class="page-title">{{actividad.fk_estructura_programa}}</h4>
+                <ul class="breadcrumbs">
+                 
+             
+                </ul>
+            </div>
+            <div class="page-category">         
+                <form action="">
+                    <div class="form-row d-flex justify-content-center">
+                        <div class="card mt-3" style="width: 80rem;" >
+                            <div class="card-header">
+                                                                  
+                            </div>
+                            <div class="card-body" id="tabQuestions">
+                                <div class="table-responsive" id="renderContainer">
+                           
+                                </div>
+                                <div class="form-row text-center">
+                                    <div class="form-group col-md-12">
+
+
+
+                                        <section>
+                                         
+                                          
+                                            <ul class="card-list" id="listaPaginas">
+                                               {% for block in actividad.bloque_actividad.all %}
+                                           
+                                               <li class="card-list-item">
+                                                  <div class="card-list-item-inner">
+                                                     <div class="card-list-item-title" >{{block.orden}}</div>
+
+                                                     <div class="card-list-item-title" onclick="showContentBlock('{{block.pk}}')">{{block.titulo_bloque}}</div>
+                                                   
+                                                
+
+                                                     <div class="card-list-item-actions">
+                                                        <div class="btn-group" role="group">
+                                                          
+                                                        
+                                                           <button type="button" class="btn btn-icon btn-sm btn-warning ml-1" data-toggle="tooltip"
+                                                              data-placement="top" title="Show/Hide Questions" onclick="showChilds('{{block.pk}}')">
+                                                              <i class="fas fa-clipboard"></i> 
+                                                           </button>
+                                                        
+                                                        </div>
+                                                     </div>
+                                                  
+                                                  </div>
+
+                                   <div id="contentBlock{{block.pk}}" class="card-list-item-descripcion card-list-item-close"><strong>Comment:</strong> &nbsp;{{block.comentario}}</div>
+                                   <ul id="childsBlock{{block.pk}}" class="card-list-item-close">
+                                    
+                                    {% for pregunta in block.bloque_pregunta.all %}
+
+                          
+
+                                   <li  style="display: block;" class="card-list-item-content
+                                   {% if activity.fk_categoria.desc_elemento == 'Expert test'%} deg-primary{% endif %}
+                                   {% if activity.fk_categoria.desc_elemento == 'Test'%} deg-success{% endif %}
+                                   {% if activity.fk_categoria.desc_elemento == 'Homework'%} deg-warning{% endif %}
+                                   {% if activity.fk_categoria.desc_elemento == 'Lesson'%} deg-info{% endif %}
+                                   {% if activity.fk_categoria.desc_elemento == 'Forum'%} deg-danger{% endif %}
+                                   ">
+                                  
+                                   <div class="form-row col-md-12">
+                                      <div class="form-group col-md-12">
+                                          <label for="questionText">{{pregunta.titulo_pregunta}}</label>
+                                   
+                                      </div>                       
+                                  </div>   
+
+                                  {% if pregunta.fk_tipo_pregunta_evaluacion != 3 %}
+                                  <div class="form-row col-md-12">
+                                      <div class="form-group col-md-12">
+                                          <label for="questionText">{{pregunta.texto_pregunta}}</label>
+                                      </div>                       
+                                  </div>    
+                                  {% endif %}
+                                  {% if pregunta.fk_tipo_pregunta_evaluacion == 3 %}
+                                  <div class="form-row col-md-12">
+                                      <div class="form-group col-md-12">
+                                          <label for="questionText">{{pregunta.pk|textoCompletar}}</label>
+                                      </div>                       
+                                  </div>    
+                                  {% endif %}
+
+                                  {% if pregunta.fk_tipo_pregunta_evaluacion == 1 %}
+                             
+
+                                  <div class="form-row col-md-12 text-center">
+                                    <div class="form-group col-md-12">
+                                        <table class="table table-sm table-bordered table-striped table-hover table-responsive">
+                                            <thead>
+                                                <tr>
+                                                    <th >
+                                                      #
+                                                    </th>
+                                                    <th>
+                                                        Options
+                                                    </th>                     
+                                                    <th>
+                                                        
+
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody  id="tableMultiple" name='tableMultiple'>
+                                          {% for opciones in pregunta.soyUnaOpcion.all %}
+                                          <tr>
+
+                                             <td>{{forloop.counter}}.</td>
+                                                        <td>{{opciones.texto_opcion}}</td>
+
+                                                        <td><input type='radio' name='Simple{{pregunta.pk}}' id='Simple{{opciones.pk}}' value='{{opciones.pk}}' ></td>
+                                          </tr>
+                                          {% endfor %}
+
+                                               
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                 </div>  
+                                  {% endif %}
+
+                                  {% if pregunta.fk_tipo_pregunta_evaluacion == 6 %}
+                             
+
+                                  <div class="form-row col-md-12 text-center">
+                                    <div class="form-group col-md-12">
+                                        <table class="table table-sm table-bordered table-striped table-hover table-responsive">
+                                            <thead>
+                                                <tr>
+                                                    <th >
+                                                      #
+                                                    </th>
+                                                    <th>
+                                                        Options
+                                                    </th>                     
+                                                    <th>
+                                                        
+
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody  id="tableMultiple" name='tableMultiple'>
+                                          {% for opciones in pregunta.soyUnaOpcion.all %}
+                                          <tr>
+
+                                             <td>{{forloop.counter}}.</td>
+                                                        <td>{{opciones.texto_opcion}}</td>
+
+                                                        <td><input type='radio' name='Simple{{pregunta.pk}}' id='Simple{{opciones.pk}}' value='{{opciones.pk}}' ></td>
+                                          </tr>
+                                          {% endfor %}
+
+                                               
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                 </div>  
+                                  {% endif %}
+
+
+                                  
+                                  {% if pregunta.fk_tipo_pregunta_evaluacion == 2 %}
+                                
+                                  <div class="form-row col-md-12 text-center">
+                                    <div class="form-group col-md-12">
+                                        <table class="table table-sm table-bordered table-striped table-hover table-responsive">
+                                            <thead>
+                                                <tr>
+                                                    <th >
+                                                      #
+                                                    </th>
+                                                    <th>
+                                                        Options
+                                                    </th>                     
+                                                    <th>
+                                                        
+
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody  id="tableMultiple" name='tableMultiple'>
+                                          {% for opciones in pregunta.soyUnaOpcion.all %}
+                                          <tr>
+
+                                             <td>{{forloop.counter}}.</td>
+                                                        <td>{{opciones.texto_opcion}}</td>
+
+                                                        <td>  <input type='checkbox' name='Multiple{{opciones.pk}}' id='Multiple{{opciones.pk}}' value='{{opciones.pk}}' >   </td>
+                                          </tr>
+                                          {% endfor %}
+
+                                               
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                 </div>  
+                                  {% endif %}
+
+                                  {% if pregunta.fk_tipo_pregunta_evaluacion == 5 %}
+                                  <div class="form-row col-md-12 text-center">
+                                    <div class="form-group col-md-12">
+                                        <table class="table table-sm table-bordered table-striped table-hover table-responsive">
+                                            <thead>
+                                                <tr>
+                                                    <th >
+                                                      #
+                                                    </th>
+                                                    <th>
+                                                        Options
+                                                    </th>                     
+                                                    <th>
+                                                        
+                                                       True
+                                                    </th>
+                                                    <th>
+                                                         False
+
+                                                   </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody  id="tableMultiple" name='tableMultiple'>
+                                          {% for opciones in pregunta.soyUnaOpcion.all %}
+                                          <tr>
+
+                                             <td>{{forloop.counter}}.</td>
+                                                        <td>{{opciones.texto_opcion}}</td>
+
+                                                        <td>  <input type='radio' name='tf{{opciones.pk}}' value='1' >   </td>
+                                                        <td>  <input type='radio' name='tf{{opciones.pk}}' value='0' >   </td>
+
+                                          </tr>
+                                          {% endfor %}
+
+                                               
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                 </div>  
+                                  {% endif %}
+
+                                  {% if pregunta.fk_tipo_pregunta_evaluacion == 3 %}
+
+                        
+                                  <div class="form-row col-md-12 text-center">
+                                    <div class="form-group col-md-12">
+                                       
+                                       <h5>Select</h5>
+                                       <select id="Completar{{pregunta.pk}}" class="form-control" >
+                                         <option value=""  > </option>
+                                          {% for opciones in pregunta.soyUnaOpcion.all %}
+
+                                          <option value="{{opciones.pk}}"> {{opciones.texto_opcion}}  </option>
+ 
+                                       
+                                          {% endfor %}
+
+
+                                       </select>
+                                        
+
+                                        
+                                    </div>
+                                 </div>  
+                                  {% endif %}
+
+
+                                  {% if pregunta.fk_tipo_pregunta_evaluacion == 4 %}
+                                  <div class="form-row col-md-12 text-center">
+                                    <div class="form-group col-md-12">
+                                        <table class="table table-sm table-bordered table-striped table-hover table-responsive">
+                                            <thead>
+                                                <tr>
+                                                    <th >
+                                                      #
+                                                    </th>
+                                                    <th>
+                                                        A
+                                                    </th>                     
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <th>
+                                                        
+                                                   </th>
+                                                    <th>
+                                                         B
+
+                                                   </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody  id="tableMultiple" name='tableMultiple'>
+                                          {% for opciones in pregunta.soyUnaOpcion.all|shuffleA %}
+                                          {% if opciones.columnaPregunta == 1 %}
+
+                                          <tr>
+
+                                             <td>{{forloop.counter}}.</td>
+                                                     
+                                                         <td>{{opciones.texto_opcion}}</td>
+         
+
+                                                      
+
+                                                         <td colspan="2"> <i  style="font-size: 30px;" class="fas fa-arrows-alt-h"></i> </td>
+
+
+                                                        <td>  
+                                                      <select id="Asociar{{opciones.pk}}" class="form-control">  
+                                                      <option value=""></option> 
+                                                      {% for opcionB in pregunta.soyUnaOpcion.all|shuffle %}
+                                                      {% if opcionB.columnaPregunta == 2 %}
+
+
+                                                      <option value="{{opcionB.pk}}">{{opcionB.texto_opcion}}</option> 
+
+
+
+
+
+                                                      {% endif %}  
+
+                                                      {% endfor %}
+                                                      
+                                                      </select>     
+                                                      
+                                                      </td>
+
+                                          </tr>
+                                          {% endif %}  
+
+                                          {% endfor %}
+
+                                               
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                 </div>  
+                                  {% endif %}
+
+
+
+
+
+                                   </li>
+
+                                   
+
+
+
+
+
+
+
+
+
+
+
+
+                               
+                                    {% endfor%}
+
+                                    
+
+                                 </ul>
+
+
+
+
+
+                                             
+                                               </li>
+                                            
+                                               {% endfor %}
+                                            </ul>
+                                         
+                                         </section>
+                                         
+
+                                    </div>
+                                </div>
+                           
+                            </div>
+                            <div class="card-footer d-flex justify-content-end">
+                               <button type="submit" value="Submit" class="btn btn-primary">Finish <i class="fas fa-save ml-2"></i></button>
+                            </div>
+                        </div>           
+                    </div>
+                </form>
+            </div>
+        </div>
+   </form>
+</section>

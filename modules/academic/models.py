@@ -22,7 +22,7 @@ class EscalaEvaluacion(models.Model):
 class EscalaCalificacion(models.Model):
     idescala_calificacion = models.SmallAutoField(primary_key=True)
     desc_calificacion = models.TextField()
-    puntos_maximo = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
+    puntos_maximo = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)
     fk_calificacion = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE, default=None, null=True)
     fk_escala_evaluacion = models.ForeignKey(EscalaEvaluacion, on_delete=models.CASCADE, default=None, null=True)
 
@@ -32,7 +32,7 @@ class EscalaCalificacion(models.Model):
 class ActividadEvaluaciones(models.Model):
     idactividad_evaluaciones = models.AutoField(primary_key=True)
     nro_repeticiones = models.IntegerField(blank=True, null=True)
-    pointUse = models.IntegerField(blank=True, null=True, default=0)
+    pointUse =  models.DecimalField(max_digits=9, decimal_places=2, blank=True, null=True, default=0)
     duracion = models.DecimalField(max_digits=5, decimal_places=2, null=True)
     fk_estructura_programa = models.OneToOneField(Estructuraprograma,on_delete=models.CASCADE,  default=None, null=True)
     fk_tipo_duracion = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE, default=None, null=True, related_name="actividad_tipo_duracion")
@@ -80,7 +80,7 @@ class EvaluacionInstrucciones(models.Model):
 class EvaluacionesBloques(models.Model):
     orden=models.IntegerField(null=True)
     idevaluaciones_bloques=models.AutoField(primary_key=True)
-    pointUse = models.IntegerField(blank=True, null=True, default=0)
+    pointUse = models.DecimalField(max_digits=9, decimal_places=2, blank=True, null=True, default=0)
 
     titulo_bloque = models.TextField(null=True)
     comentario = models.TextField(null=True)
@@ -93,9 +93,11 @@ class EvaluacionesPreguntas(models.Model):
     orden=models.IntegerField(null=True)
     idevaluaciones_preguntas = models.AutoField(primary_key=True)
     titulo_pregunta = models.TextField(null=True)
+    imagen_pregunta = models.TextField(null=True)
+
     indicePalabra = models.IntegerField(null=True)
     texto_pregunta = models.TextField(null=True)
-    puntos_pregunta = models.DecimalField(max_digits=9, decimal_places=2, blank=True, null=True)
+    puntos_pregunta = models.DecimalField(max_digits=9, decimal_places=2, blank=True, null=True, default=0)
     fk_evaluaciones_bloque = models.ForeignKey(EvaluacionesBloques, on_delete=models.CASCADE,  default=None, null=True, related_name='bloque_pregunta')
     #fk_tipo_pregunta_evaluacion = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE,  default=None, null=True)
     fk_tipo_pregunta_evaluacion = models.SmallIntegerField(null=True)
@@ -104,7 +106,7 @@ class PreguntasOpciones(models.Model):
     columnaPregunta= models.SmallIntegerField(null=True)
     idpreguntas_opciones=models.AutoField(primary_key=True)
     indiceAsociacion = models.IntegerField(null=True)
-    fk_evaluacion_pregunta= models.ForeignKey(EvaluacionesPreguntas, on_delete=models.CASCADE, default=None, null=True)
+    fk_evaluacion_pregunta= models.ForeignKey(EvaluacionesPreguntas, on_delete=models.CASCADE, default=None, null=True, related_name='soyUnaOpcion')
     texto_opcion = models.TextField(null=True)
     tipo_condicion = models.BooleanField(default=False)
     idLista = models.IntegerField(null=True)
@@ -166,4 +168,38 @@ class ActividadConferencia(models.Model):
     clave = models.TextField(null=True)
     id_conferencia = models.TextField(null=True)
     fk_estructura_programa = models.OneToOneField(Estructuraprograma,on_delete=models.CASCADE,  default=None, null=True)
+
+class ExamenActividad(models.Model):
+    idExamen = models.AutoField(primary_key=True)
+    fechaInicio = models.DateTimeField(null=True)
+    fechaTermino = models.DateTimeField(null=True)
+
+    nro_repeticiones = models.IntegerField(blank=True, null=True)
+    PuntuacionFinal=models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True, default=0)
+
+    estadoExamen = models.SmallIntegerField(null=True)
+    usuario=models.ForeignKey(Publico,on_delete=models.CASCADE,  default=None, null=True,related_name='ActividadExamen')
+    fk_Actividad = models.ForeignKey(ActividadEvaluaciones,on_delete=models.CASCADE,  default=None, null=True,related_name='ActividadExamen')
+
+class ExamenRespuestas(models.Model):
+    idRespuesta = models.AutoField(primary_key=True)
+    respuetaCorrecta = models.BooleanField(default=False, null=True)
+    bloque = models.IntegerField(blank=True, null=True)
+
+    fk_pregunta=models.ForeignKey(EvaluacionesPreguntas,on_delete=models.CASCADE,  default=None, null=True, related_name='OpcionPregunta')
+    fk_Examen= models.ForeignKey(ExamenActividad,on_delete=models.CASCADE,  default=None, null=True, related_name='OpcionExamen')
+    fk_Opcion= models.ForeignKey(PreguntasOpciones,on_delete=models.CASCADE,  default=None, null=True, related_name='respuestaExamen')
+    fk_OpcionRelacionada= models.ForeignKey(PreguntasOpciones,on_delete=models.CASCADE,  default=None, null=True, related_name='respuestaExamenRelacionada')
+
+
+
+
+class ExamenResultados(models.Model):
+    idResultado = models.AutoField(primary_key=True)
+    
+    puntuacionBloques= models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)
+
+    bloque= models.ForeignKey(EvaluacionesBloques, on_delete=models.CASCADE,  default=None, null=True, related_name='bloque_respuesta')
+    
+    fk_Examen= models.ForeignKey(ExamenActividad,on_delete=models.CASCADE,  default=None, null=True, related_name='ResultadoExamen')
 

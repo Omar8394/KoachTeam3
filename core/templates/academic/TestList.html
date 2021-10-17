@@ -4,6 +4,7 @@
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
+{% load Filter %}
 
 {% block content %}
 
@@ -21,13 +22,13 @@
 						<i class="flaticon-right-arrow"></i>
 					</li>
 					<li class="nav-item">
-						<span>Registration</span>
+						<span>Academic</span>
 					</li>
 					<li class="separator">
 						<i class="flaticon-right-arrow"></i>
 					</li>
 					<li class="nav-item">
-						<a href="{% url 'ManagePersons' %}">Enrollment Applications</a>
+						<a href="">Evaluations List</a>
 					</li>
 				</ul>
 			</div>
@@ -50,14 +51,14 @@
                     
                                                         <table style="width:100%">                                            
                                                             <tr>
-                                                                <td class="p-2">Initial Date for Registration</td>
+                                                                <td class="p-2">Initial Date Finished</td>
                                                                 <td></td>
                                                                 <td class="p-2">
                                                                     <input id="fechaInicialPersona" name="fechaInicialPersona" value="{{fechaInicialPersona}}" type="date" class="form-control" >
                                                                 </td>
                                                             </tr>
                                                             <tr>
-                                                                <td class="p-2">Final Date for Registration</td>
+                                                                <td class="p-2">Final Date Finished </td>
                                                                 <td></td>
                                                                 <td class="p-2">
                                                                     <input id="fechaFinalPersona" name="fechaFinalPersona" value="{{fechaFinalPersona}}" type="date" class="form-control" >
@@ -82,7 +83,7 @@
                                                                 <td></td>
                                                                 <td></td>
                                                                 <td class="p-2">
-                                                                    <input type="submit" class="btn btn-primary" value="Filter" >
+                                                                    <input type="" class="btn btn-primary" value="Filter" >
                                                                     &nbsp;
                                                                     <input type="button" onclick="reload()" class="btn btn-default" value="Clean">
                                                                 </td>
@@ -101,34 +102,39 @@
                                                 <tr>
                                                     <th style="width: 65px;"></th>
                                                     <th>Names</th>
-                                                    <th>Id Number</th>
-                                                    <th>Date of Registration</th>
+                                                    <th>Activity</th>
+                                                    <th>Topic</th>
+
+                                                    <th>Take Date</th>
+                                                    <th>Type</th>
+                                                    <th>Status</th>
+                                                    
                                                     <th></th>
                                                     <th></th>  
                                                     <th></th>       
                                                 </tr>
                                             </thead>
                                             <tbody class="data-cargando">
-                                                {% for person in publicoObject %}
+                                                {% for exam in ExamenList %}
                             
                                                 <tr style="cursor:pointer;"  >
                                                     <td ></td>
-                                                   <td>{{person}}</td>
-                                                   <td>{{person.docto_identidad}}</td>
-                                                   <td>{{person.fecha_registro}}</td>
+                                                   <td>{{exam.usuario}}</td>
+                                                   <td>{{exam.fk_Actividad.fk_estructura_programa}}</td>
+                                                   <td>{{exam.fk_Actividad.fk_estructura_programa.fk_estructura_padre}}</td>
+
+                                                   <td>{{exam.fechaInicio}}</td>
+                                                   <td>{{exam.fk_Actividad.fk_estructura_programa.fk_categoria}}</td>
+                                                   <td>{{exam.estadoExamen|tipoExamen}}</td>
+
                                                    <td> 
-                                                        <a href="javascript:void(0);"  id="{{person.idpublico}}"  onclick="showModal(id)" ><i class="fa fa-plus"></i> Add Enrollment</a>
+                                                       {% if exam.estadoExamen == 3 %} <a target="blank" href="{%url 'SeeTest'  %}?id={{exam.pk}}"   onclick="" > <button class="btn btn-info btn-sm"> <i class="fas fa-search"></i> Review</a> </button> {% endif %}
                                                     </td>
                                                    <td>  
-                                                        <form id="PersonaForm" name="PersonaForm" action="{% url 'EnrollmentList'%}" onsubmit=" return ManagePersonas('{{person.idpublico}}')" method="POST">
-                                                            {% csrf_token %}
-                                                            <input type="hidden" value="0" id="PersonId"
-                                                            name="PersonId">
-                                                        
+                                      
+                                                    {% if exam.estadoExamen == 3 %}        <a  href="javascript:void(0);" ><button class="btn btn-info btn-sm"> <i class="fas fa-search"></i> See Results</a> </button> {% endif %}
                 
-                                                            <a  href="javascript:void(0);" onclick="sendForm('{{person.idpublico}}')" id="{{person.idpublico}}" ><i class="fa fa-tasks"></i> Manage Enrollments</a>
-                
-                                                        </form>
+                                                       
                                                     </td>
                                                     <td>
                                                     </td>
@@ -392,8 +398,8 @@ window.location.href="{% url 'ManagePersons'%}";
 
 
 <!--  Modal-->
-<div class="modal fade" tabindex="-1" role="dialog" id="AdministrarMatricula">
-    <div class="modal-dialog" role="document" id="modalContent">
+<div class="modal fade" tabindex="-1" role="dialog" id="ModalResults">
+    <div class="modal-dialog" role="document" id="modalContentResults">
      
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

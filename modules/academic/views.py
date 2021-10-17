@@ -8,9 +8,26 @@ from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.urls import reverse
 from django import template
 from modules.app import Methods
+from core import settings
+from pathlib import Path
+import uuid
+import base64
+import datetime
+from django.core.paginator import Paginator
+
+from django.utils.dateparse import parse_datetime
+
 import json
+from django.core.files.storage import FileSystemStorage
+import os
+
 from ..app.models import TablasConfiguracion, Estructuraprograma
-from .models import ActividadEvaluaciones, Cursos, ActividadConferencia, ActividadLeccion, ActividadTarea, EscalaEvaluacion, EvaluacionesPreguntas, EvaluacionesBloques, Paginas, PreguntasOpciones
+
+
+from ..security.models import ExtensionUsuario
+
+from .models import ActividadEvaluaciones, Cursos, ActividadConferencia, ActividadLeccion, ActividadTarea, EscalaEvaluacion, EvaluacionesPreguntas, EvaluacionesBloques, Paginas, PreguntasOpciones, ExamenActividad,ExamenRespuestas,ExamenResultados
+from modules.app import models
 
 # Create your views here.
 @login_required(login_url="/login/")
@@ -121,6 +138,302 @@ def createQuestions(request):
 
     return render(request, 'academic/createQuestions.html', context)
 
+@login_required(login_url="/login/")
+def reviewExamen(request):
+    if request.method == "POST":
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            
+            
+                context = {}
+                data = json.load(request)["data"]
+
+                
+                if data["method"] == "Show":
+                        examen=ExamenActividad.objects.get(pk=data['testId'])
+                        resultados=ExamenResultados.objects.filter(fk_Examen=examen.pk)
+                        respuestas=ExamenRespuestas.objects.filter(fk_Examen=examen.pk)
+                        actividad=ActividadEvaluaciones.objects.annotate(num_child=Count('bloque_actividad', distinct=True) ).get(pk=data['ActivityId'])
+                        
+                        
+                        context = {
+                        'examen':examen,
+                        'resultados':resultados,
+                        'respuestas':respuestas,
+                        'actividad':actividad,
+
+                        }
+                        html_template = (loader.get_template('academic/ExamenRespuestas.html'))
+                        return HttpResponse(html_template.render(context, request))
+                   
+
+@login_required(login_url="/login/")
+def contenidoExamen(request):
+    if request.method == "POST":
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            
+            
+                context = {}
+                data = json.load(request)["data"]
+
+                
+                if data["method"] == "Show":
+                        actividad=ActividadEvaluaciones.objects.annotate(num_child=Count('bloque_actividad', distinct=True) ).get(pk=data['ActivityId'])
+                        
+                        
+                        context = {
+                        'actividad':actividad,
+
+                        }
+                        html_template = (loader.get_template('academic/contenidoExamen.html'))
+                        return HttpResponse(html_template.render(context, request))
+                   
+                if data["method"] == "Get":
+                        actividad=ActividadEvaluaciones.objects.annotate(num_child=Count('bloque_actividad', distinct=True) ).get(pk=data['ActivityId'])
+                        BloquesPreguntas=actividad.bloque_actividad.all()
+                        findpregunta = list(BloquesPreguntas.values())
+                        
+                         
+                        # pregunta=EvaluacionesPreguntas.objects.filter(pk=data["idFind"])
+                        # findpregunta = list(pregunta.values())
+                        # childs = PreguntasOpciones.objects.filter(fk_evaluacion_pregunta=data["idFind"])
+                        # listaChilds = list(childs.values())
+                        return JsonResponse({"data":findpregunta}, safe=False)
+                     
+
+                if data["method"] == "Update":
+                    bloque=EvaluacionesBloques.objects.get(pk=int(data["idViejo"]))
+                    
+                    bloque.comentario=data['textoBloque']
+                    bloque.titulo_bloque=data['tituloBloque']
+                    bloque.save()
+
+
+
+                if data["method"] == "Create":
+                    actividad=ActividadEvaluaciones.objects.annotate(num_child=Count('bloque_actividad', distinct=True) ).get(pk=data['ActivityId'])
+                    Examen=ExamenActividad.objects.create()
+
+                    Examen.usuario=ExtensionUsuario.objects.get(user=request.user).Publico
+                    Examen.estadoExamen=2
+                    Examen.nro_repeticiones=1
+                    Examen.fechaInicio=datetime.datetime.now() 
+                    Examen.fk_Actividad=actividad
+
+
+                    Examen.save()
+                    return JsonResponse({"id": Examen.pk})     
+
+
+                if data["method"] == "Save":
+                   respuestas=data["respuestas"] 
+
+                   if respuestas:
+                        total=0
+                        examen=ExamenActividad.objects.get(pk=data['examenId'])
+                        actividad=ActividadEvaluaciones.objects.get(pk=data['ActivityId'])
+
+                        for block in actividad.bloque_actividad.all():
+                            resultado=ExamenResultados()
+                            resultado.bloque=block
+                            resultado.puntuacionBloques=float(0.00)
+                            resultado.fk_Examen=examen
+                            resultado.save()
+
+                        for resp in respuestas:
+                            opcionRespuesta=ExamenRespuestas.objects.create()
+                            opcion=PreguntasOpciones.objects.get(pk=resp['opcionID'])
+                            opcionRespuesta.fk_Opcion=opcion
+                            opcionRespuesta.fk_Examen=examen
+                            pregunta=EvaluacionesPreguntas.objects.get(pk=resp['idPregunta'])
+
+                            opcionRespuesta.fk_pregunta=pregunta
+
+                            if(resp['tipoPregunta']==5):
+                                opcionRespuesta.respuetaCorrecta=resp['isCorrect']
+                            if(resp['tipoPregunta']==4):
+                                opcionRelacionada=PreguntasOpciones.objects.get(pk=resp['idRelacional'])
+                                opcionRespuesta.fk_OpcionRelacionada=opcionRelacionada
+                            opcionRespuesta.save()
+
+                            resultado=ExamenResultados.objects.filter(fk_Examen=examen).get(bloque__pk=resp['bloques'])
+                            if(resp['tipoPregunta']==1):
+                                if(opcion.respuetaCorrecta):
+                                 resultado.puntuacionBloques= resultado.puntuacionBloques+pregunta.puntos_pregunta
+                                 examen.PuntuacionFinal=examen.PuntuacionFinal+pregunta.puntos_pregunta
+
+                            if(resp['tipoPregunta']==2):
+                             resultado.puntuacionBloques= resultado.puntuacionBloques+opcion.puntos_porc
+                             examen.PuntuacionFinal=examen.PuntuacionFinal+opcion.puntos_porc
+
+                            if(resp['tipoPregunta']==3):
+                                if(opcion.respuetaCorrecta):
+                                    resultado.puntuacionBloques= resultado.puntuacionBloques+pregunta.puntos_pregunta
+                                    examen.PuntuacionFinal=examen.PuntuacionFinal+pregunta.puntos_pregunta
+
+                            if(resp['tipoPregunta']==4):
+                                opcionRelacionada=PreguntasOpciones.objects.get(pk=resp['idRelacional'])
+                                if(opcionRelacionada.indiceAsociacion==opcion.indiceAsociacion):
+                                    resultado.puntuacionBloques= resultado.puntuacionBloques+opcion.puntos_porc
+                                    examen.PuntuacionFinal=examen.PuntuacionFinal+opcion.puntos_porc
+
+                            if(resp['tipoPregunta']==5):
+                             if(opcion.respuetaCorrecta):
+                                 resultado.puntuacionBloques= resultado.puntuacionBloques+opcion.puntos_porc
+                                 examen.PuntuacionFinal=examen.PuntuacionFinal+opcion.puntos_porc
+
+                            if(resp['tipoPregunta']==6):
+                             resultado.puntuacionBloques= resultado.puntuacionBloques+opcion.puntos_porc
+                             examen.PuntuacionFinal=examen.PuntuacionFinal+opcion.puntos_porc
+                            resultado.save()
+                            examen.save()
+                        
+                   examen.estadoExamen=3
+                   examen.fechaTermino=datetime.datetime.now() 
+                   examen.nro_repeticiones=examen.nro_repeticiones+1
+                   examen.save()
+
+
+                            
+
+                        
+                       
+                        
+
+
+                   
+                            
+
+
+
+
+
+                        
+
+
+
+
+
+
+                        
+                          
+
+
+
+             
+                return JsonResponse({"message": "Perfect"})     
+           
+           
+    context = {}
+    html_template = (loader.get_template('academic/contenidoExamen.html'))
+    return HttpResponse(html_template.render(context, request))
+
+
+@login_required(login_url="/login/")
+def takeExam(request):
+    preguntaId=request.GET.get('id')
+    #la modificacion es para que los busque por el id de estructuras programa (me facilita la vida)
+    pregunta=ActividadEvaluaciones.objects.get(fk_estructura_programa=preguntaId)
+    escalas = EscalaEvaluacion.objects.all()
+    user=ExtensionUsuario.objects.get(user=request.user)
+
+
+    examen=ExamenActividad.objects.filter(fk_Actividad=pregunta).filter(usuario=user.Publico)
+    print(examen)
+
+
+    
+    escalaEvaluacion=pregunta.fk_escala_evaluacion
+    escalaBloque=pregunta.fk_escala_bloque
+
+    escalaBloque=pregunta.fk_escala_bloque
+
+    listaPreguntas=None
+    boque=None
+
+    if(Estructuraprograma.objects.get(pk=preguntaId).fk_categoria.valor_elemento=='activityExpert'):
+     bloque=EvaluacionesBloques.objects.filter(fk_actividad_evaluaciones=pregunta.idactividad_evaluaciones)
+     
+    else:
+     bloque=EvaluacionesBloques.objects.get(fk_actividad_evaluaciones=pregunta.idactividad_evaluaciones)
+     listaPreguntas=EvaluacionesPreguntas.objects.filter(fk_evaluaciones_bloque=bloque).order_by('orden')
+
+
+
+     
+
+    
+    context = {
+        'pregunta':pregunta,
+        "tipoPreguntas" : TablasConfiguracion.obtenerHijos('PregEvalua'),   
+        'modelo':pregunta , 
+        'escalas':escalas,
+        'bloque':bloque,
+        'escalaEvaluacion':escalaEvaluacion,
+        'listaPreguntas':listaPreguntas,
+        'escalaBloque':escalaBloque,
+        'examen':examen
+
+    }
+    context['segment'] = 'academic'
+    if(Estructuraprograma.objects.get(pk=preguntaId).fk_categoria.valor_elemento=='activityExpert'):
+     return render(request, 'academic/takeExam.html', context)
+
+    return render(request, 'academic/takeExam.html', context)
+
+@login_required(login_url="/login/")
+def SeeTest(request):
+    Id=request.GET.get('id')
+    examen=ExamenActividad.objects.get(pk=Id)
+    
+    pregunta=ActividadEvaluaciones.objects.get(pk=examen.fk_Actividad.pk)
+    escalas = EscalaEvaluacion.objects.all()
+    user=ExtensionUsuario.objects.get(user=request.user)
+
+
+    print(examen)
+
+
+    
+    escalaEvaluacion=pregunta.fk_escala_evaluacion
+    escalaBloque=pregunta.fk_escala_bloque
+
+    escalaBloque=pregunta.fk_escala_bloque
+
+    listaPreguntas=None
+    boque=None
+
+    if(Estructuraprograma.objects.get(pk=pregunta.fk_estructura_programa.pk).fk_categoria.valor_elemento=='activityExpert'):
+     bloque=EvaluacionesBloques.objects.filter(fk_actividad_evaluaciones=pregunta.idactividad_evaluaciones)
+     
+    else:
+     bloque=EvaluacionesBloques.objects.get(fk_actividad_evaluaciones=pregunta.idactividad_evaluaciones)
+     listaPreguntas=EvaluacionesPreguntas.objects.filter(fk_evaluaciones_bloque=bloque).order_by('orden')
+
+
+
+     
+
+    
+    context = {
+        'pregunta':pregunta,
+        "tipoPreguntas" : TablasConfiguracion.obtenerHijos('PregEvalua'),   
+        'modelo':pregunta , 
+        'escalas':escalas,
+        'bloque':bloque,
+        'escalaEvaluacion':escalaEvaluacion,
+        'listaPreguntas':listaPreguntas,
+        'escalaBloque':escalaBloque,
+        'examen':examen
+
+    }
+    context['segment'] = 'academic'
+    if(Estructuraprograma.objects.get(pk=pregunta.fk_estructura_programa.pk).fk_categoria.valor_elemento=='activityExpert'):
+     return render(request, 'academic/SeeTest.html', context)
+
+    return render(request, 'academic/SeeTest.html', context)
+
+    
+
 
 #    if "delete" in data:
 #                     question = EvaluacionesPreguntas.objects.get(pk=data["id"])
@@ -139,6 +452,51 @@ def createQuestions(request):
 #                 question.fk_actividad_evaluaciones.data = data["fk_actividad_evaluaciones"]
 #                 question. fk_tipo_pregunta_evaluacion.data = data["tipoPregunta"]
 #                 question.save()
+
+
+@login_required(login_url="/login/")
+def TestList(request):
+    examenes=ExamenActividad.objects.all()
+     
+    paginator = Paginator(examenes, 10)
+    
+    msg=None
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+  
+
+
+            
+    context = { 'msg':msg,
+     'ExamenList':page_obj ,
+    }
+    context['segment'] = 'academic'
+
+    
+    return render(request, 'academic/TestList.html', context)
+
+@login_required(login_url="/login/")
+def MyTest(request):
+    examenes=ExamenActividad.objects.all()
+    examenes.filter(usuario=ExtensionUsuario.objects.get(user=request.user).Publico)
+     
+    paginator = Paginator(examenes, 10)
+    
+    msg=None
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+  
+
+
+            
+    context = { 'msg':msg,
+     'ExamenList':page_obj ,
+    }
+    context['segment'] = 'academic'
+
+    
+    return render(request, 'academic/TestList.html', context)
+
 
 @login_required(login_url="/login/")
 def saveQuestions(request):
@@ -667,7 +1025,14 @@ def getModalAddBlock(request):
 
                 if "delete" in data:
                     bloque=EvaluacionesBloques.objects.get(pk=data["id"])
+                    actividad = bloque.fk_actividad_evaluaciones
+
                     bloque.delete()
+                     #update order
+                    bloques = actividad.bloque_actividad.order_by('orden')
+                    for idx, value in enumerate(bloques, start=1):
+                        value.orden = idx
+                        value.save()
                     return JsonResponse({"message": "Deleted"})
                 if "idFind" in data:
                     
@@ -682,7 +1047,7 @@ def getModalAddBlock(request):
                         return HttpResponse(html_template.render(context, request))
 
                 if data["method"] == "Update":
-                    bloque=EvaluacionesBloques.objects.filter(pk=data["idFind"])
+                    bloque=EvaluacionesBloques.objects.get(pk=int(data["idViejo"]))
                     
                     bloque.comentario=data['textoBloque']
                     bloque.titulo_bloque=data['tituloBloque']
@@ -692,6 +1057,8 @@ def getModalAddBlock(request):
 
                 if data["method"] == "Create":
                     actividad=ActividadEvaluaciones.objects.annotate(num_child=Count('bloque_actividad', distinct=True) ).get(pk=data['ActivityId'])
+                    actividad.pointUse=actividad.pointUse+actividad.fk_escala_bloquemaxima_puntuacion
+                    actividad.save()
                     bloque=EvaluacionesBloques.objects.create()
 
                     newOrden=actividad.num_child+1
@@ -778,7 +1145,9 @@ def getModalNewTest(request):
                         if data["method"] == "Create":
                             if not "checkExpertCB" in data["data"]:
                                 bloque=EvaluacionesBloques.objects.create()
-                                bloque.titulo_bloque='Test'
+                                bloque.titulo_bloque=actividad.descripcion
+                                #bloque.titulo_bloque='Test'
+                                
                                 bloque.orden=1
                                 bloque.comentario=''
                                 bloque.fk_actividad_evaluaciones=test
@@ -933,7 +1302,7 @@ def getModalQuestion(request):
 def getModalNewSimple(request):
     if request.method == "POST":
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            try:
+            
             
                 context = {}
                 data = json.load(request)["data"]
@@ -966,7 +1335,17 @@ def getModalNewSimple(request):
                     pregunta.titulo_pregunta=data['tituloPregunta']
 
 
+                    actividad=ActividadEvaluaciones.objects.get(pk=bloque.fk_actividad_evaluaciones.pk)
+                    actividad.pointUse=float(actividad.pointUse)-float(bloque.pointUse)
+                    bloque.pointUse=float(bloque.pointUse)-float(pregunta.puntos_pregunta)+float(data['puntosPregunta'])
+                    actividad.pointUse=float(actividad.pointUse)+float(bloque.pointUse)
+                    bloque.save()
+                    actividad.save()
+
+
                     pregunta.puntos_pregunta=data['puntosPregunta']
+
+                    
                     pregunta.fk_tipo_pregunta_evaluacion=Methods.OrigenPreguntaTipo('Simple')
                     pregunta.save()
                     childs = PreguntasOpciones.objects.filter(fk_evaluacion_pregunta=data["idViejo"])
@@ -1002,6 +1381,14 @@ def getModalNewSimple(request):
 
 
                     pregunta.puntos_pregunta=data['puntosPregunta']
+                   
+                    bloque.pointUse=float(bloque.pointUse)+float(pregunta.puntos_pregunta)
+                    actividad=ActividadEvaluaciones.objects.get(pk=bloque.fk_actividad_evaluaciones.pk)
+                    actividad.pointUse=float(bloque.pointUse)+float(actividad.pointUse)
+                    bloque.save()
+                    actividad.save()
+
+
                     pregunta.fk_tipo_pregunta_evaluacion=Methods.OrigenPreguntaTipo('Simple')
                     pregunta.save()
 
@@ -1024,13 +1411,124 @@ def getModalNewSimple(request):
 
              
                 return JsonResponse({"message": "Perfect"})     
-            except:
-                return JsonResponse({"message": "Error"}) 
+            
            
    
     context = {}
     html_template = (loader.get_template('components/modalAddSimple.html'))
     return HttpResponse(html_template.render(context, request))
+
+
+@login_required(login_url="/login/")
+def getModalNewExpert(request):
+    if request.method == "POST":
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+         
+                context = {}
+                data = json.load(request)["data"]
+
+                if "delete" in data:
+                    pregunta=EvaluacionesPreguntas.objects.get(pk=data["id"])
+                    pregunta.delete()
+                    return JsonResponse({"message": "Deleted"})
+                if "idFind" in data:
+                    
+                    pregunta=EvaluacionesPreguntas.objects.filter(pk=data["idFind"])
+                    findpregunta = list(pregunta.values())
+                    childs = PreguntasOpciones.objects.filter(fk_evaluacion_pregunta=data["idFind"])
+                    listaChilds = list(childs.values())
+                    return JsonResponse({"data":findpregunta[0], "childs":listaChilds}, safe=False)
+                
+                if data["method"] == "Show":
+                        context = {}
+                        html_template = (loader.get_template('components/modalAddQuestionExpert.html'))
+                        return HttpResponse(html_template.render(context, request))
+
+                if data["method"] == "Update":
+                    pregunta=EvaluacionesPreguntas.objects.get(pk=data["idViejo"])
+                    bloque=EvaluacionesBloques.objects.annotate(num_child=Count('bloque_pregunta', distinct=True) ).get(pk=data['fatherId'])
+                  
+                    pregunta.orden=pregunta.orden
+
+                    pregunta.fk_evaluaciones_bloque=bloque
+                    pregunta.texto_pregunta=data['textoPregunta']
+                    pregunta.titulo_pregunta=data['tituloPregunta']
+                    
+                    bloque.pointUse=float(bloque.pointUse)-float(pregunta.puntos_pregunta)+float(data['puntosPregunta'])
+                    
+                    bloque.save()
+                   
+
+
+                    pregunta.puntos_pregunta=data['puntosPregunta']
+                    pregunta.fk_tipo_pregunta_evaluacion=Methods.OrigenPreguntaTipo('Expert')
+                    pregunta.save()
+                    childs = PreguntasOpciones.objects.filter(fk_evaluacion_pregunta=data["idViejo"])
+                    
+                    hijos = data["hijos"]
+                    if hijos:
+                            print(hijos)
+                        
+                            if "idViejo" in data:
+                                 
+                                 childs.delete()
+            
+                            for newOpcion in hijos:
+                                
+                                 Opcion=PreguntasOpciones()
+                                 Opcion.fk_evaluacion_pregunta=pregunta
+                                 Opcion.texto_opcion=newOpcion['OpcionText']   
+                                 Opcion.idLista=newOpcion['id']    
+                                 Opcion.puntos_porc=float(newOpcion['value'])  
+
+                                 Opcion.save()
+             
+                
+                if data["method"] == "Create":
+                 
+                    pregunta=EvaluacionesPreguntas.objects.create()
+                    bloque=EvaluacionesBloques.objects.annotate(num_child=Count('bloque_pregunta', distinct=True) ).get(pk=data['fatherId'])
+            
+                    
+                    newOrden=bloque.num_child+1
+                    pregunta.orden=newOrden
+                    pregunta.fk_evaluaciones_bloque=bloque
+                    pregunta.texto_pregunta=data['textoPregunta']
+                    pregunta.titulo_pregunta=data['tituloPregunta']
+
+                    pregunta.puntos_pregunta=data['puntosPregunta']
+                    bloque.pointUse=float(bloque.pointUse)+float(pregunta.puntos_pregunta)
+                    
+                    bloque.save()
+                   
+                    pregunta.fk_tipo_pregunta_evaluacion=Methods.OrigenPreguntaTipo('Expert')
+                    pregunta.save()
+
+                    hijos = data["hijos"]
+                    if hijos:
+                            print(hijos)
+                        
+                            if "idViejo" in data:
+                                 childs =None
+                                 childs.delete()
+                         
+                            for newOpcion in hijos:
+                                 Opcion=PreguntasOpciones()
+                                 Opcion.fk_evaluacion_pregunta=pregunta
+                                 Opcion.idLista=newOpcion['id']    
+
+                                 Opcion.texto_opcion=newOpcion['OpcionText']    
+                                 Opcion.puntos_porc=float(newOpcion['value'])  
+                                 Opcion.save()
+
+             
+                return JsonResponse({"message": "Perfect"})     
+           
+           
+   
+    context = {}
+    html_template = (loader.get_template('components/modalAddSimple.html'))
+    return HttpResponse(html_template.render(context, request))    
     
 @login_required(login_url="/login/")
 def getModalNewMultiple(request):
@@ -1066,6 +1564,12 @@ def getModalNewMultiple(request):
                     pregunta.fk_evaluaciones_bloque=bloque
                     pregunta.texto_pregunta=data['textoPregunta']
                     pregunta.titulo_pregunta=data['tituloPregunta']
+                    actividad=ActividadEvaluaciones.objects.get(pk=bloque.fk_actividad_evaluaciones.pk)
+                    actividad.pointUse=float(actividad.pointUse)-float(bloque.pointUse)
+                    bloque.pointUse=float(bloque.pointUse)-float(pregunta.puntos_pregunta)+float(data['puntosPregunta'])
+                    actividad.pointUse=float(actividad.pointUse)+float(bloque.pointUse)
+                    bloque.save()
+                    actividad.save()
 
 
                     pregunta.puntos_pregunta=data['puntosPregunta']
@@ -1101,6 +1605,11 @@ def getModalNewMultiple(request):
                     pregunta.titulo_pregunta=data['tituloPregunta']
 
                     pregunta.puntos_pregunta=data['puntosPregunta']
+                    bloque.pointUse=float(bloque.pointUse)+float(pregunta.puntos_pregunta)
+                    actividad=ActividadEvaluaciones.objects.get(pk=bloque.fk_actividad_evaluaciones.pk)
+                    actividad.pointUse=float(bloque.pointUse)+float(actividad.pointUse)
+                    bloque.save()
+                    actividad.save()
                     pregunta.fk_tipo_pregunta_evaluacion=Methods.OrigenPreguntaTipo('Multiple')
                     pregunta.save()
 
@@ -1167,6 +1676,12 @@ def getModalNewCompletion(request):
                     pregunta.texto_pregunta=data['textoPregunta']
                     pregunta.titulo_pregunta=data['tituloPregunta']
                     pregunta.indicePalabra=data['indiceRespuesta']
+                    actividad=ActividadEvaluaciones.objects.get(pk=bloque.fk_actividad_evaluaciones.pk)
+                    actividad.pointUse=float(actividad.pointUse)-float(bloque.pointUse)
+                    bloque.pointUse=float(bloque.pointUse)-float(pregunta.puntos_pregunta)+float(data['puntosPregunta'])
+                    actividad.pointUse=float(actividad.pointUse)+float(bloque.pointUse)
+                    bloque.save()
+                    actividad.save()
                     pregunta.puntos_pregunta=data['puntosPregunta']
                     pregunta.fk_tipo_pregunta_evaluacion=Methods.OrigenPreguntaTipo('Completation')
                     pregunta.save()
@@ -1199,6 +1714,11 @@ def getModalNewCompletion(request):
                     pregunta.fk_evaluaciones_bloque=bloque
                     pregunta.texto_pregunta=data['textoPregunta']
                     pregunta.puntos_pregunta=data['puntosPregunta']
+                    bloque.pointUse=float(bloque.pointUse)+float(pregunta.puntos_pregunta)
+                    actividad=ActividadEvaluaciones.objects.get(pk=bloque.fk_actividad_evaluaciones.pk)
+                    actividad.pointUse=float(bloque.pointUse)+float(actividad.pointUse)
+                    bloque.save()
+                    actividad.save()
                     pregunta.titulo_pregunta=data['tituloPregunta']
                     pregunta.indicePalabra=data['indiceRespuesta']
                     pregunta.fk_tipo_pregunta_evaluacion=Methods.OrigenPreguntaTipo('Completation')
@@ -1272,6 +1792,12 @@ def getModalNewAssociation(request):
                     pregunta.fk_evaluaciones_bloque=bloque
                     pregunta.texto_pregunta=data['textoPregunta']
                     pregunta.titulo_pregunta=data['tituloPregunta']
+                    actividad=ActividadEvaluaciones.objects.get(pk=bloque.fk_actividad_evaluaciones.pk)
+                    actividad.pointUse=float(actividad.pointUse)-float(bloque.pointUse)
+                    bloque.pointUse=float(bloque.pointUse)-float(pregunta.puntos_pregunta)+float(data['puntosPregunta'])
+                    actividad.pointUse=float(actividad.pointUse)+float(bloque.pointUse)
+                    bloque.save()
+                    actividad.save()
                     
                     pregunta.puntos_pregunta=data['puntosPregunta']
                     pregunta.fk_tipo_pregunta_evaluacion=Methods.OrigenPreguntaTipo('Association')
@@ -1315,6 +1841,12 @@ def getModalNewAssociation(request):
                     pregunta.fk_evaluaciones_bloque=bloque
                     pregunta.texto_pregunta=data['textoPregunta']
                     pregunta.puntos_pregunta=data['puntosPregunta']
+                    actividad=ActividadEvaluaciones.objects.get(pk=bloque.fk_actividad_evaluaciones.pk)
+                    actividad.pointUse=float(actividad.pointUse)-float(bloque.pointUse)
+                    bloque.pointUse=float(bloque.pointUse)+float(pregunta.puntos_pregunta)
+                    actividad.pointUse=float(bloque.pointUse)+float(actividad.pointUse)
+                    bloque.save()
+                    actividad.save()
                     pregunta.titulo_pregunta=data['tituloPregunta']
                     
 
@@ -1394,6 +1926,12 @@ def getModalNewTof(request):
                     pregunta.fk_evaluaciones_bloque=bloque
                     pregunta.texto_pregunta=data['textoPregunta']
                     pregunta.titulo_pregunta=data['tituloPregunta']
+                    actividad=ActividadEvaluaciones.objects.get(pk=bloque.fk_actividad_evaluaciones.pk)
+                    actividad.pointUse=float(actividad.pointUse)-float(bloque.pointUse)
+                    bloque.pointUse=float(bloque.pointUse)-float(pregunta.puntos_pregunta)+float(data['puntosPregunta'])
+                    actividad.pointUse=float(actividad.pointUse)+float(bloque.pointUse)
+                    bloque.save()
+                    actividad.save()
 
 
                     pregunta.puntos_pregunta=data['puntosPregunta']
@@ -1429,6 +1967,12 @@ def getModalNewTof(request):
                     pregunta.fk_evaluaciones_bloque=bloque
                     pregunta.texto_pregunta=data['textoPregunta']
                     pregunta.puntos_pregunta=data['puntosPregunta']
+                    actividad=ActividadEvaluaciones.objects.get(pk=bloque.fk_actividad_evaluaciones.pk)
+                    actividad.pointUse=float(actividad.pointUse)-float(bloque.pointUse)
+                    bloque.pointUse=float(bloque.pointUse)+float(pregunta.puntos_pregunta)
+                    actividad.pointUse=float(bloque.pointUse)+float(actividad.pointUse)
+                    bloque.save()
+                    actividad.save()
                     pregunta.titulo_pregunta=data['tituloPregunta']
 
                     pregunta.fk_tipo_pregunta_evaluacion=Methods.OrigenPreguntaTipo('True or False')

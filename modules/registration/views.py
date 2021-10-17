@@ -447,7 +447,8 @@ login_required(login_url="/login/")
 def MyEnrollments(request):
 
     msg = None
-    publico=Publico.objects.get(user=request.user)
+    extension=ExtensionUsuario.objects.get(user=request.user)
+    publico=extension.Publico
 
     matriculaList=MatriculaAlumnos.objects.filter(fk_publico=publico)
     status=TablasConfiguracion.obtenerHijos("EstMatricula")
@@ -675,16 +676,16 @@ def ManagePrices(request):
            structuras=structuras.filter(fechaIngreso__lte=dateF)
           
           if cbCurso!="1":
-             structuras=structuras.exclude(valor_elemento='Curso')
+             structuras=structuras.exclude(valor_elemento='Course')
 
           if cbUnidad!="2":
-             structuras=structuras.exclude(valor_elemento='Unidad')
+             structuras=structuras.exclude(valor_elemento='Unit')
 
           if cbProceso!="3":
-             structuras=structuras.exclude(valor_elemento='Proceso')
+             structuras=structuras.exclude(valor_elemento='Process')
 
           if cbPrograma!="4":
-             structuras=structuras.exclude(valor_elemento='Programa')
+             structuras=structuras.exclude(valor_elemento='Program')
           if cbPrecio=="5":
              structuras=structuras.filter(precio=None)
    
@@ -736,22 +737,22 @@ def ManagePrices(request):
           structuras=structuras.filter(fechaIngreso__lte=dateF)
         
         if cbCurso!="1":
-             structuras=structuras.exclude(valor_elemento='Curso')
+             structuras=structuras.exclude(valor_elemento='Course')
              request.session['cbCurso'] = cbCurso
 
 
         if cbUnidad!="2":
-             structuras=structuras.exclude(valor_elemento='Unidad')
+             structuras=structuras.exclude(valor_elemento='Unit')
              request.session['cbUnidad'] = cbUnidad
 
 
         if cbProceso!="3":
-             structuras=structuras.exclude(valor_elemento='Proceso')
+             structuras=structuras.exclude(valor_elemento='Process')
              request.session['cbProceso'] = cbProceso
 
 
         if cbPrograma!="4":
-             structuras=structuras.exclude(valor_elemento='Programa')
+             structuras=structuras.exclude(valor_elemento='Program')
              request.session['cbPrograma'] = cbPrograma
 
         if cbPrecio=="5":
@@ -828,7 +829,7 @@ def MasterPiece(request):
       print(pro)
 
       for p in pro:
-       p.valor_elemento="Proceso"
+       p.valor_elemento="Process"
        p.save()
        
        Proceso.append(p) 
@@ -839,7 +840,7 @@ def MasterPiece(request):
       precio.save()
       unit =Estructuraprograma.objects.filter(fk_estructura_padre=procc.idestructuraprogrmas)
       for u in unit:
-       u.valor_elemento="Unidad"
+       u.valor_elemento="Unit"
        u.save()
        Unidad.append(u)     
    unit.update()
@@ -850,7 +851,7 @@ def MasterPiece(request):
       for c in Course:
        precio=PreciosFormacion.objects.create(fk_estruc_programa=c, fecha_registro=datetime.date.today(),precio=None,PorcentajeDescuento=None,fk_tipo_moneda=None, fecha_habilitado=None  )
        precio.save()
-       c.valor_elemento="Curso"
+       c.valor_elemento="Course"
        c.save()
        Cursos.append(c)    
 
@@ -1297,14 +1298,14 @@ def saveDiscount(request):
         precioNuevo.save()
 
         nivelProceso=0
-        if struct.valor_elemento=="Programa":
+        if struct.valor_elemento=="Program":
           nivelProceso=0
           
 
-        if struct.valor_elemento=="Proceso":
+        if struct.valor_elemento=="Process":
           nivelProceso=1
         
-        if struct.valor_elemento=="Unidad":
+        if struct.valor_elemento=="Unit":
           nivelProceso=2
 
         

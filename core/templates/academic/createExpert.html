@@ -90,7 +90,7 @@
                                                         <div class="btn-group" role="group">
                                                           
                                                            <button type="button" class="btn btn-icon btn-sm btn-success" data-placement="top" title="Add"
-                                                              data-toggle="tooltip" data-target="tooltip" onclick="openAddActivityBlock('{{block.pk}}')">
+                                                              data-toggle="tooltip" data-target="tooltip" onclick="openAddNewQuestion('{{block.pk}}')">
                                                               <i class="fas fa-plus"></i>
                                                            </button>
                                                          
@@ -114,6 +114,49 @@
                                                   
                                                   </div>
                                    <div id="contentBlock{{block.pk}}" class="card-list-item-descripcion card-list-item-close"><strong>Comment:</strong> &nbsp;{{block.comentario}}</div>
+                                   <ul id="childsBlock{{block.pk}}" class="card-list-item-close">
+                                    
+                                    {% for pregunta in block.bloque_pregunta.all %}
+                                
+                                    <li class="card-list-item-content
+                                    {% if activity.fk_categoria.desc_elemento == 'Expert test'%} deg-primary{% endif %}
+                                    {% if activity.fk_categoria.desc_elemento == 'Test'%} deg-success{% endif %}
+                                    {% if activity.fk_categoria.desc_elemento == 'Homework'%} deg-warning{% endif %}
+                                    {% if activity.fk_categoria.desc_elemento == 'Lesson'%} deg-info{% endif %}
+                                    {% if activity.fk_categoria.desc_elemento == 'Forum'%} deg-danger{% endif %}
+                                    ">
+                                    <div class="card-list-item-resume">#{{pregunta.orden}}</div>
+                                       
+                                       <div class="card-list-item-subtitle">{{pregunta.titulo_pregunta}}</div>
+                                       <div class="card-list-item-resume">Points: {{pregunta.puntos_pregunta}}</div>
+                                      
+
+                                       <div class="card-list-item-actions">
+                                          <div class="btn-group" role="group">
+                                          
+                                      
+                                             <button type="button" class="btn btn-icon btn-sm btn-info ml-1" data-toggle="tooltip" data-placement="top" title="Edit"
+                                                onclick="openEditPregunta('{{pregunta.pk}}','{{block.pk}}')">
+                                                <i class="fas fa-edit"></i>
+                                             </button>
+                                            
+                                      
+                                             <button type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip" data-placement="top"
+                                                title="Delete" onclick="openDeletePregunta('{{pregunta.pk}}')">
+                                                <i class="fas fa-trash-alt"></i>
+                                             </button>
+                                         
+                                          </div>
+                                       </div>
+                                    </li>
+                               
+                                    {% endfor%}
+
+                                 </ul>
+
+
+
+
 
                                              
                                                </li>
@@ -159,21 +202,58 @@
 
 {% block javascripts %}
 
+<script>
+function getBase64(file) {
+   var reader = new FileReader();
+   reader.readAsDataURL(file);
+   reader.onload = function () {
+     return reader.result;
+   };
+   reader.onerror = function (error) {
+     console.log('Error: ', error);
+   };
+}
+
+const toBase64 = file => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+});
+
+
+</script>
+
     <script>
 
         // Variables
         let ActivityId={{pregunta.idactividad_evaluaciones}}
+        let BlockId=null
+        
         let tablaPreguntas = []
         let respuesta=null
         let tablaCuerpo = document.getElementById("tableContent")
         let tipoPreguntaSelected=null
         let MaxPoint= {{escalaEvaluacion.maxima_puntuacion}}
+        let MaxPointBlock= {{escalaBloque.maxima_puntuacion}}
+
         let PointinUse= {{pregunta.pointUse}}
         let indiceRespuesta= 0
         let indicePalabra=0
         let selectedId=null
         let editmode = false
+        let urlIMG=''
         let editmodeBlock = false
+        var dict = new Object()
+        let editModePoints=0
+
+        {% for block in bloque%}
+
+        dict[ {{block.pk}} ]={{block.pointUse}}
+        {% endfor %}
+
+        console.log(dict)
+
 
 
 
@@ -211,38 +291,14 @@
         }
     
 
-        const chooseModal = async (type) => {
-           $("#chooseTypeQuestion").modal("hide")
-           await renderModalQuestions()
-           let url
-           if (type == "simple") {
-              url = "{% url 'modalNewSimple' %}"
-              tipoPreguntaSelected=1
-           }
-           if (type == "multiple") {
-              url = "{% url 'modalNewMultiple' %}"
-              tipoPreguntaSelected=2
 
-           }
-           if (type == "completion") {
-              url = "{% url 'modalNewCompletion' %}"
-              tipoPreguntaSelected=3
-
-           }
-           if (type == "association") {
-              url = "{% url 'modalNewAssociation' %}"
-              tipoPreguntaSelected=4
-
-           }
-           if (type == "tof") {
-              url = "{% url 'modalNewTof' %}"
-              tipoPreguntaSelected=5
-
-           }
-           await renderModalNewQuestion(url)
-        }
 
         const openAddBlock = () => {
+            if(  Number(PointinUse)+Number(MaxPointBlock)>Number(MaxPoint) ){
+
+                alertaMensajitos(5,'Invalid Command', 'Your Block total points can surpass the total test points')
+                return;
+            }
             
             renderModalAddBlock().then(()=>{
             
@@ -250,32 +306,97 @@
             })
         }    
 
+        const openAddNewQuestion = (id) => {
+            BlockId=id
+            renderModalQuestions().then(()=>{
+            
+               $("#addNewQuestion").modal("show")
+            })
+        }    
+
        // Guardar
    
-        const clickSave = (url) => {
+        async function  clickSave ()  {
+
+         
        
             const questionText= document.getElementById("questionText")
             const questionTittle= document.getElementById("questionTittle")
 
             const questionPoints= document.getElementById("questionPoints")
-            const typeQuestion= document.getElementById("typeQuestion")
+
+
             
-            if(tipoPreguntaSelected==1){
-                   var select2=document.querySelector('input[name="listaSimpleRadio"]:checked').value
-               }
+           
+            if(isEmpty(questionPoints.value) || isEmpty(questionText.value) || isEmpty(questionTittle.value)){
+                alertaMensajitos(5,'There are empty filds', 'You can not save a questions with empty filds')
+                return;
+            }
+
+            if(tablaPreguntas.length<=0){
+                alertaMensajitos(5,'There are no any options', 'You can not save a questions with no options')
+                return;
+            }
+
+            if(questionPoints.value<=0){
+                alertaMensajitos(5,'Invalid value', 'The questions max points can not be negative or 0')
+                return;
+            }
+
+           
+       
+
+            
+                if(editmode==false){
+                    if(Number(MaxPointBlock)-Number( dict[BlockId] )<questionPoints.value){
+                alertaMensajitos(5,'Invalid value', 'The questions points exceed the total points available');
+                return;
+                    }
+
+            }
+            else{
+                console.log(dict['3'] )
+
+                console.log(dict[Number(BlockId)] )
+                
+                console.log(editModePoints )
+                console.log(MaxPointBlock )
+
+
+                
+               todal=Number(MaxPointBlock)+Number(editModePoints)-Number(dict[BlockId])
                
-               const metodo=editmode?'Update':'Create'
+
+
+                if(todal<questionPoints.value){
+                alertaMensajitos(5,'Invalid value', 'The questions points exceed the total points available');
+                return;
+                    }
+
+
+
+            }
+
+            error= await verificaOpciones();  
+               if(error)   {
+                   return;
+               }     
+           
+          
+               
+            const metodo=editmode?'Update':'Create'
               
             form = {
                textoPregunta: questionText.value,
                tituloPregunta:questionTittle.value,
                puntosPregunta: questionPoints.value,
+              
                //tipoPregunta: typeQuestion.value,
-               tipoPregunta:tipoPreguntaSelected,
+             
                seleccionada: respuestaCorrecta,
                indiceRespuesta:indicePalabra,
-               select2:select2,
-               fatherId:fatherId,
+               
+               fatherId:BlockId,
                method:metodo,
                hijos: tablaPreguntas,
 
@@ -284,13 +405,83 @@
             
             }
             if (editmode) {
-                updateQuestion(form, selectedId, url)
+                updateQuestion(form, selectedId)
             }
             else {
-                createQuestion(form,url)
+                createQuestion(form)
             }            
      
         }
+
+
+
+        const openEditPregunta = (id, idBlock) => {
+        selectedId = id
+        BlockId=idBlock
+        
+           
+        fetch("{% url 'getModalNewExpert' %}", {
+            ...fetchObject,
+            body: JSON.stringify({
+                data: {
+                    idFind: id
+                }
+            }),
+        })
+            .then(async (res) => {
+                await renderModalQuestions()
+               
+
+
+               limpiarModalOpciones()
+                let PreguntaDatos = JSON.parse(await res.text())
+                
+                document.getElementById("questionText").value=PreguntaDatos.data.texto_pregunta
+                document.getElementById("questionTittle").value=PreguntaDatos.data.titulo_pregunta
+
+                 document.getElementById("questionPoints").value=PreguntaDatos.data.puntos_pregunta
+                 editModePoints=PreguntaDatos.data.puntos_pregunta
+
+                let listaLoca = PreguntaDatos.childs
+                if(listaLoca){
+                
+                                                
+                            listaLoca.map((el)=>{
+                            
+                                
+
+                                let datos = {
+                                    value:el.puntos_porc,
+                                    id: el.idLista,
+                                    OpcionText: el.texto_opcion,
+                                    actions: `
+                                    <div class="btn-group" role="group">
+                                        <button onclick="borrarItem(${tablaPreguntas.length})" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip"  data-placement="top" title="Delete" >
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </div>`
+                                }
+                                tablaPreguntas.push(datos)
+                                console.log(datos)
+
+                            })
+
+                            actualizarListaMultiple()
+
+                            
+
+                          
+
+                }
+                
+
+                editmode = true
+            })
+            .then(() => {
+         
+            })
+    }
+
         
         const clickSaveBlock = (url) => {
        
@@ -311,7 +502,7 @@
        
        }
        if (editmodeBlock) {
-           updateBlock(form, selectedId, url)
+           updateBlock(form, url)
        }
        else {
            createBlock(form,url)
@@ -319,8 +510,8 @@
 
    }
      
-        const updateQuestion = (form, idViejo, url) => {
-        fetch(url, {
+        const updateQuestion = (form, idViejo) => {
+        fetch("{% url 'getModalNewExpert' %}", {
             ...fetchObject,
             body: JSON.stringify({
                 data: {
@@ -341,12 +532,41 @@
                 $("#addNewQuestion").modal("hide");
             })
     }
-        const createQuestion = (form,url) => {
-            fetch(url, {
+
+    const updateBlock = (form, url) => {
+        idViejo=selectedId
+        fetch(url, {
+            ...fetchObject,
+            body: JSON.stringify({
+                data: {
+                    ...form,
+                    idViejo
+                }
+            }),
+        })
+            .then(async (res) => {
+                let result = JSON.parse(await res.text())
+                if (result.message === "Error") {
+                    alerta(5)
+                }
+                alerta(2)
+            })
+            .then(() => {
+               // renderTable()
+                $("#addBlockModal").modal("hide")
+                reload
+            })
+    }
+        const createQuestion = (form) => {
+
+           
+            
+            fetch("{% url 'getModalNewExpert' %}", {
                 ...fetchObject,
                 body: JSON.stringify({
                    data: form
                 }),
+               
             })
             .then(async (res) => {
                 let result = JSON.parse(await res.text())
@@ -359,6 +579,7 @@
                form=null
                tablaPreguntas=[]
                 $("#addNewQuestion").modal("hide");
+                reload()
             })
         }
 
@@ -410,60 +631,77 @@
                 })   
             })
         }   
+        
 
         const renderModalQuestions = () => {
-            return fetch("{% url 'modalAddQuestion' %}", {
-                ...fetchObject
+            return fetch("{% url 'getModalNewExpert' %}", {
+                ...fetchObject,
+                body: JSON.stringify({
+              data: {
+                    
+                    method:'Show'
+                }
+            })
             })
             .then(async (res) => {
                 document.getElementById("modalQuestion").innerHTML = await res.text()
             })  .then(() => {
             $("#addNewQuestion").modal("show")
             const formQuestion = document.getElementById("formQuestion")
-           
-         })
-        }   
+            formQuestion.addEventListener("submit", (e) => {
+                    e.preventDefault()
+                    clickSave()
+                })   
+            CargarModalOpciones()    
 
-        const openDeleteModal = async (id, type) => {
+            const $seleccionArchivos = document.querySelector("#seleccionArchivos"),
+            $imagenPrevisualizacion = document.querySelector("#imagenPrevisualizacion");
+            
+
+            // Escuchar cuando cambie
+            $seleccionArchivos.addEventListener("change", () => {
+            // Los archivos seleccionados, pueden ser muchos o uno  
+            const archivos = $seleccionArchivos.files;
+            // Si no hay archivos salimos de la función y quitamos la imagen
+            if (!archivos || !archivos.length) {
+                $imagenPrevisualizacion.src = "";
+                return;
+            }
+            // Ahora tomamos el primer archivo, el cual vamos a previsualizar
+            const primerArchivo = archivos[0];
+            // Lo convertimos a un objeto de tipo objectURL
+            const objectURL = URL.createObjectURL(primerArchivo);
+            urlIMG=objectURL
+            // Y a la fuente de la imagen le ponemos el objectURL
+            $imagenPrevisualizacion.src = objectURL;
+            });     
+            
+
+             
+             
+            
+         })
+           
+    
+        }   
+        const openDeletePregunta = async (id) => {
         const elimino = await alerta(3)
-        console.log(type)
+     
         if (elimino) {
 
-            let urlDelete=''
-          if (type == 1 ){
-            urlDelete = "{% url 'modalNewSimple' %}"
-              tipoPreguntaSelected=1
-           }
-           if (type == 2) {
-            urlDelete = "{% url 'modalNewMultiple' %}"
-              tipoPreguntaSelected=2
-
-           }
-           if (type == 3) {
-            urlDelete = "{% url 'modalNewCompletion' %}"
-              tipoPreguntaSelected=3
-
-           }
-           if (type == 4) {
-            urlDelete = "{% url 'modalNewAssociation' %}"
-              tipoPreguntaSelected=4
-
-           }
-           if (type == 5) {
-            urlDelete = "{% url 'modalNewTof' %}"
-              tipoPreguntaSelected=5
-
-           }
-            const res = await matarPregunta(id, urlDelete)
+        
+            const res = await matarPregunta(id, "{% url 'getModalNewExpert' %}")
             if (res) {
                 alerta(4)
+                reload()
+
             }
             else {
                 alerta(5)
+                reload()
             }
         }
     }
-
 
     const openDeleteBlock = async (id) => {
         const elimino = await alerta(3)
@@ -770,7 +1008,7 @@
     }
 
 
-        const renderModalNewQuestion = (url) => {
+    const renderModalNewQuestion = (url) => {
         return fetch(url, {
             ...fetchObject,
             body: JSON.stringify({
@@ -854,48 +1092,7 @@
     function CargarModalOpciones(){
 
         
-              
-            if(tipoPreguntaSelected==1){
-
-            $("#addRow").click(function () {
-                event.preventDefault()
-
-
-
-                for(const element of tablaPreguntas ){
-
-                    if(element.OpcionText==document.getElementById("optionText").value){
-
-                    alertaMensajitos(5,'Invalid description',"There is already a question with the same text")
-                    return
-
-                    }
-
-
-                }
-            
-
-                let datos = {
-                    OpcionText: document.getElementById("optionText").value,
-                    selected:false,
-                    id:tablaPreguntas.length,
-                    actions: `
-                    <div class="btn-group" role="group">
-                        <button onclick="borrarItem(${tablaPreguntas.length})" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip"  data-placement="top" title="Delete" >
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                    </div>`
-                }
-
-                tablaPreguntas.push(datos)
-            
-                actualizarListaSimple()
-
-            })
-
-            }
-
-            if(tipoPreguntaSelected==2){
+ 
 
             $("#addRow").click(function () {
                 event.preventDefault()
@@ -934,150 +1131,56 @@
 
             })
 
-            }
-            if(tipoPreguntaSelected==3){
-
-            $("#addRow").click(function () {
-                event.preventDefault()
-
-
-
-                for(const element of tablaPreguntas ){
-
-                    if(element.OpcionText==document.getElementById("optionText").value){
-
-                    alertaMensajitos(5,'Invalid description',"There is already a question with the same text")
-                    return
-
-                    }
-
-
-                }
+         
             
-
-                let datos = {
-                    OpcionText: document.getElementById("optionText").value,
-                    id:tablaPreguntas.length,
-                    isCorrect:0,
-                    
-                    actions: `
-                    <div class="btn-group" role="group">
-                        <button onclick="borrarItem(${tablaPreguntas.length})" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip"  data-placement="top" title="Delete" >
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                    </div>`
-                }
-
-                tablaPreguntas.push(datos)
-            
-                actualizarListaCompletations()
-
-            })
-
-            }
-            if(tipoPreguntaSelected==4){
-
-            $("#addRow").click(function () {
-                event.preventDefault()
-
-
-                if(document.getElementById("optionTextA").value.trim()=='' || document.getElementById("optionTextB").value.trim()==''){
-
-                    alertaMensajitos(5,'Invalid description',"The description can not be empty")
-                    return
-
-                    }
-
-
-                for(const element of tablaPreguntas ){
-
-                    if(element.OpcionTextA==document.getElementById("optionTextA").value){
-
-                    alertaMensajitos(5,'Invalid description',"There is already a question with the same text")
-                    return
-
-                    }
-                    if(element.OpcionTextB==document.getElementById("optionTextB").value){
-
-                    alertaMensajitos(5,'Invalid description',"There is already a question with the same text")
-                    return
-
-                    }
-
-
-                }
-
-
-                let datos = {
-                    OpcionTextA: document.getElementById("optionTextA").value,
-                    OpcionTextB: document.getElementById("optionTextB").value,
-
-                    id:tablaPreguntas.length,
-                    value:0,
-                    
-                    actions: `
-                    <div class="btn-group" role="group">
-                        <button onclick="borrarItem(${tablaPreguntas.length})" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip"  data-placement="top" title="Delete" >
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                    </div>`
-                }
-
-                tablaPreguntas.push(datos)
-
-                actualizarListaAssociation()
-
-            })
-
-            }
-
-            if(tipoPreguntaSelected==5){
-
-            $("#addRow").click(function () {
-                event.preventDefault()
-
-
-
-                for(const element of tablaPreguntas ){
-
-                    if(element.OpcionText==document.getElementById("optionText").value){
-
-                    alertaMensajitos(5,'Invalid description',"There is already a question with the same text")
-                    return
-
-                    }
-
-
-                }
-            
-
-                let datos = {
-                    OpcionText: document.getElementById("optionText").value,
-                    id:tablaPreguntas.length,
-                    value:0,
-                    trueFalse:1,
-                    
-                    actions: `
-                    <div class="btn-group" role="group">
-                        <button onclick="borrarItem(${tablaPreguntas.length})" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip"  data-placement="top" title="Delete" >
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                    </div>`
-                }
-
-                tablaPreguntas.push(datos)
-            
-                actualizarListaTF()
-
-            })
-
-            }
 
     }
 
+
+    
    </script>
 
    <script>
+  async function verificaOpciones(){
+           console.log('sss');
+         
+           let totalValue=0;
+
+        for(const element of tablaPreguntas ){
+          
+           
+                if(element.value<0){
+                    alertaMensajitos(5,'Invalid Option','An option value can not be less than 0');
+                    return true;
+
+
+                }
+                totalValue=Number(totalValue)+Number(element.value);
+                console.log(totalValue);
+
+
+            
+          
+        }
+        console.log(document.getElementById("questionPoints").value);
+     
+        if(totalValue>document.getElementById("questionPoints").value){
+                    alertaMensajitos(5,'Invalid Options Value','The options total value can not surpass the question max points');
+                    return true;
+
+
+                }
+            
+
+       }
+
+
+       function isEmpty(str) {
+    return (!str || str.trim().length === 0 );
+}
+function isEmptyOrSpaces(str){
+    return str === null || str.match(/^ *$/) !== null;
+}
 
 
  function questionTextChange(text) {
@@ -1106,6 +1209,9 @@
      counter=0
 
         for(const element of wordArray ){
+            if(element=='' || element ==' '){
+                continue;
+            }
 
             contenido=contenido+` <button class='btn btn-primary' id='${counter}word' onclick='addOpcion(${counter}, "${element}")' type="button">${element}</button> `
 

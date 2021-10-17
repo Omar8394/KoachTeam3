@@ -162,6 +162,25 @@
 					}
 				})					
 			}
+
+				if(tipoAlerta === 6){
+				return swal({
+					title: tittle,
+					text: mssg,
+					type: 'warning',
+					icon: "warning",
+					buttons:{
+						confirm: {
+							text : 'Yes!',
+							className : 'btn btn-success'
+						},
+						cancel: {
+							visible: true,
+							className: 'btn btn-danger'
+						}
+					}
+				})					
+			}
 			if(tipoAlerta === 4){
 				swal({
 					title: tittle,

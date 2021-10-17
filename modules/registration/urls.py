@@ -43,7 +43,7 @@ urlpatterns = [
     path('MyEnrollments/hashPay/', views.hashPay, name='hashPay'  ),
 
     
-    ########################################tomalo cerdo####################
+ 
  
     path('MyEnrollments/InsertPayTr/', views.InsertPayTr, name='InsertPayTr'  ),
 
