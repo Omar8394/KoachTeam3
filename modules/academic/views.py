@@ -20,7 +20,6 @@ from django.utils.dateparse import parse_datetime
 import json
 from django.core.files.storage import FileSystemStorage
 import os
-from django.db.models import F
 
 from ..app.models import TablasConfiguracion, Estructuraprograma
 
@@ -283,9 +282,6 @@ def contenidoExamen(request):
                                  examen.PuntuacionFinal=examen.PuntuacionFinal+opcion.puntos_porc
 
                             if(resp['tipoPregunta']==6):
-                             print(opcion)   
-                             print(resultado)   
-
                              resultado.puntuacionBloques= resultado.puntuacionBloques+opcion.puntos_porc
                              examen.PuntuacionFinal=examen.PuntuacionFinal+opcion.puntos_porc
                             resultado.save()
@@ -295,6 +291,31 @@ def contenidoExamen(request):
                    examen.fechaTermino=datetime.datetime.now() 
                    examen.nro_repeticiones=examen.nro_repeticiones+1
                    examen.save()
+
+
+                            
+
+                        
+                       
+                        
+
+
+                   
+                            
+
+
+
+
+
+                        
+
+
+
+
+
+
+                        
+                          
 
 
 
@@ -448,53 +469,11 @@ def TestList(request):
             
     context = { 'msg':msg,
      'ExamenList':page_obj ,
-     'admmin':True
     }
     context['segment'] = 'academic'
 
     
     return render(request, 'academic/TestList.html', context)
-
-@login_required(login_url="/login/")
-def GraficaResultados(request):
-    if request.method == "POST":
-        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            
-            
-                context = {}
-                data = json.load(request)["data"]
-
-                if data["method"] == "Show":
-                        html_template = (loader.get_template('components/modalSeeResults.html'))
-                        return HttpResponse(html_template.render(context, request))
-
-                if data["method"] == "Set":
-                        Examen=ExamenActividad.objects.get(pk=data["id"])
-                        resultados=ExamenResultados.objects.annotate(bloque_respuesta=F('bloque__titulo_bloque'),escala=F('bloque__titulo_bloque')).filter(fk_Examen=Examen)
-                        dataSet=[]
-                        dataSet.append(' ')
-                        escalaBloques=Examen.fk_Actividad.fk_escala_bloque.escalaMenor.all().order_by("puntos_maximo")
-                        escalaTotal=Examen.fk_Actividad.fk_escala_evaluacion.escalaMenor.all()
-                        for res in resultados:
-                            for item in escalaBloques:
-                                print(item.puntos_maximo)
-                                if res.puntuacionBloques<=item.puntos_maximo:
-                                    dataSet.append(item.desc_calificacion)
-                                    break
-
-                        print(dataSet)
-                        dataSet.append(' ')
-
-                        resultadosJson = list(resultados.values())
-                        
-                        escalaBloquesJson = list(escalaBloques.values())
-                        escalaTotalJson = list(escalaTotal.values())
-
-                        return JsonResponse({"resultadosJson":resultadosJson, "escalaBloquesJson":escalaBloquesJson,'escalaTotalJson':escalaTotalJson, 'dataSet':dataSet}, safe=False)
-               
-    
-        
-
 
 @login_required(login_url="/login/")
 def MyTest(request):
@@ -512,7 +491,6 @@ def MyTest(request):
             
     context = { 'msg':msg,
      'ExamenList':page_obj ,
-     'admin':False
     }
     context['segment'] = 'academic'
 
@@ -1074,9 +1052,6 @@ def getModalAddBlock(request):
                     bloque=EvaluacionesBloques.objects.get(pk=data["id"])
                     actividad = bloque.fk_actividad_evaluaciones
 
-                    actividad.pointUse=actividad.pointUse-actividad.fk_escala_bloque.puntos_maximo
-                    actividad.save()
-
                     bloque.delete()
                      #update order
                     bloques = actividad.bloque_actividad.order_by('orden')
@@ -1107,7 +1082,7 @@ def getModalAddBlock(request):
 
                 if data["method"] == "Create":
                     actividad=ActividadEvaluaciones.objects.annotate(num_child=Count('bloque_actividad', distinct=True) ).get(pk=data['ActivityId'])
-                    actividad.pointUse=actividad.pointUse+actividad.fk_escala_bloque.maxima_puntuacion
+                    actividad.pointUse=actividad.pointUse+actividad.fk_escala_bloquemaxima_puntuacion
                     actividad.save()
                     bloque=EvaluacionesBloques.objects.create()
 
@@ -1359,20 +1334,7 @@ def getModalNewSimple(request):
 
                 if "delete" in data:
                     pregunta=EvaluacionesPreguntas.objects.get(pk=data["id"])
-                    bloque = pregunta.fk_evaluaciones_bloque
-                    bloque.pointUse=bloque.pointUse-pregunta.puntos_pregunta
-                    actividad=bloque.fk_actividad_evaluaciones
-                    actividad.pointUse=actividad.pointUse-pregunta.puntos_pregunta
-                    bloque.save()
-
-                    actividad.save()
-
                     pregunta.delete()
-                    
-                    preguntas = bloque.bloque_pregunta.order_by('orden')
-                    for idx, value in enumerate(preguntas, start=1):
-                        value.orden = idx
-                        value.save()
                     return JsonResponse({"message": "Deleted"})
                 if "idFind" in data:
                     print(data)
@@ -1492,18 +1454,7 @@ def getModalNewExpert(request):
 
                 if "delete" in data:
                     pregunta=EvaluacionesPreguntas.objects.get(pk=data["id"])
-                    bloque = pregunta.fk_evaluaciones_bloque
-                    bloque.pointUse=bloque.pointUse-pregunta.puntos_pregunta
-                    bloque.save()
                     pregunta.delete()
-                   
-
-
-                    
-                    preguntas = bloque.bloque_pregunta.order_by('orden')
-                    for idx, value in enumerate(preguntas, start=1):
-                        value.orden = idx
-                        value.save()
                     return JsonResponse({"message": "Deleted"})
                 if "idFind" in data:
                     
@@ -1614,20 +1565,7 @@ def getModalNewMultiple(request):
                 data = json.load(request)["data"]
                 if "delete" in data:
                     pregunta=EvaluacionesPreguntas.objects.get(pk=data["id"])
-                    bloque = pregunta.fk_evaluaciones_bloque
-                    bloque.pointUse=bloque.pointUse-pregunta.puntos_pregunta
-                    actividad=bloque.fk_actividad_evaluaciones
-                    actividad.pointUse=actividad.pointUse-pregunta.puntos_pregunta
-                    bloque.save()
-
-                    actividad.save()
-
                     pregunta.delete()
-                    
-                    preguntas = bloque.bloque_pregunta.order_by('orden')
-                    for idx, value in enumerate(preguntas, start=1):
-                        value.orden = idx
-                        value.save()
                     return JsonResponse({"message": "Deleted"})
                 
                
@@ -1737,20 +1675,7 @@ def getModalNewCompletion(request):
                 print(data)
                 if "delete" in data:
                     pregunta=EvaluacionesPreguntas.objects.get(pk=data["id"])
-                    bloque = pregunta.fk_evaluaciones_bloque
-                    bloque.pointUse=bloque.pointUse-pregunta.puntos_pregunta
-                    actividad=bloque.fk_actividad_evaluaciones
-                    actividad.pointUse=actividad.pointUse-pregunta.puntos_pregunta
-                    bloque.save()
-
-                    actividad.save()
-
                     pregunta.delete()
-                    
-                    preguntas = bloque.bloque_pregunta.order_by('orden')
-                    for idx, value in enumerate(preguntas, start=1):
-                        value.orden = idx
-                        value.save()
                     return JsonResponse({"message": "Deleted"})
                 
                
@@ -1860,20 +1785,7 @@ def getModalNewAssociation(request):
                 print(data)
                 if "delete" in data:
                     pregunta=EvaluacionesPreguntas.objects.get(pk=data["id"])
-                    bloque = pregunta.fk_evaluaciones_bloque
-                    bloque.pointUse=bloque.pointUse-pregunta.puntos_pregunta
-                    actividad=bloque.fk_actividad_evaluaciones
-                    actividad.pointUse=actividad.pointUse-pregunta.puntos_pregunta
-                    bloque.save()
-
-                    actividad.save()
-
                     pregunta.delete()
-                    
-                    preguntas = bloque.bloque_pregunta.order_by('orden')
-                    for idx, value in enumerate(preguntas, start=1):
-                        value.orden = idx
-                        value.save()
                     return JsonResponse({"message": "Deleted"})
                 
                
@@ -2013,20 +1925,7 @@ def getModalNewTof(request):
                 data = json.load(request)["data"]
                 if "delete" in data:
                     pregunta=EvaluacionesPreguntas.objects.get(pk=data["id"])
-                    bloque = pregunta.fk_evaluaciones_bloque
-                    bloque.pointUse=bloque.pointUse-pregunta.puntos_pregunta
-                    actividad=bloque.fk_actividad_evaluaciones
-                    actividad.pointUse=actividad.pointUse-pregunta.puntos_pregunta
-                    bloque.save()
-
-                    actividad.save()
-
                     pregunta.delete()
-                    
-                    preguntas = bloque.bloque_pregunta.order_by('orden')
-                    for idx, value in enumerate(preguntas, start=1):
-                        value.orden = idx
-                        value.save()
                     return JsonResponse({"message": "Deleted"})
                 
                

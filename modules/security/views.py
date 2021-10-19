@@ -14,9 +14,9 @@ from django.forms.utils import ErrorList
 from django.http import HttpResponse
 from django.urls import reverse
 
-from .forms import LoginForm, SignUpForm, ResetPasswordForm, LandingPage, FullRegistration, editProfiles
+from .forms import LoginForm, SignUpForm, ResetPasswordForm, LandingPage, FullRegistration,editProfiles
 from modules.app.models import TablasConfiguracion
-from modules.security.models import CtaUsuario, EnlaceVerificacion, LandPage
+from modules.security.models import CtaUsuario, EnlaceVerificacion
 from modules.security import Methods
 from ..communication.Methods import create_mail, send_mail
 from modules.security.Methods import create_default_ctausuario
@@ -33,7 +33,6 @@ from django.contrib import messages
 from ..app.models import Publico
 import json
 
-
 def login_view(request):
     if request.user.is_authenticated:
         return redirect("/")
@@ -41,8 +40,7 @@ def login_view(request):
         form = LoginForm(request.POST or None)
 
         msg = None
-        status_cuenta = None
-        rol = "rol_student"
+
         if request.method == "POST":
 
             if form.is_valid():
@@ -52,20 +50,8 @@ def login_view(request):
                 user = authenticate(username=username, password=password)
                 if user is not None:
                     login(request, user)
-                    try:
-                        cuenta = ExtensionUsuario.objects.get(user=user)
-                        status_cuenta = cuenta.CtaUsuario.fk_status_cuenta.desc_elemento
-                    except ExtensionUsuario.DoesNotExist:
-                        respuesta = None
-                        if request.user.is_superuser:
-                            rol = "rol_admin"
-                            respuesta = "koach"
-                        cuenta = Methods.create_default_ctausuario("status_active", rol)
-                        status_cuenta = "active"
-                        cuenta.respuesta_secreta = respuesta
-                        cuenta.save()
-                        cuenta = ExtensionUsuario.objects.create(CtaUsuario=cuenta, user=user)
-                        #primera vez configurar la cuenta de usuario por defecto
+                    cuenta = ExtensionUsuario.objects.get(user=user)
+                    status_cuenta = cuenta.CtaUsuario.fk_status_cuenta.desc_elemento
                     print(status_cuenta)
                     if status_cuenta == 'suspended':
                         msg = 'Your account has been suspended for more information contact support.'
@@ -100,7 +86,6 @@ def login_view(request):
 
                     elif status_cuenta == 'active':
                         print("entrando")
-                        request.session['user_rol'] = cuenta.CtaUsuario.fk_rol_usuario.desc_elemento
                         cuenta.CtaUsuario.intentos_fallidos = 0
                         cuenta.CtaUsuario.save()
                         return redirect("/")
@@ -136,6 +121,7 @@ def login_view(request):
                 msg = 'Error validating the form'
         return render(request, "security/login.html", {"form": form, "msg": msg})
 
+
 def register_user(request):
     msg = None
     success = False
@@ -157,55 +143,6 @@ def register_user(request):
         form = SignUpForm()
 
     return render(request, "security/register.html", {"form": form, "msg": msg, "success": success})
-
-def register_user_new(request, activation_key, registertype, id):
-    msg = None
-    success = False
-    email = None
-    publico = None
-    if request.user.is_authenticated:
-        return redirect("/login/")
-    try:
-        enlace = EnlaceVerificacion.objects.get(activation_key=activation_key)
-        if enlace.usuario.CtaUsuario.fk_status_cuenta != "suspend":
-            if Methods.verificarenlace(enlace.key_expires):
-                print("enlace valido", activation_key)
-                if registertype == "landpage":
-                    lang_page_user = LandPage.objects.get(pk=id)
-                    email = json.loads(lang_page_user.correos)['emailPrincipal']
-                elif registertype == "adminregister":
-                    publico_email = Publico.objects.get(pk=id)
-                    email = json.loads(publico_email)['emailPrincipal']
-                if request.method == "POST":
-                    form = SignUpForm(request.POST or None, initial={'email': email})
-                    if form.is_valid():
-                        registertype = form.cleaned_data.get("registertype")
-                        user = form.save()
-                        cuenta = create_default_ctausuario("status_active", "rol_student")
-                        if registertype == "landpage":
-                            pass
-
-                        elif registertype == "adminregister":
-                            publico = Publico.objects.get()
-                        ExtensionUsuario.objects.create(CtaUsuario=cuenta, user=user)
-
-                        # user = authenticate(username=username, password=raw_password)
-                        msg = 'User created - please <a href="/login">login</a>.'
-                        success = True
-                        return redirect("/login/")
-
-                    else:
-                        msg = 'Form is not valid'
-                else:
-                    form = SignUpForm(initial={'email': email})
-            else:
-                raise Http404("This link has expired please request another link")
-        else:
-            raise Http404("This account is locked, please contact support")
-    except EnlaceVerificacion.DoesNotExist:
-        raise Http404("This verification link is invalid or has expired")
-    return render(request, "security/register_new.html", {"form": form, "msg": msg, "id_request": id,
-                                                      "registertype": registertype, "email": email})
 
 
 def forgot_password(request):
@@ -366,7 +303,7 @@ def full_registration(request):
             user = form_registration.save()
             user.is_active = False
             user.save()
-            cuenta = create_default_ctausuario("status_verification", "rol_student")
+            cuenta = create_default_ctausuario()
             ExtensionUsuario.objects.create(CtaUsuario=cuenta, user=user, Publico=publico)
             # send verification email
             success = True
@@ -406,7 +343,7 @@ def verificationaccount(request, activation_key):
             if Methods.verificarenlace(enlace.key_expires):
                 print("enlace valido", activation_key)
                 context = {"user": enlace.usuario.user.username}
-                if request.method == "GET":
+                if request.method == "POST":
                     Methods.restabler_cuenta(enlace)
                     loginlink = request.get_raw_uri().split("//")[0] + "//" + \
                                 request.get_host() + "/login/"
@@ -453,7 +390,7 @@ def editProfile(request):
     profile = Publico.objects.get(idpublico=ExtensionUsuario.objects.get(user=request.user).Publico.idpublico)
     telefono = profile.telefonos
     correo = profile.correos
-
+    
     if request.method == "POST":
 
         form = editProfiles(request.POST, instance=profile)
@@ -475,7 +412,7 @@ def editProfile(request):
                 obj.telefonos = json.dumps(telefonoAlt)
 
             else:
-
+                
                 obj.telefonos = telefono
 
             if obj.correos:
@@ -483,7 +420,7 @@ def editProfile(request):
                 correoAlt = json.loads(correo)
                 correoAlt['emailAlternativo'] = obj.correos
                 obj.correos = json.dumps(correoAlt)
-
+            
             elif 'emailAlternativo' in json.loads(correo):
 
                 correoAlt = json.loads(correo)
@@ -504,7 +441,7 @@ def editProfile(request):
 
             messages.warning(request, 'An error has occurred!')
             return render(request, "security/profilePage.html", {'form': form,  'telefono': json.loads(telefono)['telefonoPrincipal'] if 'telefonoPrincipal' in json.loads(telefono) else None})
-
+            
     form = editProfiles(instance=profile, initial={'telefonos': json.loads(telefono)['telefonoAlternativo'] if 'telefonoAlternativo' in json.loads(telefono) else None, 'correos': json.loads(correo)['emailAlternativo'] if 'emailAlternativo' in json.loads(correo) else None})
     return render(request, "security/profilePage.html", {'form': form, 'telefono': json.loads(telefono)['telefonoPrincipal'] if 'telefonoPrincipal' in json.loads(telefono) else None})
 
@@ -563,23 +500,3 @@ def rootImages(request):
     }
 
     return JsonResponse(response)
-
-
-def configadmin(request):
-    if request.user.is_authenticated:
-        if request.user.is_superuser:
-            try:
-                user_admin = User.objects.get(is_superuser=1)
-                user_count = 0
-                for user in user_admin:
-                    user_count += 1
-                    cuenta = Methods.create_default_ctausuario("status_active", "rol_admin")
-                    cuenta.respuesta_secreta = "koach"
-                    ExtensionUsuario.objects.create(user, cuenta, None)
-                return HttpResponse("configurados " + str(user_count) + " ususarios administradores")
-            except User.DoesNotExist:
-                return HttpResponse("No hay ningun usuario administrador configurado en el sistema")
-        else:
-            return HttpResponse("Solo los superusuarios puede ejecutar esta configuracion")
-    else:
-        return HttpResponse("Necesitas estar logueado para ejecutar esta configuracion")

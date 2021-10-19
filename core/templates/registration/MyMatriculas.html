@@ -141,7 +141,8 @@
                                                     <th>Date of application</th>
                                                     <th>Program</th>
                                                     <th>Payment</th>
-                                                    <th></th>  
+                                                    <th></th>
+                                                    <th></th>   
                                                 </tr>
                                             </thead>
                                             <tbody class="data-cargando">
@@ -156,7 +157,7 @@
                                                    <td>{{mat.fk_estruc_programa}}</td>
                                                    {% if mat.fk_status_matricula.valor_elemento == 'EstatusEspera'%}
                                                    <td onclick="showModalPago('{{mat.fk_estruc_programa.idestructuraprogrmas}}' )">
-                                                       <span> <i class="fas fa-credit-card mr-1"></i>  Payment </span>
+                                                       <span class="fas fa-credit-card">Payment </span>
                                                    </td>
                                                    {% else %}
                                                    <td>
@@ -171,7 +172,6 @@
                                                 {% endcomment %}
                 
                                                     <td></td>
-                                                
                                                 </tr>
                 
                                                 {% endfor %}

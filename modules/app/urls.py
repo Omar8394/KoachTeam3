@@ -14,6 +14,7 @@ urlpatterns = [
     path('settings/tables', views.tables, name='system_tables'),
 
     #Calendar & index settings
+    path('calendar/', views.calendar, name='calendar'),
     path('settings/', views.indexSettings, name='indexSettings'),
 
     # Scales

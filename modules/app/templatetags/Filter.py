@@ -1,5 +1,5 @@
 from django import template
-from modules.academic.models import EvaluacionesPreguntas, ExamenActividad,ExamenRespuestas,EscalaCalificacion
+from modules.academic.models import EvaluacionesPreguntas,ExamenRespuestas
 import random
 import json
 from django.core import serializers
@@ -15,19 +15,6 @@ def shuffleColumA(arg):
   
     return filtered
 
-
-@register.filter(name='scalaPuntuacion')
-def scalaPuntuacion(id):
-    examen=ExamenActividad.objects.get(pk=id)
-    escala=examen.fk_Actividad.fk_escala_evaluacion
-    resultado=''
-    escalasMenor=EscalaCalificacion.objects.filter(fk_escala_evaluacion=escala).order_by("puntos_maximo")
-    for scale in escalasMenor:
-        if examen.PuntuacionFinal<=scale.puntos_maximo:
-            resultado=scale.desc_calificacion
-            return resultado
-
-    return resultado
 @register.filter(name='RespuestaElegida')
 def RespuestaElegida(id):
     respuesta=''

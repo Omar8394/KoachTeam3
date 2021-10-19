@@ -3,6 +3,7 @@ from django.http import HttpResponse, HttpRequest
 from django.template.loader import get_template
 from ..app.models import TablasConfiguracion,PreguntasFrecuentes
 from .forms import preguntasfrecuentes
+from django.contrib.auth.decorators import login_required
 import json
 # Create your views here.
 
@@ -18,8 +19,9 @@ def myHelp(request):
     context['segment'] = 'help'
 
     return render(request,'help/myhelp.html', context)
+@login_required(login_url="/login/")   
 def save_Q (request): 
-   
+ if(request.user.is_staff): 
      if request.method == "POST":  
         form = preguntasfrecuentes(request.POST)
         if form.is_valid():  
@@ -34,8 +36,12 @@ def save_Q (request):
      else:  
         form = preguntasfrecuentes()  
      return render(request,'help/save.html',{'form':form})
+ else:
+        
+        return redirect('/')   
 
-def showhelps(request):  
+def showhelps(request): 
+ if(request.user.is_staff):    
     queryset=request.GET.get("buscar")
 
     if queryset:
@@ -48,8 +54,11 @@ def showhelps(request):
           
     else:
         return render(request,"help/mostrarayudas.html")
+ else:
+        
+        return redirect('/') 
 def helpsedit(request,id):
-    
+       
     helps=PreguntasFrecuentes.objects.get(idpregunta_frecuente=id)
     if request.method=="POST":
      form=preguntasfrecuentes(request.POST, instance=helps)
@@ -62,31 +71,19 @@ def helpsedit(request,id):
     
     form = preguntasfrecuentes(instance=helps)
     return render(request,'help/save.html', {'form':form})
-
 def helpsdelete(request,id):
     helps=PreguntasFrecuentes.objects.get(idpregunta_frecuente=id)
     helps.delete()  
     return redirect('/help_app/ver/')
- 
+@login_required(login_url="/login/")
 def show_questions(request):
      
      form =TablasConfiguracion.obtenerHijos("Frecuente")
      return render(request,'help/showquestionsusers.html',{'form':form}) 
-   
-
-          
-
 def questionask(request,id):
     
      
      form = PreguntasFrecuentes.objects.filter(fk_tipo_pregunta_frecuente_id=id).all 
      print(form)
      return render(request,'help/showanswers.html',{'form': form}) 
-     
-
-
-
-
-
-
-
+            

@@ -1,1421 +1,1468 @@
-[
-  {
-    "model": "app.TablasConfiguracion",
-    "pk": 1,
-    "fields": {
-      "desc_elemento": "Registro padre",
-      "fk_tabla_padre_id": 1,
-      "tipo_elemento": 1,
-      "permite_cambios":1,
-      "valor_elemento":"Padre",
-      "mostrar_en_combos":0,
-      "maneja_lista":1
-
-    }
-  },
-  
-  {
-    "model": "app.TablasConfiguracion",
-    "pk": 2,
-    "fields": {
-      "desc_elemento": "Rol sistema",
-      "fk_tabla_padre_id": 1,
-      "tipo_elemento": 1,
-      "permite_cambios":1,
-      "valor_elemento":"Roles",
-      "mostrar_en_combos":1,
-      "maneja_lista":1
-
-    }
-  },
-  {
-    "model": "app.TablasConfiguracion",
-    "pk": 3,
-    "fields": {
-      "desc_elemento": "Situacion cuenta usuario",
-      "fk_tabla_padre_id": 1,
-      "tipo_elemento": 1,
-      "permite_cambios":0,
-      "valor_elemento":"Situacion",
-      "mostrar_en_combos":1,
-      "maneja_lista":1
-
-    }
-  },
-
-  {
-    "model": "app.TablasConfiguracion",
-    "pk": 4,
-    "fields": {
-      "desc_elemento": "Preguntas Secretas",
-      "fk_tabla_padre_id": 1,
-      "tipo_elemento": 1,
-      "permite_cambios":1,
-      "valor_elemento":"pregSecreta",
-      "mostrar_en_combos":1,
-      "maneja_lista":1
-
-    }
-  },
-  {
-    "model": "app.TablasConfiguracion",
-    "pk": 5,
-    "fields": {
-      "desc_elemento": "Relaciones publico",
-      "fk_tabla_padre_id": 1,
-      "tipo_elemento": 1,
-      "permite_cambios":1,
-      "valor_elemento":"Relacion",
-      "mostrar_en_combos":1,
-      "maneja_lista":1
-
-    }
-  },
-
-  {
-    "model": "app.TablasConfiguracion",
-    "pk": 6,
-    "fields": {
-      "desc_elemento": "Tipo matricula",
-      "fk_tabla_padre_id": 1,
-      "tipo_elemento": 1,
-      "permite_cambios":1,
-      "valor_elemento":"Tipo matricula",
-      "mostrar_en_combos":1,
-      "maneja_lista":1
-
-    }
-  },
-  {
-    "model": "app.TablasConfiguracion",
-    "pk": 7,
-    "fields": {
-      "desc_elemento": "Situacion Matricula",
-      "fk_tabla_padre_id": 1,
-      "tipo_elemento": 1,
-      "permite_cambios":1,
-      "valor_elemento":"Situacion matricula",
-      "mostrar_en_combos":1,
-      "maneja_lista":1
-
-    }
-  },
-  {
-    "model": "app.TablasConfiguracion",
-    "pk": 8,
-    "fields": {
-      "desc_elemento": "Tipo Competencia",
-      "fk_tabla_padre_id": 1,
-      "tipo_elemento": 1,
-      "permite_cambios":1,
-      "valor_elemento":"Tipo Competencia",
-      "mostrar_en_combos":1,
-      "maneja_lista":1
-
-    }
-  },
-
-  {
-    "model": "app.TablasConfiguracion",
-    "pk": 9,
-    "fields": {
-      "desc_elemento": "Tipo Actividad",
-      "fk_tabla_padre_id": 1,
-      "tipo_elemento": 1,
-      "permite_cambios":1,
-      "valor_elemento":"Tipo Actividad",
-      "mostrar_en_combos":1,
-      "maneja_lista":1
-
-    }
-  },
-  {
-    "model": "app.TablasConfiguracion",
-    "pk": 10,
-    "fields": {
-      "desc_elemento": "Tipo Recurso",
-      "fk_tabla_padre_id": 1,
-      "tipo_elemento": 1,
-      "permite_cambios":1,
-      "valor_elemento":"Recurso",
-      "mostrar_en_combos":1,
-      "maneja_lista":1
-
-    }
-  },
-  {
-    "model": "app.TablasConfiguracion",
-    "pk": 11,
-    "fields": {
-      "desc_elemento": "Tipo pregunta",
-      "fk_tabla_padre_id": 1,
-      "tipo_elemento": 1,
-      "permite_cambios":1,
-      "valor_elemento":"PregEvalua",
-      "mostrar_en_combos":1,
-      "maneja_lista":1
-
-    }
-  },
-
-  {
-    "model": "app.TablasConfiguracion",
-    "pk": 12,
-    "fields": {
-      "desc_elemento": "Tipo de adiestramiento",
-      "fk_tabla_padre_id": 1,
-      "tipo_elemento": 1,
-      "permite_cambios":1,
-      "valor_elemento":"TipoAdiest",
-      "mostrar_en_combos":1,
-      "maneja_lista":1
-
-    }
-  },
-  {
-    "model": "app.TablasConfiguracion",
-    "pk": 13,
-    "fields": {
-      "desc_elemento": "Tipo duracion",
-      "fk_tabla_padre_id": 1,
-      "tipo_elemento": 1,
-      "permite_cambios":1,
-      "valor_elemento":"Duracion",
-      "mostrar_en_combos":1,
-      "maneja_lista":1
-
-    }
-  },
-  {
-    "model": "app.TablasConfiguracion",
-    "pk": 14,
-    "fields": {
-      "desc_elemento": "Situacion Plan",
-      "fk_tabla_padre_id": 1,
-      "tipo_elemento": 1,
-      "permite_cambios":1,
-      "valor_elemento":"SituPlan",
-      "mostrar_en_combos":1,
-      "maneja_lista":1
-
-    }
-  },
-  {
-    "model": "app.TablasConfiguracion",
-    "pk": 15,
-    "fields": {
-      "desc_elemento": "Ramas",
-      "fk_tabla_padre_id": 1,
-      "tipo_elemento": 1,
-      "permite_cambios":1,
-      "valor_elemento":"Rama",
-      "mostrar_en_combos":1,
-      "maneja_lista":1
-
-    }
-  },
-  {
-    "model": "app.TablasConfiguracion",
-    "pk": 16,
-    "fields": {
-      "desc_elemento": "Prioridad",
-      "fk_tabla_padre_id": 1,
-      "tipo_elemento": 1,
-      "permite_cambios":1,
-      "valor_elemento":"Prioridad",
-      "mostrar_en_combos":1,
-      "maneja_lista":1
-
-    }
-  },
-
-  {
-    "model": "app.TablasConfiguracion",
-    "pk": 17,
-    "fields": {
-      "desc_elemento": "Nivel Competencia",
-      "fk_tabla_padre_id": 1,
-      "tipo_elemento": 1,
-      "permite_cambios":1,
-      "valor_elemento":"NivelComp",
-      "mostrar_en_combos":1,
-      "maneja_lista":1
-
-    }
-  },
-  {
-    "model": "app.TablasConfiguracion",
-    "pk": 18,
-    "fields": {
-      "desc_elemento": "Calificaciones escala",
-      "fk_tabla_padre_id": 1,
-      "tipo_elemento": 1,
-      "permite_cambios":1,
-      "valor_elemento":"calif",
-      "mostrar_en_combos":1,
-      "maneja_lista":1
-
-    }
-  },
-  {
-    "model": "app.TablasConfiguracion",
-    "pk": 19,
-    "fields": {
-      "desc_elemento": "Tipos de moneda",
-      "fk_tabla_padre_id": 1,
-      "tipo_elemento": 1,
-      "permite_cambios":1,
-      "valor_elemento":"Moneda",
-      "mostrar_en_combos":1,
-      "maneja_lista":1
-
-    }
-  },
-  {
-    "model": "app.TablasConfiguracion",
-    "pk": 20,
-    "fields": {
-      "desc_elemento": "Tipos de pregunta frecuente",
-      "fk_tabla_padre_id": 1,
-      "tipo_elemento": 1,
-      "permite_cambios":1,
-      "valor_elemento":"Frecuente",
-      "mostrar_en_combos":1,
-      "maneja_lista":1
-
-    }
-  },
-  {
-    "model": "app.TablasConfiguracion",
-    "pk": 21,
-    "fields": {
-      "desc_elemento": "Estatus matrícula",
-      "fk_tabla_padre_id": 1,
-      "tipo_elemento": 1,
-      "permite_cambios":1,
-      "valor_elemento":"EstMatricula",
-      "mostrar_en_combos":1,
-      "maneja_lista":1
-
-    }
-  },
-  {
-    "model": "app.TablasConfiguracion",
-    "pk": 31,
-    "fields": {
-      "desc_elemento": "Revision",
-      "fk_tabla_padre_id": 21,
-      "tipo_elemento": 1,
-      "permite_cambios":1,
-      "valor_elemento":"EstatusRevision",
-      "mostrar_en_combos":1,
-      "maneja_lista":0
-
-    }
-  },
-  {
-    "model": "app.TablasConfiguracion",
-    "pk": 30,
-    "fields": {
-      "desc_elemento": "Cancelled",
-      "fk_tabla_padre_id": 21,
-      "tipo_elemento": 1,
-      "permite_cambios":1,
-      "valor_elemento":"EstatusCancelado",
-      "mostrar_en_combos":1,
-      "maneja_lista":0
-
-    }
-  },
-  {
-    "model": "app.TablasConfiguracion",
-    "pk": 28,
-    "fields": {
-      "desc_elemento": "Waiting for payment",
-      "fk_tabla_padre_id": 21,
-      "tipo_elemento": 1,
-      "permite_cambios":1,
-      "valor_elemento":"EstatusEspera",
-      "mostrar_en_combos":1,
-      "maneja_lista":0
-
-    }
-  },
-  {
-    "model": "app.TablasConfiguracion",
-    "pk": 202,
-    "fields": {
-      "desc_elemento": "Payment in Revision",
-      "fk_tabla_padre_id": 21,
-      "tipo_elemento": 1,
-      "permite_cambios":1,
-      "valor_elemento":"EstatusPay",
-      "mostrar_en_combos":1,
-      "maneja_lista":0
-
-    }
-  },
-  {
-    "model": "app.TablasConfiguracion",
-    "pk": 29,
-    "fields": {
-      "desc_elemento": "Approved",
-      "fk_tabla_padre_id": 21,
-      "tipo_elemento": 1,
-      "permite_cambios":1,
-      "valor_elemento":"EstatusAprovado",
-      "mostrar_en_combos":1,
-      "maneja_lista":0
-
-    }
-  },
-  {
-    "model": "app.TablasConfiguracion",
-    "pk": 22,
-    "fields": {
-      "desc_elemento": "Estatus curso",
-      "fk_tabla_padre_id": 1,
-      "tipo_elemento": 1,
-      "permite_cambios":1,
-      "valor_elemento":"EstCurso",
-      "mostrar_en_combos":1,
-      "maneja_lista":1
-
-    }
-  },
-  {
-    "model": "app.TablasConfiguracion",
-    "pk": 23,
-    "fields": {
-      "desc_elemento": "Categorias",
-      "fk_tabla_padre_id": 1,
-      "tipo_elemento": 1,
-      "permite_cambios":1,
-      "valor_elemento":"CatPrograma",
-      "mostrar_en_combos":1,
-      "maneja_lista":1
-
-    }
-  },
-  {
-    "model": "app.TablasConfiguracion",
-    "pk": 24,
-    "fields": {
-      "desc_elemento": "Design",
-      "fk_tabla_padre_id": 23,
-      "tipo_elemento": 0,
-      "permite_cambios":1,
-      "valor_elemento":null,
-      "mostrar_en_combos":1,
-      "maneja_lista":0
-
-    }
-  },
-  {
-    "model": "app.TablasConfiguracion",
-    "pk": 25,
-    "fields": {
-      "desc_elemento": "Data science",
-      "fk_tabla_padre_id": 23,
-      "tipo_elemento": 0,
-      "permite_cambios":1,
-      "valor_elemento":null,
-      "mostrar_en_combos":1,
-      "maneja_lista":0
-
-    }
-  },
-
-  {
-    "model": "app.TablasConfiguracion",
-    "pk": 26,
-    "fields": {
-      "desc_elemento": "Pay",
-      "fk_tabla_padre_id": 6,
-      "tipo_elemento": 1,
-      "permite_cambios":1,
-      "valor_elemento":"MatriculaPaga",
-      "mostrar_en_combos":1,
-      "maneja_lista":1
-
-    }
-  },
-  {
-    "model": "app.TablasConfiguracion",
-    "pk": 27,
-    "fields": {
-      "desc_elemento": "Scholarship",
-      "fk_tabla_padre_id": 6,
-      "tipo_elemento": 1,
-      "permite_cambios":1,
-      "valor_elemento":"MatriculaBeca",
-      "mostrar_en_combos":1,
-      "maneja_lista":1
-
-    }
-  },
-
-  {
-    "model": "app.TablasConfiguracion",
-    "pk": 100,
-    "fields": {
-      "desc_elemento": "Payment Status",
-      "fk_tabla_padre_id": 1,
-      "tipo_elemento": 0,
-      "permite_cambios":0,
-      "valor_elemento":"PayStatus",
-      "mostrar_en_combos":1,
-      "maneja_lista":0
-
-    }
-  },
-  {
-    "model": "app.TablasConfiguracion",
-    "pk": 101,
-    "fields": {
-      "desc_elemento": "Confirmed",
-      "fk_tabla_padre_id": 100,
-      "tipo_elemento": 0,
-      "permite_cambios":0,
-      "valor_elemento":"payConfirm",
-      "mostrar_en_combos":1,
-      "maneja_lista":0
-
-    }
-  },
-  {
-    "model": "app.TablasConfiguracion",
-    "pk": 102,
-    "fields": {
-      "desc_elemento": "Waiting for Confirmation",
-      "fk_tabla_padre_id": 100,
-      "tipo_elemento": 0,
-      "permite_cambios":0,
-      "valor_elemento":"payWait",
-      "mostrar_en_combos":1,
-      "maneja_lista":0
-
-    }
-  },
-  {
-    "model": "app.TablasConfiguracion",
-    "pk": 103,
-    "fields": {
-      "desc_elemento": "Payment Rejected",
-      "fk_tabla_padre_id": 100,
-      "tipo_elemento": 0,
-      "permite_cambios":0,
-      "valor_elemento":"payRejected",
-      "mostrar_en_combos":1,
-      "maneja_lista":0
-
-    }
-  },
-  {
-    "model": "app.TablasConfiguracion",
-    "pk":60,
-    "fields": {
-      "desc_elemento": "Days",
-      "fk_tabla_padre_id": 13,
-      "tipo_elemento": 0,
-      "permite_cambios":1,
-      "valor_elemento":"",
-      "mostrar_en_combos":1,
-      "maneja_lista":0
-
-    }
-  },
-  {
-    "model": "app.TablasConfiguracion",
-    "pk":61,
-    "fields": {
-      "desc_elemento": "Minutes",
-      "fk_tabla_padre_id": 13,
-      "tipo_elemento": 0,
-      "permite_cambios":1,
-      "valor_elemento":"",
-      "mostrar_en_combos":1,
-      "maneja_lista":0
-
-    }
-  },
-  {
-    "model": "app.TablasConfiguracion",
-    "pk":62,
-    "fields": {
-      "desc_elemento": "Hours",
-      "fk_tabla_padre_id": 13,
-      "tipo_elemento": 0,
-      "permite_cambios":1,
-      "valor_elemento":"",
-      "mostrar_en_combos":1,
-      "maneja_lista":0
-
-    }
-  },
-   {
-    "model": "app.TablasConfiguracion",
-    "pk":63,
-    "fields": {
-      "desc_elemento": "Approved",
-      "fk_tabla_padre_id": 18,
-      "tipo_elemento": 0,
-      "permite_cambios":1,
-      "valor_elemento":"",
-      "mostrar_en_combos":1,
-      "maneja_lista":0
-
-    }
-  },
-   {
-    "model": "app.TablasConfiguracion",
-    "pk":64,
-    "fields": {
-      "desc_elemento": "Reprobate",
-      "fk_tabla_padre_id": 18,
-      "tipo_elemento": 0,
-      "permite_cambios":1,
-      "valor_elemento":"",
-      "mostrar_en_combos":1,
-      "maneja_lista":0
-
-    }
-  },
-   {
-    "model": "app.TablasConfiguracion",
-    "pk":65,
-    "fields": {
-      "desc_elemento": "Repair",
-      "fk_tabla_padre_id": 18,
-      "tipo_elemento": 0,
-      "permite_cambios":1,
-      "valor_elemento":"",
-      "mostrar_en_combos":1,
-      "maneja_lista":0
-
-    }
-  },
-  {
-    "model": "app.TablasConfiguracion",
-    "pk":66,
-    "fields": {
-      "desc_elemento": "Open",
-      "fk_tabla_padre_id": 22,
-      "tipo_elemento": 0,
-      "permite_cambios":1,
-      "valor_elemento":"",
-      "mostrar_en_combos":1,
-      "maneja_lista":0
-
-    }
-  },
-  {
-    "model": "app.TablasConfiguracion",
-    "pk":67,
-    "fields": {
-      "desc_elemento": "Close",
-      "fk_tabla_padre_id": 22,
-      "tipo_elemento": 0,
-      "permite_cambios":1,
-      "valor_elemento":"",
-      "mostrar_en_combos":1,
-      "maneja_lista":0
-
-    }
-  },
-  {
-    "model": "app.TablasConfiguracion",
-    "pk":68,
-    "fields": {
-      "desc_elemento": "Test",
-      "fk_tabla_padre_id": 9,
-      "tipo_elemento": 0,
-      "permite_cambios":1,
-      "valor_elemento":"activityTest",
-      "mostrar_en_combos":1,
-      "maneja_lista":0
-
-    }
-  },
-  {
-    "model": "app.TablasConfiguracion",
-    "pk":69,
-    "fields": {
-      "desc_elemento": "Homework",
-      "fk_tabla_padre_id": 9,
-      "tipo_elemento": 0,
-      "permite_cambios":1,
-      "valor_elemento":"activityHome",
-      "mostrar_en_combos":1,
-      "maneja_lista":0
-
-    }
-  },
-  {
-    "model": "app.TablasConfiguracion",
-    "pk":70,
-    "fields": {
-      "desc_elemento": "Lesson",
-      "fk_tabla_padre_id": 9,
-      "tipo_elemento": 0,
-      "permite_cambios":1,
-      "valor_elemento":"activityLesson",
-      "mostrar_en_combos":1,
-      "maneja_lista":0
-
-    }
-  },
-  
-  {
-    "model": "app.TablasConfiguracion",
-    "pk":71,
-    "fields": {
-      "desc_elemento": "Forum",
-      "fk_tabla_padre_id": 9,
-      "tipo_elemento": 0,
-      "permite_cambios":1,
-      "valor_elemento":"activityForum",
-      "mostrar_en_combos":1,
-      "maneja_lista":0
-
-    }
-  },
-  {
-    "model": "app.TablasConfiguracion",
-    "pk":72,
-    "fields": {
-      "desc_elemento": "Expert test",
-      "fk_tabla_padre_id": 9,
-      "tipo_elemento": 0,
-      "permite_cambios":1,
-      "valor_elemento":"activityExpert",
-      "mostrar_en_combos":1,
-      "maneja_lista":0
-
-    }
-  },
-  {
-    "model": "app.TablasConfiguracion",
-    "pk":73,
-    "fields": {
-      "desc_elemento": "Estatus lecciones",
-      "fk_tabla_padre_id": 1,
-      "tipo_elemento": 0,
-      "permite_cambios":1,
-      "valor_elemento":"EstLeccion",
-      "mostrar_en_combos":1,
-      "maneja_lista":1
-
-    }
-  },
-  {
-    "model": "app.TablasConfiguracion",
-    "pk":74,
-    "fields": {
-      "desc_elemento": "Enabled",
-      "fk_tabla_padre_id": 73,
-      "tipo_elemento": 0,
-      "permite_cambios":1,
-      "valor_elemento":"",
-      "mostrar_en_combos":1,
-      "maneja_lista":0
-
-    }
-  },
-  {
-    "model": "app.TablasConfiguracion",
-    "pk":75,
-    "fields": {
-      "desc_elemento": "Disabled",
-      "fk_tabla_padre_id": 73,
-      "tipo_elemento": 0,
-      "permite_cambios":1,
-      "valor_elemento":"",
-      "mostrar_en_combos":1,
-      "maneja_lista":0
-
-    }
-  },
-  
-  {
-    "model": "app.Contratantes",
-    "pk": 1,
-    "fields": {
-      "siglas": "JC Energy ",
-      "nombre_contratante": "JC Energy Solar, Corp",
-      "apellido_contratante": null,
-      "rif_contratante":"1234",
-      "slogan":null,
-      "codigo_contrato":null,
-      "fecha_contrato":"2021-08-30",
-      "mes_inicio_ejerc_fiscal":1,
-      "direccion":"Austin Texas",
-      "paginas_web":"JC Energy.com'",
-      "correos":"N/A",
-      "telefonnos":"N/A",
-      "nombre_comercial":"JC Energy Solar",
-      "personas_contacto":"",
-      "representante_legal":"Jose"
-
-    }
-  },
-
-  {
-    "model": "academic.escalaevaluacion",
-    "pk": 1,
-    "fields": {
-      "desc_escala": "Scale base 10",
-      "maxima_puntuacion": "10"
-    }
-  },
-
-  {
-    "model": "academic.escalacalificacion",
-    "pk": 1,
-    "fields": {
-      "desc_calificacion": "1 to 3",
-      "puntos_maximo": "3",
-      "fk_calificacion_id": "61",
-      "fk_escala_evaluacion_id": "1"
-    }
-  }, 
-
-  {
-    "model": "academic.escalacalificacion",
-    "pk": 2,
-    "fields": {
-      "desc_calificacion": "3 to 4.99",
-      "puntos_maximo": "4.99",
-      "fk_calificacion_id": "62",
-      "fk_escala_evaluacion_id": "1"
-    }
-  },
-
-  {
-    "model": "academic.escalacalificacion",
-    "pk": 3,
-    "fields": {
-      "desc_calificacion": "5 to 10",
-      "puntos_maximo": "10",
-      "fk_calificacion_id": "63",
-      "fk_escala_evaluacion_id": "1"
-    }
-  },
-  
-  {
-    "model": "security.ContratantesRol",
-    "pk": 1,
-    "fields": {
-      "desc_rol": "Profesores ",
-      "fk_contratante": 2,
-      "valor_rol":"profe"
-
-    }
-  },  
-  {
-    "model": "security.ContratantesRol",
-    "pk": 2,
-    "fields": {
-      "desc_rol": "Alumnos ",
-      "fk_contratante": 2,
-      "valor_rol":"alum"
-
-    }
-  },  
-  {
-    "model": "security.ContratantesRol",
-    "pk": 3,
-    "fields": {
-      "desc_rol": "Asistentes ",
-      "fk_contratante": 2,
-      "valor_rol":"asis"
-
-    }
-  },  
-  {
-    "model": "security.ContratantesRol",
-    "pk":4,
-    "fields": {
-      "desc_rol": "Planificadores ",
-      "fk_contratante": 2,
-      "valor_rol":"planif"
-
-    }
-  },  
-  {
-    "model": "security.ContratantesRol",
-    "pk":5,
-    "fields": {
-      "desc_rol": "Autores ",
-      "fk_contratante": 2,
-      "valor_rol":"autor"
-
-    }
-  },  
-
-  {
-    "model": "security.ContratantesRol",
-    "pk":6,
-    "fields": {
-      "desc_rol": "Administrador ",
-      "fk_contratante": 2,
-      "valor_rol":"admin"
-
-    }
-  },  
-  
-  {
-    "model": "security.ContratantesRol",
-    "pk":7,
-    "fields": {
-      "desc_rol": "Control estudio ",
-      "fk_contratante": 2,
-      "valor_rol":"control"
-
-    }
-  },  
-
-
-
-  {
-    "model": "app.Aplicaciones",
-    "pk":1,
-    "fields": {
-      "desc_aplicaciones": "Sistema Formacion y capacitacion E-Learning",
-      "cod_aplicacion": "KOACH_E-Learning"
-      
-
-    }
-  },  
-
-
-  {
-    "model": "app.AplicacionesContratante",
-    "pk":1,
-    "fields": {
-      "fk_contratante": 2,
-      "fk_aplicacion": 2,
-      "cod_status_apli_contrat":2
-      
-
-    }
-  },
-
-  {
-    "model": "app.Estructuraprograma",
-    "pk":1,
-    "fields": {
-      "descripcion":"System engineer",
-      "resumen":"Complete program to adquire knowledge about all kind of systems and network",
-      "valor_elemento":"Program",
-      "url":"system_eng",
-      "peso_creditos":"2",
-      "fk_categoria":"24"
-    }
-  },
-  {
-    "model": "app.Estructuraprograma",
-    "pk":2,
-    "fields": {
-      "descripcion":"Industrial engineer",
-      "resumen":"Complete program to adquire knowledge about all kind of industrial processes and procedures",
-      "valor_elemento":"Program",
-      "url":"indust_eng",
-      "peso_creditos":"2",
-      "fk_categoria":"24"
-    }
-  },
-  {
-    "model": "app.Estructuraprograma",
-    "pk":3,
-    "fields": {
-      "descripcion":"Agronomic engineer",
-      "resumen":"Complete program to adquire knowledge about ground, farm animals, botanic topics and more",
-      "valor_elemento":"Program",
-      "url":"agro_eng",
-      "peso_creditos":"2",
-      "fk_categoria":"25"
-    }
-  },
-  {
-    "model": "app.Estructuraprograma",
-    "pk":4,
-    "fields": {
-      "descripcion":"Web developer",
-      "resumen":"Required process to be an web developer capable to develop frontend and backend, client and server",
-      "valor_elemento":"Process",
-      "url":"web_dev",
-      "peso_creditos":"2",
-      "fk_categoria":"24",
-      "fk_estructura_padre":"1"
-    }
-  },
-  {
-    "model": "app.Estructuraprograma",
-    "pk":5,
-    "fields": {
-      "descripcion":"Frontend developer",
-      "resumen":"Unit in order to built client side of web, ui and ux",
-      "valor_elemento":"Unit",
-      "url":"front_dev",
-      "peso_creditos":"2",
-      "fk_categoria":"24",
-      "fk_estructura_padre":"4"
-    }
-  },
-  {
-    "model": "app.Estructuraprograma",
-    "pk":6,
-    "fields": {
-      "descripcion":"VPS",
-      "resumen":"Required process to have a full understanding of Virtual servers and their use",
-      "valor_elemento":"Process",
-      "url":"vps_admin",
-      "peso_creditos":"2",
-      "fk_categoria":"24",
-      "fk_estructura_padre":"1"
-    }
-  },
-  {
-    "model": "app.Estructuraprograma",
-    "pk":7,
-    "fields": {
-      "descripcion":"Ubuntu server",
-      "resumen":"Unit to learn deeply about Ubuntu server and this linux distro unique features",
-      "valor_elemento":"Unit",
-      "url":"ubuntu_server",
-      "peso_creditos":"2",
-      "fk_categoria":"24",
-      "fk_estructura_padre":"6"
-    }
-  },
-  {
-    "model": "app.Estructuraprograma",
-    "pk":8,
-    "fields": {
-      "descripcion":"Distro",
-      "resumen":"Course oriented to know how to interact with Ubuntu server distro",
-      "valor_elemento":"Course",
-      "url":"ubuntu_distro",
-      "peso_creditos":"1",
-      "fk_categoria":"24",
-      "fk_estructura_padre":"7"
-    }
-
-  },
-  {
-    "model": "app.Estructuraprograma",
-    "pk":9,
-    "fields": {
-      "descripcion":"CSS",
-      "resumen":"Make u the best designer of visuals for client with this course",
-      "valor_elemento":"Course",
-      "url":"css_dev",
-      "peso_creditos":"1",
-      "fk_categoria":"24",
-      "fk_estructura_padre":"5"
-    }
-
-  },
-  {
-    "model": "academic.Cursos",
-    "pk":1,
-    "fields": {
-      "abrev_curso":"css",
-      "codigo_curso":"d001",
-      "disponible_desde":"2021-10-04",
-      "fk_estruc_programa_id":9,
-      "tipo_evaluacion":"1"
-    }
-
-  },
-
-  {
-    "model": "registration.PreciosFormacion",
-    "pk":1,
-    "fields": {
-    
-      "precio":null,
-      "PorcentajeDescuento":null,
-   
-      "fecha_registro":"2021-09-24",
-      "fecha_habilitado":"2021-09-24",
-      "fk_tipo_moneda":null,
-
-      "fk_estruc_programa":"1"
-    }
-  },
-  {
-    "model": "registration.PreciosFormacion",
-    "pk":2,
-    "fields": {
-      
-      "precio":null,
-      "PorcentajeDescuento":null,
-     
-      "fecha_registro":"2021-09-24",
-      "fecha_habilitado":"2021-09-24",
-      "fk_tipo_moneda":null,
-
-      "fk_estruc_programa":"2"
-    }
-  },
-  {
-    "model": "registration.PreciosFormacion",
-    "pk":3,
-    "fields": {
-      
-      "precio":null,
-      "PorcentajeDescuento":null,
-   
-      "fecha_registro":"2021-09-24",
-      "fecha_habilitado":"2021-09-24",
-      "fk_tipo_moneda":null,
-
-      "fk_estruc_programa":"3"
-    }
-  },
-  {
-    "model": "registration.PreciosFormacion",
-    "pk":4,
-    "fields": {
-      
-      "precio":null,
-      "PorcentajeDescuento":null,
-      
-      "fecha_registro":"2021-09-24",
-      "fecha_habilitado":"2021-09-24",
-      "fk_tipo_moneda":null,
-
-      "fk_estruc_programa":"4"
-    }
-  },
-  {
-    "model": "registration.PreciosFormacion",
-    "pk":5,
-    "fields": {
-   
-      "precio":null,
-      "PorcentajeDescuento":null,
-      
-      "fecha_registro":"2021-09-24",
-      "fecha_habilitado":"2021-09-24",
-      "fk_tipo_moneda":null,
-
-      "fk_estruc_programa":"5"
-    }
-  },
-  {
-    "model": "registration.PreciosFormacion",
-    "pk":6,
-    "fields": {
-      
-      "precio":null,
-      "PorcentajeDescuento":null,
-      
-      "fecha_registro":"2021-09-24",
-      "fecha_habilitado":"2021-09-24",
-      "fk_tipo_moneda":null,
-
-      "fk_estruc_programa":"6"
-    }
-  },
-  {
-    "model": "registration.PreciosFormacion",
-    "pk":7,
-    "fields": {
-      
-      "precio":null,
-      "PorcentajeDescuento":null,
-     
-      "fecha_registro":"2021-09-24",
-      "fecha_habilitado":"2021-09-24",
-      "fk_tipo_moneda":null,
-
-      "fk_estruc_programa":"7"
-    }
-  },
-  {
-    "model": "registration.PreciosFormacion",
-    "pk":8,
-    "fields": {
-      
-      "precio":null,
-      "PorcentajeDescuento":null,
-      
-      "fecha_registro":"2021-09-24",
-      "fecha_habilitado":"2021-09-24",
-      "fk_tipo_moneda":null,
-
-      "fk_estruc_programa":"8"
-    }
-  },
-  {
-    "model": "registration.PreciosFormacion",
-    "pk":9,
-    "fields": {
-      
-      "precio":null,
-      "PorcentajeDescuento":null,
-      
-      "fecha_registro":"2021-09-24",
-      "fecha_habilitado":"2021-09-24",
-      "fk_tipo_moneda":null,
-
-      "fk_estruc_programa":"9"
-    }
-  },
-  {
-    "model": "app.tablasconfiguracion",
-    "pk": 44,
-    "fields": {
-      "desc_elemento": "Medicine",
-      "fk_tabla_padre": 15,
-      "tipo_elemento": "0",
-      "permite_cambios": 1,
-      "valor_elemento": null,
-      "mostrar_en_combos": 1,
-      "maneja_lista": 0
-    }
-  },
-  {
-    "model": "app.tablasconfiguracion",
-    "pk": 45,
-    "fields": {
-      "desc_elemento": "Engineering",
-      "fk_tabla_padre": 15,
-      "tipo_elemento": "0",
-      "permite_cambios": 1,
-      "valor_elemento": null,
-      "mostrar_en_combos": 1,
-      "maneja_lista": 0
-    }
-  },
-  {
-    "model": "app.tablasconfiguracion",
-    "pk": 46,
-    "fields": {
-      "desc_elemento": "Science",
-      "fk_tabla_padre": 15,
-      "tipo_elemento": "0",
-      "permite_cambios": 1,
-      "valor_elemento": null,
-      "mostrar_en_combos": 1,
-      "maneja_lista": 0
-    }
-  },
-  {
-    "model": "app.tablasconfiguracion",
-    "pk": 47,
-    "fields": {
-      "desc_elemento": "Administration",
-      "fk_tabla_padre": 15,
-      "tipo_elemento": "0",
-      "permite_cambios": 1,
-      "valor_elemento": null,
-      "mostrar_en_combos": 1,
-      "maneja_lista": 0
-    }
-  },
-  {
-    "model": "app.tablasconfiguracion",
-    "pk": 48,
-    "fields": {
-      "desc_elemento": "Moral",
-      "fk_tabla_padre": 8,
-      "tipo_elemento": "0",
-      "permite_cambios": 1,
-      "valor_elemento": null,
-      "mostrar_en_combos": 1,
-      "maneja_lista": 0
-    }
-  },
-  {
-    "model": "app.tablasconfiguracion",
-    "pk": 49,
-    "fields": {
-      "desc_elemento": "Physical",
-      "fk_tabla_padre": 8,
-      "tipo_elemento": "0",
-      "permite_cambios": 1,
-      "valor_elemento": null,
-      "mostrar_en_combos": 1,
-      "maneja_lista": 0
+[{
+        "model": "app.TablasConfiguracion",
+        "pk": 1,
+        "fields": {
+            "desc_elemento": "Registro padre",
+            "fk_tabla_padre_id": 1,
+            "tipo_elemento": 1,
+            "permite_cambios": 1,
+            "valor_elemento": "Padre",
+            "mostrar_en_combos": 0,
+            "maneja_lista": 1
+
+        }
+    },
+
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 2,
+        "fields": {
+            "desc_elemento": "Rol sistema",
+            "fk_tabla_padre_id": 1,
+            "tipo_elemento": 1,
+            "permite_cambios": 1,
+            "valor_elemento": "Roles",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 1
+
+        }
+    },
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 3,
+        "fields": {
+            "desc_elemento": "Situacion cuenta usuario",
+            "fk_tabla_padre_id": 1,
+            "tipo_elemento": 1,
+            "permite_cambios": 0,
+            "valor_elemento": "Situacion",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 1
+
+        }
+    },
+
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 4,
+        "fields": {
+            "desc_elemento": "Preguntas Secretas",
+            "fk_tabla_padre_id": 1,
+            "tipo_elemento": 1,
+            "permite_cambios": 1,
+            "valor_elemento": "pregSecreta",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 1
+
+        }
+    },
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 5,
+        "fields": {
+            "desc_elemento": "Relaciones publico",
+            "fk_tabla_padre_id": 1,
+            "tipo_elemento": 1,
+            "permite_cambios": 1,
+            "valor_elemento": "Relacion",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 1
+
+        }
+    },
+
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 6,
+        "fields": {
+            "desc_elemento": "Tipo matricula",
+            "fk_tabla_padre_id": 1,
+            "tipo_elemento": 1,
+            "permite_cambios": 1,
+            "valor_elemento": "Tipo matricula",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 1
+
+        }
+    },
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 7,
+        "fields": {
+            "desc_elemento": "Situacion Matricula",
+            "fk_tabla_padre_id": 1,
+            "tipo_elemento": 1,
+            "permite_cambios": 1,
+            "valor_elemento": "Situacion matricula",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 1
+
+        }
+    },
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 8,
+        "fields": {
+            "desc_elemento": "Tipo Competencia",
+            "fk_tabla_padre_id": 1,
+            "tipo_elemento": 1,
+            "permite_cambios": 1,
+            "valor_elemento": "Tipo Competencia",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 1
+
+        }
+    },
+
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 9,
+        "fields": {
+            "desc_elemento": "Tipo Actividad",
+            "fk_tabla_padre_id": 1,
+            "tipo_elemento": 1,
+            "permite_cambios": 1,
+            "valor_elemento": "Tipo Actividad",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 1
+
+        }
+    },
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 10,
+        "fields": {
+            "desc_elemento": "Tipo Recurso",
+            "fk_tabla_padre_id": 1,
+            "tipo_elemento": 1,
+            "permite_cambios": 1,
+            "valor_elemento": "Recurso",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 1
+
+        }
+    },
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 11,
+        "fields": {
+            "desc_elemento": "Tipo pregunta",
+            "fk_tabla_padre_id": 1,
+            "tipo_elemento": 1,
+            "permite_cambios": 1,
+            "valor_elemento": "PregEvalua",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 1
+
+        }
+    },
+
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 12,
+        "fields": {
+            "desc_elemento": "Tipo de adiestramiento",
+            "fk_tabla_padre_id": 1,
+            "tipo_elemento": 1,
+            "permite_cambios": 1,
+            "valor_elemento": "TipoAdiest",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 1
+
+        }
+    },
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 13,
+        "fields": {
+            "desc_elemento": "Tipo duracion",
+            "fk_tabla_padre_id": 1,
+            "tipo_elemento": 1,
+            "permite_cambios": 1,
+            "valor_elemento": "Duracion",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 1
+
+        }
+    },
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 14,
+        "fields": {
+            "desc_elemento": "Situacion Plan",
+            "fk_tabla_padre_id": 1,
+            "tipo_elemento": 1,
+            "permite_cambios": 1,
+            "valor_elemento": "SituPlan",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 1
+
+        }
+    },
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 15,
+        "fields": {
+            "desc_elemento": "Ramas",
+            "fk_tabla_padre_id": 1,
+            "tipo_elemento": 1,
+            "permite_cambios": 1,
+            "valor_elemento": "Rama",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 1
+
+        }
+    },
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 16,
+        "fields": {
+            "desc_elemento": "Prioridad",
+            "fk_tabla_padre_id": 1,
+            "tipo_elemento": 1,
+            "permite_cambios": 1,
+            "valor_elemento": "Prioridad",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 1
+
+        }
+    },
+
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 17,
+        "fields": {
+            "desc_elemento": "Nivel Competencia",
+            "fk_tabla_padre_id": 1,
+            "tipo_elemento": 1,
+            "permite_cambios": 1,
+            "valor_elemento": "NivelComp",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 1
+
+        }
+    },
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 18,
+        "fields": {
+            "desc_elemento": "Calificaciones escala",
+            "fk_tabla_padre_id": 1,
+            "tipo_elemento": 1,
+            "permite_cambios": 1,
+            "valor_elemento": "calif",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 1
+
+        }
+    },
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 19,
+        "fields": {
+            "desc_elemento": "Tipos de moneda",
+            "fk_tabla_padre_id": 1,
+            "tipo_elemento": 1,
+            "permite_cambios": 1,
+            "valor_elemento": "Moneda",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 1
+
+        }
+    },
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 20,
+        "fields": {
+            "desc_elemento": "Tipos de pregunta frecuente",
+            "fk_tabla_padre_id": 1,
+            "tipo_elemento": 1,
+            "permite_cambios": 1,
+            "valor_elemento": "Frecuente",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 1
+
+        }
+    },
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 21,
+        "fields": {
+            "desc_elemento": "Estatus matrícula",
+            "fk_tabla_padre_id": 1,
+            "tipo_elemento": 1,
+            "permite_cambios": 1,
+            "valor_elemento": "EstMatricula",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 1
+
+        }
+    },
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 31,
+        "fields": {
+            "desc_elemento": "Revision",
+            "fk_tabla_padre_id": 21,
+            "tipo_elemento": 1,
+            "permite_cambios": 1,
+            "valor_elemento": "EstatusRevision",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+
+        }
+    },
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 30,
+        "fields": {
+            "desc_elemento": "Cancelled",
+            "fk_tabla_padre_id": 21,
+            "tipo_elemento": 1,
+            "permite_cambios": 1,
+            "valor_elemento": "EstatusCancelado",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+
+        }
+    },
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 28,
+        "fields": {
+            "desc_elemento": "Waiting for payment",
+            "fk_tabla_padre_id": 21,
+            "tipo_elemento": 1,
+            "permite_cambios": 1,
+            "valor_elemento": "EstatusEspera",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+
+        }
+    },
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 202,
+        "fields": {
+            "desc_elemento": "Payment in Revision",
+            "fk_tabla_padre_id": 21,
+            "tipo_elemento": 1,
+            "permite_cambios": 1,
+            "valor_elemento": "EstatusPay",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+
+        }
+    },
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 29,
+        "fields": {
+            "desc_elemento": "Approved",
+            "fk_tabla_padre_id": 21,
+            "tipo_elemento": 1,
+            "permite_cambios": 1,
+            "valor_elemento": "EstatusAprovado",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+
+        }
+    },
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 22,
+        "fields": {
+            "desc_elemento": "Estatus curso",
+            "fk_tabla_padre_id": 1,
+            "tipo_elemento": 1,
+            "permite_cambios": 1,
+            "valor_elemento": "EstCurso",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 1
+
+        }
+    },
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 23,
+        "fields": {
+            "desc_elemento": "Categorias",
+            "fk_tabla_padre_id": 1,
+            "tipo_elemento": 1,
+            "permite_cambios": 1,
+            "valor_elemento": "CatPrograma",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 1
+
+        }
+    },
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 24,
+        "fields": {
+            "desc_elemento": "Design",
+            "fk_tabla_padre_id": 23,
+            "tipo_elemento": 0,
+            "permite_cambios": 1,
+            "valor_elemento": null,
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+
+        }
+    },
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 25,
+        "fields": {
+            "desc_elemento": "Data science",
+            "fk_tabla_padre_id": 23,
+            "tipo_elemento": 0,
+            "permite_cambios": 1,
+            "valor_elemento": null,
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+
+        }
+    },
+
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 26,
+        "fields": {
+            "desc_elemento": "Pay",
+            "fk_tabla_padre_id": 6,
+            "tipo_elemento": 1,
+            "permite_cambios": 1,
+            "valor_elemento": "MatriculaPaga",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 1
+
+        }
+    },
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 27,
+        "fields": {
+            "desc_elemento": "Scholarship",
+            "fk_tabla_padre_id": 6,
+            "tipo_elemento": 1,
+            "permite_cambios": 1,
+            "valor_elemento": "MatriculaBeca",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 1
+
+        }
+    },
+
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 100,
+        "fields": {
+            "desc_elemento": "Payment Status",
+            "fk_tabla_padre_id": 1,
+            "tipo_elemento": 0,
+            "permite_cambios": 0,
+            "valor_elemento": "PayStatus",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+
+        }
+    },
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 101,
+        "fields": {
+            "desc_elemento": "Confirmed",
+            "fk_tabla_padre_id": 100,
+            "tipo_elemento": 0,
+            "permite_cambios": 0,
+            "valor_elemento": "payConfirm",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+
+        }
+    },
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 102,
+        "fields": {
+            "desc_elemento": "Waiting for Confirmation",
+            "fk_tabla_padre_id": 100,
+            "tipo_elemento": 0,
+            "permite_cambios": 0,
+            "valor_elemento": "payWait",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+
+        }
+    },
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 103,
+        "fields": {
+            "desc_elemento": "Payment Rejected",
+            "fk_tabla_padre_id": 100,
+            "tipo_elemento": 0,
+            "permite_cambios": 0,
+            "valor_elemento": "payRejected",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+
+        }
+    },
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 60,
+        "fields": {
+            "desc_elemento": "Days",
+            "fk_tabla_padre_id": 13,
+            "tipo_elemento": 0,
+            "permite_cambios": 1,
+            "valor_elemento": "",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+
+        }
+    },
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 61,
+        "fields": {
+            "desc_elemento": "Minutes",
+            "fk_tabla_padre_id": 13,
+            "tipo_elemento": 0,
+            "permite_cambios": 1,
+            "valor_elemento": "",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+
+        }
+    },
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 62,
+        "fields": {
+            "desc_elemento": "Hours",
+            "fk_tabla_padre_id": 13,
+            "tipo_elemento": 0,
+            "permite_cambios": 1,
+            "valor_elemento": "",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+
+        }
+    },
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 63,
+        "fields": {
+            "desc_elemento": "Approved",
+            "fk_tabla_padre_id": 18,
+            "tipo_elemento": 0,
+            "permite_cambios": 1,
+            "valor_elemento": "",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+
+        }
+    },
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 64,
+        "fields": {
+            "desc_elemento": "Reprobate",
+            "fk_tabla_padre_id": 18,
+            "tipo_elemento": 0,
+            "permite_cambios": 1,
+            "valor_elemento": "",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+
+        }
+    },
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 65,
+        "fields": {
+            "desc_elemento": "Repair",
+            "fk_tabla_padre_id": 18,
+            "tipo_elemento": 0,
+            "permite_cambios": 1,
+            "valor_elemento": "",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+
+        }
+    },
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 66,
+        "fields": {
+            "desc_elemento": "Open",
+            "fk_tabla_padre_id": 22,
+            "tipo_elemento": 0,
+            "permite_cambios": 1,
+            "valor_elemento": "",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+
+        }
+    },
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 67,
+        "fields": {
+            "desc_elemento": "Close",
+            "fk_tabla_padre_id": 22,
+            "tipo_elemento": 0,
+            "permite_cambios": 1,
+            "valor_elemento": "",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+
+        }
+    },
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 68,
+        "fields": {
+            "desc_elemento": "Test",
+            "fk_tabla_padre_id": 9,
+            "tipo_elemento": 0,
+            "permite_cambios": 1,
+            "valor_elemento": "activityTest",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+
+        }
+    },
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 69,
+        "fields": {
+            "desc_elemento": "Homework",
+            "fk_tabla_padre_id": 9,
+            "tipo_elemento": 0,
+            "permite_cambios": 1,
+            "valor_elemento": "activityHome",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+
+        }
+    },
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 70,
+        "fields": {
+            "desc_elemento": "Lesson",
+            "fk_tabla_padre_id": 9,
+            "tipo_elemento": 0,
+            "permite_cambios": 1,
+            "valor_elemento": "activityLesson",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+
+        }
+    },
+
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 71,
+        "fields": {
+            "desc_elemento": "Forum",
+            "fk_tabla_padre_id": 9,
+            "tipo_elemento": 0,
+            "permite_cambios": 1,
+            "valor_elemento": "activityForum",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+
+        }
+    },
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 72,
+        "fields": {
+            "desc_elemento": "Expert test",
+            "fk_tabla_padre_id": 9,
+            "tipo_elemento": 0,
+            "permite_cambios": 1,
+            "valor_elemento": "activityExpert",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+
+        }
+    },
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 73,
+        "fields": {
+            "desc_elemento": "Estatus lecciones",
+            "fk_tabla_padre_id": 1,
+            "tipo_elemento": 0,
+            "permite_cambios": 1,
+            "valor_elemento": "EstLeccion",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 1
+
+        }
+    },
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 74,
+        "fields": {
+            "desc_elemento": "Enabled",
+            "fk_tabla_padre_id": 73,
+            "tipo_elemento": 0,
+            "permite_cambios": 1,
+            "valor_elemento": "",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+
+        }
+    },
+    {
+        "model": "app.TablasConfiguracion",
+        "pk": 75,
+        "fields": {
+            "desc_elemento": "Disabled",
+            "fk_tabla_padre_id": 73,
+            "tipo_elemento": 0,
+            "permite_cambios": 1,
+            "valor_elemento": "",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+
+        }
+    },
+
+    {
+        "model": "app.Contratantes",
+        "pk": 1,
+        "fields": {
+            "siglas": "JC Energy ",
+            "nombre_contratante": "JC Energy Solar, Corp",
+            "apellido_contratante": null,
+            "rif_contratante": "1234",
+            "slogan": null,
+            "codigo_contrato": null,
+            "fecha_contrato": "2021-08-30",
+            "mes_inicio_ejerc_fiscal": 1,
+            "direccion": "Austin Texas",
+            "paginas_web": "JC Energy.com'",
+            "correos": "N/A",
+            "telefonnos": "N/A",
+            "nombre_comercial": "JC Energy Solar",
+            "personas_contacto": "",
+            "representante_legal": "Jose"
+
+        }
+    },
+
+    {
+        "model": "academic.escalaevaluacion",
+        "pk": 1,
+        "fields": {
+            "desc_escala": "Scale base 10",
+            "maxima_puntuacion": "10"
+        }
+    },
+
+    {
+        "model": "academic.escalacalificacion",
+        "pk": 1,
+        "fields": {
+            "desc_calificacion": "1 to 3",
+            "puntos_maximo": "3",
+            "fk_calificacion_id": "61",
+            "fk_escala_evaluacion_id": "1"
+        }
+    },
+
+    {
+        "model": "academic.escalacalificacion",
+        "pk": 2,
+        "fields": {
+            "desc_calificacion": "3 to 4.99",
+            "puntos_maximo": "4.99",
+            "fk_calificacion_id": "62",
+            "fk_escala_evaluacion_id": "1"
+        }
+    },
+
+    {
+        "model": "academic.escalacalificacion",
+        "pk": 3,
+        "fields": {
+            "desc_calificacion": "5 to 10",
+            "puntos_maximo": "10",
+            "fk_calificacion_id": "63",
+            "fk_escala_evaluacion_id": "1"
+        }
+    },
+
+    {
+        "model": "security.ContratantesRol",
+        "pk": 1,
+        "fields": {
+            "desc_rol": "Profesores ",
+            "fk_contratante": 2,
+            "valor_rol": "profe"
+
+        }
+    },
+    {
+        "model": "security.ContratantesRol",
+        "pk": 2,
+        "fields": {
+            "desc_rol": "Alumnos ",
+            "fk_contratante": 2,
+            "valor_rol": "alum"
+
+        }
+    },
+    {
+        "model": "security.ContratantesRol",
+        "pk": 3,
+        "fields": {
+            "desc_rol": "Asistentes ",
+            "fk_contratante": 2,
+            "valor_rol": "asis"
+
+        }
+    },
+    {
+        "model": "security.ContratantesRol",
+        "pk": 4,
+        "fields": {
+            "desc_rol": "Planificadores ",
+            "fk_contratante": 2,
+            "valor_rol": "planif"
+
+        }
+    },
+    {
+        "model": "security.ContratantesRol",
+        "pk": 5,
+        "fields": {
+            "desc_rol": "Autores ",
+            "fk_contratante": 2,
+            "valor_rol": "autor"
+
+        }
+    },
+
+    {
+        "model": "security.ContratantesRol",
+        "pk": 6,
+        "fields": {
+            "desc_rol": "Administrador ",
+            "fk_contratante": 2,
+            "valor_rol": "admin"
+
+        }
+    },
+
+    {
+        "model": "security.ContratantesRol",
+        "pk": 7,
+        "fields": {
+            "desc_rol": "Control estudio ",
+            "fk_contratante": 2,
+            "valor_rol": "control"
+
+        }
+    },
+
+
+
+    {
+        "model": "app.Aplicaciones",
+        "pk": 1,
+        "fields": {
+            "desc_aplicaciones": "Sistema Formacion y capacitacion E-Learning",
+            "cod_aplicacion": "KOACH_E-Learning"
+
+
+        }
+    },
+
+
+    {
+        "model": "app.AplicacionesContratante",
+        "pk": 1,
+        "fields": {
+            "fk_contratante": 2,
+            "fk_aplicacion": 2,
+            "cod_status_apli_contrat": 2
+
+
+        }
+    },
+
+    {
+        "model": "app.Estructuraprograma",
+        "pk": 1,
+        "fields": {
+            "descripcion": "System engineer",
+            "resumen": "Complete program to adquire knowledge about all kind of systems and network",
+            "valor_elemento": "Program",
+            "url": "system_eng",
+            "peso_creditos": "2",
+            "fk_categoria": "24"
+        }
+    },
+    {
+        "model": "app.Estructuraprograma",
+        "pk": 2,
+        "fields": {
+            "descripcion": "Industrial engineer",
+            "resumen": "Complete program to adquire knowledge about all kind of industrial processes and procedures",
+            "valor_elemento": "Program",
+            "url": "indust_eng",
+            "peso_creditos": "2",
+            "fk_categoria": "24"
+        }
+    },
+    {
+        "model": "app.Estructuraprograma",
+        "pk": 3,
+        "fields": {
+            "descripcion": "Agronomic engineer",
+            "resumen": "Complete program to adquire knowledge about ground, farm animals, botanic topics and more",
+            "valor_elemento": "Program",
+            "url": "agro_eng",
+            "peso_creditos": "2",
+            "fk_categoria": "25"
+        }
+    },
+    {
+        "model": "app.Estructuraprograma",
+        "pk": 4,
+        "fields": {
+            "descripcion": "Web developer",
+            "resumen": "Required process to be an web developer capable to develop frontend and backend, client and server",
+            "valor_elemento": "Process",
+            "url": "web_dev",
+            "peso_creditos": "2",
+            "fk_categoria": "24",
+            "fk_estructura_padre": "1"
+        }
+    },
+    {
+        "model": "app.Estructuraprograma",
+        "pk": 5,
+        "fields": {
+            "descripcion": "Frontend developer",
+            "resumen": "Unit in order to built client side of web, ui and ux",
+            "valor_elemento": "Unit",
+            "url": "front_dev",
+            "peso_creditos": "2",
+            "fk_categoria": "24",
+            "fk_estructura_padre": "4"
+        }
+    },
+    {
+        "model": "app.Estructuraprograma",
+        "pk": 6,
+        "fields": {
+            "descripcion": "VPS",
+            "resumen": "Required process to have a full understanding of Virtual servers and their use",
+            "valor_elemento": "Process",
+            "url": "vps_admin",
+            "peso_creditos": "2",
+            "fk_categoria": "24",
+            "fk_estructura_padre": "1"
+        }
+    },
+    {
+        "model": "app.Estructuraprograma",
+        "pk": 7,
+        "fields": {
+            "descripcion": "Ubuntu server",
+            "resumen": "Unit to learn deeply about Ubuntu server and this linux distro unique features",
+            "valor_elemento": "Unit",
+            "url": "ubuntu_server",
+            "peso_creditos": "2",
+            "fk_categoria": "24",
+            "fk_estructura_padre": "6"
+        }
+    },
+    {
+        "model": "app.Estructuraprograma",
+        "pk": 8,
+        "fields": {
+            "descripcion": "Distro",
+            "resumen": "Course oriented to know how to interact with Ubuntu server distro",
+            "valor_elemento": "Course",
+            "url": "ubuntu_distro",
+            "peso_creditos": "1",
+            "fk_categoria": "24",
+            "fk_estructura_padre": "7"
+        }
+
+    },
+    {
+        "model": "app.Estructuraprograma",
+        "pk": 9,
+        "fields": {
+            "descripcion": "CSS",
+            "resumen": "Make u the best designer of visuals for client with this course",
+            "valor_elemento": "Course",
+            "url": "css_dev",
+            "peso_creditos": "1",
+            "fk_categoria": "24",
+            "fk_estructura_padre": "5"
+        }
+
+    },
+    {
+        "model": "academic.Cursos",
+        "pk": 1,
+        "fields": {
+            "abrev_curso": "css",
+            "codigo_curso": "d001",
+            "disponible_desde": "2021-10-04",
+            "fk_estruc_programa_id": 9,
+            "tipo_evaluacion": "1"
+        }
+
+    },
+
+    {
+        "model": "registration.PreciosFormacion",
+        "pk": 1,
+        "fields": {
+
+            "precio": null,
+            "PorcentajeDescuento": null,
+
+            "fecha_registro": "2021-09-24",
+            "fecha_habilitado": "2021-09-24",
+            "fk_tipo_moneda": null,
+
+            "fk_estruc_programa": "1"
+        }
+    },
+    {
+        "model": "registration.PreciosFormacion",
+        "pk": 2,
+        "fields": {
+
+            "precio": null,
+            "PorcentajeDescuento": null,
+
+            "fecha_registro": "2021-09-24",
+            "fecha_habilitado": "2021-09-24",
+            "fk_tipo_moneda": null,
+
+            "fk_estruc_programa": "2"
+        }
+    },
+    {
+        "model": "registration.PreciosFormacion",
+        "pk": 3,
+        "fields": {
+
+            "precio": null,
+            "PorcentajeDescuento": null,
+
+            "fecha_registro": "2021-09-24",
+            "fecha_habilitado": "2021-09-24",
+            "fk_tipo_moneda": null,
+
+            "fk_estruc_programa": "3"
+        }
+    },
+    {
+        "model": "registration.PreciosFormacion",
+        "pk": 4,
+        "fields": {
+
+            "precio": null,
+            "PorcentajeDescuento": null,
+
+            "fecha_registro": "2021-09-24",
+            "fecha_habilitado": "2021-09-24",
+            "fk_tipo_moneda": null,
+
+            "fk_estruc_programa": "4"
+        }
+    },
+    {
+        "model": "registration.PreciosFormacion",
+        "pk": 5,
+        "fields": {
+
+            "precio": null,
+            "PorcentajeDescuento": null,
+
+            "fecha_registro": "2021-09-24",
+            "fecha_habilitado": "2021-09-24",
+            "fk_tipo_moneda": null,
+
+            "fk_estruc_programa": "5"
+        }
+    },
+    {
+        "model": "registration.PreciosFormacion",
+        "pk": 6,
+        "fields": {
+
+            "precio": null,
+            "PorcentajeDescuento": null,
+
+            "fecha_registro": "2021-09-24",
+            "fecha_habilitado": "2021-09-24",
+            "fk_tipo_moneda": null,
+
+            "fk_estruc_programa": "6"
+        }
+    },
+    {
+        "model": "registration.PreciosFormacion",
+        "pk": 7,
+        "fields": {
+
+            "precio": null,
+            "PorcentajeDescuento": null,
+
+            "fecha_registro": "2021-09-24",
+            "fecha_habilitado": "2021-09-24",
+            "fk_tipo_moneda": null,
+
+            "fk_estruc_programa": "7"
+        }
+    },
+    {
+        "model": "registration.PreciosFormacion",
+        "pk": 8,
+        "fields": {
+
+            "precio": null,
+            "PorcentajeDescuento": null,
+
+            "fecha_registro": "2021-09-24",
+            "fecha_habilitado": "2021-09-24",
+            "fk_tipo_moneda": null,
+
+            "fk_estruc_programa": "8"
+        }
+    },
+    {
+        "model": "registration.PreciosFormacion",
+        "pk": 9,
+        "fields": {
+
+            "precio": null,
+            "PorcentajeDescuento": null,
+
+            "fecha_registro": "2021-09-24",
+            "fecha_habilitado": "2021-09-24",
+            "fk_tipo_moneda": null,
+
+            "fk_estruc_programa": "9"
+        }
+    },
+    {
+        "model": "app.tablasconfiguracion",
+        "pk": 44,
+        "fields": {
+            "desc_elemento": "Medicine",
+            "fk_tabla_padre": 15,
+            "tipo_elemento": "0",
+            "permite_cambios": 1,
+            "valor_elemento": null,
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+        }
+    },
+    {
+        "model": "app.tablasconfiguracion",
+        "pk": 45,
+        "fields": {
+            "desc_elemento": "Engineering",
+            "fk_tabla_padre": 15,
+            "tipo_elemento": "0",
+            "permite_cambios": 1,
+            "valor_elemento": null,
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+        }
+    },
+    {
+        "model": "app.tablasconfiguracion",
+        "pk": 46,
+        "fields": {
+            "desc_elemento": "Science",
+            "fk_tabla_padre": 15,
+            "tipo_elemento": "0",
+            "permite_cambios": 1,
+            "valor_elemento": null,
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+        }
+    },
+    {
+        "model": "app.tablasconfiguracion",
+        "pk": 47,
+        "fields": {
+            "desc_elemento": "Administration",
+            "fk_tabla_padre": 15,
+            "tipo_elemento": "0",
+            "permite_cambios": 1,
+            "valor_elemento": null,
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+        }
+    },
+    {
+        "model": "app.tablasconfiguracion",
+        "pk": 48,
+        "fields": {
+            "desc_elemento": "Moral",
+            "fk_tabla_padre": 8,
+            "tipo_elemento": "0",
+            "permite_cambios": 1,
+            "valor_elemento": null,
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+        }
+    },
+    {
+        "model": "app.tablasconfiguracion",
+        "pk": 49,
+        "fields": {
+            "desc_elemento": "Physical",
+            "fk_tabla_padre": 8,
+            "tipo_elemento": "0",
+            "permite_cambios": 1,
+            "valor_elemento": null,
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+        }
+    },
+
+    {
+        "model": "app.tablasconfiguracion",
+        "pk": 33,
+        "fields": {
+            "desc_elemento": "Low",
+            "fk_tabla_padre": 17,
+            "tipo_elemento": "0",
+            "permite_cambios": 1,
+            "valor_elemento": null,
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+        }
+    },
+    {
+        "model": "app.tablasconfiguracion",
+        "pk": 34,
+        "fields": {
+            "desc_elemento": "Middle",
+            "fk_tabla_padre": 17,
+            "tipo_elemento": "0",
+            "permite_cambios": 1,
+            "valor_elemento": null,
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+        }
+    },
+    {
+        "model": "app.tablasconfiguracion",
+        "pk": 35,
+        "fields": {
+            "desc_elemento": "High",
+            "fk_tabla_padre": 17,
+            "tipo_elemento": "0",
+            "permite_cambios": 1,
+            "valor_elemento": null,
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+        }
+    },
+    {
+        "model": "app.tablasconfiguracion",
+        "pk": 32,
+        "fields": {
+            "desc_elemento": "Logic",
+            "fk_tabla_padre": 8,
+            "tipo_elemento": "0",
+            "permite_cambios": 1,
+            "valor_elemento": null,
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+        }
+    },
+    {
+        "model": "app.tablasconfiguracion",
+        "pk": 50,
+        "fields": {
+            "desc_elemento": "Phone Type",
+            "fk_tabla_padre": 1,
+            "tipo_elemento": "1",
+            "permite_cambios": 1,
+            "valor_elemento": "tipo_telefono",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 1
+        }
+    },
+    {
+        "model": "app.tablasconfiguracion",
+        "pk": 51,
+        "fields": {
+            "desc_elemento": "Movil",
+            "fk_tabla_padre": 50,
+            "tipo_elemento": "2",
+            "permite_cambios": 1,
+            "valor_elemento": "tipo_telefono_Movil",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+        }
+    }, {
+        "model": "app.tablasconfiguracion",
+        "pk": 203,
+        "fields": {
+            "desc_elemento": "Student",
+            "fk_tabla_padre": 2,
+            "tipo_elemento": "0",
+            "permite_cambios": 1,
+            "valor_elemento": "rol_student",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+        }
+    }, {
+        "model": "app.tablasconfiguracion",
+        "pk": 204,
+        "fields": {
+            "desc_elemento": "verification",
+            "fk_tabla_padre": 3,
+            "tipo_elemento": "0",
+            "permite_cambios": 1,
+            "valor_elemento": "status_verification",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+        }
+    }, {
+        "model": "app.tablasconfiguracion",
+        "pk": 205,
+        "fields": {
+            "desc_elemento": "active",
+            "fk_tabla_padre": 3,
+            "tipo_elemento": "0",
+            "permite_cambios": 1,
+            "valor_elemento": "status_active",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+        }
+    }, {
+        "model": "app.tablasconfiguracion",
+        "pk": 206,
+        "fields": {
+            "desc_elemento": "locked",
+            "fk_tabla_padre": 3,
+            "tipo_elemento": "0",
+            "permite_cambios": 1,
+            "valor_elemento": "status_locked",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+        }
+    }, {
+        "model": "app.tablasconfiguracion",
+        "pk": 207,
+        "fields": {
+            "desc_elemento": "what is your favorite color?",
+            "fk_tabla_padre": 4,
+            "tipo_elemento": "0",
+            "permite_cambios": 1,
+            "valor_elemento": "question_color",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+        }
+    }, {
+        "model": "app.tablasconfiguracion",
+        "pk": 208,
+        "fields": {
+            "desc_elemento": "What is the name of your pet?",
+            "fk_tabla_padre": 4,
+            "tipo_elemento": "0",
+            "permite_cambios": 1,
+            "valor_elemento": "question_pet",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+        }
+    }, {
+        "model": "app.tablasconfiguracion",
+        "pk": 209,
+        "fields": {
+            "desc_elemento": "suspended",
+            "fk_tabla_padre": 3,
+            "tipo_elemento": "0",
+            "permite_cambios": 1,
+            "valor_elemento": "status_suspended",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+        }
+    }, {
+        "model": "app.tablasconfiguracion",
+        "pk": 210,
+        "fields": {
+            "desc_elemento": "Security",
+            "fk_tabla_padre": 20,
+            "tipo_elemento": "0",
+            "permite_cambios": 1,
+            "valor_elemento": "sec_pre",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+        }
+    }, {
+        "model": "app.tablasconfiguracion",
+        "pk": 211,
+        "fields": {
+            "desc_elemento": "Academic",
+            "fk_tabla_padre": 20,
+            "tipo_elemento": "0",
+            "permite_cambios": 1,
+            "valor_elemento": "Aca_pre",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+        }
+    }, {
+        "model": "app.tablasconfiguracion",
+        "pk": 212,
+        "fields": {
+            "desc_elemento": "Planning",
+            "fk_tabla_padre": 20,
+            "tipo_elemento": "0",
+            "permite_cambios": 1,
+            "valor_elemento": "Pla_pre",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+        }
+    }, {
+        "model": "app.tablasconfiguracion",
+        "pk": 213,
+        "fields": {
+            "desc_elemento": "Registration",
+            "fk_tabla_padre": 20,
+            "tipo_elemento": "0",
+            "permite_cambios": 1,
+            "valor_elemento": "Regis_pre",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+        }
+    }, {
+        "model": "app.tablasconfiguracion",
+        "pk": 214,
+        "fields": {
+            "desc_elemento": "Settings",
+            "fk_tabla_padre": 20,
+            "tipo_elemento": "0",
+            "permite_cambios": 1,
+            "valor_elemento": "sett_pre",
+            "mostrar_en_combos": 1,
+            "maneja_lista": 0
+        }
     }
-  },
- 
-{
-  "model": "app.tablasconfiguracion",
-  "pk": 33,
-  "fields": {
-    "desc_elemento": "Low",
-    "fk_tabla_padre": 17,
-    "tipo_elemento": "0",
-    "permite_cambios": 1,
-    "valor_elemento": null,
-    "mostrar_en_combos": 1,
-    "maneja_lista": 0
-  }
-},
-{
-  "model": "app.tablasconfiguracion",
-  "pk": 34,
-  "fields": {
-    "desc_elemento": "Middle",
-    "fk_tabla_padre": 17,
-    "tipo_elemento": "0",
-    "permite_cambios": 1,
-    "valor_elemento": null,
-    "mostrar_en_combos": 1,
-    "maneja_lista": 0
-  }
-},
-{
-  "model": "app.tablasconfiguracion",
-  "pk": 35,
-  "fields": {
-    "desc_elemento": "High",
-    "fk_tabla_padre": 17,
-    "tipo_elemento": "0",
-    "permite_cambios": 1,
-    "valor_elemento": null,
-    "mostrar_en_combos": 1,
-    "maneja_lista": 0
-  }
-},
-{
-  "model": "app.tablasconfiguracion",
-  "pk": 32,
-  "fields": {
-    "desc_elemento": "Logic",
-    "fk_tabla_padre": 8,
-    "tipo_elemento": "0",
-    "permite_cambios": 1,
-    "valor_elemento": null,
-    "mostrar_en_combos": 1,
-    "maneja_lista": 0
-  }
-},
-  {
-  "model": "app.tablasconfiguracion",
-  "pk": 50,
-  "fields": {
-    "desc_elemento": "Phone Type",
-    "fk_tabla_padre": 1,
-    "tipo_elemento": "1",
-    "permite_cambios": 1,
-    "valor_elemento": "tipo_telefono",
-    "mostrar_en_combos": 1,
-    "maneja_lista": 1
-  }
-},
-  {
-  "model": "app.tablasconfiguracion",
-  "pk": 51,
-  "fields": {
-    "desc_elemento": "Movil",
-    "fk_tabla_padre": 50,
-    "tipo_elemento": "2",
-    "permite_cambios": 1,
-    "valor_elemento": "tipo_telefono_Movil",
-    "mostrar_en_combos": 1,
-    "maneja_lista": 0
-  }
-},{
-  "model": "app.tablasconfiguracion",
-  "pk": 203,
-  "fields": {
-    "desc_elemento": "Student",
-    "fk_tabla_padre": 2,
-    "tipo_elemento": "0",
-    "permite_cambios": 1,
-    "valor_elemento": "rol_student",
-    "mostrar_en_combos": 1,
-    "maneja_lista": 0
-  }
-},{
-  "model": "app.tablasconfiguracion",
-  "pk": 204,
-  "fields": {
-    "desc_elemento": "verification",
-    "fk_tabla_padre": 3,
-    "tipo_elemento": "0",
-    "permite_cambios": 1,
-    "valor_elemento": "status_verification",
-    "mostrar_en_combos": 1,
-    "maneja_lista": 0
-  }
-},{
-  "model": "app.tablasconfiguracion",
-  "pk": 205,
-  "fields": {
-    "desc_elemento": "active",
-    "fk_tabla_padre": 3,
-    "tipo_elemento": "0",
-    "permite_cambios": 1,
-    "valor_elemento": "status_active",
-    "mostrar_en_combos": 1,
-    "maneja_lista": 0
-  }
-},{
-  "model": "app.tablasconfiguracion",
-  "pk": 206,
-  "fields": {
-    "desc_elemento": "locked",
-    "fk_tabla_padre": 3,
-    "tipo_elemento": "0",
-    "permite_cambios": 1,
-    "valor_elemento": "status_locked",
-    "mostrar_en_combos": 1,
-    "maneja_lista": 0
-  }
-},{
-  "model": "app.tablasconfiguracion",
-  "pk": 207,
-  "fields": {
-    "desc_elemento": "what is your favorite color?",
-    "fk_tabla_padre": 4,
-    "tipo_elemento": "0",
-    "permite_cambios": 1,
-    "valor_elemento": "question_color",
-    "mostrar_en_combos": 1,
-    "maneja_lista": 0
-  }
-},{
-  "model": "app.tablasconfiguracion",
-  "pk": 208,
-  "fields": {
-    "desc_elemento": "What is the name of your pet?",
-    "fk_tabla_padre": 4,
-    "tipo_elemento": "0",
-    "permite_cambios": 1,
-    "valor_elemento": "question_pet",
-    "mostrar_en_combos": 1,
-    "maneja_lista": 0
-  }
-},{
-  "model": "app.tablasconfiguracion",
-  "pk": 209,
-  "fields": {
-    "desc_elemento": "suspended",
-    "fk_tabla_padre": 3,
-    "tipo_elemento": "0",
-    "permite_cambios": 1,
-    "valor_elemento": "status_suspended",
-    "mostrar_en_combos": 1,
-    "maneja_lista": 0
-  }
-},{
-  "model": "app.tablasconfiguracion",
-  "pk": 210,
-  "fields": {
-    "desc_elemento": "Admin",
-    "fk_tabla_padre": 2,
-    "tipo_elemento": "0",
-    "permite_cambios": 1,
-    "valor_elemento": "rol_admin",
-    "mostrar_en_combos": 1,
-    "maneja_lista": 0
-  }
-}
 ]

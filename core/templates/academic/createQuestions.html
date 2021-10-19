@@ -58,73 +58,74 @@
                                 </div>                                    
                             </div>
                             <div class="card-body" id="tabQuestions">
+                                <div class="table-responsive" id="renderContainer">
+                           
+                                </div>
                                 <div class="form-row text-center">
                                     <div class="form-group col-md-12">
-                                        <div class="table-responsive">
-                                            <table class="table table-borderless table-striped table-hover text-center table-component-like ">
-                                                <thead>
-                                                    <tr>
-                                                        <th>
-                                                            N°
-                                                        </th>
-                                                        <th>
-                                                           Question title
-                                                        </th>
-                                                        <th>
-                                                           Question points
-                                                        </th>
-                                                        <th>
-                                                            Type
-                                                        </th>
-                                                    
-                                                        <th>
-                                                            Actions
-                                                        </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody  id="tableContent">
-                                                {% for pregunta in listaPreguntas %}
+                                        <table class="table table-borderless table-striped table-hover text-center table-responsive table-component ">
+                                            <thead>
                                                 <tr>
-                                                    <td>
-                                                        {{pregunta.orden}}
-                                                    </td>
-    
-    
-                                                <td>
-                                                    {{pregunta.titulo_pregunta}}
-                                                </td>
-                                                <td>
-                                                    {{pregunta.puntos_pregunta}}
-                                                </td>
-                                               
-    
-                                                <td>
-                                                    {{pregunta.fk_tipo_pregunta_evaluacion|tipoPregunta}}
-                                                </td>
-                                                <td>
-                                                    <div class="btn-group" role="group">
-                                                 
-                                                       <button onclick="openEditModal('{{pregunta.pk}}',{{pregunta.fk_tipo_pregunta_evaluacion}} )" type="button" class="btn btn-icon btn-sm btn-info ml-1" data-toggle="tooltip"  data-placement="top" title="Edit">
-                                                          <i class="fas fa-edit"></i>
-                                                       </button>
-                                                    
-                                                  
-                                                       <button onclick="openDeleteModal('{{pregunta.pk}}' ,{{pregunta.fk_tipo_pregunta_evaluacion}} )" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="modal"
-                                                          data-target="#newModal">
-                                                          <i class="fas fa-trash-alt"></i>
-                                                       </button>
-                                                     
-                                                  
-                                                    </div>
-                                                 </td>
-    
-                                                </tr>
-                                                {% endfor %}
+                                                    <th class="col-md-1">
+                                                        N°
+                                                    </th>
+                                                   <th class="col-md-7">
+                                                       Question title
+                                                   </th>
+                                                   <th  class="col-md-2">
+                                                       Question points
+                                                   </th>
+                                                    <th  class="col-md-2">
+                                                        Type
+                                                    </th>
                                                 
-                                                </tbody>
-                                            </table>
+                                                    <th  class="col-md-2">
+                                                        Actions
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody  id="tableContent">
+                                            {% for pregunta in listaPreguntas %}
+                                            <tr>
+                                                <td>
+                                                    {{pregunta.orden}}
+                                                    </td>
 
-                                        </div>
+
+                                            <td>
+                                            {{pregunta.titulo_pregunta}}
+                                            </td>
+                                              <td>
+                                              {{pregunta.puntos_pregunta}}
+                                            </td>
+                                           
+
+                                              <td>
+                                            {{pregunta.fk_tipo_pregunta_evaluacion|tipoPregunta}}
+
+                                            </td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                             
+                                                   <button onclick="openEditModal('{{pregunta.pk}}',{{pregunta.fk_tipo_pregunta_evaluacion}} )" type="button" class="btn btn-icon btn-sm btn-info ml-1" data-toggle="tooltip"  data-placement="top" title="Edit">
+                                                      <i class="fas fa-edit"></i>
+                                                   </button>
+                                                
+                                              
+                                                   <button onclick="openDeleteModal('{{pregunta.pk}}' ,{{pregunta.fk_tipo_pregunta_evaluacion}} )" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="modal"
+                                                      data-target="#newModal">
+                                                      <i class="fas fa-trash-alt"></i>
+                                                   </button>
+                                                 
+                                              
+                                                </div>
+                                             </td>
+
+                                            </tr>
+                                            {% endfor %}
+                                            
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                       {% comment %}
@@ -222,10 +223,6 @@
 
     function respuestaCorrecta(radio){
             respuesta=radio.value
-            for(const item of tablaPreguntas){
-                item.isCorrect=false
-            }
-            tablaPreguntas[radio.value].isCorrect=true
           //  alert(radio.value)
 
         }
@@ -263,7 +260,7 @@
         }
 
         const openAddModalQuestion = () => {
-            limpiarModalOpciones()
+            tablaPreguntas=[]
             renderModalTypeQuestion().then(()=>{
                editmode = false
                $("#chooseTypeQuestion").modal("show")
@@ -324,10 +321,6 @@
 
             }
 
-            error= await verificaOpciones();  
-               if(error)   {
-                   return;
-               }     
 
             
             
@@ -335,7 +328,10 @@
                    var select2=document.querySelector('input[name="listaSimpleRadio"]:checked').value
                }
 
-             
+               error= await verificaOpciones();  
+               if(error)   {
+                   return;
+               }     
                const metodo=editmode?'Update':'Create'
               
             form = {
@@ -400,7 +396,6 @@
                    alerta(5)
                 }
                 alerta(1)
-                reload()
             })
             .then(() => {
                form=null
@@ -408,6 +403,53 @@
                 $("#addNewQuestion").modal("hide");
             })
         }
+
+        Sortable.create(tablaCuerpo, {
+            swap: true,
+             animation: 150,
+        }); 
+
+        // // Sortable.create(tablaCuerpo, {
+        //     swap: true,
+        //     animation: 150,
+        //     store: {
+        //         // Sorting acquisition (called during initialization)
+        //         get: function (sortable) {
+        //           var question = tablaPreguntas.getItem(sortable.options.group);
+        //           return question ? question.split('|') : [];
+        //         },
+        
+        //         // Saving the acquired sorting (called each time upon sorting modification)
+        //         set: function (sortable) {
+        //           var question = sortable.toArray();
+        //           tablaPreguntas.setItem(sortable.options.group, question.join('|'));
+        //         }
+        //     }
+        // });
+
+        // Combos and radios
+
+        $(function () {
+            $("#timerCB").click(function () {
+                if ($(this).is(":checked")) {
+                    $("#timer").prop('disabled', false);
+                    $("#typeTime").prop('disabled', false);
+                } else {
+                    $("#timer").prop('disabled', true);
+                    $("#typeTime").prop('disabled', true);
+                }
+            });
+        });
+
+        $(document).ready(function(index) {
+            $("input[name=scoreRB]:radio").click(function() { // attack a click event on all radio buttons with name 'radiogroup'
+                if($(this).val() == 'auto') {//check which radio button is clicked 
+                    $(".question_score").prop('disabled', true);
+                } else if($(this).val() == 'manual') {
+                    $(".question_score").prop('disabled', false);
+                } 
+            });
+        });     
 
         
         // Renderizar  
@@ -470,7 +512,6 @@
             const res = await matarPregunta(id, urlDelete)
             if (res) {
                 alerta(4)
-                reload()
             }
             else {
                 alerta(5)
@@ -842,7 +883,7 @@
 
                 let datos = {
                     OpcionText: document.getElementById("optionText").value,
-                    isCorrect:false,
+                    selected:false,
                     id:tablaPreguntas.length,
                     actions: `
                     <div class="btn-group" role="group">
@@ -1041,49 +1082,6 @@
     }
 
    </script>
-<!--Reparticiones-->
-<script>
-
-function Repartir(){
-    console.log(22)
-
-if(!document.getElementById("questionPoints") || document.getElementById("questionPoints")<=0 ){
-    alertaMensajitos(5,'Invalid Value', 'The current point can not be divided')
-    return;
-}
-let dividido=document.getElementById("questionPoints").value/tablaPreguntas.length
-console.log(document.getElementById("questionPoints"))
-console.log(tablaPreguntas.length)
-
-console.log(dividido)
-
-for (const item of tablaPreguntas){
-
-console.log(item)
-
-item.value=dividido
-
-
-}
-
-
-if(tipoPreguntaSelected==1)
-        actualizarListaSimple()
-        if(tipoPreguntaSelected==2)
-        actualizarListaMultiple()
-        if(tipoPreguntaSelected==3)
-        actualizarListaCompletations()
-        if(tipoPreguntaSelected==4)
-        actualizarListaAssociation()
-        if(tipoPreguntaSelected==5)
-        actualizarListaTF()
-
-}
-</script>
-
-
-
-<!--Metodos-->
 
    <script>
 
@@ -1093,8 +1091,6 @@ if(tipoPreguntaSelected==1)
            let totalValue=0;
 
         for(const element of tablaPreguntas ){
-           console.log(element);
-
             if(tipoPreguntaSelected==1 || tipoPreguntaSelected==3 ){
                 if(element.isCorrect==true){
                     HayCorrectos=true;

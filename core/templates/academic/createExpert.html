@@ -224,37 +224,6 @@ const toBase64 = file => new Promise((resolve, reject) => {
 
 </script>
 
-<!--Reparticiones-->
-<script>
-
-    function Repartir(){
-        console.log(22)
-    
-    if(!document.getElementById("questionPoints") || document.getElementById("questionPoints")<=0 ){
-        alertaMensajitos(5,'Invalid Value', 'The current point can not be divided')
-        return;
-    }
-    let dividido=document.getElementById("questionPoints").value/tablaPreguntas.length
-    console.log(document.getElementById("questionPoints"))
-    console.log(tablaPreguntas.length)
-    
-    console.log(dividido)
-    
-    for (const item of tablaPreguntas){
-    
-    console.log(item)
-    
-    item.value=dividido
-    
-    
-    }
-    actualizarListaMultiple()
-    
-   
-    
-    }
-    </script>
-
     <script>
 
         // Variables
@@ -729,7 +698,7 @@ const toBase64 = file => new Promise((resolve, reject) => {
             }
             else {
                 alerta(5)
-               
+                reload()
             }
         }
     }
@@ -748,7 +717,7 @@ const toBase64 = file => new Promise((resolve, reject) => {
             }
             else {
                 alerta(5)
-               
+                reload()
             }
         }
     }
@@ -1186,13 +1155,6 @@ const toBase64 = file => new Promise((resolve, reject) => {
 
 
                 }
-
-                if(element.value>document.getElementById("questionPoints").value){
-                    alertaMensajitos(5,'Invalid Option','An option value can not be superior to question maximum value ');
-                    return true;
-
-
-                }
                 totalValue=Number(totalValue)+Number(element.value);
                 console.log(totalValue);
 
@@ -1203,8 +1165,8 @@ const toBase64 = file => new Promise((resolve, reject) => {
         console.log(document.getElementById("questionPoints").value);
      
         if(totalValue>document.getElementById("questionPoints").value){
-                 //   alertaMensajitos(5,'Invalid Options Value','The options total value can not surpass the question max points');
-                   // return true;
+                    alertaMensajitos(5,'Invalid Options Value','The options total value can not surpass the question max points');
+                    return true;
 
 
                 }

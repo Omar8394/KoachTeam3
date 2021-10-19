@@ -37,9 +37,9 @@
 						<div class="card" style="width: 30rem;">
 							<div class="card-header" style="background-color: #1a2035 !important;
 							color: white;">
-								<h2>Test: {{pregunta.fk_estructura_programa.descripcion}}</h2>
+								<h2>Evaluation: {{pregunta.fk_estructura_programa.descripcion}}</h2>
 							</div>
-							<div class="card-body" style='height: 600px;'>
+							<div class="card-body" style='height: 500px;'>
 							{% if examen.count == 0 %}
 
 								<div class="center">
@@ -126,7 +126,7 @@
 							  <b> Minimum to Approve</b>: {{pregunta.calificacion_aprobar}}
 							  <br>
 							 
-							  <b>  Finished</b>: {{examen.0.fechaTermino}}
+							  <b>  Finished Date</b>: {{examen.0.fechaTermino}}
 							  <br>
 							  <b> Score</b>: {{examen.0.PuntuacionFinal}}
 							  <br>
@@ -134,34 +134,8 @@
 							  <b>  Duration </b>: {{pregunta.duracion}}&nbsp; {{pregunta.fk_tipo_duracion}}
 							  {% endif %}
 							  <br>
-							  <b>  Number of repetitions allow: </b> {{pregunta.nro_repeticiones}}
+							  <b>  Number of repetitions allow </b> {{pregunta.nro_repeticiones}}
 							  <br>
-
-							  {% if exam.estadoExamen == 3 %}
-							  <b>  Scale Results: </b>   {{examamen.pk|scalaPuntuacion}}
-							  {% endif %}
-							
-							  <br>
-							  <br>
-							  <br>
-								{%if pregunta.fk_estructura_programa.fk_categoria.valor_elemento != 'activityExpert' %}	
-								<div class="center" style="text-align: center;">
-										{% if examen.PuntuacionFinal <= pregunta.calificacion_aprobar%}
-											<h1 style='color:red'> Reproved! </h2>
-											
-											{%else%}
-											<h1 style='color:green'> Approved! </h2>
-
-										{% endif %}
-
-										{%else%}
-								<div class="centerB">
-
-									<button class="btn btn-success"onclick="openSeeResults({{examen.0.pk}})" > See Results </button>
-									</div>
-								{% endif %}
-
-								</div>
 							  
                                
 
@@ -169,16 +143,11 @@
 							 </p>
 							 </div>
 							 {% endif %}
-							  
-                               
 
-
-							 {% endif %}
-
-						
+							{% endif %}
 							
 
-							
+							</div>
 						
 						</div>		
 	   				</form>
@@ -186,18 +155,6 @@
      		</div>
 	
 	</div>
-
-
-		<!--  Modal-->
-<div class="modal fade " tabindex="-1" role="dialog" id="ModalResults">
-    <div class="modal-dialog modal-lg modal-dialog-centered"" role="document" id="modalContentResults">
-     
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-
-<!-- /.modal -->
-
-
 
 
 {% endblock content %}
@@ -443,34 +400,6 @@
 
 					}
 
-					if(item.tipo==6){
-						const select=document.querySelector(`input[name="Simple${item.id}"]:checked`);
-
-						if( select!=null){
-							var	datos={
-									opcionID:select.value,
-									isCorrect:false,
-									idRelacional:null,
-									idpadre:null,
-									idPregunta:item.id,
-									tipoPregunta:6,
-									bloques:item.bloque
-
-
-								
-
-								}
-                         respuestas.push(datos);
-
-						}else{
-
-							hayVacias=true;
-						}
-
-
-
-					}
-
 						if(item.tipo==2){
 					
   						item.opciones.forEach(function(opciones, index, object) {
@@ -501,8 +430,6 @@
 
 
 					}
-
-					
 			if(item.tipo==3){
 					
 							  const elemento=document.getElementById(`Completar${item.id}`);
@@ -634,174 +561,5 @@
 
 
 </script>
-
-<!--Grafica-->
-<script>
-	var labeles=[];
-	var variablesTitulos=[];
-	var titulos=[];
-	
-	async function openSeeResults  (id)  {
-		   
-				renderModalResults(id).then(()=>{
-				
-				   $("#ModalResults").modal("show");
-				})
-			}    
-	
-	async function renderModalResults(id){
-		return fetch("{% url 'GraficaResultados' %}", {
-					...fetchObject,
-					body: JSON.stringify({
-				 data: {
-						
-						method:'Show',
-						
-					}
-				})
-				})
-				.then(async (res) => {
-					document.getElementById("modalContentResults").innerHTML = await res.text()
-					await getGrafica(id)
-	
-				}).then(()=>{
-				 
-	
-				})
-	
-	}
-	
-	async function getGrafica(id){
-	
-		return fetch("{% url 'GraficaResultados' %}", {
-					...fetchObject,
-					body: JSON.stringify({
-				 data: {
-						
-						method:'Set',
-						id:id
-					}
-				})
-				})
-				.then(async (res) => {
-					let datos = JSON.parse(await res.text())
-					console.log(datos)
-	
-					escalaBloques=datos.escalaBloquesJson;
-					escalaTOtal=datos.escalaTotalJson;
-					resultados=datos.resultadosJson;
-					console.log(resultados)
-					console.log(datos.resultadosJson)
-	
-				   
-					variablesTitulos=[...datos.dataSet]
-					labeles.push('')
-	
-					resultados.forEach(function(item, index, object) {
-	
-	
-						labeles.push(item.bloque_respuesta)
-						console.log(item.bloque_respuesta)
-	
-				 
-	
-					})
-	
-					escalaBloques.forEach(function(item, index, object) {
-	
-					  titulos.push(item.desc_calificacion)      
-						
-					
-					})      
-					console.log(variablesTitulos)
-					labeles.push('')
-					
-	
-	
-					await setGrafica()
-	
-	
-	
-				
-					
-				}).then(()=>{
-				 
-			   
-	
-				})
-	
-	}
-		
-		</script>
-
-
-<script>
-
-
-	async function setGrafica(){
-	
-	
-		var lineChart = document.getElementById('lineChart').getContext('2d');
-	
-		const data = {
-	  labels: labeles,
-	  datasets: [
-	  
-		{
-		  
-		  data: variablesTitulos,
-		  borderColor: '#1d7af3',
-		  backgroundColor: '#1d7af3',
-		  
-		  yAxisID: 'y2',
-		}
-	  ]
-	};
-		var myLineChart = new Chart(lineChart, {
-		type: 'line',
-		data: data,
-	  
-		options: {
-		responsive: true,
-		plugins: {
-		  title: {  
-			  text:'Results',
-			display: true,
-		   
-		  },
-		  legend: {
-			display: false,
-		  },
-		},
-		scales: {
-	   
-		  y2: {
-			type: 'category',
-			labels: titulos.reverse(),
-			offset: true,
-			position: 'left',
-		 
-			stackWeight: 1,
-			grid: {
-			  borderColor: '#1d7af3',
-			}
-		  }
-		}
-	  },
-	
-	});
-	
-	
-	
-	
-	
-	
-	
-	}
-	
-	
-	
-	
-	</script>
 
 {% endblock javascripts %}
