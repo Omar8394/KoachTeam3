@@ -80,8 +80,9 @@
    let editmode = false
    let sortable = false
    let ordenamientoArray = []
+   let recursosArray = []
    let bankPage = 1
-   const setBankEvents = (dropzoneObj)=>{
+   const setBankEvents = (dropzoneObj) => {
       bankPage = 1
       $("#nav-recent-tab").click(() => {
          bankPage = 1
@@ -97,54 +98,100 @@
       })
       const formTags = document.getElementById("formTags")
       const formBotones = document.getElementById("formBotones")
+      const formYoutube = document.getElementById("formYoutube")
+      const youtubeBtn = document.getElementById("findInYoutube")
+      const inputYT = document.getElementById("urlResource")
+      const frameYT = document.getElementById("previewYoutube")
       const cleanBtn = document.getElementById("cleanBankBtn")
-      formTags.addEventListener("submit", (e)=>{
+      formTags.addEventListener("submit", (e) => {
          e.preventDefault()
       })
-      formBotones.addEventListener("submit", (e)=>{
+      formYoutube.addEventListener("submit", (e) => {
          e.preventDefault()
-         if(bankPage === 1){}
-         if(bankPage === 2){}
-         if(bankPage === 3){
-
+         if (inputYT.value.trim()) {
+            let youtubeFrame = comprobarYoutube(inputYT.value.trim())
+            frameYT.innerHTML = youtubeFrame
          }
-         if(bankPage === 4){}
+         else {
+            frameYT.innerHTML = ""
+         }
       })
-      cleanBtn.addEventListener("click", (e)=>{
+      formBotones.addEventListener("submit", async (e) => {
          e.preventDefault()
-         if(bankPage === 1){}
-         if(bankPage === 2){}
-         if(bankPage === 3){
+         $("#insertBankBtn").attr("disabled", "disabled")
+         if (bankPage === 1) { }
+         if (bankPage === 2) { }
+         if (bankPage === 3) {
+         }
+         if (bankPage === 4) {
+            let HTMLstring = comprobarYoutube(inputYT.value.trim())
+            if(!HTMLstring.includes("Invalid Youtube video") && $("#tagResource4").val().trim()!=""){
+               dataObj = {
+                  titulo: document.getElementById("titleResource4").value,
+                  path: document.getElementById("urlResource").value,
+                  tipo_path: 1,
+                  compartido: document.getElementById("checkSharedCB4").checked,
+                  tipo_recurso: "Recurso_video",
+                  tags: $("#tagResource4").val().toLowerCase()
+               }
+               const response = await updateModel("{% url 'modalResourcesBank'%}","Create",dataObj,null)
+               const text = JSON.parse(await response.text())
+               if(text.message == "error"){
+                  alerta(5)
+                  return
+               } 
+               if(text.message == "Already exists")alerta(6)
+               if(text.message == "Perfect") alerta(1)
+               let recursoTemp = {
+                  id:text.id,
+                  path:text.path
+               }
+               recursosArray.push(recursoTemp)
+            
+               $(`#summernote${selectedId}`).summernote('pasteHTML', HTMLstring)
+               document.querySelector("#addNewModalContent").innerHTML = ""
+               $("#addNewModal").modal("hide")
+            }
+            
+         }
+         $("#insertBankBtn").removeAttr("disabled")
+      })
+      cleanBtn.addEventListener("click", (e) => {
+         e.preventDefault()
+         if (bankPage === 1) { }
+         if (bankPage === 2) { }
+         if (bankPage === 3) {
             dropzoneObj.removeAllFiles()
          }
-         if(bankPage === 4){}
+         if (bankPage === 4) { }
       })
    }
-   const rederResourcesBank = (id) => {
+   const renderResourcesBank = (id) => {
       //render resources bank
       fetch("{% url 'modalResourcesBank'%}", {
          ...fetchObject,
-         // body: JSON.stringify({
-         //    id: "{{lesson.pk}}",
-         //    query
-         // })
+         body: JSON.stringify({
+            method:"Show"
+         })
       }).then(async (res) => {
-            result = await res.text()
-            document.querySelector("#addNewModalContent").innerHTML = result
-            $("#addNewModal").modal("show")
-            const dropzoneObj = new Dropzone("form#my-awesome-dropzone", { 
-               url: "{% url 'modalResourcesBank' %}",
-               autoProcessQueue: false,
-               acceptedFiles: "image/*,audio/*, application/pdf",
-            });
-            // let dropzoneObj = $("form#my-awesome-dropzone")
-            // .dropzone({ 
-            //    url: "{% url 'modalResourcesBank' %}", 
-            //    autoProcessQueue:false,
-            //    acceptedFiles: "image/*,audio/*, application/pdf",
-            // });
-            setBankEvents(dropzoneObj)
-            $('#tagResource').tagsinput({
+         result = await res.text()
+         document.querySelector("#addNewModalContent").innerHTML = result
+         $("#addNewModal").modal("show")
+         const dropzoneObj = new Dropzone("form#my-awesome-dropzone", {
+            url: "{% url 'modalResourcesBank' %}",
+            autoProcessQueue: false,
+            acceptedFiles: "image/*,audio/*, application/pdf",
+         });
+         setBankEvents(dropzoneObj)
+         $('#tagResource3').tagsinput({
+            tagClass: 'badge badge-info d-inline',
+            allowDuplicates: false,
+            trimValue: true,
+            maxChars: 10,
+            maxTags: 3,
+            cancelConfirmKeysOnEmpty: true
+         });
+         $('#tagResource4').tagsinput({
             tagClass: 'badge badge-info d-inline',
             allowDuplicates: false,
             trimValue: true,
@@ -155,6 +202,22 @@
       })
 
    }
+   const comprobarYoutube = (linkEntry) => {
+      if (linkEntry.match(/(?:https?:\/\/)?(?:www\.|m\.)?youtu(?:\.be\/|be.com\/\S*(?:watch|embed)(?:(?:(?=\/[^&\s\?]+(?!\S))\/)|(?:\S*v=|v\/)))([^&\s\?]+)/gm)) {
+         let codeIndex = 0
+         if (linkEntry.includes("youtu.be/")) {
+            codeIndex = linkEntry.indexOf("youtu.be/") + 9
+         }
+         if (linkEntry.includes("youtube.com/")) {
+            codeIndex = linkEntry.indexOf("&v=") + linkEntry.indexOf("?v=") + 4
+         }
+         let code = linkEntry.slice(codeIndex, codeIndex + 11)
+         return `<iframe width="560" height="315" src="https://www.youtube.com/embed/${code}" title="YouTube video player" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
+      }
+      else{
+         return `<div>Invalid Youtube video</div>`
+      }
+   }
    const HelloButton = (context) => {
       var ui = $.summernote.ui;
       // create button for resource bank
@@ -163,7 +226,7 @@
          tooltip: 'Resources bank',
          click: () => {
             // invoke resource bank here
-            rederResourcesBank(selectedId)
+            renderResourcesBank(selectedId)
          }
       });
       return button.render();
@@ -297,6 +360,7 @@
       })
    }
    const openAddPage = () => {
+      recursosArray = []
       document.querySelector("main.card-body").classList.add("is-loading")
       fetch("{% url 'createLessons'%}", {
          ...fetchObject,
@@ -372,6 +436,7 @@
    const openEditPage = (id) => {
       const content = document.getElementById(`contentPage${id}`)
       const editBtn = document.getElementById(`openEditBtn${id}`)
+      recursosArray = []
       selectedId = id
       if (content.innerHTML.trim()) {
          content.classList.add("card-list-item-close")

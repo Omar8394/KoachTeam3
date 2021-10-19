@@ -116,16 +116,14 @@ class PreguntasOpciones(models.Model):
 class Recurso(models.Model):
     id_recurso = models.AutoField(primary_key=True)
     titulo = models.TextField(null=True)
-    descripcion = models.TextField(null=True)
     path = models.TextField(null=True)
     tipo_path = models.BooleanField(default=False)
     compartido = models.BooleanField(default=False)
-    ordenamiento = models.SmallIntegerField(null=True)
     fk_tipo_recurso = models.ForeignKey(TablasConfiguracion,on_delete=models.CASCADE,  default=None, null=True)
     fk_publico_autor = models.ForeignKey(Publico, on_delete=models.CASCADE,  default=None, null=True)
 
 class Tag(models.Model):
-    id_tag = models.SmallIntegerField(primary_key=True)
+    id_tag = models.SmallAutoField(primary_key=True)
     desc_tag = models.TextField(null=True)
 
 class TagRecurso(models.Model):

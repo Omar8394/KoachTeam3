@@ -86,7 +86,7 @@
                   </div>
                   <div class="form-group col-md-7">
                      <label class="col-form-label mr-1" for="tagResource">Tags</label>
-                     <input type="text" id="tagResource" name="tagResource" class="form-control" data-role="tagsinput">
+                     <input type="text" id="tagResource3" name="tagResource" class="form-control" data-role="tagsinput">
                   </div>
                </div>
                <div class="form-row">
@@ -94,13 +94,40 @@
             </form>
          </div>
          <div class="tab-pane fade" id="nav-youtube" role="tabpanel" aria-labelledby="nav-youtube-tab">
-            <form class="form">
+            <form class="form" id="formYoutube">
                <div class="form-row">
                   <div class="form-group col-12">
                      <label class="col-form-label" for="urlResource">YouTube URL</label>
-                     <input type="text" class="form-control" id="urlResource" name="urlResource"
-                        placeholder="Enter URL">
+                     <div class="input-group">
+                        <input type="text" class="form-control" id="urlResource" name="urlResource" placeholder="Enter URL">
+                        <div class="input-group-append">
+                           <button type="submit" id="findInYoutube" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Look for...">
+                              <i class="fas fa-search"></i>
+                           </button>
+                        </div>
+                     </div>
                   </div>
+               </div>
+               <div class="form-row">
+                  <div class="form-group col-12">
+                     <label class="col-form-label mr-1" for="titleResource4">Title</label>
+                     <input type="text" id="titleResource4" name="titleResource" class="form-control">
+                  </div>
+               </div>
+               <div class="form-row">
+                  <div class="form-group col-md-5 m-auto">
+                     <div class="custom-control custom-checkbox ml-2">
+                        <input type="checkbox" class="custom-control-input" name="checkSharedCB" id="checkSharedCB4">
+                        <label class="custom-control-label" for="checkSharedCB4">Shared resource</label>
+                     </div>
+                  </div>
+                  <div class="form-group col-md-7">
+                     <label class="col-form-label mr-1" for="tagResource4">Tags</label>
+                     <input type="text" id="tagResource4" name="tagResource" class="form-control" data-role="tagsinput">
+                  </div>
+               </div>
+               <div id="previewYoutube" class="form-row">
+
                </div>
             </form>
          </div>
@@ -113,7 +140,7 @@
                <button class="btn btn-danger" id="cleanBankBtn">Clean<i class="fas fa-broom ml-2"></i></button>
             </div>
             <div class="form-group">
-               <button type="submit" class="btn btn-primary">Insert<i class="fas fa-save ml-2"></i></button>
+               <button type="submit" id="insertBankBtn" class="btn btn-primary">Insert<i class="fas fa-save ml-2"></i></button>
             </div>
          </div>
       </form>

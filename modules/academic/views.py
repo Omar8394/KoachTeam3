@@ -27,7 +27,7 @@ from ..app.models import TablasConfiguracion, Estructuraprograma
 
 from ..security.models import ExtensionUsuario
 
-from .models import ActividadEvaluaciones, Cursos, ActividadConferencia, ActividadLeccion, ActividadTarea, EscalaEvaluacion, EvaluacionesPreguntas, EvaluacionesBloques, Paginas, PreguntasOpciones, ExamenActividad,ExamenRespuestas,ExamenResultados
+from .models import ActividadEvaluaciones, Cursos, ActividadConferencia, ActividadLeccion, ActividadTarea, EscalaEvaluacion, EvaluacionesPreguntas, EvaluacionesBloques, Paginas, PreguntasOpciones, ExamenActividad,ExamenRespuestas,ExamenResultados, Recurso, Tag, TagRecurso
 from modules.app import models
 
 # Create your views here.
@@ -1026,6 +1026,22 @@ def getModalPagina(request):
                 return JsonResponse({"message":"error"}, status=500)
 
 @login_required(login_url="/login/")
+def uploadResources(request):
+    myfile = request.FILES['imagenRuta']
+    
+    fs = FileSystemStorage()
+    nombreImagen = str(uuid.uuid4())
+    extensionFile=Path(myfile.name).suffix
+    nombreImagen=nombreImagen+extensionFile
+    Ruta=settings.MEDIA_ROOT
+
+    folder = request.path.replace("/", "_")
+    try:
+        os.mkdir(os.path.join(Ruta))
+    except:
+        pass
+    filename = fs.save(Ruta+'/'+nombreImagen, myfile)
+@login_required(login_url="/login/")
 def getPreviewLeccion(request):
     if request.method == "POST":
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
@@ -1045,9 +1061,57 @@ def getPreviewLeccion(request):
 
 @login_required(login_url="/login/")
 def getModalResourcesBank(request):
-    context = {}
-    html_template = (loader.get_template('components/modalBancoRecursos.html'))
-    return HttpResponse(html_template.render(context, request))
+    if request.method == "POST":
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            context = {}
+            modelo = {}
+            # try:
+            if request.body:
+                data = json.load(request)
+                if data["method"] == "Show":
+                    html_template = (loader.get_template('components/modalBancoRecursos.html'))
+                    return HttpResponse(html_template.render(context, request))
+                elif data["method"] == "Find":
+                    modelo = Paginas.objects.get(pk=data["id"])
+                    context = {"modelo": modelo}
+                    html_template = (loader.get_template('components/modalAddPagina.html'))
+                    return HttpResponse(html_template.render(context, request))
+                elif data["method"] == "Delete":
+                    pagina = Paginas.objects.get(pk=data["id"])
+                    pagina.delete()
+                    return JsonResponse({"message":"Deleted"})
+                elif data["method"] == "Create":
+                    recurso = Recurso.objects.filter(path=data["data"]["path"])
+                    if recurso.exists():
+                        return JsonResponse({"message":"Already exists", "id":recurso[0].pk, "path":recurso[0].path})
+                    else:
+                        newRecurso = Recurso()
+                        newRecurso.titulo = data["data"]["titulo"]
+                        newRecurso.path = data["data"]["path"]
+                        newRecurso.tipo_path = data["data"]["tipo_path"]
+                        newRecurso.compartido = data["data"]["compartido"]
+                        newRecurso.fk_tipo_recurso = TablasConfiguracion.obtenerHijos("Recurso").get(valor_elemento=data["data"]["tipo_recurso"])
+                        newRecurso.fk_publico_autor = request.user.extensionusuario.Publico
+                        tags = data["data"]["tags"]
+                        if "," in tags:
+                            tags = tags.split(",")
+                        else:
+                            tags = [tags]
+                        newRecurso.save()
+                        for newtag in tags:
+                            tag = Tag.objects.filter(desc_tag=newtag)
+                            if tag.exists():
+                                tag_recurso = TagRecurso(fk_tag=tag[0], fk_recurso=newRecurso)
+                                tag_recurso.save()
+                            else:
+                                tag = Tag(desc_tag=newtag)
+                                tag.save()
+                                tag_recurso = TagRecurso(fk_tag=tag, fk_recurso=newRecurso)
+                                tag_recurso.save()
+                        return JsonResponse({"message":"Perfect", "id":newRecurso.pk, "path":newRecurso.path})
+            # except:
+            #     return JsonResponse({"message":"error"}, status=500)
+    
 
 @login_required(login_url="/login/")
 def getModalChooseActivities(request):

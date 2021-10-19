@@ -736,6 +736,62 @@
 
     }
   },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk":76,
+    "fields": {
+      "desc_elemento": "Video",
+      "fk_tabla_padre_id": 10,
+      "tipo_elemento": 0,
+      "permite_cambios":0,
+      "valor_elemento":"Recurso_video",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk":77,
+    "fields": {
+      "desc_elemento": "Audio",
+      "fk_tabla_padre_id": 10,
+      "tipo_elemento": 0,
+      "permite_cambios":0,
+      "valor_elemento":"Recurso_audio",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+      
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk":78,
+    "fields": {
+      "desc_elemento": "PDF",
+      "fk_tabla_padre_id": 10,
+      "tipo_elemento": 0,
+      "permite_cambios":0,
+      "valor_elemento":"Recurso_pdf",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+      
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk":79,
+    "fields": {
+      "desc_elemento": "Image",
+      "fk_tabla_padre_id": 10,
+      "tipo_elemento": 0,
+      "permite_cambios":0,
+      "valor_elemento":"Recurso_image",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
   
   {
     "model": "app.Contratantes",

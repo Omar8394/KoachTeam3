@@ -512,6 +512,7 @@ def editProfile(request):
 def images(request):
     if request.method == "POST":
 
+
         myfile = request.FILES['file-input']
 
         if imghdr.what(myfile):
