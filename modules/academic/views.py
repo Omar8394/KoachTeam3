@@ -1026,22 +1026,6 @@ def getModalPagina(request):
                 return JsonResponse({"message":"error"}, status=500)
 
 @login_required(login_url="/login/")
-def uploadResources(request):
-    myfile = request.FILES['imagenRuta']
-    
-    fs = FileSystemStorage()
-    nombreImagen = str(uuid.uuid4())
-    extensionFile=Path(myfile.name).suffix
-    nombreImagen=nombreImagen+extensionFile
-    Ruta=settings.MEDIA_ROOT
-
-    folder = request.path.replace("/", "_")
-    try:
-        os.mkdir(os.path.join(Ruta))
-    except:
-        pass
-    filename = fs.save(Ruta+'/'+nombreImagen, myfile)
-@login_required(login_url="/login/")
 def getPreviewLeccion(request):
     if request.method == "POST":
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
@@ -1109,6 +1093,21 @@ def getModalResourcesBank(request):
                                 tag_recurso = TagRecurso(fk_tag=tag, fk_recurso=newRecurso)
                                 tag_recurso.save()
                         return JsonResponse({"message":"Perfect", "id":newRecurso.pk, "path":newRecurso.path})
+            else:
+                return
+                #Handle the files upload
+                myfile = request.FILES['imagenRuta']
+                fs = FileSystemStorage()
+                nombreImagen = str(uuid.uuid4())
+                extensionFile=Path(myfile.name).suffix
+                nombreImagen=nombreImagen+extensionFile
+                Ruta=settings.MEDIA_ROOT
+                folder = request.path.replace("/", "_")
+                try:
+                    os.mkdir(os.path.join(Ruta))
+                except:
+                    pass
+                filename = fs.save(Ruta+'/'+nombreImagen, myfile)
             # except:
             #     return JsonResponse({"message":"error"}, status=500)
     

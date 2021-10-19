@@ -96,16 +96,12 @@
       $("#nav-youtube-tab").click(() => {
          bankPage = 4
       })
-      const formTags = document.getElementById("formTags")
       const formBotones = document.getElementById("formBotones")
       const formYoutube = document.getElementById("formYoutube")
       const youtubeBtn = document.getElementById("findInYoutube")
       const inputYT = document.getElementById("urlResource")
       const frameYT = document.getElementById("previewYoutube")
       const cleanBtn = document.getElementById("cleanBankBtn")
-      formTags.addEventListener("submit", (e) => {
-         e.preventDefault()
-      })
       formYoutube.addEventListener("submit", (e) => {
          e.preventDefault()
          if (inputYT.value.trim()) {
@@ -122,10 +118,13 @@
          if (bankPage === 1) { }
          if (bankPage === 2) { }
          if (bankPage === 3) {
+            if (dropzoneObj.getQueuedFiles().length >= 1 && $("#tagResource3").val().trim() != "") {
+               dropzoneObj.processQueue()
+            }
          }
          if (bankPage === 4) {
             let HTMLstring = comprobarYoutube(inputYT.value.trim())
-            if(!HTMLstring.includes("Invalid Youtube video") && $("#tagResource4").val().trim()!=""){
+            if (!HTMLstring.includes("Invalid Youtube video") && $("#tagResource4").val().trim() != "") {
                dataObj = {
                   titulo: document.getElementById("titleResource4").value,
                   path: document.getElementById("urlResource").value,
@@ -134,25 +133,25 @@
                   tipo_recurso: "Recurso_video",
                   tags: $("#tagResource4").val().toLowerCase()
                }
-               const response = await updateModel("{% url 'modalResourcesBank'%}","Create",dataObj,null)
+               const response = await updateModel("{% url 'modalResourcesBank'%}", "Create", dataObj, null)
                const text = JSON.parse(await response.text())
-               if(text.message == "error"){
+               if (text.message == "error") {
                   alerta(5)
                   return
-               } 
-               if(text.message == "Already exists")alerta(6)
-               if(text.message == "Perfect") alerta(1)
+               }
+               if (text.message == "Already exists") alerta(6)
+               if (text.message == "Perfect") alerta(1)
                let recursoTemp = {
-                  id:text.id,
-                  path:text.path
+                  id: text.id,
+                  path: text.path
                }
                recursosArray.push(recursoTemp)
-            
+
                $(`#summernote${selectedId}`).summernote('pasteHTML', HTMLstring)
                document.querySelector("#addNewModalContent").innerHTML = ""
                $("#addNewModal").modal("hide")
             }
-            
+
          }
          $("#insertBankBtn").removeAttr("disabled")
       })
@@ -163,7 +162,13 @@
          if (bankPage === 3) {
             dropzoneObj.removeAllFiles()
          }
-         if (bankPage === 4) { }
+         if (bankPage === 4) {
+            frameYT.innerHTML = ""
+            inputYT.value = ""
+            document.getElementById("checkSharedCB4").checked = false
+            $("#titleResource4").val("")
+            $("#tagResource4").tagsinput('removeAll')
+         }
       })
    }
    const renderResourcesBank = (id) => {
@@ -171,7 +176,7 @@
       fetch("{% url 'modalResourcesBank'%}", {
          ...fetchObject,
          body: JSON.stringify({
-            method:"Show"
+            method: "Show"
          })
       }).then(async (res) => {
          result = await res.text()
@@ -179,8 +184,20 @@
          $("#addNewModal").modal("show")
          const dropzoneObj = new Dropzone("form#my-awesome-dropzone", {
             url: "{% url 'modalResourcesBank' %}",
+            headers:{"id":selectedId},
             autoProcessQueue: false,
+            uploadMultiple:true,
             acceptedFiles: "image/*,audio/*, application/pdf",
+            maxFiles: 100,
+            parallelUploads: 100,
+            init: function () {
+               this.on("successmultiple", function (files, response) {
+                  alerta(1)    
+               });
+               this.on("errormultiple", function (files, response) {
+                  alerta(5)   
+               });
+            }
          });
          setBankEvents(dropzoneObj)
          $('#tagResource3').tagsinput({
@@ -214,7 +231,7 @@
          let code = linkEntry.slice(codeIndex, codeIndex + 11)
          return `<iframe width="560" height="315" src="https://www.youtube.com/embed/${code}" title="YouTube video player" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
       }
-      else{
+      else {
          return `<div>Invalid Youtube video</div>`
       }
    }
