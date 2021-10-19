@@ -223,6 +223,10 @@
 
     function respuestaCorrecta(radio){
             respuesta=radio.value
+            for(const item of tablaPreguntas){
+                item.isCorrect=false
+            }
+            tablaPreguntas[radio.value].isCorrect=true
           //  alert(radio.value)
 
         }
@@ -260,7 +264,7 @@
         }
 
         const openAddModalQuestion = () => {
-            tablaPreguntas=[]
+            limpiarModalOpciones()
             renderModalTypeQuestion().then(()=>{
                editmode = false
                $("#chooseTypeQuestion").modal("show")
@@ -321,6 +325,10 @@
 
             }
 
+            error= await verificaOpciones();  
+               if(error)   {
+                   return;
+               }     
 
             
             
@@ -328,10 +336,7 @@
                    var select2=document.querySelector('input[name="listaSimpleRadio"]:checked').value
                }
 
-               error= await verificaOpciones();  
-               if(error)   {
-                   return;
-               }     
+             
                const metodo=editmode?'Update':'Create'
               
             form = {
@@ -396,6 +401,7 @@
                    alerta(5)
                 }
                 alerta(1)
+                reload()
             })
             .then(() => {
                form=null
@@ -403,53 +409,6 @@
                 $("#addNewQuestion").modal("hide");
             })
         }
-
-        Sortable.create(tablaCuerpo, {
-            swap: true,
-             animation: 150,
-        }); 
-
-        // // Sortable.create(tablaCuerpo, {
-        //     swap: true,
-        //     animation: 150,
-        //     store: {
-        //         // Sorting acquisition (called during initialization)
-        //         get: function (sortable) {
-        //           var question = tablaPreguntas.getItem(sortable.options.group);
-        //           return question ? question.split('|') : [];
-        //         },
-        
-        //         // Saving the acquired sorting (called each time upon sorting modification)
-        //         set: function (sortable) {
-        //           var question = sortable.toArray();
-        //           tablaPreguntas.setItem(sortable.options.group, question.join('|'));
-        //         }
-        //     }
-        // });
-
-        // Combos and radios
-
-        $(function () {
-            $("#timerCB").click(function () {
-                if ($(this).is(":checked")) {
-                    $("#timer").prop('disabled', false);
-                    $("#typeTime").prop('disabled', false);
-                } else {
-                    $("#timer").prop('disabled', true);
-                    $("#typeTime").prop('disabled', true);
-                }
-            });
-        });
-
-        $(document).ready(function(index) {
-            $("input[name=scoreRB]:radio").click(function() { // attack a click event on all radio buttons with name 'radiogroup'
-                if($(this).val() == 'auto') {//check which radio button is clicked 
-                    $(".question_score").prop('disabled', true);
-                } else if($(this).val() == 'manual') {
-                    $(".question_score").prop('disabled', false);
-                } 
-            });
-        });     
 
         
         // Renderizar  
@@ -512,6 +471,7 @@
             const res = await matarPregunta(id, urlDelete)
             if (res) {
                 alerta(4)
+                reload()
             }
             else {
                 alerta(5)
@@ -883,7 +843,7 @@
 
                 let datos = {
                     OpcionText: document.getElementById("optionText").value,
-                    selected:false,
+                    isCorrect:false,
                     id:tablaPreguntas.length,
                     actions: `
                     <div class="btn-group" role="group">
@@ -1082,6 +1042,49 @@
     }
 
    </script>
+<!--Reparticiones-->
+<script>
+
+function Repartir(){
+    console.log(22)
+
+if(!document.getElementById("questionPoints") || document.getElementById("questionPoints")<=0 ){
+    alertaMensajitos(5,'Invalid Value', 'The current point can not be divided')
+    return;
+}
+let dividido=document.getElementById("questionPoints").value/tablaPreguntas.length
+console.log(document.getElementById("questionPoints"))
+console.log(tablaPreguntas.length)
+
+console.log(dividido)
+
+for (const item of tablaPreguntas){
+
+console.log(item)
+
+item.value=dividido
+
+
+}
+
+
+if(tipoPreguntaSelected==1)
+        actualizarListaSimple()
+        if(tipoPreguntaSelected==2)
+        actualizarListaMultiple()
+        if(tipoPreguntaSelected==3)
+        actualizarListaCompletations()
+        if(tipoPreguntaSelected==4)
+        actualizarListaAssociation()
+        if(tipoPreguntaSelected==5)
+        actualizarListaTF()
+
+}
+</script>
+
+
+
+<!--Metodos-->
 
    <script>
 
@@ -1091,6 +1094,8 @@
            let totalValue=0;
 
         for(const element of tablaPreguntas ){
+           console.log(element);
+
             if(tipoPreguntaSelected==1 || tipoPreguntaSelected==3 ){
                 if(element.isCorrect==true){
                     HayCorrectos=true;

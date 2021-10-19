@@ -108,6 +108,10 @@
                                                     <th>Take Date</th>
                                                     <th>Type</th>
                                                     <th>Status</th>
+                                                    <th>Tota Score</th>
+
+                                                    <th>Scale Result</th>
+
                                                     
                                                     <th></th>
                                                     <th></th>  
@@ -126,14 +130,26 @@
                                                    <td>{{exam.fechaInicio}}</td>
                                                    <td>{{exam.fk_Actividad.fk_estructura_programa.fk_categoria}}</td>
                                                    <td>{{exam.estadoExamen|tipoExamen}}</td>
+                                                   <td>{{exam.PuntuacionFinal}}</td>
+
+
+                                                   <td>  
+                                                    {% if exam.estadoExamen == 3 %}
+                                                       {{exam.pk|scalaPuntuacion}}
+                                                       {% endif %}
+                                                    </td>
+
 
                                                    <td> 
                                                        {% if exam.estadoExamen == 3 %} <a target="blank" href="{%url 'SeeTest'  %}?id={{exam.pk}}"   onclick="" > <button class="btn btn-info btn-sm"> <i class="fas fa-search"></i> Review</a> </button> {% endif %}
                                                     </td>
                                                    <td>  
+                                                    
+                                                    {%if exam.fk_Actividad.fk_estructura_programa.fk_categoria.valor_elemento == 'activityExpert' %}	
                                       
-                                                    {% if exam.estadoExamen == 3 %}        <a  href="javascript:void(0);" ><button class="btn btn-info btn-sm"> <i class="fas fa-search"></i> See Results</a> </button> {% endif %}
-                
+                                                    {% if exam.estadoExamen == 3 %}        <a  href="javascript:void(0);" ><button class="btn btn-info btn-sm" onclick="openSeeResults({{exam.pk}})" > <i class="fas fa-search"></i> See Results</a> </button> {% endif %}
+
+                                                    {% endif %}
                                                        
                                                     </td>
                                                     <td>
@@ -150,12 +166,12 @@
                                     
                                      <nav aria-label="Page navigation example">
                                          <ul class="pagination justify-content-center">
-                                         {% if publicoObject.has_previous %}
+                                         {% if ExamenList.has_previous %}
                                              <li class="page-item">
                                                  <a class="page-link" href="?page=1">&laquo; First</a>
                                              </li>
                                              <li class="page-item">
-                                                 <a class="page-link" href="?page={{ publicoObject.previous_page_number }}">Previous</a>
+                                                 <a class="page-link" href="?page={{ ExamenList.previous_page_number }}">Previous</a>
                                              </li>
                                          {% else %}
                                              <li class="page-item disabled">
@@ -163,33 +179,33 @@
                                              </li>
                                          {% endif %}
                                  
-                                         {% if publicoObject.number|add:'-4' > 1 %}
-                                             <li class="page-item"><a class="page-link" href="?page={{ publicoObject.number|add:'-5' }}">&hellip;</a></li>
+                                         {% if ExamenList.number|add:'-4' > 1 %}
+                                             <li class="page-item"><a class="page-link" href="?page={{ ExamenList.number|add:'-5' }}">&hellip;</a></li>
                                          {% endif %}
                                  
-                                         {% for i in publicoObject.paginator.page_range %}
-                                             {% if publicoObject.number == i %}
+                                         {% for i in ExamenList.paginator.page_range %}
+                                             {% if ExamenList.number == i %}
                                              <li class="page-item active" aria-current="page">
                                                <span class="page-link">
                                                  {{ i }}
                                                  <span class="sr-only">(current)</span>
                                                </span>
                                              </li>
-                                             {% elif i > publicoObject.number|add:'-5' and i < publicoObject.number|add:'5' %}
+                                             {% elif i > ExamenList.number|add:'-5' and i < ExamenList.number|add:'5' %}
                                                  <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
                                              {% endif %}
                                          {% endfor %}
                                  
-                                         {% if publicoObject.paginator.num_pages > publicoObject.number|add:'4' %}
-                                            <li class="page-item"><a class="page-link" href="?page={{ publicoObject.number|add:'5' }}">&hellip;</a></li>
+                                         {% if ExamenList.paginator.num_pages > ExamenList.number|add:'4' %}
+                                            <li class="page-item"><a class="page-link" href="?page={{ ExamenList.number|add:'5' }}">&hellip;</a></li>
                                          {% endif %}
                                  
-                                         {% if publicoObject.has_next %}
+                                         {% if ExamenList.has_next %}
                                              <li class="page-item">
-                                                 <a class="page-link" href="?page={{ publicoObject.next_page_number }}">Next</a>
+                                                 <a class="page-link" href="?page={{ ExamenList.next_page_number }}">Next</a>
                                              </li>
                                              <li class="page-item">
-                                                 <a class="page-link" href="?page={{ publicoObject.paginator.num_pages }}">Last &raquo;</a>
+                                                 <a class="page-link" href="?page={{ ExamenList.paginator.num_pages }}">Last &raquo;</a>
                                              </li>
              
                                          {% else %}
@@ -230,9 +246,7 @@ function sendForm(id){
 
 }
 
-$('#PersonaForm').submit(function(eventObj) {
-  
-});
+
 function ManagePersonas(id){
     Persona=id;
     
@@ -290,121 +304,185 @@ xhr.send(formData);
 
 
 <script>
+var labeles=[];
+var variablesTitulos=[];
+var titulos=[];
 
+async function openSeeResults  (id)  {
+       
+            renderModalResults(id).then(()=>{
+            
+               $("#ModalResults").modal("show");
+            })
+        }    
 
-    window.addEventListener("load", function(event) {
-        console.log("'Todos los recursos terminaron de cargar!");
-        program.value=-1;
-        type.value=-1;
-      });
-     
-    function programChange(){
-        
-        cbProcess.value=-1;
-        cbCourse.value=-1;
-        cbUnit.value=-1;
-                   
-    let program=document.getElementById("program").value;
-    
-    
-    if (program<=0)
-    {
-        
-    //let listaProcess=document.getElementById("listaProcess");
-    ////listaProcess.style.visibility=false;
-    }
-    
-    let url='ComboOptions/?structuraProg='+program;
-    fetch(url,{
-        mode: 'no-cors',
-      method: 'get'
-    }).then(function(result){
-    
-    return result.text();
-    
-    }).then(function(result){
-        
-        let cbProcess=document.getElementById("cbProcess").innerHTML=result;
-    
-    });
-    
-    }
-    
-    function processChange(){
-        cbUnit.value=-1;
-        cbCourse.value=-1;
-    
-        let process=document.getElementById("cbProcess").value;
-    
-    
-    
-    
-    
-    
-    let url='ComboOptions/?structuraProg='+process;
-    fetch(url,{
-        mode: 'no-cors',
-      method: 'get'
-    }).then(function(result){
-    
-    return result.text();
-    
-    }).then(function(result){
-        
-        let unit=document.getElementById("cbUnit").innerHTML=result;
-    
-    });
-    
-    
-    }
-    
-    function unitChange(){
-        cbCourse.value=-1;
-    
-        let unit=document.getElementById("cbUnit").value;
-    
-    
-    
-    
-    
-    
-    let url='ComboOptions/?structuraProg='+unit;
-    fetch(url,{
-        mode: 'no-cors',
-      method: 'get'
-    }).then(function(result){
-    
-    return result.text();
-    
-    }).then(function(result){
-        
-        let unit=document.getElementById("cbCourse").innerHTML=result;
-    
-    });
-    
-    }
-    
-    function courseChange(){}
-    
-    
-function reload(){
+async function renderModalResults(id){
+    return fetch("{% url 'GraficaResultados' %}", {
+                ...fetchObject,
+                body: JSON.stringify({
+             data: {
+                    
+                    method:'Show',
+                    
+                }
+            })
+            })
+            .then(async (res) => {
+                document.getElementById("modalContentResults").innerHTML = await res.text()
+                await getGrafica(id)
 
-window.location.href="{% url 'ManagePersons'%}";
+            }).then(()=>{
+             
+
+            })
+
 }
-    
+
+async function getGrafica(id){
+
+    return fetch("{% url 'GraficaResultados' %}", {
+                ...fetchObject,
+                body: JSON.stringify({
+             data: {
+                    
+                    method:'Set',
+                    id:id
+                }
+            })
+            })
+            .then(async (res) => {
+                let datos = JSON.parse(await res.text())
+                console.log(datos)
+
+                escalaBloques=datos.escalaBloquesJson;
+                escalaTOtal=datos.escalaTotalJson;
+                resultados=datos.resultadosJson;
+                console.log(resultados)
+                console.log(datos.resultadosJson)
+
+               
+                variablesTitulos=[...datos.dataSet]
+                labeles.push('')
+
+                resultados.forEach(function(item, index, object) {
+
+
+                    labeles.push(item.bloque_respuesta)
+                    console.log(item.bloque_respuesta)
+
+             
+
+                })
+
+                escalaBloques.forEach(function(item, index, object) {
+
+                  titulos.push(item.desc_calificacion)      
+                    
+                
+                })      
+                console.log(variablesTitulos)
+                labeles.push('')
+                
+
+
+                await setGrafica()
+
+
+
+            
+                
+            }).then(()=>{
+             
+           
+
+            })
+
+}
     
     </script>
 
 
 
+
 <!--  Modal-->
-<div class="modal fade" tabindex="-1" role="dialog" id="ModalResults">
-    <div class="modal-dialog" role="document" id="modalContentResults">
+<div class="modal fade " tabindex="-1" role="dialog" id="ModalResults">
+    <div class="modal-dialog modal-lg modal-dialog-centered"" role="document" id="modalContentResults">
      
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 
 <!-- /.modal -->
+
+
+<!-- /.Graficaa -->
+<script>
+
+
+async function setGrafica(){
+
+
+    var lineChart = document.getElementById('lineChart').getContext('2d');
+
+    const data = {
+  labels: labeles,
+  datasets: [
+  
+    {
+      
+      data: variablesTitulos,
+      borderColor: '#1d7af3',
+      backgroundColor: '#1d7af3',
+      
+      yAxisID: 'y2',
+    }
+  ]
+};
+    var myLineChart = new Chart(lineChart, {
+	type: 'line',
+	data: data,
+  
+    options: {
+    responsive: true,
+    plugins: {
+      title: {  
+          text:'Results',
+        display: true,
+       
+      },
+      legend: {
+        display: false,
+      },
+    },
+    scales: {
+   
+      y2: {
+        type: 'category',
+        labels: titulos.reverse(),
+        offset: true,
+        position: 'left',
+     
+        stackWeight: 1,
+        grid: {
+          borderColor: '#1d7af3',
+        }
+      }
+    }
+  },
+
+});
+
+
+
+
+
+
+
+}
+
+
+
+
+</script>
 {% endblock content %}
 	
 <!-- Specific Page JS goes HERE  -->

@@ -41,6 +41,9 @@
 								<h2>Create enrollment</h2>
 							</div>
 							<div class="card-body">
+							<div class="form-row d-flex justify-content-end">
+							   <b> Price:</b> <span id="priceSpan"> </span>&nbsp; $
+								</div>
 								<div class="form-row">
 									<div class="form-group col-md-12">
 										<label for="program">Program</label>
@@ -115,7 +118,9 @@ window.addEventListener("load", function(event) {
 	//type.value='';
   });
  
-function programChange(){
+function programChange(precio){
+	console.log(precio)
+	priceSpan.innerHTML=precio;
 	
 	cbProcess.value='';
 	cbCourse.value='';
@@ -149,7 +154,7 @@ return result.text();
 
 }
 
-function processChange(){
+function processChange(precio){
 	cbUnit.value='';
 	cbCourse.value='';
 	let unidad=document.getElementById("cbUnit").innerHTML="";

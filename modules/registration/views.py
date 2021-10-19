@@ -24,7 +24,7 @@ import random
 import uuid
 import os
 from pathlib import Path
-
+import json
 from django.shortcuts import render
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
@@ -1090,6 +1090,9 @@ def PaymentModal(request):
 
 def ComboOptions(request):
     structuraProg=request.GET.get("structuraProg")
+    subEstructuraProg=Estructuraprograma.objects.all()
+    subEstructuraProg=subEstructuraProg.annotate(precio=F('prize__precio'), fechaIngreso=F('prize__fecha_registro'), id=F('prize__idprograma_precios'), descuento=F('prize__PorcentajeDescuento'), max=Max('prize__idprograma_precios'), amountDiscount=Max('prize__idprograma_precios')  ).filter(id=Max('prize__idprograma_precios')  )
+
     subEstructuraProg=Estructuraprograma.objects.filter(fk_estructura_padre=structuraProg)
     return render(request, 'registration/ComboOptions.html', {'subEstructuraProg':subEstructuraProg})
     
@@ -1108,6 +1111,8 @@ def MatriculacionAdminModal(request):
     types=TablasConfiguracion.obtenerHijos("Tipo Matricula")
 
     admin=True if request.GET.get("admin")==1 else False
+    telefonoAlt = json.loads(telefono)
+    telefonoAlt['telefonoAlternativo'] = obj.telefonos
 
     
 
@@ -1237,17 +1242,23 @@ def save(request):
         statusDB=None
         typeDB=None
         status=request.POST.get('status')
+        tipoEstructura=0
 
         type=request.POST.get('type')
         idEstruct=None
         if cbCourse!=None and cbCourse!="":
                idEstruct=cbCourse
+               tipoEstructura=4
         elif cbUnit!=None and cbUnit!="" :      
                 idEstruct =cbUnit
+                tipoEstructura=3
         elif cbProcess!=None and cbProcess!="" :      
                 idEstruct =cbProcess
+                tipoEstructura=2
         else  : 
               idEstruct=program
+              tipoEstructura=1
+
 
         
        # publico=Publico.objects.get(user=request.user)
@@ -1257,6 +1268,15 @@ def save(request):
         publico=ExtensionUsuario.objects.get(user=request.user).Publico
 
         struct=Estructuraprograma.objects.get(idestructuraprogrmas=idEstruct)
+          # matriculaAlumno=MatriculaAlumnos.objects.filter(fk_publico=publico)
+          # if matriculaAlumno.get(fk_estruc_programa=struct)!=None:
+          #   print()
+         
+
+
+       
+      
+
 
         if type!=None and type!="":
          typeDB=TablasConfiguracion.objects.get(id_tabla=type)
@@ -1272,7 +1292,7 @@ def save(request):
         
         matricula=MatriculaAlumnos.objects.create(fk_publico=publico,fk_estruc_programa=struct, fecha_matricula=datetime.date.today(),fk_tipo_matricula=typeDB,fk_status_matricula=statusDB,fecha_aprobada=None  )
         matricula.save()
-        return HttpResponse("Errolment application saved")
+        return HttpResponse(1)
 
       except:
         return HttpResponse("Error, try again later")

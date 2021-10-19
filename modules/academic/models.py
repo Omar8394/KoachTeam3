@@ -24,7 +24,7 @@ class EscalaCalificacion(models.Model):
     desc_calificacion = models.TextField()
     puntos_maximo = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)
     fk_calificacion = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE, default=None, null=True)
-    fk_escala_evaluacion = models.ForeignKey(EscalaEvaluacion, on_delete=models.CASCADE, default=None, null=True)
+    fk_escala_evaluacion = models.ForeignKey(EscalaEvaluacion, on_delete=models.CASCADE, default=None, null=True, related_name='escalaMenor')
 
     def __str__(self):
         return self.desc_calificacion
