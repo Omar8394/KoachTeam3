@@ -1,7 +1,5 @@
 {% extends "layouts/base.html" %}
 
-{% block title %} Dashboard {% endblock %} 
-
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
 	<style>
@@ -22,7 +20,7 @@
 			<div class="page-inner py-5">
 				<div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
 					<div>
-						<h2 class="text-white pb-2 fw-bold">Welcome student name!</h2>
+						<h1 class="text-white pb-2 mt-2 fw-bold">Welcome {{request.user.username}}!</h1>
 					</div>
 					<div class="ml-md-auto py-2 py-md-0">
 						<a href="{% url 'editProfile' %}" class="btn btn-primary btn-round">My profile</a>
@@ -232,103 +230,102 @@
 			</section>
 
 			<section id="gestor">
-				<div class="row mt--2">
-					<div class="col-md-6">
-						<div class="card full-height">
+				<div class="row mb-2"><h1>Shortcuts:</h1></div>
+				<div class="row">
+					<div class="col-sm-6 col-md-3">
+						<div class="card card-stats card-primary card-round">
 							<div class="card-body">
-								<div class="card-title">Overall statistics</div>
-								<div class="card-category">Daily information about statistics in system</div>
-								<div class="d-flex flex-wrap justify-content-around pb-2 pt-4">
-									<div class="px-2 pb-2 pb-md-0 text-center">
-										<div id="circles-1"><div class="circles-wrp" style="position: relative; display: inline-block;"><svg xmlns="http://www.w3.org/2000/svg" width="90" height="90"><path fill="transparent" stroke="#f1f1f1" stroke-width="7" d="M 44.99154756204665 3.500000860767564 A 41.5 41.5 0 1 1 44.942357332570026 3.500040032273624 Z" class="circles-maxValueStroke"></path><path fill="transparent" stroke="#FF9E27" stroke-width="7" d="M 44.99154756204665 3.500000860767564 A 41.5 41.5 0 1 1 20.644357636259837 78.60137921350231 " class="circles-valueStroke"></path></svg><div class="circles-text" style="position: absolute; top: 0px; left: 0px; text-align: center; width: 100%; font-size: 31.5px; height: 90px; line-height: 90px;">5</div></div></div>
-										<h6 class="fw-bold mt-3 mb-0">New Users</h6>
-									</div>
-									<div class="px-2 pb-2 pb-md-0 text-center">
-										<div id="circles-3"><div class="circles-wrp" style="position: relative; display: inline-block;"><svg xmlns="http://www.w3.org/2000/svg" width="90" height="90"><path fill="transparent" stroke="#f1f1f1" stroke-width="7" d="M 44.99154756204665 3.500000860767564 A 41.5 41.5 0 1 1 44.942357332570026 3.500040032273624 Z" class="circles-maxValueStroke"></path><path fill="transparent" stroke="#F25961" stroke-width="7" d="M 44.99154756204665 3.500000860767564 A 41.5 41.5 0 0 1 69.44267714510887 78.53812060894248 " class="circles-valueStroke"></path></svg><div class="circles-text" style="position: absolute; top: 0px; left: 0px; text-align: center; width: 100%; font-size: 31.5px; height: 90px; line-height: 90px;">12</div></div></div>
-										<h6 class="fw-bold mt-3 mb-0">New courses</h6>
-									</div>
-									<div class="px-2 pb-2 pb-md-0 text-center">
-										<div id="circles-2"><div class="circles-wrp" style="position: relative; display: inline-block;"><svg xmlns="http://www.w3.org/2000/svg" width="90" height="90"><path fill="transparent" stroke="#f1f1f1" stroke-width="7" d="M 44.99154756204665 3.500000860767564 A 41.5 41.5 0 1 1 44.942357332570026 3.500040032273624 Z" class="circles-maxValueStroke"></path><path fill="transparent" stroke="#2BB930" stroke-width="7" d="M 44.99154756204665 3.500000860767564 A 41.5 41.5 0 1 1 5.5495771787290025 57.88076625138973 " class="circles-valueStroke"></path></svg><div class="circles-text" style="position: absolute; top: 0px; left: 0px; text-align: center; width: 100%; font-size: 31.5px; height: 90px; line-height: 90px;">36</div></div></div>
-										<h6 class="fw-bold mt-3 mb-0">Sales</h6>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-6">
-						<div class="card full-height">
-							<div class="card-body">
-								<div class="card-title">Total income &amp; spend statistics</div>
-								<div class="row py-3">
-									<div class="col-md-4 d-flex flex-column justify-content-around">
-										<div>
-											<h6 class="fw-bold text-uppercase text-success op-8">Total Income</h6>
-											<h3 class="fw-bold">$9.782</h3>
-										</div>
-										<div>
-											<h6 class="fw-bold text-uppercase text-danger op-8">Total Spend</h6>
-											<h3 class="fw-bold">$1,248</h3>
+								<div class="row">
+									<div class="col-5">
+										<div class="icon-big text-center">
+											<i class="fas fa-chalkboard-teacher"></i>
 										</div>
 									</div>
-									<div class="col-md-8">
-										<div id="chart-container"><div class="chartjs-size-monitor" style="position: absolute; inset: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;"><div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div></div><div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:200%;height:200%;left:0; top:0"></div></div></div>
-											<canvas id="totalIncomeChart" width="252" height="150" style="display: block; width: 252px; height: 150px;" class="chartjs-render-monitor"></canvas>
+									<div class="col-7 col-stats text-center">
+										<div class="numbers">
+											<p class="card-category">Academic</p>
+											<h4 class="card-title" style="color: white;">Go
+												<a href="{% url 'academic' %}"  style="color: white;">
+													<i class="icon-arrow-right-circle ml-2"></i>
+												</a>
+											</h4>
 										</div>
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
-				</div>
-				<div class="row justify-content-center">
-					<div class="form-group col-md-6">
-						<div id="chart-container" style="height: 20rem;">
-							<canvas id="lineChart"></canvas>
-						</div>
-					</div>
-					<div class="form-group col-md-6">
-						<div id="chart-container" style="height: 20rem;">
-							<canvas id="doughnutChart"></canvas>
-						</div>
-					</div>
-				</div>
-				<div class="row justify-content-center">
-					<div class="col-md-6">
-						<div class="card full-height">
-							<div class="card-header">
-								<div class="card-title">Feed Activity</div>
-							</div>
+					<div class="col-sm-6 col-md-3">
+						<div class="card card-stats card-info card-round">
 							<div class="card-body">
-								<ol class="activity-feed">
-									<li class="feed-item feed-item-secondary">
-										<time class="date" datetime="9-25">Sep 25</time>
-										<span class="text">Responded to need <a href="#">"Volunteer opportunity"</a></span>
-									</li>
-									<li class="feed-item feed-item-success">
-										<time class="date" datetime="9-24">Sep 24</time>
-										<span class="text">Added an interest <a href="#">"Volunteer Activities"</a></span>
-									</li>
-									<li class="feed-item feed-item-info">
-										<time class="date" datetime="9-23">Sep 23</time>
-										<span class="text">Joined the group <a href="single-group.php">"Boardsmanship Forum"</a></span>
-									</li>
-									<li class="feed-item feed-item-warning">
-										<time class="date" datetime="9-21">Sep 21</time>
-										<span class="text">Responded to need <a href="#">"In-Kind Opportunity"</a></span>
-									</li>
-									<li class="feed-item feed-item-danger">
-										<time class="date" datetime="9-18">Sep 18</time>
-										<span class="text">Created need <a href="#">"Volunteer Opportunity"</a></span>
-									</li>
-									<li class="feed-item">
-										<time class="date" datetime="9-17">Sep 17</time>
-										<span class="text">Attending the event <a href="single-event.php">"Some New Event"</a></span>
-									</li>
-								</ol>
+								<div class="row">
+									<div class="col-5">
+										<div class="icon-big text-center">
+											<i class="fas fa-address-card"></i>
+										</div>
+									</div>
+									<div class="col-7 col-stats">
+										<div class="numbers">
+											<p class="card-category">Registration</p>
+											<h4 class="card-title" style="color: white;">Go
+												<a href="{% url 'ManagePersons' %}"  style="color: white;">
+													<i class="icon-arrow-right-circle ml-2"></i>
+												</a>
+											</h4>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6 col-md-3">
+						<div class="card card-stats card-success card-round">
+							<div class="card-body ">
+								<div class="row">
+									<div class="col-5">
+										<div class="icon-big text-center">
+											<i class="fas fa-university"></i>
+										</div>
+									</div>
+									<div class="col-7 col-stats">
+										<div class="numbers">
+											<p class="card-category">Planning</p>
+											<h4 class="card-title" style="color: white;">Go
+												<a href="{% url 'showProfilage' %}"  style="color: white;">
+													<i class="icon-arrow-right-circle ml-2"></i>
+												</a>
+											</h4>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6 col-md-3">
+						<div class="card card-stats card-secondary card-round">
+							<div class="card-body ">
+								<div class="row">
+									<div class="col-5">
+										<div class="icon-big text-center">
+											<i class="fas fa-cog"></i>
+										</div>
+									</div>
+									<div class="col-7 col-stats">
+										<div class="numbers">
+											<p class="card-category">Settings</p>
+											<h4 class="card-title" style="color: white;">Go
+												<a href="{% url 'indexSettings' %}"  style="color: white;">
+													<i class="icon-arrow-right-circle ml-2"></i>
+												</a>
+											</h4>
+										</div>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
+
 			</section>
 		</div>
 	</div>
