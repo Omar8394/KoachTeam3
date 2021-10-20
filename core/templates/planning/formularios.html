@@ -1,14 +1,23 @@
+{% comment %} 
 <div class="card-body">
+{% endcomment %}
+
+
+
     <form method="post" action="" id="formulario">
 
+
         {% csrf_token %}
+
+        
 
         <div class="card-body">
             <div class="row">
                 <div class="col-md-12">
                     {% for p in form %}  
-                        <div class="form-group">
-                            <div class="input-group mb-3">
+                        <div class="form-group p-0 mb-4"> 
+                            <label for="{{ p.auto_id }}" >{{p.label}}</label>
+                            <div class="input-group">
                                 <!-- <div class="input-group-prepend">
                                     <span class="input-group-text">
                                         <i class="fas fa-list"></i>
@@ -34,6 +43,12 @@
                 </div>
             </div>
         </div>
+
+
+
+
+
+{% comment %}
         <div class="card-action  d-flex justify-content-end">
             <button type="submit" class="btn btn-primary" style="color: white">Save <i class="fas fa-save ml-1"></i></button>
         </div>
@@ -66,3 +81,4 @@
 
 
 </script>
+{% endcomment %}

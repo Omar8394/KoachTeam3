@@ -42,16 +42,9 @@
                                 </h2>
     
                             </div>
-                            <div class="form-group d-flex">
-                               
-                                <form type="get" action=".">
-                                    <button type="get"  class="btn btn-outline-dark border-0"><i class="fas fa-redo-alt"></i></button>
-                                </form>
-    
-                            </div>
                             <div class="form-group d-flex ml-auto">
                                
-                                <a href="{% url 'addCompetence' %}" class="btn btn-success">Add competence <i class="fas fa-plus ml-1"></i></a>
+                                <button class="btn btn-success" id="addButton">Add competence <i class="fas fa-plus ml-1"></i></button>
     
                             </div>
 
@@ -76,6 +69,35 @@
 	</div>
     {% include 'planning/mensajes.html' %}   
 
+
+    
+    
+    <div class="modal fade" tabindex="-1" id="myModal" role="dialog" aria-hidden="true">
+        <div id="addNewModalContent" class="modal-dialog modal-dialog-centered" role="document">
+
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Set competences</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body" id="modalBody">
+
+                </div>
+
+                <div class="modal-footer mt-3">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-arrow-left mr-2"></i>Back</button>
+                    <button type="button" class="btn btn-primary" id="botonGuardar"><i class="fas fa-save mr-2"></i>Save</button>
+                </div>
+
+            </div>
+            
+        </div>
+    </div>
+
 {% endblock content %}
 	
 <!-- Specific Page JS goes HERE  -->
@@ -84,6 +106,229 @@
 <script>
 
 
+
+
+    //metodos para las validaciones
+
+    $(document).on('change', "#id_fk_perfil", function(e){
+
+        $("#id_fk_perfil").parent().parent().removeClass('has-error');
+        $("#error2").remove()
+
+    })
+
+    $(document).on('change', "#id_fk_tipo_competencia", function(e){
+
+        $("#id_fk_tipo_competencia").parent().parent().removeClass('has-error');
+        $("#error3").remove()
+
+    })
+
+    $(document).on('change', "#id_fk_nivel", function(e){
+
+        $("#id_fk_nivel").parent().parent().removeClass('has-error');
+        $("#error4").remove()
+
+    })
+
+    //metodos para pasar al siguiente
+
+    $("#myModal").on('keydown', "#id_desc_competencia", function(e){
+
+        if(e.keyCode == 13) 
+            
+            $("#id_fk_perfil").focus()
+
+    });
+
+    $("#myModal").on('keydown', "#id_fk_perfil", function(e){
+
+        if(e.keyCode == 13) 
+            
+            $("#id_fk_tipo_competencia").focus()
+
+    });   
+
+    $("#myModal").on('keydown', "#id_fk_tipo_competencia", function(e){
+
+        if(e.keyCode == 13) 
+            
+            $("#id_fk_nivel").focus()
+
+    });  
+
+    $("#myModal").on('keydown', "#id_fk_nivel", function(e){
+
+        if(e.keyCode == 13) 
+
+            $("#botonGuardar").trigger('click')
+
+    });
+
+    //mostrar modal
+    let idEdit, nameEdit
+    $(document).on('click', '#addButton', function (e) {
+        modalCall(null)
+    })
+
+    function modalCall(id) {
+        idEdit = id
+        $.ajax({
+            type: "POST",
+            url: "{% url 'modalForm' %}",
+            data: {
+                'idModal': id,
+                'tipoModal': '{{categoria}}',
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+
+            },
+            dataType: "json",
+            success: function (response) {
+                
+                document.getElementById('modalBody').innerHTML = response.formulario
+                nameEdit = response.nombre
+                $('#myModal').modal('show')
+            
+                
+            },
+            failure: function () {
+                swal("failure");
+            }
+        });
+
+    }
+
+    $('#myModal').on('shown.bs.modal', function () {
+        $("#id_desc_competencia").focus();
+    })
+
+    //metodo guardar y validar 
+    $('#myModal').on('click', '#botonGuardar', function (e) {
+
+        if(!$("#id_desc_competencia").val() || !$("#id_fk_perfil").val() || !$("#id_fk_tipo_competencia").val() || !$("#id_fk_nivel").val() || $('#myModal').find('.has-error').length) {
+
+
+            if(!$("#id_fk_nivel").val()){
+                
+                $("#error4").remove()
+                $("#id_fk_nivel").parent().parent().addClass('has-error');
+                $("#id_fk_nivel").parent().after('<label id="error4">Select a minimun level for this competence</label>')
+                $("#id_fk_nivel").focus()
+                
+            }
+
+            if(!$("#id_fk_tipo_competencia").val()){
+                
+                $("#error3").remove()
+                $("#id_fk_tipo_competencia").parent().parent().addClass('has-error');
+                $("#id_fk_tipo_competencia").parent().after('<label id="error3">Select a competence type</label>')
+                $("#id_fk_tipo_competencia").focus()
+            
+            }
+
+            if(!$("#id_fk_perfil").val()){
+                
+                $("#error2").remove()
+                $("#id_fk_perfil").parent().parent().addClass('has-error');
+                $("#id_fk_perfil").parent().after('<label id="error2">Select a profile for this competence</label>')
+                $("#id_fk_perfil").focus()
+            }
+
+            if(!$("#id_desc_competencia").val()){
+                
+                $("#error1").remove()
+                $("#id_desc_competencia").parent().parent().addClass('has-error');
+                $("#id_desc_competencia").parent().after('<label id="error1">Enter a competence name</label>')
+                $("#id_desc_competencia").focus()
+
+            }else if($("#id_desc_competencia").parent().parent().hasClass('has-error')){
+
+                // $("#id_desc_competencia").focus()
+
+            }
+
+        }else{
+            $.ajax({
+                type: "POST",
+                url: "{% url 'createCompetence' %}",
+                data: idEdit ? $('#formulario').serialize()+'&idEdit='+idEdit : $('#formulario').serialize(),
+                dataType: "json",
+                success: function (response) {
+
+                    if(!response.mensaje){
+                        $('#paginas').find('.active').find('.page-link').trigger('click')
+                        $('#myModal').modal('hide')
+
+                    }
+                    
+                },
+                failure: function () {
+                    swal("failure");
+                }
+            });
+        }
+    })
+
+
+
+
+    // metodos descripciones unicas
+    var time;    
+    function tiempo()
+    {
+        if(!nameEdit || nameEdit !== $('#id_desc_competencia').val())
+
+            $.ajax({
+                data: $('#formulario').serialize()+"&id={{ id }}",
+                url: "{% url 'validate_competence' %}",
+                success: function (response) {
+                    if (response.message != null) {
+                        $("#error1").remove()
+                        $("#id_desc_competencia").parent().parent().addClass('has-error');
+                        $("#id_desc_competencia").parent().after('<label id="error1">'+response.message+'</label>')
+                    }
+                    else if($('#id_desc_competencia').val()){
+                        $("#id_desc_competencia").parent().parent().removeClass('has-error');
+                        $("#error1").remove()
+
+                    }else{
+                        $("#id_desc_competencia").parent().parent().removeClass('has-error');
+                        $("#error1").remove()
+
+                    }
+
+                },
+                error: function (response) {
+                    console.log(response.responseJSON.errors)
+                }
+            });
+            
+    }
+
+    $(document).ready(function () {
+
+        $('#myModal').on('keyup', '#id_desc_competencia', function () {  
+
+            $("#id_desc_competencia").parent().parent().removeClass('has-error');
+            $("#error1").remove()
+
+            if ( time )
+            {
+                clearTimeout( time );
+                time = setTimeout( tiempo, 1000 );
+            }
+            else
+            {
+                time = setTimeout( tiempo, 1000 );
+            }
+
+            return false;
+        });
+        
+    })
+
+
+    //metodo para eliminar
     const eliminar = (id) => {
 
         alerta(3).then((willDelete) => {
@@ -99,7 +344,7 @@
                     },
                     dataType: "json",
                     success: function (data) {
-                        window.location = "{% url 'showCompetence' %}"
+                        $('#paginas').find('.active').find('.page-link').trigger('click')
                         
                     },
                     failure: function () {
@@ -111,6 +356,7 @@
         });
     } 
     
+    //metodos para paginacion
     $('#paginas').on('click', ".page-link", function(e){
         e.preventDefault();
         var page = $(this).attr('href').replace ( /[^\d.]/g, '' );
@@ -138,90 +384,16 @@
     }); 
 
 
-        
+        //metodos para filtro
     var t;    
-        function myCallback()
-        {
-            var txt = $('#search_box').val();
-                $.ajax({
-                        type: "POST",
-                        url: "{% url 'paginar' %}", 
-                        data : {    
-                        filtro : txt, 
-                        tipo: "competencia",
-                        csrfmiddlewaretoken: '{{ csrf_token }}',
-                    },
-                    success: function (response) {
-
-                        document.getElementById('paginas').innerHTML = response.paginas;
-                        document.getElementById('tablaContenido').innerHTML = response.contenido;
-                        // // console.log(response.contenido)
-
-                    },
-                    error: function () {}
-                });
-        }
-
-        $(document).ready(function () {
-            $('#search_box').keyup(function (e) {  
-
-                if (e.keyCode === 13) {
-
-                    if (t){
-                        
-                        clearTimeout( t );
-                        t = null;
-                        myCallback();
-                    }
-
-                }
-
-                else
-
-                    if ( t )
-                    {
-                        clearTimeout( t );
-                        t = setTimeout( myCallback, 1000 );
-                    }
-                    else
-                    {
-                        t = setTimeout( myCallback, 1000 );
-                    }
-
-                return false;
-            });
-            
-        })
-        
-        document.getElementById('search_box').addEventListener('input', function(e) { 
-            if(e.currentTarget.value == "") {
-                myCallback();
-            }
-        })
-        
-        let orden="", tipoOrden="";
-        
-
-        $("#tablaContenido").on('click', "th", function(e){
-
-        if($(this).attr("id"))
-            var ord=""
-            if($("#tablaContenido").hasClass("descendiente"))
-
-                $('#tablaContenido').removeClass('descendiente');
-
-            else{
-                ord="-"
-                $('#tablaContenido').addClass('descendiente');
-            }
-            orden = $(this).attr("id")
+    function myCallback()
+    {
+        var txt = $('#search_box').val();
             $.ajax({
                     type: "POST",
                     url: "{% url 'paginar' %}", 
                     data : {    
-                    orden: orden,
-                    tipoOrden: ord,
-                    filtro : $('#search_box').val(), 
+                    filtro : txt, 
                     tipo: "competencia",
                     csrfmiddlewaretoken: '{{ csrf_token }}',
                 },
@@ -229,13 +401,153 @@
 
                     document.getElementById('paginas').innerHTML = response.paginas;
                     document.getElementById('tablaContenido').innerHTML = response.contenido;
-                    // console.log(response.contenido)
+                    // // console.log(response.contenido)
+
+                },
+                error: function () {}
+            });
+    }
+
+    $(document).ready(function () {
+        $('#search_box').keyup(function (e) {  
+
+            if (e.keyCode === 13) {
+
+                if (t){
+                    
+                    clearTimeout( t );
+                    t = null;
+                    myCallback();
+                }
+
+            }
+
+            else
+
+                if ( t )
+                {
+                    clearTimeout( t );
+                    t = setTimeout( myCallback, 1000 );
+                }
+                else
+                {
+                    t = setTimeout( myCallback, 1000 );
+                }
+
+            return false;
+        });
+        
+    })
+        
+    document.getElementById('search_box').addEventListener('input', function(e) { 
+        if(e.currentTarget.value == "") {
+            myCallback();
+        }
+    })
+    
+    //metodos para ordenar
+    let orden="", tipoOrden="";
+        
+
+    $("#tablaContenido").on('click', "th", function(e){
+
+    if($(this).attr("id"))
+        var ord=""
+        if($("#tablaContenido").hasClass("descendiente"))
+
+            $('#tablaContenido').removeClass('descendiente');
+
+        else{
+            ord="-"
+            $('#tablaContenido').addClass('descendiente');
+        }
+        orden = $(this).attr("id")
+        $.ajax({
+                type: "POST",
+                url: "{% url 'paginar' %}", 
+                data : {    
+                orden: orden,
+                tipoOrden: ord,
+                filtro : $('#search_box').val(), 
+                tipo: "competencia",
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+            },
+            success: function (response) {
+
+                document.getElementById('paginas').innerHTML = response.paginas;
+                document.getElementById('tablaContenido').innerHTML = response.contenido;
+                // console.log(response.contenido)
+
+            },
+            error: function () {}
+        });
+
+    });
+
+
+    
+
+	// metodos filtro combo
+	$("#myModal").on('click', ".input-group-prepend", function(e){
+
+        if(document.getElementById('myBrowser')==null){
+            // console.log( $(this).attr('name'))
+
+            console.log($(this).prev().attr('name'))
+            const d = $(this)
+            
+            $.ajax({
+                    type: "POST",
+                    url: "{% url 'renderListasCombos' %}", 
+                    data : {    
+                    clave: $(this).prev().attr('name'),
+                    tipo:  $(this).prev().attr('name') ==='fk_perfil' ? 'Perfil' : 'TablasConfiguracion',
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                },
+                success: function (response) {
+
+                    // document.getElementById('paginas').innerHTML = response.paginas;
+                    // document.getElementById('tablaContenido').innerHTML = response.contenido;
+                    // // console.log(response.contenido)
+                    d.before(response.lista)
+                    $("#myBrowser").focus()
 
                 },
                 error: function () {}
             });
 
-        });
+        }
+    })	
+
+    $("#myModal").on('focusout', "#myBrowser", function(e){
+
+        $('#browsers').remove()
+
+        $('#myBrowser').remove()
+
+    })
+
+    $("#myModal").on('input keydown', "#myBrowser", function(e){
+
+        let val = this.value;
+        let id
+
+        if($('#browsers option').filter(function(){return this.value.toUpperCase() === val.toUpperCase()}).length && e.keyCode == 13) {
+            
+            id = $('#browsers option').filter(function(){return this.value.toUpperCase() === val.toUpperCase()})[0].id
+
+            $('#myBrowser').prev().val(id)
+            
+            $('#myBrowser').prev().parent().parent().removeClass('has-error');
+            $('#myBrowser').parent().next().remove()
+
+            $('#myBrowser').prev().focus()
+            
+
+
+        }
+
+    });
 
 </script>
 

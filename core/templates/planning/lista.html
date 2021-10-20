@@ -23,7 +23,7 @@
     {% endfor %} 
 
 {% else %}
-   
+    {% comment %} 
     <ul class="list-group">
     {% for p in lista %}  
 
@@ -54,4 +54,46 @@
     {% endfor %} 
 
       </ul>
+    {% endcomment %}
+
+        {% for p in lista %}  
+            <div class="row justify-content-center listaCompetencia" id="{{p.idcompetenciasreq}}">
+                <div class="col-10">
+                    <div class="card card-stats card-round border">
+                        <div class="card-body">
+                            <div class="row">
+                                
+                                {% if resultados|get_list:forloop.counter %}
+                                
+                                    <div class="col-5">
+                                        <div class="icon-big text-center">
+                                            <i class="flaticon-success text-success"></i>
+                                        </div>
+                                    </div>
+            
+                                {% else %}
+            
+                                    <div class="col-5">
+                                        <div class="icon-big text-center">
+                                            <i class="flaticon-error text-danger"></i>
+                                        </div>
+                                    </div>
+            
+                                {% endif %}
+                                
+                                <div class="col-7 col-stats">
+                                    <div class="numbers">
+                                        <h4 class="card-title">{{p.desc_competencia}}</h4>
+                                    </div>
+                                </div>
+            
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        {% endfor %} 
+
 {% endif %}
+

@@ -40,7 +40,7 @@
                             {% if not tipo  %}
 
                                 <td>  
-                                    <a href="{% url urlEdit p|get_attr:key %}" class="btn btn-icon btn-sm btn-info"><i class="fas fa-edit align-middle mt-1"></i></a>  
+                                    <button onclick="modalCall({{  p|get_attr:key }})" class="btn btn-icon btn-sm btn-info"><i class="fas fa-edit"></i></button>  
                                     <button onclick="eliminar({{  p|get_attr:key }})" class="btn btn-icon btn-sm btn-danger ml-1" ><i class="fas fa-trash-alt"></i></button>
                                 </td>  
 

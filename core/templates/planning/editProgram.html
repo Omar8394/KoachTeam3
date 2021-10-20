@@ -62,7 +62,7 @@
                                     <div class="col-md-12">
                                         <div class="form-group">
 
-                                            <div class="input-group mb-3">
+                                            <div class="input-group mb-4">
                                                 <select name="selectPerfil" id="selectPerfil"class="form-control"></select>
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text">
@@ -71,7 +71,8 @@
                                                 </div>
                                             </div>
 
-                                            <div class="input-group mb-3" id="opcionesProgram">
+                                            <h4 class="page-title" id="tituloCompetencia"></h4>
+                                            <div class="page-inner mb-3" id="opcionesProgram">
                                                 
                                             </div>
 
@@ -113,16 +114,49 @@
 
                 <div class="modal-body">
 
-                    <div class="form-group mb-3" id="groupSelect">
+                    <div class="form-group" id="groupSelect">
                         <label for="estatusLesson">Training program:</label>
-                        <div class="input-group">
+                        <div class="input-group mb-3">
                                     
                             <select class="form-control" id="estatusLesson" name="estatusLesson"></select>
-                            <div class="input-group-prepend">
+                            <!-- <div class="input-group-prepend">
                                 <span class="input-group-text">
                                     <i class="fas fa-search"></i>
                                 </span>
-                            </div>
+                            </div> -->
+
+                        </div>
+                        <label for="estatusProcess">Training process:</label>
+                        <div class="input-group mb-3">
+                                    
+                            <select class="form-control" id="estatusProcess" name="estatusProcess"></select>
+                            <!-- <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                            </div> -->
+
+                        </div>
+                        <label for="estatusUnit">Training unit:</label>
+                        <div class="input-group mb-3">
+                                    
+                            <select class="form-control" id="estatusUnit" name="estatusUnit"></select>
+                            <!-- <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                            </div> -->
+
+                        </div>
+                        <label for="estatusCourse">Training course:</label>
+                        <div class="input-group mb-3">
+                                    
+                            <select class="form-control" id="estatusCourse" name="estatusCourse"></select>
+                            <!-- <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                            </div> -->
 
                         </div>
                     </div>
@@ -164,6 +198,9 @@
         $('#myModal select').prop('selectedIndex',0);
         $("#error1").remove()
         $("#error2").remove()
+        document.getElementById('estatusProcess').innerHTML = null
+        document.getElementById('estatusUnit').innerHTML = null
+        document.getElementById('estatusCourse').innerHTML = null
 
 
     });
@@ -224,6 +261,7 @@
                 success: function (response) {
 
                     document.getElementById('opcionesProgram').innerHTML = response.competence
+                    document.getElementById('tituloCompetencia').innerHTML = response.titulo
 
                 },
                 error: function (response) {
@@ -238,7 +276,7 @@
     //aqui se hace la solicitud para capacitar las competencias que no son aprovadas
     $(document).on('click', ".listaCompetencia", function(e){
 
-        if($(this).children().children().hasClass("fa-check-circle")) {
+        if($(this).find('i.flaticon-success').length !== 0) {
             swal({
                 title: "Great!",
                 text: "This competence does not nedd any capacitation",
@@ -269,6 +307,57 @@
         }
         
     });
+
+    //aqui se cambian los hijos de los programas
+    $(document).on('change', "#groupSelect select", function(e){
+
+        let idSelect = $(this).attr('id')
+        if($(this).val() && idSelect !== 'estatusCourse'){
+            $.ajax({
+                type: "POST",
+                data: {
+                    'tipo': "Estructuraprograma",
+                    'tipoHijo': $(this).val(),
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+
+                },
+                url: "{% url 'renderListasPublic' %}",
+                success: function (response) {
+
+                    document.getElementById(idSelect==='estatusLesson'?'estatusProcess':idSelect==='estatusProcess'?'estatusUnit':'estatusCourse').innerHTML = response.competence
+
+                    if(idSelect==='estatusLesson'){
+
+                        document.getElementById('estatusUnit').innerHTML = null
+                        document.getElementById('estatusCourse').innerHTML = null
+
+                    }else if(idSelect==='estatusProcess')
+
+                        document.getElementById('estatusCourse').innerHTML = null
+
+                },
+                error: function (response) {
+                    console.log(response.responseJSON.errors)
+                }
+            });
+        }else if(idSelect !== 'estatusCourse')
+
+            if(idSelect==='estatusLesson'){
+
+                document.getElementById('estatusProcess').innerHTML = null
+                document.getElementById('estatusUnit').innerHTML = null
+                document.getElementById('estatusCourse').innerHTML = null
+
+            }else if(idSelect==='estatusProcess'){
+
+                document.getElementById('estatusUnit').innerHTML = null
+                document.getElementById('estatusCourse').innerHTML = null
+
+            }else
+            
+                document.getElementById('estatusCourse').innerHTML = null
+
+    });
     
     //aqui valido y guardo solicitud
     $(document).on('click', "#botonGuardar", function(e){
@@ -279,7 +368,7 @@
                 
                 $("#error1").remove()
                 $('#groupSelect').addClass('has-error');
-                $("#groupSelect .input-group").after('<label for="estatusLesson" id="error1">Select a profile</label>')
+                $("#groupSelect .input-group:last").after('<label for="estatusLesson" id="error1">Select at least a trainning programan</label>')
 
             }
 
@@ -304,7 +393,7 @@
                 type: "POST",
                 data: {
                     'idPublico': "{{id}}",
-                    'idEstructura': $("#estatusLesson option:selected").val(),
+                    'idEstructura': $("#estatusCourse option:selected").val() ? $("#estatusCourse option:selected").val() : $("#estatusUnit option:selected").val() ? $("#estatusUnit option:selected").val() : $("#estatusProcess option:selected").val() ? $("#estatusProcess option:selected").val() : $("#estatusLesson option:selected").val(),
                     'idPerfil': $("#selectPerfil option:selected").val(),
                     'fecha': $("#fechaInicialPersona").val(),
                     csrfmiddlewaretoken: '{{ csrf_token }}',
@@ -326,74 +415,74 @@
 
     });
 
-    // metodos filtro combo
-    $(document).on('click', ".input-group-prepend", function(e){
+    // // metodos filtro combo
+    // $(document).on('click', ".input-group-prepend", function(e){
 
-        if(document.getElementById('myBrowser')==null){
-            // console.log( $(this).attr('name'))
+    //     if(document.getElementById('myBrowser')==null){
+    //         // console.log( $(this).attr('name'))
 
-            // console.log($(this).prev().attr('name'))
-            const d = $(this)
+    //         // console.log($(this).prev().attr('name'))
+    //         const d = $(this)
             
-            $.ajax({
-                    type: "POST",
-                    url: "{% url 'renderListasCombos' %}", 
-                    data : {    
-                    clave: $(this).prev().attr('name'),
-                    tipo: $(this).prev().attr('name')==='selectPerfil'? 'Perfil' : 'Estructuraprograma',
-                    csrfmiddlewaretoken: '{{ csrf_token }}',
-                },
-                success: function (response) {
+    //         $.ajax({
+    //                 type: "POST",
+    //                 url: "{% url 'renderListasCombos' %}", 
+    //                 data : {    
+    //                 clave: $(this).prev().attr('name'),
+    //                 tipo: $(this).prev().attr('name')==='selectPerfil'? 'Perfil' : 'Estructuraprograma',
+    //                 csrfmiddlewaretoken: '{{ csrf_token }}',
+    //             },
+    //             success: function (response) {
 
-                    // document.getElementById('paginas').innerHTML = response.paginas;
-                    // document.getElementById('tablaContenido').innerHTML = response.contenido;
-                    // // console.log(response.contenido)
-                    d.before(response.lista)
-                    $("#myBrowser").focus()
+    //                 // document.getElementById('paginas').innerHTML = response.paginas;
+    //                 // document.getElementById('tablaContenido').innerHTML = response.contenido;
+    //                 // // console.log(response.contenido)
+    //                 d.before(response.lista)
+    //                 $("#myBrowser").focus()
 
-                },
-                error: function () {}
-            });
+    //             },
+    //             error: function () {}
+    //         });
 
-        }
-    })	
+    //     }
+    // })	
 
-    $(document).on('focusout', "#myBrowser", function(e){
+    // $(document).on('focusout', "#myBrowser", function(e){
 
-        $('#browsers').remove()
+    //     $('#browsers').remove()
 
-        $('#myBrowser').remove()
+    //     $('#myBrowser').remove()
 
-    })
+    // })
 
-    $(document).on('input keydown', "#myBrowser", function(e){
+    // $(document).on('input keydown', "#myBrowser", function(e){
 
-        let val = this.value;
-        let id
+    //     let val = this.value;
+    //     let id
 
-        if($('#browsers option').filter(function(){return this.value.toUpperCase() === val.toUpperCase()}).length && e.keyCode == 13) {
+    //     if($('#browsers option').filter(function(){return this.value.toUpperCase() === val.toUpperCase()}).length && e.keyCode == 13) {
             
-            id = $('#browsers option').filter(function(){return this.value.toUpperCase() === val.toUpperCase()})[0].id
+    //         id = $('#browsers option').filter(function(){return this.value.toUpperCase() === val.toUpperCase()})[0].id
 
-            $('#myBrowser').prev().val(id)
+    //         $('#myBrowser').prev().val(id)
 
-            if($('#myBrowser').prev().attr('id') === 'selectPerfil'){
+    //         if($('#myBrowser').prev().attr('id') === 'selectPerfil'){
                 
-                $('#myBrowser').prev().trigger('change')
+    //             $('#myBrowser').prev().trigger('change')
 
-            }
-
-
-            $('#myBrowser').blur()
-
-            $('#groupSelect').removeClass('has-error');
-
-            $("#error1").remove()
+    //         }
 
 
-        }
+    //         $('#myBrowser').blur()
 
-    });
+    //         $('#groupSelect').removeClass('has-error');
+
+    //         $("#error1").remove()
+
+
+    //     }
+
+    // });
 
 
 

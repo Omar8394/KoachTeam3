@@ -4,7 +4,7 @@ from ..app.models import Publico, TablasConfiguracion, Programascap
 
 class perfilForm(forms.ModelForm):
 
-    deescripcion = forms.CharField(
+    deescripcion = forms.CharField(label='Name:',
         widget=forms.TextInput(
             attrs={
                 "placeholder" : "Add a name",                
@@ -15,7 +15,7 @@ class perfilForm(forms.ModelForm):
             }
         ))
 
-    desc_corta = forms.CharField(
+    desc_corta = forms.CharField(label='Short Description:',
         widget=forms.TextInput(
             attrs={
                 "placeholder" : "Add a description",                
@@ -24,7 +24,7 @@ class perfilForm(forms.ModelForm):
             }
         ))
 
-    fk_rama = forms.ModelChoiceField(queryset=TablasConfiguracion.obtenerHijos("Rama"), empty_label="Which branch it belongs?",
+    fk_rama = forms.ModelChoiceField(queryset=TablasConfiguracion.obtenerHijos("Rama"), empty_label="Which branch it belongs?",label='Branch:',
         widget=forms.Select(
             attrs={        
                 "placeholder" : "Select a branch",        
@@ -32,101 +32,100 @@ class perfilForm(forms.ModelForm):
             }
         )) 
 
-    def __init__(self, property_id = None, *args, **kwargs):
+    # def __init__(self, property_id = None, *args, **kwargs):
 
-        self.property_id = property_id
-        super(perfilForm, self).__init__(*args, **kwargs)
+    #     self.property_id = property_id
+    #     super(perfilForm, self).__init__(*args, **kwargs)
 
     class Meta:  
 
         model = Perfil  
         fields = "__all__" 
 
-    def clean(self):
+    # def clean(self):
  
-        super(perfilForm, self).clean()
+    #     super(perfilForm, self).clean()
          
-        deescripcion = self.cleaned_data.get('deescripcion')
+    #     deescripcion = self.cleaned_data.get('deescripcion')
  
-        if(Perfil.filtering(deescripcion, self.property_id)):
+    #     if(Perfil.filtering(deescripcion, self.property_id)):
 
-            self._errors['deescripcion'] = self.error_class(["There is a Profile named %s" %(deescripcion)])
+    #         self._errors['deescripcion'] = self.error_class(["There is a Profile named %s" %(deescripcion)])
 
-        return self.cleaned_data
+    #     return self.cleaned_data
       
 
 class competenciaForm(forms.ModelForm):
-    desc_competencia = forms.CharField(
+    desc_competencia = forms.CharField(label='Description:',
         widget=forms.TextInput(
             attrs={
                 "placeholder" : "Add a description",                
                 "class": "form-control", 
                 'autofocus': True,
-                'id':'id_username',
                 'maxlength':30
             }
         ))
 
-    fk_perfil = forms.ModelChoiceField(queryset=Perfil.objects.all(), empty_label="Which profile it belongs?",
+    fk_perfil = forms.ModelChoiceField(queryset=Perfil.objects.all(), empty_label="Which profile it belongs?",label='Profile:',
         widget=forms.Select(
             attrs={                
                 "class": "form-control",
             }
         ))
 
-    fk_tipo_competencia = forms.ModelChoiceField(queryset=TablasConfiguracion.obtenerHijos("Tipo Competencia"), empty_label="Select its type",
+    fk_tipo_competencia = forms.ModelChoiceField(queryset=TablasConfiguracion.obtenerHijos("Tipo Competencia"), empty_label="Select its type",label='Type:',
         widget=forms.Select(
             attrs={                
                 "class": "form-control",
             }
         ))
 
-    fk_nivel = forms.ModelChoiceField(queryset=TablasConfiguracion.obtenerHijos("NivelComp"), empty_label="Select a minimun level to aprove",
+    fk_nivel = forms.ModelChoiceField(queryset=TablasConfiguracion.obtenerHijos("NivelComp"), empty_label="Select a minimun level to aprove",label='Minimun Level:',
         widget=forms.Select(
             attrs={                
                 "class": "form-control",
             }
         ))
 
-    def __init__(self, property_id = None, *args, **kwargs):
+    # def __init__(self, property_id = None, *args, **kwargs):
 
-        self.property_id = property_id
-        super(competenciaForm, self).__init__(*args, **kwargs)
+    #     self.property_id = property_id
+    #     super(competenciaForm, self).__init__(*args, **kwargs)
 
     class Meta:  
 
         model = CompetenciasReq  
         fields = "__all__"  
 
-    def clean(self):
+    # def clean(self):
  
-        super(competenciaForm, self).clean()
+    #     super(competenciaForm, self).clean()
          
-        desc_competencia = self.cleaned_data.get('desc_competencia')
+    #     desc_competencia = self.cleaned_data.get('desc_competencia')
  
-        if(CompetenciasReq.filtering(desc_competencia, self.property_id)):
+    #     if(CompetenciasReq.filtering(desc_competencia, self.property_id)):
 
-            self._errors['desc_competencia'] = self.error_class(["There is a Competence named %s" %(desc_competencia)])
+    #         self._errors['desc_competencia'] = self.error_class(["There is a Competence named %s" %(desc_competencia)])
 
-        return self.cleaned_data
+    #     return self.cleaned_data
 
 class competenciaAdqForm(forms.ModelForm):
 
-    fk_competencia = forms.ModelChoiceField(queryset=CompetenciasReq.objects.all(), empty_label="Select a competence",
+    fk_competencia = forms.ModelChoiceField(queryset=CompetenciasReq.objects.all(), empty_label="Select a competence",label='Competence:',
         widget=forms.Select(
             attrs={                
                 "class": "form-control form-control",
             }
         ))
 
-    fk_nivel = forms.ModelChoiceField(queryset=TablasConfiguracion.obtenerHijos("NivelComp"), empty_label="Skill level",
+    fk_nivel = forms.ModelChoiceField(queryset=TablasConfiguracion.obtenerHijos("NivelComp"), empty_label="Skill level",label='Skill level:',
         widget=forms.Select(
             attrs={        
                 "class": "form-control form-control",
             }
         ))
 
-    periodo = forms.CharField(
+    periodo = forms.CharField(label='Period:',
         widget=forms.TextInput(
             attrs={
                 "placeholder" : "Since when did you learn it?",                
@@ -137,7 +136,7 @@ class competenciaAdqForm(forms.ModelForm):
             }
         ))
 
-    experiencia = forms.CharField(
+    experiencia = forms.CharField(label='Experience:',
         widget=forms.NumberInput(
             attrs={
                 "placeholder" : "Accumulated experience",                
@@ -148,14 +147,14 @@ class competenciaAdqForm(forms.ModelForm):
             }
         ))
 
-    fk_tipo_duracion = forms.ModelChoiceField(queryset=TablasConfiguracion.obtenerHijos("Duracion"), empty_label="Duration's type",
+    fk_tipo_duracion = forms.ModelChoiceField(queryset=TablasConfiguracion.obtenerHijos("Duracion"), empty_label="Duration's type",label='Duration:',
         widget=forms.Select(
             attrs={                
                 "class": "form-control form-control",
             }
         ))
 
-    fk_publico = forms.ModelChoiceField(queryset=Publico.objects.all(), empty_label="Which public it belongs?",
+    fk_publico = forms.ModelChoiceField(queryset=Publico.objects.all(), empty_label="Which public it belongs?",label='Public:',
         widget=forms.Select(
             attrs={                
                 "class": "form-control form-control",
@@ -172,41 +171,3 @@ class competenciaAdqForm(forms.ModelForm):
         model = CompetenciasAdq  
         # fields = "__all__"  
         fields = ["fk_publico", "fk_competencia", "fk_nivel", "periodo", "experiencia", "fk_tipo_duracion", ] 
-
-        
-class programForm(forms.ModelForm):
-    desc_programas = forms.CharField(
-        widget=forms.TextInput(
-            attrs={
-                 
-                "placeholder" : "Description",             
-                "class": "form-control", 
-            }
-        ))
-    objetivo = forms.CharField(
-        widget=forms.TextInput(
-            attrs={
-                            
-                "placeholder" : "Objective",  
-                "class": "form-control", 
-            }
-        ))
-    alcance = forms.CharField(
-        widget=forms.TextInput(
-            attrs={
-                             
-                "placeholder" : "Reach", 
-                "class": "form-control", 
-            }
-        ))
-    fecha_apertura = forms.DateField(
-        widget=forms.SelectDateWidget(
-            attrs={
-                             
-                "class": "form-control", 
-            }
-        ))
-
-    class Meta:  
-        model = Programascap  
-        fields = "__all__"  

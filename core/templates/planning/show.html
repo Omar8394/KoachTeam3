@@ -43,16 +43,9 @@
                                 </h2>
 
                             </div>
-                            <div class="form-group d-flex">
-                            
-                                <form type="get" action=".">
-                                    <button type="get"  class="btn btn-outline-dark border-0"><i class="fas fa-redo-alt"></i></button>
-                                </form>
-
-                            </div>
                             <div class="form-group d-flex ml-auto">
                             
-                                <a href="{% url 'addProfilage' %}" class="btn btn-success">Add profile <i class="fas fa-plus ml-1"></i></a>
+                                <button class="btn btn-success" id="addButton">Add profile <i class="fas fa-plus ml-1"></i></button>
 
                             </div>
 
@@ -80,13 +73,240 @@
 
 
 
+
+    
+<div class="modal fade" tabindex="-1" id="myModal" role="dialog" aria-hidden="true">
+    <div id="addNewModalContent" class="modal-dialog modal-dialog-centered" role="document">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Set profiles</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body" id="modalBody">
+
+            </div>
+
+            <div class="modal-footer mt-3">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-arrow-left mr-2"></i>Back</button>
+                <button type="button" class="btn btn-primary" id="botonGuardar"><i class="fas fa-save mr-2"></i>Save</button>
+            </div>
+
+        </div>
+        
+    </div>
+</div>
+
 {% endblock content %}
 	
 <!-- Specific Page JS goes HERE  planning-->
 {% block javascripts %}
 
     <script>
+
+
+        //metodos para las validaciones
+
+        $(document).on('input', "#id_desc_corta", function(e){
+
+            $("#id_desc_corta").parent().parent().removeClass('has-error');
+            $("#error2").remove()
+
+
+        })
+
+        $(document).on('change', "#id_fk_rama", function(e){
+
+            $("#id_fk_rama").parent().parent().removeClass('has-error');
+            $("#error3").remove()
+
+        })
+
+        //metodos para pasar al siguiente
         
+        $("#myModal").on('keydown', "#id_username", function(e){
+
+            if(e.keyCode == 13) 
+                
+                $("#id_desc_corta").focus()
+
+        });
+
+        $("#myModal").on('keydown', "#id_desc_corta", function(e){
+
+            if(e.keyCode == 13) 
+                
+                $("#id_fk_rama").focus()
+
+        });   
+
+        $("#myModal").on('keydown', "#id_fk_rama", function(e){
+
+            if(e.keyCode == 13) 
+
+                $("#botonGuardar").trigger('click')
+
+        });
+
+        //mostrar modal
+        let idEdit, nameEdit
+        $(document).on('click', '#addButton', function (e) {
+            modalCall(null)
+        })
+
+        function modalCall(id) {
+            idEdit = id
+            $.ajax({
+                type: "POST",
+                url: "{% url 'modalForm' %}",
+                data: {
+                    'idModal': id,
+                    'tipoModal': '{{categoria}}',
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+
+                },
+                dataType: "json",
+                success: function (response) {
+                    
+        		    document.getElementById('modalBody').innerHTML = response.formulario
+                    nameEdit = response.nombre
+        		    $('#myModal').modal('show')
+                   
+                    
+                },
+                failure: function () {
+                    swal("failure");
+                }
+            });
+
+        }
+
+        $('#myModal').on('shown.bs.modal', function () {
+            $("#id_username").focus();
+        })
+
+        //metodo guardar y validar 
+        $('#myModal').on('click', '#botonGuardar', function (e) {
+
+            if(!$("#id_username").val() || !$("#id_desc_corta").val() || !$("#id_fk_rama").val() || $('#myModal').find('.has-error').length) {
+
+
+                if(!$("#id_fk_rama").val()){
+                    
+                    $("#error3").remove()
+                    $("#id_fk_rama").parent().parent().addClass('has-error');
+                    $("#id_fk_rama").parent().after('<label id="error3">Select a profile branch</label>')
+                    $("#id_fk_rama").focus()
+                    
+                }
+
+                if(!$("#id_desc_corta").val()){
+                    
+                    $("#error2").remove()
+                    $("#id_desc_corta").parent().parent().addClass('has-error');
+                    $("#id_desc_corta").parent().after('<label id="error2">Enter a profile description</label>')
+                    $("#id_desc_corta").focus()
+                
+                }
+
+                if(!$("#id_username").val()){
+                    
+                    $("#error1").remove()
+                    $("#id_username").parent().parent().addClass('has-error');
+                    $("#id_username").parent().after('<label id="error1">Enter a profile name</label>')
+                    $("#id_username").focus()
+
+                }else if($("#id_username").parent().parent().hasClass('has-error')){
+
+                    // $("#id_username").focus()
+                }
+
+            }else{
+
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'createProfile' %}",
+                    data: idEdit ? $('#formulario').serialize()+'&idEdit='+idEdit : $('#formulario').serialize(),
+                    dataType: "json",
+                    success: function (response) {
+
+                        if(!response.mensaje){
+                            $('#paginas').find('.active').find('.page-link').trigger('click')
+                            $('#myModal').modal('hide')
+
+                        }
+                        
+                    },
+                    failure: function () {
+                        swal("failure");
+                    }
+                });
+            }
+        })
+
+
+        // metodos descripciones unicas
+        var time;    
+        function tiempo()
+        {
+            if(!nameEdit || nameEdit !== $('#id_username').val())
+
+                $.ajax({
+                    data: $('#formulario').serialize()+"&id={{ id }}",
+                    url: "{% url 'validate_username' %}",
+                    success: function (response) {
+                        if (response.message != null) {
+                            $("#error1").remove()
+                            $("#id_username").parent().parent().addClass('has-error');
+                            $("#id_username").parent().after('<label id="error1">'+response.message+'</label>')
+                        }
+                        else if($('#id_username').val()){
+                            $("#id_username").parent().parent().removeClass('has-error');
+                            $("#error1").remove()
+
+                        }else{
+                            $("#id_username").parent().parent().removeClass('has-error');
+                            $("#error1").remove()
+
+                        }
+
+                    },
+                    error: function (response) {
+                        console.log(response.responseJSON.errors)
+                    }
+                });
+                
+        }
+
+        $(document).ready(function () {
+
+            $('#myModal').on('keyup', '#id_username', function () {  
+
+                $("#id_username").parent().parent().removeClass('has-error');
+                $("#error1").remove()
+
+                if ( time )
+                {
+                    clearTimeout( time );
+                    time = setTimeout( tiempo, 1000 );
+                }
+                else
+                {
+                    time = setTimeout( tiempo, 1000 );
+                }
+
+                return false;
+            });
+            
+        })
+
+
+
+        //eliminar perfil
         const eliminar = (id) => {
 
             alerta(3).then((willDelete) => {
@@ -101,8 +321,9 @@
                             'id': id,
                         },
                         dataType: "json",
-                        success: function (data) {
-                            window.location = "{% url 'showProfilage' %}"
+                        success: function (response) {
+                            $('#paginas').find('.active').find('.page-link').trigger('click')
+
                             
                         },
                         failure: function () {
@@ -114,6 +335,7 @@
             });
         } 
 
+        //paginacion
         $('#paginas').on('click', ".page-link", function(e){
             e.preventDefault();
             var page = $(this).attr('href').replace ( /[^\d.]/g, '' );
@@ -131,7 +353,6 @@
 
                     document.getElementById('paginas').innerHTML = response.paginas;
                     document.getElementById('tablaContenido').innerHTML = response.contenido;
-                    // console.log(response.contenido)
 
                 },
                 error: function () {}
@@ -139,7 +360,7 @@
 
         }); 
 
-        
+        //metodos para filtro
         var t;    
         function myCallback()
         {
@@ -155,7 +376,6 @@
 
                         document.getElementById('paginas').innerHTML = response.paginas;
                         document.getElementById('tablaContenido').innerHTML = response.contenido;
-                        // // console.log(response.contenido)
 
                     },
                     error: function () {}
@@ -163,6 +383,7 @@
         }
 
         $(document).ready(function () {
+            
             $('#search_box').keyup(function (e) {  
 
                 if (e.keyCode === 13) {
@@ -199,12 +420,14 @@
             }
         })
 
+
+        //ordenar tabla dependiendo de la primera fila
         let orden="", tipoOrden="";
 
         $("#tablaContenido").on('click', "th", function(e){
 
             if($(this).attr("id"))
-                // console.log($("#tablaContenido").hasClass("descendiente"))
+
                 var ord=""
                 if($("#tablaContenido").hasClass("descendiente"))
 
@@ -229,13 +452,77 @@
 
                         document.getElementById('paginas').innerHTML = response.paginas;
                         document.getElementById('tablaContenido').innerHTML = response.contenido;
-                        // console.log(response.contenido)
 
                     },
                     error: function () {}
                 });
 
         });
+
+
+
+
+        
+	// metodos filtro combo
+	$("#myModal").on('click', ".input-group-prepend", function(e){
+
+        if(document.getElementById('myBrowser')==null){
+            // console.log( $(this).attr('name'))
+
+            // console.log($(this).prev().attr('name'))
+            const d = $(this)
+            
+            $.ajax({
+                    type: "POST",
+                    url: "{% url 'renderListasCombos' %}", 
+                    data : {    
+                    clave: $(this).prev().attr('name'),
+                    tipo: 'TablasConfiguracion',
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                },
+                success: function (response) {
+
+                    // document.getElementById('paginas').innerHTML = response.paginas;
+                    // document.getElementById('tablaContenido').innerHTML = response.contenido;
+                    // // console.log(response.contenido)
+                    d.before(response.lista)
+                    $("#myBrowser").focus()
+
+                },
+                error: function () {}
+            });
+
+        }
+    })	
+
+    $("#myModal").on('focusout', "#myBrowser", function(e){
+
+        $('#browsers').remove()
+
+        $('#myBrowser').remove()
+
+    })
+
+
+    $("#myModal").on('input keydown', "#myBrowser", function(e){
+
+        let val = this.value;
+        let id
+
+        if($('#browsers option').filter(function(){return this.value.toUpperCase() === val.toUpperCase()}).length && e.keyCode == 13) {
+            
+            id = $('#browsers option').filter(function(){return this.value.toUpperCase() === val.toUpperCase()})[0].id
+
+            $('#myBrowser').prev().val(id)
+
+            $('#myBrowser').blur()
+
+            $("#id_fk_rama").parent().parent().removeClass('has-error');
+            $("#error3").remove()
+
+        }
+
+    });
 
     </script>
 

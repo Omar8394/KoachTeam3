@@ -42,16 +42,9 @@
                                 </h2>
     
                             </div>
-                            <div class="form-group d-flex">
-                               
-                                <form type="get" action=".">
-                                    <button type="get"  class="btn btn-outline-dark border-0"><i class="fas fa-redo-alt"></i></button>
-                                </form>
-    
-                            </div>
                             <div class="form-group d-flex ml-auto">
                                
-                                <a href="{% url 'addCompetenceAdq' %}" class="btn btn-success">Add competences <i class="fas fa-plus ml-1"></i></a>
+                                <button class="btn btn-success" id="addButton">Add competences <i class="fas fa-plus ml-1"></i></button>
     
                             </div>
 
@@ -76,6 +69,35 @@
 	</div>
     {% include 'planning/mensajes.html' %}   
 
+
+    
+    <div class="modal fade" tabindex="-1" id="myModal" role="dialog" aria-hidden="true">
+        <div id="addNewModalContent" class="modal-dialog modal-dialog-centered" role="document">
+
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Set competences</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body" id="modalBody">
+
+                </div>
+
+                <div class="modal-footer mt-3">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-arrow-left mr-2"></i>Back</button>
+                    <button type="button" class="btn btn-primary" id="botonGuardar"><i class="fas fa-save mr-2"></i>Save</button>
+                </div>
+
+            </div>
+            
+        </div>
+    </div>
+
+
 {% endblock content %}
 	
 <!-- Specific Page JS goes HERE  -->
@@ -84,6 +106,264 @@
 
 <script>
         
+
+
+    //metodos para las validaciones
+
+    $(document).on('change', "#id_fk_publico", function(e){
+
+        $("#id_fk_publico").parent().parent().removeClass('has-error');
+        $("#error1").remove()
+
+    })
+
+    $(document).on('change', "#id_fk_competencia", function(e){
+
+        $("#id_fk_competencia").parent().parent().removeClass('has-error');
+        $("#error2").remove()
+
+    })
+
+    $(document).on('change', "#id_fk_nivel", function(e){
+
+        $("#id_fk_nivel").parent().parent().removeClass('has-error');
+        $("#error3").remove()
+
+    })
+
+    $(document).on('input', "#id_periodo", function(e){
+
+        $("#id_periodo").parent().parent().removeClass('has-error');
+        $("#error4").remove()
+
+
+    })
+
+    $(document).on('input', "#id_experiencia", function(e){
+
+        $("#id_experiencia").parent().parent().removeClass('has-error');
+        $("#error5").remove()
+
+
+    })
+
+    $(document).on('change', "#id_fk_tipo_duracion", function(e){
+
+        $("#id_fk_tipo_duracion").parent().parent().removeClass('has-error');
+        $("#error6").remove()
+
+    })
+
+    //metodos para pasar al siguiente
+
+    $("#myModal").on('keydown', "#id_fk_publico", function(e){
+
+        if(e.keyCode == 13) 
+            
+            $("#id_fk_competencia").focus()
+
+    });
+
+    $("#myModal").on('keydown', "#id_fk_competencia", function(e){
+
+        if(e.keyCode == 13) 
+            
+            $("#id_fk_nivel").focus()
+
+    });   
+
+    $("#myModal").on('keydown', "#id_fk_nivel", function(e){
+
+        if(e.keyCode == 13) 
+            
+            $("#id_periodo").focus()
+
+    });  
+
+    $("#myModal").on('keydown', "#id_periodo", function(e){
+
+    if(e.keyCode == 13) 
+        
+        $("#id_experiencia").focus()
+
+    });   
+
+    $("#myModal").on('keydown', "#id_experiencia", function(e){
+
+    if(e.keyCode == 13) 
+        
+        $("#id_fk_tipo_duracion").focus()
+
+    });  
+
+    $("#myModal").on('keydown', "#id_fk_tipo_duracion", function(e){
+
+        if(e.keyCode == 13) 
+
+            $("#botonGuardar").trigger('click')
+
+    });
+
+    //mostrar modal
+    let idEdit, nameEdit
+    $(document).on('click', '#addButton', function (e) {
+        modalCall(null)
+    })
+
+    function modalCall(id) {
+        idEdit = id
+        $.ajax({
+            type: "POST",
+            url: "{% url 'modalForm' %}",
+            data: {
+                'idModal': id,
+                'tipoModal': '{{categoria}}',
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+
+            },
+            dataType: "json",
+            success: function (response) {
+                
+                document.getElementById('modalBody').innerHTML = response.formulario
+                nameEdit = response.nombre
+                $('#myModal').modal('show')
+            
+                
+            },
+            failure: function () {
+                swal("failure");
+            }
+        });
+
+    }
+
+    $('#myModal').on('shown.bs.modal', function () {
+
+        $("#id_fk_publico").focus();
+
+        select = document.getElementById('id_fk_publico');
+
+        if(!select.value){
+            
+            $('#id_fk_competencia').empty().append('<option selected="selected" value>Select a Public</option>');
+
+        }
+    })
+
+    //metodo guardar y validar 
+    $('#myModal').on('click', '#botonGuardar', function (e) {
+
+        if(!$("#id_fk_publico").val() || !$("#id_fk_competencia").val() || !$("#id_fk_nivel").val() || !$("#id_periodo").val() || !$("#id_experiencia").val() || !$("#id_fk_tipo_duracion").val()) {
+
+            if(!$("#id_fk_tipo_duracion").val()){
+                
+                $("#error6").remove()
+                $("#id_fk_tipo_duracion").parent().parent().addClass('has-error');
+                $("#id_fk_tipo_duracion").parent().after('<label id="error6">Select a duration type</label>')
+                $("#id_fk_tipo_duracion").focus()
+                
+            }
+
+            if(!$("#id_experiencia").val()){
+                
+                $("#error5").remove()
+                $("#id_experiencia").parent().parent().addClass('has-error');
+                $("#id_experiencia").parent().after('<label id="error5">Enter your experience amount</label>')
+                $("#id_experiencia").focus()
+            
+            }
+
+            if(!$("#id_periodo").val()){
+                
+                $("#error4").remove()
+                $("#id_periodo").parent().parent().addClass('has-error');
+                $("#id_periodo").parent().after('<label id="error4">Enter a period</label>')
+                $("#id_periodo").focus()
+
+            }
+
+            if(!$("#id_fk_nivel").val()){
+                
+                $("#error3").remove()
+                $("#id_fk_nivel").parent().parent().addClass('has-error');
+                $("#id_fk_nivel").parent().after('<label id="error3">Select your level for the selected competence</label>')
+                $("#id_fk_nivel").focus()
+
+            }
+
+            if(!$("#id_fk_competencia").val()){
+                
+                $("#error2").remove()
+                $("#id_fk_competencia").parent().parent().addClass('has-error');
+                $("#id_fk_competencia").parent().after('<label id="error2">Select a competence</label>')
+                $("#id_fk_competencia").focus()
+
+            }
+
+            if(!$("#id_fk_publico").val()){
+                
+                $("#error1").remove()
+                $("#id_fk_publico").parent().parent().addClass('has-error');
+                $("#id_fk_publico").parent().after('<label id="error1">Select a public</label>')
+                $("#id_fk_publico").focus()
+
+            }
+
+        }else{
+            $.ajax({
+                type: "POST",
+                url: "{% url 'createCompetenceAdq' %}",
+                data: idEdit ? $('#formulario').serialize()+'&idEdit='+idEdit : $('#formulario').serialize(),
+                dataType: "json",
+                success: function (response) {
+
+                    if(!response.mensaje){
+                        $('#paginas').find('.active').find('.page-link').trigger('click')
+                        $('#myModal').modal('hide')
+
+                    }
+                    
+                },
+                failure: function () {
+                    swal("failure");
+                }
+            });
+        }
+    })
+
+    
+
+		//cargar competencias si se selecciono un publico
+    let select
+
+    $("#myModal").on('change', "#id_fk_publico", function(e){
+
+        if(select.value && "{{ request.user.is_staff }}".toLowerCase()==='true' && select.length > 2){
+            
+            $.ajax({
+                type: "POST",
+                data: {
+                    "id": select.value, 
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+
+                },
+                url: "{% url 'renderListasPublic' %}",
+                success: function (response) {
+
+                    document.getElementById('id_fk_competencia').innerHTML = response.competence
+
+                },
+                error: function (response) {
+                    console.log(response.responseJSON.errors)
+                }
+            });
+
+        }
+
+    });
+
+
+    //metodo para eliminar
     const eliminar = (id) => {
 
         alerta(3).then((willDelete) => {
@@ -99,8 +379,7 @@
                     },
                     dataType: "json",
                     success: function (data) {
-                        window.location = "{% url 'showCompetenceAdq' %}"
-                        
+                        $('#paginas').find('.active').find('.page-link').trigger('click')
                     },
                     failure: function () {
                         swal("failure");
@@ -138,91 +417,16 @@
 
     }); 
 
-    
+    //metodos para filtrar
     var t;    
-        function myCallback()
-        {
-            var txt = $('#search_box').val();
-                $.ajax({
-                        type: "POST",
-                        url: "{% url 'paginar' %}", 
-                        data : {    
-                        filtro : txt, 
-                        tipo: "competenciaadq",
-                        csrfmiddlewaretoken: '{{ csrf_token }}',
-                    },
-                    success: function (response) {
-
-                        document.getElementById('paginas').innerHTML = response.paginas;
-                        document.getElementById('tablaContenido').innerHTML = response.contenido;
-                        // // console.log(response.contenido)
-
-                    },
-                    error: function () {}
-                });
-        }
-
-        $(document).ready(function () {
-            $('#search_box').keyup(function (e) {  
-
-                if (e.keyCode === 13) {
-
-                    if (t){
-                        
-                        clearTimeout( t );
-                        t = null;
-                        myCallback();
-                    }
-
-                }
-
-                else
-
-                    if ( t )
-                    {
-                        clearTimeout( t );
-                        t = setTimeout( myCallback, 1000 );
-                    }
-                    else
-                    {
-                        t = setTimeout( myCallback, 1000 );
-                    }
-
-                return false;
-            });
-            
-        })
-        
-        document.getElementById('search_box').addEventListener('input', function(e) { 
-            if(e.currentTarget.value == "") {
-                myCallback();
-            }
-        })
-
-        
-        let orden="", tipoOrden="";
-        
-
-        $("#tablaContenido").on('click', "th", function(e){
-
-        if($(this).attr("id"))
-            var ord=""
-            if($("#tablaContenido").hasClass("descendiente"))
-
-                $('#tablaContenido').removeClass('descendiente');
-
-            else{
-                ord="-"
-                $('#tablaContenido').addClass('descendiente');
-            }
-            orden = $(this).attr("id")
+    function myCallback()
+    {
+        var txt = $('#search_box').val();
             $.ajax({
                     type: "POST",
                     url: "{% url 'paginar' %}", 
                     data : {    
-                    orden: orden,
-                    tipoOrden: ord,
-                    filtro : $('#search_box').val(), 
+                    filtro : txt, 
                     tipo: "competenciaadq",
                     csrfmiddlewaretoken: '{{ csrf_token }}',
                 },
@@ -230,13 +434,150 @@
 
                     document.getElementById('paginas').innerHTML = response.paginas;
                     document.getElementById('tablaContenido').innerHTML = response.contenido;
-                    // console.log(response.contenido)
+                    // // console.log(response.contenido)
+
+                },
+                error: function () {}
+            });
+    }
+
+    $(document).ready(function () {
+        $('#search_box').keyup(function (e) {  
+
+            if (e.keyCode === 13) {
+
+                if (t){
+                    
+                    clearTimeout( t );
+                    t = null;
+                    myCallback();
+                }
+
+            }
+
+            else
+
+                if ( t )
+                {
+                    clearTimeout( t );
+                    t = setTimeout( myCallback, 1000 );
+                }
+                else
+                {
+                    t = setTimeout( myCallback, 1000 );
+                }
+
+            return false;
+        });
+        
+    })
+    
+    document.getElementById('search_box').addEventListener('input', function(e) { 
+        if(e.currentTarget.value == "") {
+            myCallback();
+        }
+    })
+
+    
+    //metodos para ordenar
+    let orden="", tipoOrden="";
+    $("#tablaContenido").on('click', "th", function(e){
+
+    if($(this).attr("id"))
+        var ord=""
+        if($("#tablaContenido").hasClass("descendiente"))
+
+            $('#tablaContenido').removeClass('descendiente');
+
+        else{
+            ord="-"
+            $('#tablaContenido').addClass('descendiente');
+        }
+        orden = $(this).attr("id")
+        $.ajax({
+                type: "POST",
+                url: "{% url 'paginar' %}", 
+                data : {    
+                orden: orden,
+                tipoOrden: ord,
+                filtro : $('#search_box').val(), 
+                tipo: "competenciaadq",
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+            },
+            success: function (response) {
+
+                document.getElementById('paginas').innerHTML = response.paginas;
+                document.getElementById('tablaContenido').innerHTML = response.contenido;
+                // console.log(response.contenido)
+
+            },
+            error: function () {}
+        });
+
+    });
+
+
+        
+
+	// metodos filtro combo
+	$("#myModal").on('click', ".input-group-prepend", function(e){
+
+        if(document.getElementById('myBrowser')==null){
+            // console.log( $(this).attr('name'))
+
+            console.log($(this).prev().attr('name'))
+            const d = $(this)
+            
+            $.ajax({
+                    type: "POST",
+                    url: "{% url 'renderListasCombos' %}", 
+                    data : {    
+                    clave: $(this).prev().attr('name'),
+                    tipo:  $(this).prev().attr('name') ==='fk_competencia' ? 'CompetenciasReq' : $(this).prev().attr('name') === 'fk_publico' ? 'Publico' : 'TablasConfiguracion',
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                },
+                success: function (response) {
+
+                    // document.getElementById('paginas').innerHTML = response.paginas;
+                    // document.getElementById('tablaContenido').innerHTML = response.contenido;
+                    // // console.log(response.contenido)
+                    d.before(response.lista)
+                    $("#myBrowser").focus()
 
                 },
                 error: function () {}
             });
 
-        });
+        }
+    })	
+
+    $("#myModal").on('focusout', "#myBrowser", function(e){
+
+        $('#browsers').remove()
+
+        $('#myBrowser').remove()
+
+    })
+
+    $("#myModal").on('input keydown', "#myBrowser", function(e){
+
+        let val = this.value;
+        let id
+
+        if($('#browsers option').filter(function(){return this.value.toUpperCase() === val.toUpperCase()}).length && e.keyCode == 13) {
+            
+            id = $('#browsers option').filter(function(){return this.value.toUpperCase() === val.toUpperCase()})[0].id
+
+            $('#myBrowser').prev().val(id).change()
+
+            $('#myBrowser').prev().parent().parent().removeClass('has-error');
+            $('#myBrowser').parent().next().remove()
+
+            $('#myBrowser').prev().focus()
+
+        }
+
+    });
 
 </script>
 
