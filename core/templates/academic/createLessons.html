@@ -161,6 +161,8 @@
          if (bankPage === 2) { }
          if (bankPage === 3) {
             dropzoneObj.removeAllFiles()
+            document.getElementById("checkSharedCB3").checked = false
+            $("#tagResource3").tagsinput('removeAll')
          }
          if (bankPage === 4) {
             frameYT.innerHTML = ""
@@ -184,7 +186,7 @@
          $("#addNewModal").modal("show")
          const dropzoneObj = new Dropzone("form#my-awesome-dropzone", {
             url: "{% url 'modalResourcesBank' %}",
-            headers:{"id":selectedId},
+            headers:{"idPagina":selectedId},
             autoProcessQueue: false,
             uploadMultiple:true,
             acceptedFiles: "image/*,audio/*, application/pdf",

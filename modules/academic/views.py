@@ -16,7 +16,7 @@ import datetime
 from django.core.paginator import Paginator
 
 from django.utils.dateparse import parse_datetime
-
+import mimetypes
 import json
 from django.core.files.storage import FileSystemStorage
 import os
@@ -1050,7 +1050,26 @@ def getModalResourcesBank(request):
             context = {}
             modelo = {}
             # try:
-            if request.body:
+            if request.headers.get("idPagina"):
+                #Handle the files upload
+                idPagina = request.headers.get('idPagina')
+                myfiles = list(request.FILES.values())
+                fs = FileSystemStorage(location=settings.MEDIA_ROOT)
+                for file in myfiles:
+                    print(file.name)
+                    print(mimetypes.guess_type(file.name))
+                    nombreImagen = str(uuid.uuid4())
+                    extensionFile=Path(file.name).suffix
+                    nombreImagen="res_"+nombreImagen+extensionFile
+                    Ruta=settings.MEDIA_ROOT
+                    folder = request.path.replace("/", "_")
+                    try:
+                        os.mkdir(os.path.join(Ruta))
+                    except:
+                        pass
+                    fs.save(Ruta+'/'+nombreImagen, file)
+                return JsonResponse({"message":"so fresh"})
+            else:
                 data = json.load(request)
                 if data["method"] == "Show":
                     html_template = (loader.get_template('components/modalBancoRecursos.html'))
@@ -1093,21 +1112,7 @@ def getModalResourcesBank(request):
                                 tag_recurso = TagRecurso(fk_tag=tag, fk_recurso=newRecurso)
                                 tag_recurso.save()
                         return JsonResponse({"message":"Perfect", "id":newRecurso.pk, "path":newRecurso.path})
-            else:
-                return
-                #Handle the files upload
-                myfile = request.FILES['imagenRuta']
-                fs = FileSystemStorage()
-                nombreImagen = str(uuid.uuid4())
-                extensionFile=Path(myfile.name).suffix
-                nombreImagen=nombreImagen+extensionFile
-                Ruta=settings.MEDIA_ROOT
-                folder = request.path.replace("/", "_")
-                try:
-                    os.mkdir(os.path.join(Ruta))
-                except:
-                    pass
-                filename = fs.save(Ruta+'/'+nombreImagen, myfile)
+                
             # except:
             #     return JsonResponse({"message":"error"}, status=500)
     
