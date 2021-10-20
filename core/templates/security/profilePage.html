@@ -8,7 +8,7 @@
 {% block content %}
 
 <div class="content">
-    <div class="page-inner">
+    <div class="page-inner animated fadeInRight">
         <div class="page-header">
             <h4 class="page-title">My profile</h4>
             <ul class="breadcrumbs">
@@ -33,18 +33,17 @@
                             <center class="mt-4"> 
                                 
                                 <form action="{% url 'images' %}" enctype="multipart/form-data" id="fileForm" method="post">
-            
                                     {% csrf_token %}
                                     <div class="image-upload">
+
                                         <label for="file-input">
-                                            <img src="/static/assets/img/default-user-icon.png" class="rounded-circle border" width="150" id="imagenPerfil">
-                                        </label>
-                                    
+                                            <img src="/static/assets/img/default-user-icon.png" class="rounded-circle border" style="cursor: pointer;" width="150" id="imagenPerfil">
+                                        </label>  
                                         <input id="file-input" name="file-input" type="file" style="display: none;" accept="image/*" />
+                                     
                                     </div> 
-            
                                 </form>
-            
+
             
                                 <h4 class="card-title my-2">
                                     {{request.user.username}}

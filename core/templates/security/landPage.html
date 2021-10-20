@@ -34,7 +34,7 @@
         <form  method="post" id="lanpageform" role="form" onsubmit="return getEmail() && getPhone() && getPasswordValidation()">
             {% csrf_token %}
             <div id="primerafase">
-                <span class="h3 text-dark" style="text-align: left;">Personal Information.</span>
+                <span class="h3 text-dark" style="text-align: left;">Personal Information</span>
                 <div class="form-row">
 
                     <div class="col-md-4">
@@ -59,7 +59,7 @@
                     {% endif %}
                 </div>
             {% block emailandidentity %}{% endblock emailandidentity %}
-                <span class="h3 text-dark" style="text-align: left;">Location.</span>
+                <span class="h3 text-dark" style="text-align: left;">Location</span>
                 <div class="form-row">
                     <div class="col-md-12">
                         <div class="form-group">
@@ -89,12 +89,12 @@
                   {% endblock registrofull %}
 
         </div>
-            <div class="form-group row mt-2">
-                            <div class="col-3 offset-4">
-                                <button type="submit" class="btn bg-dark2 btn-block btn-md" style="color: white">Submit</button>
-                                &nbsp; &nbsp;
-                            </div>
-                        </div>
+            <div class="form-group row mt-2 d-flex justify-content-center">
+                <div class="col-md-8">
+                    <button type="submit" class="btn bg-dark2 btn-block" style="color: white">Submit</button>
+                    &nbsp; &nbsp;
+                </div>             
+            </div>
         <input type="hidden" id="correos" name="correos" value="asdX">
             <input type="hidden" name="telefonos" id="telefonos" value="asdX">
             <input type="hidden" name="email" id="email_user" value="asdX">
