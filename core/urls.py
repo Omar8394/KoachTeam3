@@ -15,7 +15,8 @@ from django.views.static import serve
 urlpatterns = [
     
     path("registration/", include("modules.registration.urls")),
-    re_path(r'^upload/(?P<path>.*)$', serve,{'document_root': settings.UPLOAD_ROOT}), 
+    re_path(r'^upload/(?P<path>.*)$', serve,{'document_root': settings.UPLOAD_ROOT}),
+    re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
     path("academic/", include("modules.academic.urls")),
     path("communication/", include("modules.communication.urls")),
     path("planning/", include("modules.planning.urls")),

@@ -27,7 +27,7 @@ from ..app.models import TablasConfiguracion, Estructuraprograma
 
 from ..security.models import ExtensionUsuario
 
-from .models import ActividadEvaluaciones, Cursos, ActividadConferencia, ActividadLeccion, ActividadTarea, EscalaEvaluacion, EvaluacionesPreguntas, EvaluacionesBloques, Paginas, PreguntasOpciones, ExamenActividad,ExamenRespuestas,ExamenResultados, Recurso, Tag, TagRecurso
+from .models import ActividadEvaluaciones, Cursos, ActividadConferencia, ActividadLeccion, ActividadTarea, EscalaEvaluacion, EvaluacionesPreguntas, EvaluacionesBloques, Paginas, PreguntasOpciones, ExamenActividad,ExamenRespuestas,ExamenResultados, Recurso, RecursoPaginas, Tag, TagRecurso
 from modules.app import models
 
 # Create your views here.
@@ -1021,6 +1021,15 @@ def getModalPagina(request):
                     if data["data"]["summernote"] != "<p><br></p>":
                         pagina.contenido = data["data"]["summernote"]
                     pagina.save()
+                    recursos = data["data"]["recursos"]
+                    oldResources = RecursoPaginas.objects.filter(fk_pagina=pagina.pk)
+                    oldResources.delete()
+                    for recurso in recursos:
+                        resource = Recurso.objects.get(pk=recurso["id"])
+                        newResource = RecursoPaginas()
+                        newResource.fk_pagina = pagina
+                        newResource.fk_recurso = resource
+                        newResource.save()
                     return JsonResponse({"message":"Perfect"})
             except:
                 return JsonResponse({"message":"error"}, status=500)
@@ -1055,20 +1064,55 @@ def getModalResourcesBank(request):
                 idPagina = request.headers.get('idPagina')
                 myfiles = list(request.FILES.values())
                 fs = FileSystemStorage(location=settings.MEDIA_ROOT)
+                recursos = []
                 for file in myfiles:
-                    print(file.name)
-                    print(mimetypes.guess_type(file.name))
+                    resourceType = mimetypes.guess_type(file.name)[0]
                     nombreImagen = str(uuid.uuid4())
                     extensionFile=Path(file.name).suffix
                     nombreImagen="res_"+nombreImagen+extensionFile
                     Ruta=settings.MEDIA_ROOT
-                    folder = request.path.replace("/", "_")
+                    # folder = request.path.replace("/", "_")
                     try:
                         os.mkdir(os.path.join(Ruta))
                     except:
                         pass
+                    #save file
                     fs.save(Ruta+'/'+nombreImagen, file)
-                return JsonResponse({"message":"so fresh"})
+                    #after save file lets go to save on BBDD
+                    newRecurso = Recurso()
+                    newRecurso.titulo = file.name
+                    newRecurso.path = nombreImagen
+                    newRecurso.tipo_path = 0
+                    newRecurso.compartido = False
+                    if request.POST.get("checkSharedCB"):
+                        newRecurso.compartido = True
+                    if "application/pdf" in resourceType:
+                        resourceType = "Recurso_pdf"
+                    if "image/" in resourceType:
+                        resourceType = "Recurso_image"
+                    if "audio/" in resourceType:
+                        resourceType = "Recurso_audio"
+                    newRecurso.fk_tipo_recurso = TablasConfiguracion.obtenerHijos("Recurso").get(valor_elemento=resourceType)
+                    newRecurso.fk_publico_autor = request.user.extensionusuario.Publico
+                    tags = request.POST.get("tagResource")
+                    if "," in tags:
+                        tags = tags.split(",")
+                    else:
+                        tags = [tags]
+                    newRecurso.save()
+                    for newtag in tags:
+                        tag = Tag.objects.filter(desc_tag=newtag)
+                        if tag.exists():
+                            tag_recurso = TagRecurso(fk_tag=tag[0], fk_recurso=newRecurso)
+                            tag_recurso.save()
+                        else:
+                            tag = Tag(desc_tag=newtag)
+                            tag.save()
+                            tag_recurso = TagRecurso(fk_tag=tag, fk_recurso=newRecurso)
+                            tag_recurso.save()
+                    #add resources
+                    recursos.append({"id":newRecurso.pk, "path":newRecurso.path, "type":resourceType})
+                return JsonResponse({"message":"Perfect", "recursos":recursos})
             else:
                 data = json.load(request)
                 if data["method"] == "Show":
@@ -1111,7 +1155,7 @@ def getModalResourcesBank(request):
                                 tag.save()
                                 tag_recurso = TagRecurso(fk_tag=tag, fk_recurso=newRecurso)
                                 tag_recurso.save()
-                        return JsonResponse({"message":"Perfect", "id":newRecurso.pk, "path":newRecurso.path})
+                        return JsonResponse({"message":"Perfect", "id":newRecurso.pk, "path":newRecurso.path, "type":"Recurso_video"})
                 
             # except:
             #     return JsonResponse({"message":"error"}, status=500)

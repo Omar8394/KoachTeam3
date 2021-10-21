@@ -8,5 +8,4 @@ sqlparse
 Unipath
 dj-database-url
 python-decouple
-python-magic
 whitenoise

@@ -15,4 +15,7 @@
          <button type="submit" class="btn btn-primary">Save<i class="fas fa-save ml-2"></i></button>
       </div>
    </div>
+   {% if modelo.recursopaginas_set.all %}
+   <input type="hidden" id="resourcesList" value='{% for recurso in modelo.recursopaginas_set.all %}{"id":"{{recurso.fk_recurso_id}}","path":"{{recurso.fk_recurso.path}}"}/{% endfor %}'>
+   {% endif %}
 </form>
