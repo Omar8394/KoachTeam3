@@ -143,10 +143,10 @@
                if (text.message == "Perfect") alerta(1)
                let recursoTemp = {
                   id: text.id,
-                  path: text.path
+                  path: text.path,
+                  type: text.type
                }
                recursosArray.push(recursoTemp)
-
                $(`#summernote${selectedId}`).summernote('pasteHTML', HTMLstring)
                document.querySelector("#addNewModalContent").innerHTML = ""
                $("#addNewModal").modal("hide")
@@ -161,6 +161,8 @@
          if (bankPage === 2) { }
          if (bankPage === 3) {
             dropzoneObj.removeAllFiles()
+            document.getElementById("checkSharedCB3").checked = false
+            $("#tagResource3").tagsinput('removeAll')
          }
          if (bankPage === 4) {
             frameYT.innerHTML = ""
@@ -170,6 +172,23 @@
             $("#tagResource4").tagsinput('removeAll')
          }
       })
+   }
+   const renderRecourcesHTML = (array)=>{
+      let HTMLstring = ""
+      array.map(({type, path})=>{
+         let recursoHTML = ""
+         if(type === "Recurso_pdf"){
+            recursoHTML=`<iframe src="/media/${path}#toolbar=0" width="100%" height="600px"></iframe>`
+         }
+         if(type === "Recurso_audio"){
+            recursoHTML=`<audio><source src="/media/${path}" type="audio/ogg">Your browser does not support the audio element.</audio>`
+         }
+         if(type === "Recurso_image"){
+            recursoHTML=`<img src="/media/${path}"/>`
+         }
+         HTMLstring+=recursoHTML
+      })
+      return HTMLstring
    }
    const renderResourcesBank = (id) => {
       //render resources bank
@@ -184,7 +203,7 @@
          $("#addNewModal").modal("show")
          const dropzoneObj = new Dropzone("form#my-awesome-dropzone", {
             url: "{% url 'modalResourcesBank' %}",
-            headers:{"id":selectedId},
+            headers:{"idPagina":selectedId},
             autoProcessQueue: false,
             uploadMultiple:true,
             acceptedFiles: "image/*,audio/*, application/pdf",
@@ -192,7 +211,11 @@
             parallelUploads: 100,
             init: function () {
                this.on("successmultiple", function (files, response) {
-                  alerta(1)    
+                  recursosArray.push(...response.recursos)
+                  $(`#summernote${selectedId}`).summernote('pasteHTML', renderRecourcesHTML(response.recursos))
+                  document.querySelector("#addNewModalContent").innerHTML = ""
+                  $("#addNewModal").modal("hide")
+                  alerta(1)
                });
                this.on("errormultiple", function (files, response) {
                   alerta(5)   
@@ -218,6 +241,26 @@
          });
       })
 
+   }
+   const updateRecursosArray = ()=>{
+      recursosArray = []
+      let testArray = document.querySelector("#resourcesList")
+      if(!testArray)return
+      testArray = testArray.value.split("/")
+      testArray.map((element)=>{
+         if(element.trim() != ""){
+            recursosArray.push(JSON.parse(element)) 
+         }
+      })
+   }
+   const comprobarRecursosArray = ()=>{
+      let codigo = $(`#summernote${selectedId}`).summernote('code')
+      recursos = []
+      recursosArray.map((recurso)=>{
+         if(codigo.includes(recurso.path))
+         recursos.push(recurso)
+      })
+      return recursos
    }
    const comprobarYoutube = (linkEntry) => {
       if (linkEntry.match(/(?:https?:\/\/)?(?:www\.|m\.)?youtu(?:\.be\/|be.com\/\S*(?:watch|embed)(?:(?:(?=\/[^&\s\?]+(?!\S))\/)|(?:\S*v=|v\/)))([^&\s\?]+)/gm)) {
@@ -298,7 +341,7 @@
       $(document).ready(function () {
          $(`#summernote${id}`).summernote({
             dialogsInBody: true,
-            height: 200,
+            height: 700,
             placeholder: 'write your lesson here...',
             disableDragAndDrop: true,
             toolbar: [
@@ -349,6 +392,7 @@
       for (var [key, value] of formData.entries()) {
          data[key] = value
       }
+      data["recursos"]=comprobarRecursosArray()
       if (editmode) {
          return updateModel(url, "Update", data, selectedId)
             .then(async (res) => {
@@ -473,6 +517,7 @@
       }).then(async (res) => {
          content.innerHTML = await res.text()
          setupSummernote(id)
+         updateRecursosArray()
          content.classList.remove("card-list-item-close")
          editBtn.innerHTML = `<i class="fas fa-minus"></i>`
       }).then(() => {

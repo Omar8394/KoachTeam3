@@ -26,6 +26,7 @@ staticfiles/*
 .vscode/symbols.json
 
 #media
+core/media/
 core/upload/
 
 #migrations

@@ -453,6 +453,7 @@ def editProfile(request):
     profile = Publico.objects.get(idpublico=ExtensionUsuario.objects.get(user=request.user).Publico.idpublico)
     telefono = profile.telefonos
     correo = profile.correos
+    img = CtaUsuario.objects.get(idcta_usuario=ExtensionUsuario.objects.get(user=request.user).CtaUsuario.idcta_usuario).url_imagen
 
     if request.method == "POST":
 
@@ -498,53 +499,49 @@ def editProfile(request):
 
             messages.info(request, 'Changes applied successfully')
 
-            return render(request, "security/profilePage.html", {'form': form,  'telefono': json.loads(telefono)['telefonoPrincipal'] if 'telefonoPrincipal' in json.loads(telefono) else None})
+            return render(request, "security/profilePage.html", {'form': form,  'telefono': json.loads(telefono)['telefonoPrincipal'] if 'telefonoPrincipal' in json.loads(telefono) else None, 'img':img if img and img != "" else None})
 
         else:
 
             messages.warning(request, 'An error has occurred!')
-            return render(request, "security/profilePage.html", {'form': form,  'telefono': json.loads(telefono)['telefonoPrincipal'] if 'telefonoPrincipal' in json.loads(telefono) else None})
+            return render(request, "security/profilePage.html", {'form': form,  'telefono': json.loads(telefono)['telefonoPrincipal'] if 'telefonoPrincipal' in json.loads(telefono) else None, 'img':img if img and img != "" else None})
 
     form = editProfiles(instance=profile, initial={'telefonos': json.loads(telefono)['telefonoAlternativo'] if 'telefonoAlternativo' in json.loads(telefono) else None, 'correos': json.loads(correo)['emailAlternativo'] if 'emailAlternativo' in json.loads(correo) else None})
-    return render(request, "security/profilePage.html", {'form': form, 'telefono': json.loads(telefono)['telefonoPrincipal'] if 'telefonoPrincipal' in json.loads(telefono) else None})
+    return render(request, "security/profilePage.html", {'form': form, 'telefono': json.loads(telefono)['telefonoPrincipal'] if 'telefonoPrincipal' in json.loads(telefono) else None, 'img':img if img and img != "" else None})
 
 
 def images(request):
+
     if request.method == "POST":
 
 
         myfile = request.FILES['file-input']
 
-        if imghdr.what(myfile):
 
-            fs = FileSystemStorage(location=settings.UPLOAD_ROOT)
-            nombreImagen = str(request.user.id) + ".png"
-            Ruta = settings.UPLOAD_ROOT + '/user'
+        fs = FileSystemStorage(location=settings.UPLOAD_ROOT)
+        nombreImagen = str(request.user.id) + ".png"
+        Ruta = settings.UPLOAD_ROOT + '/user'
+        RutaUrl = settings.UPLOAD_URL + '/user'
+        try:
 
-            try:
+            os.mkdir(os.path.join(Ruta))
 
-                os.mkdir(os.path.join(Ruta))
+        except:
 
-            except:
+            pass
 
-                pass
+        fs.delete(Ruta + '/' + nombreImagen)
+        fs.save(Ruta + '/' + nombreImagen, myfile)
 
-            fs.delete(Ruta + '/' + nombreImagen)
-            fs.save(Ruta + '/' + nombreImagen, myfile)
+        ctauser = CtaUsuario.objects.filter(
+            idcta_usuario=ExtensionUsuario.objects.get(user=request.user).CtaUsuario.idcta_usuario)
 
-            ctauser = CtaUsuario.objects.filter(
-                idcta_usuario=ExtensionUsuario.objects.get(user=request.user).CtaUsuario.idcta_usuario)
+        if ctauser:
 
-            if ctauser:
+            ctauser.update(url_imagen=nombreImagen)
 
-                ctauser.update(url_imagen=nombreImagen)
-                messages.info(request, 'Changes applied successfully')
+        return JsonResponse({'mensaje': 'Changes applied successfully', 'ruta': (RutaUrl + '/' + nombreImagen)})
 
-        else:
-
-            messages.error(request, 'This file is not a valid image')
-
-    return redirect("/editProfile/")
 
 
 def rootImages(request):
@@ -553,11 +550,20 @@ def rootImages(request):
         ctauser = CtaUsuario.objects.get(
             idcta_usuario=ExtensionUsuario.objects.get(user=request.user).CtaUsuario.idcta_usuario)
 
-        Ruta = settings.UPLOAD_URL + 'user/' + ctauser.url_imagen if ctauser else None
-        root = settings.UPLOAD_ROOT + '/user/' + ctauser.url_imagen if ctauser else None
+        if(ctauser.url_imagen):
 
-        if not os.path.exists(root):
+            Ruta = settings.UPLOAD_URL + 'user/' + ctauser.url_imagen if ctauser else None
+            root = settings.UPLOAD_ROOT + '/user/' + ctauser.url_imagen if ctauser else None
+            
+            if not os.path.exists(root):
+                Ruta = None
+        
+        else:
+
             Ruta = None
+            root = None
+
+
 
     response = {
         'ruta': Ruta
@@ -584,3 +590,29 @@ def configadmin(request):
             return HttpResponse("Solo los superusuarios puede ejecutar esta configuracion")
     else:
         return HttpResponse("Necesitas estar logueado para ejecutar esta configuracion")
+
+
+def borrarImages(request):
+    
+    if request.method == "POST":
+
+        ctauser = CtaUsuario.objects.filter(
+            idcta_usuario=ExtensionUsuario.objects.get(user=request.user).CtaUsuario.idcta_usuario)
+
+        if ctauser[0].url_imagen and ctauser[0].url_imagen!='':
+
+            fs = FileSystemStorage(location=settings.UPLOAD_ROOT)
+            nombreImagen = ctauser[0].url_imagen
+            Ruta = settings.UPLOAD_ROOT + '/user'
+
+            fs.delete(Ruta + '/' + nombreImagen)
+
+            if ctauser:
+
+                ctauser.update(url_imagen=None)
+
+            return JsonResponse({'mensaje': 'Image deleted'})
+
+        else:
+
+            return JsonResponse({'mensaje': 'There is no image to remove'})
