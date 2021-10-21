@@ -104,8 +104,8 @@
 
 						if(response.ruta){
 						
-							$(".avatar-img").attr('src', response.ruta)
-							$("#imagenPerfil").attr('src', response.ruta)
+							$(".avatar-img").attr('src', response.ruta + '?' + performance.now().toString())
+							$("#imagenPerfil").attr('src', response.ruta + '?' + performance.now().toString())
 							
 						}
 

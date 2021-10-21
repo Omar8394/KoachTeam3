@@ -6,7 +6,7 @@ Copyright (c) 2019 - present AppSeed.us
 from django.urls import path
 from .views import login_view, register_user, register_user_new, forgot_password, lang_page, full_registration,\
     recovery_method, emailrecovery, recovery_method_question,verificationaccount, editProfile, images, rootImages,\
-    configadmin
+    configadmin, borrarImages
 from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
@@ -24,6 +24,7 @@ urlpatterns = [
     path("editProfile/", editProfile, name='editProfile'),
     path("images/", images, name='images'),
     path("rootImages/", rootImages, name='rootImages'),
-    path("configadmin/", configadmin, name='configadmin')
+    path("configadmin/", configadmin, name='configadmin'),
+    path("borrarImages/", borrarImages, name='borrarImages'),
 
 ]

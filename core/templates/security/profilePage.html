@@ -32,17 +32,21 @@
                         <div class="card-body">
                             <center class="mt-4"> 
                                 
-                                <form action="{% url 'images' %}" enctype="multipart/form-data" id="fileForm" method="post">
-                                    {% csrf_token %}
                                     <div class="image-upload">
-
-                                        <label for="file-input">
-                                            <img src="/static/assets/img/default-user-icon.png" class="rounded-circle border" style="cursor: pointer;" width="150" id="imagenPerfil">
-                                        </label>  
-                                        <input id="file-input" name="file-input" type="file" style="display: none;" accept="image/*" />
-                                     
+                                        <div class="row">
+                                            <div class="col">
+                                                <label for="file-input">
+                                                    <img src="/static/assets/img/default-user-icon.png" class="rounded-circle border" style="cursor: pointer;" width="150" id="imagenPerfil">
+                                                </label>  
+                                                <input id="file-input" name="file-input" type="file" style="display: none;" accept="image/*" />
+                                            </div>
+                                        </div>
+                                        <div class="row mt-2">
+                                            <div class="col" id="buttons">
+                                                <button class="btn btn-primary btn-round" onclick=clickImage()>Add a photo</button>
+                                            </div>
+                                        </div>
                                     </div> 
-                                </form>
 
             
                                 <h4 class="card-title my-2">
@@ -126,29 +130,132 @@
 
 <script>
 
-$(document).on('change', "#file-input", function(e){
-//     // console.log(document.getElementById("file-input").files[0].fullName)
-//     // $('#imagenPerfil').attr('src', document.getElementById("file-input").files[0].path);
-    
-//   const file = document.querySelector('#file-input').files[0];
+    // metodos para cargar botones de imagenes
+    $(document).ready(function(){
 
-//   if(file){
-      
-//   const reader = new FileReader();
-//             reader.onload = imageIsLoaded;
-//             reader.readAsDataURL(file);
-//   }else
-//   console.log("nada")
+        if('{{img}}'.toLowerCase()!=='none'){
 
-    $('#fileForm').submit()
+            document.getElementById('buttons').innerHTML = '<button class="btn btn-primary btn-round mr-2" onclick=clickImage()>Change</button><button class="btn btn-danger btn-round" onclick=borrarImage()>Remove</button>'
 
-});
+        }else{
 
-// function imageIsLoaded(e) {
+            document.getElementById('buttons').innerHTML = '<button class="btn btn-primary btn-round" onclick=clickImage()>Add a photo</button>'
 
-//     $('#imagenPerfil').attr('src', e.target.result );
+        }
 
-// }
+    });
+
+    // metodo borrar imagen
+    function borrarImage() {
+
+        alerta(3).then((willDelete) => {
+
+            if(willDelete){
+
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'borrarImages' %}", 
+                    data : {csrfmiddlewaretoken: '{{ csrf_token }}'},
+                    success: function (response) {
+
+                        if(response.mensaje){
+                            
+                            $(".avatar-img").attr('src', "/static/assets/img/default-user-icon.png")
+                            $('#imagenPerfil').attr('src', "/static/assets/img/default-user-icon.png" );
+                            swal(response.mensaje)
+                            document.getElementById('buttons').innerHTML = '<button class="btn btn-primary btn-round" onclick=clickImage()>Add a photo</button>'
+                            
+                        }
+
+                    },
+                    error: function () {}
+                });
+                
+            }
+
+        });
+
+    }
+
+    // metodos para disparar el gestor de imagen
+    function clickImage() {
+
+        $( "#file-input").trigger('click')
+        
+    }
+
+    //metodos para guardar imagen
+    $(document).on('change', "#file-input", function(e){
+    //     // console.log(document.getElementById("file-input").files[0].fullName)
+    //     // $('#imagenPerfil').attr('src', document.getElementById("file-input").files[0].path);
+        
+    //   const file = document.querySelector('#file-input').files[0];
+
+    //   if(file){
+        
+    //   const reader = new FileReader();
+    //             reader.onload = imageIsLoaded;
+    //             reader.readAsDataURL(file);
+    //   }else
+      console.log("nada")
+
+        // $('#fileForm').submit()
+    var x = document.getElementById("file-input")
+    var txt = "";
+        if (x.files.length > 0) {
+
+            var file = x.files[0];
+            if((file.size / 1024 / 1024).toFixed(2) > 6){
+
+                swal("Max Upload size is 6MB only")
+
+            }else if(!(x.files[0].type.toLowerCase().endsWith('/png')||x.files[0].type.toLowerCase().endsWith('/jpg')||x.files[0].type.toLowerCase().endsWith('/jpeg'))){
+
+                swal("Only JPG, JPEG and PNG file types are allowed")
+
+            }else{
+
+                // $('#fileForm').submit()
+                var formdata = new FormData();
+                formdata.append('file-input', file);
+                formdata.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+                
+                $.ajax({
+                        type: "POST",
+                        url: "{% url 'images' %}", 
+                        data : formdata,
+                        processData: false,
+                        contentType: false,
+                        success: function (response) {
+
+                            if(response.mensaje){
+                                
+                                const reader = new FileReader();
+                                reader.onload = imageIsLoaded;
+                                reader.readAsDataURL(file);
+                                swal(response.mensaje)
+                                document.getElementById('buttons').innerHTML = '<button class="btn btn-primary btn-round mr-2" onclick=clickImage()>Change</button><button class="btn btn-danger btn-round" onclick=borrarImage()>Remove</button>'
+                                
+                            }
+
+                                
+
+                        },
+                        error: function () {}
+                });
+
+            }
+
+        }
+        
+    });
+
+    function imageIsLoaded(e) {
+
+        $(".avatar-img").attr('src', e.target.result)
+        $('#imagenPerfil').attr('src', e.target.result );
+
+    }
 
 
 	
