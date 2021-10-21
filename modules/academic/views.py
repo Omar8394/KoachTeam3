@@ -27,8 +27,7 @@ from ..app.models import TablasConfiguracion, Estructuraprograma, Publico
 
 from ..security.models import ExtensionUsuario
 
-from .models import ActividadEvaluaciones, Cursos, ActividadConferencia, ActividadLeccion, ActividadTarea, EscalaEvaluacion, EvaluacionesPreguntas, EvaluacionesBloques, Paginas, PreguntasOpciones, ExamenActividad,ExamenRespuestas,ExamenResultados, Recurso, Tag, TagRecurso,EvaluacionInstrucciones
-from .models import ActividadEvaluaciones, Cursos, ActividadConferencia, ActividadLeccion, ActividadTarea, EscalaEvaluacion, EvaluacionesPreguntas, EvaluacionesBloques, Paginas, PreguntasOpciones, ExamenActividad,ExamenRespuestas,ExamenResultados, Recurso, RecursoPaginas, Tag, TagRecurso
+from .models import ActividadEvaluaciones, Cursos, ActividadConferencia, ActividadLeccion, ActividadTarea, EscalaEvaluacion, EvaluacionesPreguntas, EvaluacionesBloques, Paginas, PreguntasOpciones, ExamenActividad,ExamenRespuestas,ExamenResultados, Recurso, RecursoPaginas, Tag, TagRecurso,EvaluacionInstrucciones
 from modules.app import models
 
 # Create your views here.
