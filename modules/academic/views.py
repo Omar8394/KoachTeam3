@@ -980,9 +980,9 @@ def getContentTopicos(request):
                 unidad=Estructuraprograma.objects.get(valor_elemento="Unit", url=data["urlUnidad"])
                 curso=Estructuraprograma.objects.get(valor_elemento="Course", url=data["urlCurso"])
                 if data["query"] == "" or data["query"] == None:
-                    lista = curso.estructuraprograma_set.all()
+                    lista = curso.estructuraprograma_set.all().order_by("orden_presentacion")
                 else:
-                    lista = curso.estructuraprograma_set.all().filter(valor_elemento="Topic", descripcion__icontains=data["query"])
+                    lista = curso.estructuraprograma_set.all().filter(valor_elemento="Topic", descripcion__icontains=data["query"]).order_by("orden_presentacion")
                 context = {"data":lista, "programa":programa, "proceso":proceso, "unidad":unidad, "curso":curso ,"add":add,"edit": edit,"take": take,"see": see, "delete":delete, "go":go, "query":data["query"]}
                 html_template = (loader.get_template('academic/contenidoTopicos.html'))
                 return HttpResponse(html_template.render(context, request))
@@ -1259,6 +1259,12 @@ def getModalTopico(request):
                         context = {"courses": courses, "modelo": modelo}
                         html_template = (loader.get_template('components/modalAddTopico.html'))
                         return HttpResponse(html_template.render(context, request))
+                    elif data["method"] == "Sort":
+                        for item in data["order"]:
+                            topico = Estructuraprograma.objects.get(pk=item["pk"])
+                            topico.orden_presentacion = item["order"]
+                            topico.save()
+                        return JsonResponse({"message":"Perfect"})
                     elif data["method"] == "Delete":
                         topico = Estructuraprograma.objects.get(pk=data["id"])
                         topico.delete()
@@ -1296,6 +1302,12 @@ def getModalActividad(request):
                         context = {"modelo": modelo}
                         html_template = (loader.get_template('components/modalAddActividad.html'))
                         return HttpResponse(html_template.render(context, request))
+                    elif data["method"] == "Sort":
+                        for item in data["order"]:
+                            actividad = Estructuraprograma.objects.get(pk=item["pk"])
+                            actividad.orden_presentacion = item["order"]
+                            actividad.save()
+                        return JsonResponse({"message":"Perfect"})
                     elif data["method"] == "Delete":
                         actividad = Estructuraprograma.objects.get(pk=data["id"])
                         actividad.delete()
