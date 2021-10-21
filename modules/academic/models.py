@@ -176,7 +176,7 @@ class ExamenActividad(models.Model):
     PuntuacionFinal=models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True, default=0)
 
     estadoExamen = models.SmallIntegerField(null=True)
-    usuario=models.ForeignKey(Publico,on_delete=models.CASCADE,  default=None, null=True,related_name='ActividadExamen')
+    usuario=models.ForeignKey(Publico,on_delete=models.CASCADE,  default=None, null=True,related_name='usuarioExamen')
     fk_Actividad = models.ForeignKey(ActividadEvaluaciones,on_delete=models.CASCADE,  default=None, null=True,related_name='ActividadExamen')
 
 class ExamenRespuestas(models.Model):

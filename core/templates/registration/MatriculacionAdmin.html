@@ -4,10 +4,11 @@
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
+{% load Filter %}
 
 {% block content %}
 
-	<div class="content">
+	<div class="content" id="casanegra">
 		<div class="page-inner animated fadeInRight">
 			<div class="page-header">
 				<h4 class="page-title">Enrollment List</h4>
@@ -43,6 +44,8 @@
                                         <i class="glyphicon glyphicon-search"></i> Filter
                                        
                                     </button>
+
+                              
                                     <div class="dropdown-menu" id="drop1">
                                         <div class="panel">
                                             <div class="panel-body">
@@ -84,6 +87,23 @@
                                               
                                                        
                                                         
+                                                    </tr>
+                                                                 <tr>
+                                                        <td class="p-2">Origen</td>
+                                                        <td></td>
+                                                        <td class="p-2">
+                                                            <select id="idOrigen" name="idOrigen"  class="form-control" >
+                                                                <option value=""></option>
+                    
+                                                                {% for mat in origenes %}
+                                                                <option value="{{mat.id}}"  {% if mat.id == idOrigen %} selected {% endif %}    >{{mat.origen}}</option>
+                    
+                    
+                                                                {% endfor %}
+                    
+                    
+                                                            </select>
+                                                        </td>
                                                     </tr>
                                                     <tr>
                                                         <td class="p-2">Enrollment Type</td>
@@ -147,6 +167,8 @@
                                                 <th style="width: 65px;"></th>
                                                 <th>Applicant</th>
                                                 <th>Status </th>
+                                                <th>Origen </th>
+
                                                 <th>Date of application</th>
                                                 <th>Program</th>
                                                 <th></th>       
@@ -159,6 +181,8 @@
                                                 <td></td>
                                                 <td>{{mat.fk_publico}}</td>
                                                 <td>{{mat.fk_status_matricula}}</td>
+                                                   <td>{{mat.origenSolicitud|OrigenMatricula}}</td>
+
                                                 <td>{{mat.fecha_matricula}}</td>
                                                 <td>{{mat.fk_estruc_programa}}</td>
                                                 <td>
@@ -297,17 +321,8 @@
 
 <script>
     var paginaActual=1;
-    var numPaginas="{{ publicoObject}}";
-
-    function setNumPages(value){
-
-        numPaginas=value;
-    }
-
-
-    function openmen(){
-        
-    }
+  
+  
 
 function SelectPersona(nombre, id){
 $("#BuscarPersonaModal").modal("toggle");
@@ -319,6 +334,27 @@ PersonId.value=id;
 
 
 }
+function goToPage(page){
+    
+
+   
+    let url='ModalPublico/'+"?page="+page.toString();
+    fetch(url,{
+        mode: 'no-cors',
+      method: 'get'
+    }).then(function(result){
+    
+    return result.text();
+    
+    }).then(function(result){
+        
+        let unit=document.getElementById("modalContentPersona").innerHTML=result;
+    
+    });
+        $("#BuscarPersonaModal").modal("show");
+        
+      
+    }
 function BuscarPersonaPost(){
 	
 
@@ -350,97 +386,6 @@ function BuscarPersonaPost(){
       
     }
 
-
-
-function modalNext(){
-    
-
-    paginaActual=paginaActual+1;
-    let url='ModalPublico/'+"?page="+paginaActual.toString();
-    fetch(url,{
-        mode: 'no-cors',
-      method: 'get'
-    }).then(function(result){
-    
-    return result.text();
-    
-    }).then(function(result){
-        
-        let unit=document.getElementById("modalContentPersona").innerHTML=result;
-    
-    });
-        $("#BuscarPersonaModal").modal("show");
-        
-      
-    }
-
-    
-function modalPrevius(){
-    
-  paginaActual=paginaActual-1;
-
-    let url='ModalPublico/'+"?page="+paginaActual.toString();
-    fetch(url,{
-        mode: 'no-cors',
-      method: 'get'
-    }).then(function(result){
-    
-    return result.text();
-    
-    }).then(function(result){
-        
-        let unit=document.getElementById("modalContentPersona").innerHTML=result;
-    
-    });
-        $("#BuscarPersonaModal").modal("show");
-        
-      
-    }
-    
-function modalLast(){
-    paginaActual=numPaginas;
- 
-
-    let url='ModalPublico/'+"?page="+numPaginas.toString();
-    fetch(url,{
-        mode: 'no-cors',
-      method: 'get'
-    }).then(function(result){
-    
-    return result.text();
-    
-    }).then(function(result){
-        
-        let unit=document.getElementById("modalContentPersona").innerHTML=result;
-    
-    });
-        $("#BuscarPersonaModal").modal("show");
-        
-      
-    }
-    
-function modalFirst(){
-    paginaActual=1;
-
-
-    let url='ModalPublico/'+"?page=1";
-    fetch(url,{
-        mode: 'no-cors',
-      method: 'get'
-    }).then(function(result){
-    
-    return result.text();
-    
-    }).then(function(result){
-        
-        let unit=document.getElementById("modalContentPersona").innerHTML=result;
-    
-    });
-        $("#BuscarPersonaModal").modal("show");
-        
-      
-    }
-    
 
 
 </script>

@@ -35,6 +35,8 @@
 	<!-- Sweet Alert -->
 	<script src="/static/assets/js/plugin/sweetalert/sweetalert.min.js"></script>
 
+
+
 	<!-- Atlantis JS -->
     <script src="/static/assets/js/atlantis.min.js"></script>
 
@@ -57,6 +59,25 @@
 	<!-- TagInput -->
 	<script src="/static/assets/js/bootstrap-tagsinput.js"></script>
 	 <script>
+	 window.addEventListener("load", function(event) {
+
+  });
+
+	 //loader
+	 function setLoading(){
+
+		 var element = document.getElementById("over");
+		 
+  element.classList.add("is-loading");
+  element.classList.add("is-loading-lg");
+
+	 }
+	 function stopLoading(){
+
+		 var element = document.getElementById("myBody");
+  element.classList.remove("is-loading");
+	 }
+
 
 	 	// Notificaciones a la hora de crear, editar o eliminar un registro respectivamente. 
 

@@ -43,6 +43,15 @@
                                     </div>
                                     
                                     <div class="form-group col-md-6 d-flex justify-content-end">
+                                        <button type="button" class="btn btn-success" onclick="openAddInstructions()">
+                                            Instructions<i class="fas fa-tasks ml-1"></i>
+                                        </button>
+                                        &nbsp;
+                                        &nbsp;
+                                        &nbsp;
+
+
+
                                         <button type="button" class="btn btn-success" onclick="openAddBlock()">
                                             Add new Block <i class="fas fa-plus ml-1"></i>
                                         </button>
@@ -182,9 +191,17 @@
     </div>
     <!--Modals-->
     
-    <!-- Modal escoger tipo de pregunta -->
+    <!-- Modal bloque -->
     <div class="modal fade" tabindex="-1" role="dialog" id="addBlockModal">
         <div class="modal-dialog modal-dialog-centered" role="document" id="addBlockContent">
+        
+            
+        </div>
+    </div>
+
+     <!-- Modal Instrucciones -->
+     <div class="modal fade" tabindex="-1" role="dialog" id="addInstrucciones">
+        <div class="modal-dialog modal-lg " role="document" id="addInstruccionesContent">
         
             
         </div>
@@ -344,6 +361,17 @@ const toBase64 = file => new Promise((resolve, reject) => {
                $("#addNewQuestion").modal("show")
             })
         }    
+
+
+        const openAddInstructions = () => {
+  
+            renderModalAddInstructions().then(()=>{
+            
+               $("#addInstrucciones").modal("show")
+            })
+        }    
+
+   
 
        // Guardar
    
@@ -636,6 +664,80 @@ const toBase64 = file => new Promise((resolve, reject) => {
             })
         }
 
+    
+        async function clickSaveInstructions  (url)  {
+
+       const texto_instrucciones= document.getElementById("instruccionesText")
+       const metodo='Add'
+         
+       form = {
+          texto: texto_instrucciones.value,
+          ActivityId:ActivityId,
+          method:metodo,
+       
+       }
+       fetch(url, {
+                ...fetchObject,
+                body: JSON.stringify({
+                   data: form
+                }),
+            })
+            .then(async (res) => {
+                let result = JSON.parse(await res.text())
+                if (result.message === "Error") {
+                   alerta(5);
+                }
+                alerta(1);
+                reload();
+            })
+            .then(() => {
+               form=null
+              
+                $("#addInstrucciones").modal("hide")
+                reload()
+            })
+
+   }
+
+   async function deleteInstructions  ()  {
+
+    const elimino = await alerta(3)
+     
+        if (!elimino) {
+
+            return;
+        }
+
+
+const metodo='delete'
+form = {
+
+   ActivityId:ActivityId,
+   method:metodo,
+
+}
+fetch("{% url 'getModalAddInstructions' %}", {
+         ...fetchObject,
+         body: JSON.stringify({
+            data: form
+         }),
+     })
+     .then(async (res) => {
+         let result = JSON.parse(await res.text())
+         if (result.message === "Error") {
+            alerta(5);
+         }
+         alerta(4);
+         reload();
+     })
+     .then(() => {
+        form=null
+       
+         $("#addInstrucciones").modal("hide")
+         reload()
+     })
+
+}
 
 
         
@@ -662,6 +764,29 @@ const toBase64 = file => new Promise((resolve, reject) => {
                 })   
             })
         }   
+
+        const renderModalAddInstructions = () => {
+            let idTest=ActivityId
+           return fetch("{% url 'getModalAddInstructions' %}", {
+               ...fetchObject,
+               body: JSON.stringify({
+            data: {
+                   
+                   method:'Show',
+                   idTest
+               }
+           })
+           })
+           .then(async (res) => {
+               document.getElementById("addInstruccionesContent").innerHTML = await res.text()
+           }).then(()=>{
+               const formIns = document.getElementById("formInstructions")
+               formIns.addEventListener("submit", (e) => {
+                   e.preventDefault()
+                   clickSaveInstructions("{% url 'getModalAddInstructions' %}")
+               })   
+           })
+       }   
         
 
         const renderModalQuestions = () => {

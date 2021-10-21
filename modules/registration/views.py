@@ -45,10 +45,17 @@ def enrollment(request):
 
     msg = None
    # structuraProg=Estructuraprograma.objects.filter(fk_estructura_padre=None)
-    structuras=Estructuraprograma.objects.all()
+  #  structuras=Estructuraprograma.objects.all()
+    structurasAll=Estructuraprograma.objects.all()
 
-    structuras=structuras.annotate(precio=F('prize__precio'), fechaIngreso=F('prize__fecha_registro'), id=F('prize__idprograma_precios'), descuento=F('prize__PorcentajeDescuento'), max=Max('prize__idprograma_precios'), amountDiscount=Max('prize__idprograma_precios')  ).filter(id=Max('prize__idprograma_precios')  )
-    structuras=structuras.filter(fk_estructura_padre=None)
+
+   # structuras=structuras.annotate(precio=F('prize__precio'), fechaIngreso=F('prize__fecha_registro'), id=F('prize__idprograma_precios'), descuento=F('prize__PorcentajeDescuento'), max=Max('prize__idprograma_precios'), amountDiscount=Max('prize__idprograma_precios')  ).filter(id=Max('prize__idprograma_precios')  )
+    structurasAll=structurasAll.annotate(precio=F('prize__precio'), fechaIngreso=F('prize__fecha_registro'), id=F('prize__idprograma_precios'), descuento=F('prize__PorcentajeDescuento'), max=Max('prize__idprograma_precios'), amountDiscount=Max('prize__idprograma_precios')  ).filter(id=Max('prize__idprograma_precios')  )
+    #structuras=structuras.filter(fk_estructura_padre=None)
+    #structuras=structuras.exclude(precio=None)
+    structurasAll=structurasAll.exclude(precio=None)
+
+
     
   
 
@@ -60,7 +67,7 @@ def enrollment(request):
     html_template = loader.get_template( 'registration/Matriculacion.html' )
 
     #return HttpResponse(html_template.render(context, request))
-    return render(request, 'registration/Matriculacion.html', {"form": form, "msg" : msg,'structuraProg':structuras, 'tipoPrograma':tipoPrograma, 'segment':'registration'})
+    return render(request, 'registration/Matriculacion.html', {"structurasAll": structurasAll, "msg" : msg,'tipoPrograma':tipoPrograma, 'segment':'registration'})
 
 @login_required(login_url="/login/")
 def ManageEnrollments(request):
@@ -259,37 +266,27 @@ def MatriculacionAdmin(request):
 
     fechaF=None
     fechaI=None
-    
+    idOrigen=None
     idPersona=None
     idStatus=None
     idTipo=None
 
     personaBuscarNombre=None
 
-   #numero de paginas para el modal
-    publico=Publico.objects.all()
-    paginatorP = Paginator(publico, 1)
-    
-    
-    
-    
-    publicoObject = paginatorP.get_page(1)
-    numeroPaginas=publicoObject.paginator.num_pages
 
-    del publicoObject
-    del paginatorP
-    del publico
 
     
 
     is_cookie_set = 0
    
-    if 'fechaInicial' in request.session or 'fechaFinal' in request.session or 'idPersona' in request.session or 'idStatus' in request.session or 'idTipo' in request.session : 
+    if 'fechaInicial' in request.session or 'fechaFinal' in request.session or 'idPersona' in request.session or 'idStatus' in request.session or 'idTipo' in request.session  or 'idOrigen' in request.session : 
         fechaF = request.session['fechaFinal'] if 'fechaFinal' in request.session else None
         fechaI = request.session['fechaInicial'] if 'fechaInicial' in request.session else None
         idPersona=request.session['idPersona'] if 'idPersona' in request.session else None
         idStatus=request.session['idStatus'] if 'idStatus' in request.session else None
         idTipo=request.session['idTipo'] if 'idTipo' in request.session else None
+        idOrigen=request.session['idOrigen'] if 'idOrigen' in request.session else None
+
 
         
         is_cookie_set = 1
@@ -305,12 +302,15 @@ def MatriculacionAdmin(request):
         request.session['fechaFinal']=None
         request.session['idPersona']=None
         request.session['idStatus']=None
+        request.session['idOrigen']=None
+
         request.session['idTipo']=None
         fechaF=None
         fechaI=None
         idPersona=None
         idStatus=None
         idTipo=None
+        idOrigen=None
 
       
       
@@ -336,6 +336,8 @@ def MatriculacionAdmin(request):
 
           if idStatus!=None and idStatus!="":
            matriculaList=matriculaList.filter(fk_status_matricula=idStatus)
+          if idOrigen!=None and idOrigen!="":
+           matriculaList=matriculaList.filter(origenSolicitud=idOrigen)
 
 
            
@@ -352,6 +354,8 @@ def MatriculacionAdmin(request):
           request.session['idPersona']=None
           request.session['idStatus']=None
           request.session['idTipo']=None
+          request.session['idOrigen']=None
+
 
        
 
@@ -364,15 +368,16 @@ def MatriculacionAdmin(request):
         idPersona=request.POST.get('PersonId') 
         idStatus=request.POST.get('idStatus') 
         idTipo=request.POST.get('idTipo') 
-        
-        print(request.POST.get('idStatus') )
+        idOrigen=request.POST.get('idOrigen') 
 
         
-        print("Amtes")
-        
+     
         if idTipo!= None and idTipo!="":
          matriculaList=matriculaList.filter(fk_tipo_matricula=idTipo)
          request.session['idTipo'] = idTipo
+        if idOrigen!= None and idOrigen!="":
+         matriculaList=matriculaList.filter(origenSolicitud=idOrigen)
+         request.session['idOrigen'] = idOrigen
 
         print("request.POST")
 
@@ -412,6 +417,7 @@ def MatriculacionAdmin(request):
 
     
     paginator = Paginator(matriculaList, 10)
+    origenes=Methods.getOrigenesMatricula()
     
     
     page_number = request.GET.get('page')
@@ -427,18 +433,33 @@ def MatriculacionAdmin(request):
      idStatus=int(idStatus)
     if idTipo!=None and idTipo!="":
      idTipo=int(idTipo)
+    if idOrigen!=None and idOrigen!="":
+     idOrigen=int(idOrigen)
             
-    context = { 'msg':msg,'matriculasList': matriculaList}
-    context['segment'] = 'registration'
+    #context = { 'msg':msg,'matriculasList': matriculaList}
+    #context['segment'] = 'registration'
     
 
     
     html_template = (loader.get_template('registration/MatriculacionAdmin.html'))
 
+    context={'msg':msg,
+    'matriculasList': page_obj,
+    'FechaInicial':fechaI,
+    'FechaFinal':fechaF,
+     
+     'idPersona':idPersona,
+     'personaBuscarNombre':personaBuscarNombre,
+      'selectedStatus':idStatus,
+      'selectedType':idTipo ,
+      'status':status,'types':types,
+       'segment':'registration',
+        'origenes':origenes,
+        'idOrigen':idOrigen} 
     
     
    # return HttpResponse(html_template.render(context, request))
-    return render(request, 'registration/MatriculacionAdmin.html', {'msg':msg,'matriculasList': page_obj,'FechaInicial':fechaI,'FechaFinal':fechaF, 'publicoObject':numeroPaginas,'idPersona':idPersona,'personaBuscarNombre':personaBuscarNombre, 'selectedStatus':idStatus,'selectedType':idTipo ,'status':status,'types':types, 'segment':'registration'} )
+    return render(request, 'registration/MatriculacionAdmin.html', context)
 
 
 
@@ -457,7 +478,7 @@ def MyEnrollments(request):
     
     fechaF=None
     fechaI=None
-    
+    idOrigen=None
     idStatus=None
     idTipo=None
 
@@ -473,9 +494,11 @@ def MyEnrollments(request):
 
     is_cookie_set = 0
    
-    if 'fechaInicial' in request.session or 'fechaFinal' in request.session  or 'idStatus' in request.session or 'idTipo' in request.session : 
+    if 'fechaInicial' in request.session or 'fechaFinal' in request.session  or 'idStatus' in request.session or 'idTipo' in request.session or 'idOrigen' in request.session : 
         fechaF = request.session['fechaFinal'] if 'fechaFinal' in request.session else None
         fechaI = request.session['fechaInicial'] if 'fechaInicial' in request.session else None
+        idOrigen = request.session['idOrigen'] if 'idOrigen' in request.session else None
+
         
         idStatus=request.session['idStatus'] if 'idStatus' in request.session else None
         idTipo=request.session['idTipo'] if 'idTipo' in request.session else None
@@ -492,12 +515,13 @@ def MyEnrollments(request):
         is_cookie_set = 0
         request.session['fechaInicial']=None
         request.session['fechaFinal']=None
+        request.session['idOrigen']=None
         
         request.session['idStatus']=None
         request.session['idTipo']=None
         fechaF=None
         fechaI=None
-        
+        idOrigen=None
         idStatus=None
         idTipo=None
 
@@ -525,6 +549,9 @@ def MyEnrollments(request):
           if idStatus!=None and idStatus!="":
            matriculaList=matriculaList.filter(fk_status_matricula=idStatus)
 
+          if idOrigen!=None and idOrigen!="":
+           matriculaList=matriculaList.filter(origenSolicitud=idOrigen)
+
     if request.method == "POST":
         
         if (is_cookie_set == 1): 
@@ -534,6 +561,8 @@ def MyEnrollments(request):
           
           request.session['idStatus']=None
           request.session['idTipo']=None
+          request.session['idOrigen']=None
+
 
        
 
@@ -546,6 +575,8 @@ def MyEnrollments(request):
         
         idStatus=request.POST.get('idStatus') 
         idTipo=request.POST.get('idTipo') 
+        idOrigen=request.POST.get('idOrigen') 
+
         
         print(request.POST.get('idStatus') )
 
@@ -555,6 +586,10 @@ def MyEnrollments(request):
         if idTipo!= None and idTipo!="":
          matriculaList=matriculaList.filter(fk_tipo_matricula=idTipo)
          request.session['idTipo'] = idTipo
+        
+        if idOrigen!= None and idOrigen!="":
+         matriculaList=matriculaList.filter(origenSolicitud=idOrigen)
+         request.session['idOrigen'] = idOrigen
 
         
 
@@ -590,6 +625,7 @@ def MyEnrollments(request):
 
     
     paginator = Paginator(matriculaList, 10)
+    origenes=Methods.getOrigenesMatricula()
     
     
     page_number = request.GET.get('page')
@@ -600,7 +636,21 @@ def MyEnrollments(request):
      idStatus=int(idStatus)
     if idTipo!=None and idTipo!="":
      idTipo=int(idTipo)
-    return render(request, 'registration/MyMatriculas.html', {'msg':msg,'matriculasList': page_obj,'FechaInicial':fechaI,'FechaFinal':fechaF, 'selectedStatus':idStatus,'selectedType':idTipo ,'status':status,'types':types, 'segment':'registration'} )
+    if idOrigen!=None and idOrigen!="":
+     idOrigen=int(idOrigen)
+
+    context= {'msg':msg,
+    'matriculasList': page_obj,
+    'FechaInicial':fechaI,
+    'FechaFinal':fechaF,
+     'selectedStatus':idStatus,
+     'selectedType':idTipo ,
+     'status':status,
+     'types':types,
+      'segment':'registration', 
+     'origenes':origenes,
+     'idOrigen':idOrigen}
+    return render(request, 'registration/MyMatriculas.html',context )
 
     return render(request, 'registration/MyMatriculas.html', {'msg':msg,'matriculasList': page_obj})
 
@@ -1111,8 +1161,7 @@ def MatriculacionAdminModal(request):
     types=TablasConfiguracion.obtenerHijos("Tipo Matricula")
 
     admin=True if request.GET.get("admin")==1 else False
-    telefonoAlt = json.loads(telefono)
-    telefonoAlt['telefonoAlternativo'] = obj.telefonos
+  
 
     
 
@@ -1208,7 +1257,7 @@ def ModalPublico(request):
      request.session['personaBuscar'] = personaBuscar
 
 
-    paginator = Paginator(publicoObject, 1)
+    paginator = Paginator(publicoObject, 10)
     
     
     page_number = request.GET.get('page')
@@ -1239,6 +1288,8 @@ def save(request):
         cbProcess=request.POST.get('cbProcess')
         cbUnit=request.POST.get('cbUnit')
         cbCourse=request.POST.get('cbCourse')
+        origen=request.POST.get('origen')
+
         statusDB=None
         typeDB=None
         status=request.POST.get('status')
@@ -1266,11 +1317,32 @@ def save(request):
 
         
         publico=ExtensionUsuario.objects.get(user=request.user).Publico
+        print(idEstruct)
 
         struct=Estructuraprograma.objects.get(idestructuraprogrmas=idEstruct)
-          # matriculaAlumno=MatriculaAlumnos.objects.filter(fk_publico=publico)
-          # if matriculaAlumno.get(fk_estruc_programa=struct)!=None:
-          #   print()
+        print(struct)
+
+        padre=struct.fk_estructura_padre
+        matriculaAlumno=MatriculaAlumnos.objects.filter(fk_publico=publico)
+
+        if matriculaAlumno.filter(fk_estruc_programa=struct)!=None:
+          for matricula in matriculaAlumno.filter(fk_estruc_programa=struct):
+            if matricula.fk_status_matricula.valor_elemento!='EstatusCancelado':
+              return HttpResponse(2)
+        count =0
+        while padre !=None:
+          print(count)
+          if matriculaAlumno.filter(fk_estruc_programa=padre)!=None:
+            for matricula in matriculaAlumno.filter(fk_estruc_programa=padre):
+              if matricula.fk_status_matricula.valor_elemento!='EstatusCancelado':
+                return HttpResponse(2)
+          padre=padre.fk_estructura_padre
+          count=count+1
+
+      
+
+
+          
          
 
 
@@ -1290,7 +1362,7 @@ def save(request):
 
 
         
-        matricula=MatriculaAlumnos.objects.create(fk_publico=publico,fk_estruc_programa=struct, fecha_matricula=datetime.date.today(),fk_tipo_matricula=typeDB,fk_status_matricula=statusDB,fecha_aprobada=None  )
+        matricula=MatriculaAlumnos.objects.create(fk_publico=publico,fk_estruc_programa=struct, fecha_matricula=datetime.date.today(),fk_tipo_matricula=typeDB,fk_status_matricula=statusDB,fecha_aprobada=None, origenSolicitud=origen  )
         matricula.save()
         return HttpResponse(1)
 
@@ -1602,6 +1674,8 @@ def ManagePersonSave(request):
         cbUnit=request.POST.get('cbUnit')
         cbCourse=request.POST.get('cbCourse')
         idPersona=request.POST.get('id')
+        origen=request.POST.get('origen')
+
         statusDB=None
         typeDB=None
         status=request.POST.get('status')
@@ -1620,6 +1694,26 @@ def ManagePersonSave(request):
         
         publico=Publico.objects.get(pk=idPersona)
         struct=Estructuraprograma.objects.get(idestructuraprogrmas=idEstruct)
+
+        padre=struct.fk_estructura_padre
+        matriculaAlumno=MatriculaAlumnos.objects.filter(fk_publico=publico)
+
+        if matriculaAlumno.filter(fk_estruc_programa=struct)!=None:
+          for matricula in matriculaAlumno.filter(fk_estruc_programa=struct):
+            if matricula.fk_status_matricula.valor_elemento!='EstatusCancelado':
+              return HttpResponse(2)
+        count =0
+        while padre !=None:
+          print(count)
+          if matriculaAlumno.filter(fk_estruc_programa=padre)!=None:
+            for matricula in matriculaAlumno.filter(fk_estruc_programa=padre):
+              if matricula.fk_status_matricula.valor_elemento!='EstatusCancelado':
+                return HttpResponse(2)
+          padre=padre.fk_estructura_padre
+          count=count+1
+
+
+
         if type!=None and type!="":
           typeDB=TablasConfiguracion.objects.get(id_tabla=type)
 
@@ -1632,7 +1726,7 @@ def ManagePersonSave(request):
 
 
         
-        matricula=MatriculaAlumnos.objects.create(fk_publico=publico,fk_estruc_programa=struct, fecha_matricula=datetime.date.today(),fk_tipo_matricula=typeDB,fk_status_matricula=statusDB,fecha_aprobada=None  )
+        matricula=MatriculaAlumnos.objects.create(fk_publico=publico,fk_estruc_programa=struct, fecha_matricula=datetime.date.today(),fk_tipo_matricula=typeDB,fk_status_matricula=statusDB,fecha_aprobada=None, origenSolicitud=origen   )
         matricula.save()
         return HttpResponse("Errolment application saved")
 

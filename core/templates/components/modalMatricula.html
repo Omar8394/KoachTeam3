@@ -1,3 +1,4 @@
+{% load Filter %}
 <form class="form" id="enroll" name="enroll" onsubmit="enviar();return false">
     {% csrf_token %}    
   
@@ -26,12 +27,12 @@
                 <span class="form-control"> <label for="">Regestry Date </label></span>
                 <span class="form-control"> <label for=""> {{persona.fecha_registro}}</label></span>
                 <br>
-                <span class="form-control"> <label for="">Email</label></span>
-                <span class="form-control"> <label for="">  {{persona.correos}}</label></span>
+                <span class="form-control"> <label for="">Main Email</label></span>
+                <span class="form-control"> <label for="">  {{persona.correos|jsonEmail}}</label></span>
                 <br>
                 
-                <span class="form-control"> <label for="">Contact Number</label></span>
-                <span class="form-control"> <label for=""> {{persona.telefonos}}</label></span>
+                <span class="form-control"> <label for=""> Main Contact Number</label></span>
+                <span class="form-control"> <label for=""> {{persona.telefonos|jsonTlf}}</label></span>
             </div>
                 <div class="col-6">
                     

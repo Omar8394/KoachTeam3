@@ -43,6 +43,14 @@
                                     </div>
                                     
                                     <div class="form-group col-md-6 d-flex justify-content-end">
+
+                                        <button type="button" class="btn btn-success" onclick="openAddInstructions()">
+                                            Instructions<i class="fas fa-tasks ml-1"></i>
+                                        </button>
+                                        &nbsp;
+                                        &nbsp;
+                                        &nbsp;
+
                                         <button type="button" class="btn btn-success" onclick="openAddModalQuestion()">
                                             Add question <i class="fas fa-plus ml-1"></i>
                                         </button>
@@ -178,6 +186,15 @@
         </div>
     </div>
 
+      <!-- Modal Instrucciones -->
+      <div class="modal fade" tabindex="-1" role="dialog" id="addInstrucciones">
+        <div class="modal-dialog modal-lg " role="document" id="addInstruccionesContent">
+        
+            
+        </div>
+    </div>
+
+
 {% endblock content %}
 
 {% block javascripts %}
@@ -197,6 +214,8 @@
         let editModePoints=0
         let selectedId=null
         let editmode = false
+        let ActivityId={{pregunta.idactividad_evaluaciones}}
+
 
 
   
@@ -381,9 +400,13 @@
                     alerta(5)
                 }
                 alerta(2)
+                reload()
+
             })
             .then(() => {
                // renderTable()
+               form=null
+               tablaPreguntas=[]
                 $("#addNewQuestion").modal("hide");
             })
     }
@@ -409,7 +432,115 @@
             })
         }
 
+        //Instrucciones
+
+        const openAddInstructions = () => {
+  
+  renderModalAddInstructions().then(()=>{
+  
+     $("#addInstrucciones").modal("show")
+  })
+}    
+
         
+      async function clickSaveInstructions  (url)  {
+
+                const texto_instrucciones= document.getElementById("instruccionesText")
+                const metodo='Add'
+                
+                form = {
+                texto: texto_instrucciones.value,
+                ActivityId:ActivityId,
+                method:metodo,
+
+                }
+                fetch(url, {
+                        ...fetchObject,
+                        body: JSON.stringify({
+                            data: form
+                        }),
+                    })
+                    .then(async (res) => {
+                        let result = JSON.parse(await res.text())
+                        if (result.message === "Error") {
+                            alerta(5);
+                        }
+                        alerta(1);
+                        reload();
+                    })
+                    .then(() => {
+                        form=null
+                    
+                        $("#addInstrucciones").modal("hide")
+                        reload()
+                    })
+
+                }
+
+  async function deleteInstructions  ()  {
+
+                const elimino = await alerta(3)
+
+                if (!elimino) {
+
+                    return;
+                }
+
+
+                const metodo='delete'
+                form = {
+
+                ActivityId:ActivityId,
+                method:metodo,
+
+                }
+                fetch("{% url 'getModalAddInstructions' %}", {
+                ...fetchObject,
+                body: JSON.stringify({
+                    data: form
+                }),
+                })
+                .then(async (res) => {
+                let result = JSON.parse(await res.text())
+                if (result.message === "Error") {
+                    alerta(5);
+                }
+                alerta(4);
+                reload();
+                })
+                .then(() => {
+                form=null
+
+                $("#addInstrucciones").modal("hide")
+                reload()
+                })
+
+                }
+        
+    const renderModalAddInstructions = () => {
+            let idTest=ActivityId
+           return fetch("{% url 'getModalAddInstructions' %}", {
+               ...fetchObject,
+               body: JSON.stringify({
+            data: {
+                   
+                   method:'Show',
+                   idTest
+               }
+           })
+           })
+           .then(async (res) => {
+               document.getElementById("addInstruccionesContent").innerHTML = await res.text()
+           }).then(()=>{
+               const formIns = document.getElementById("formInstructions")
+               formIns.addEventListener("submit", (e) => {
+                   e.preventDefault()
+                   clickSaveInstructions("{% url 'getModalAddInstructions' %}")
+               })   
+           })
+       }   
+
+
         // Renderizar  
 
         const renderModalTypeQuestion = () => {
@@ -557,6 +688,7 @@
                 
 
                 let listaLoca = PreguntaDatos.childs
+                console.log(listaLoca)
                 if(listaLoca){
                     if (type==1){
 
@@ -566,7 +698,7 @@
                         
 
                         let datos = {
-                            selected:el.respuetaCorrecta,
+                            isCorrect:el.respuetaCorrecta,
                             id: el.idLista,
                             OpcionText: el.texto_opcion,
                             actions: `
@@ -776,7 +908,7 @@
 
         }
 
-        const renderComponentTabla = async (name) => {
+   const renderComponentTabla = async (name) => {
             return await fetch("{% url 'component_tabla'%}",
                 {
                     headers: {
@@ -802,12 +934,12 @@
                 })
         }
         
-        const renderTable = async() => {
+const renderTable = async() => {
             const result = await renderComponentTabla("tablaPreguntas")
                 const contenedor = document.getElementById("renderContainer")
                 contenedor.innerHTML = result
         }
-        renderTable()
+      //  renderTable()
      
 
      function reload(){
@@ -1311,7 +1443,7 @@ function isEmptyOrSpaces(str){
 
 
         tablaPreguntas.map((dato, index) => {
-            let checked=dato.selected? 'checked':''
+            let checked=dato.isCorrect? 'checked':''
             console.log(dato)
             let fila =
                 `<tr>

@@ -39,7 +39,7 @@
 							color: white;">
 								<h2>Test: {{pregunta.fk_estructura_programa.descripcion}}</h2>
 							</div>
-							<div class="card-body" style='height: 600px;'>
+							<div class="card-body" >
 					
 
 
@@ -81,6 +81,13 @@
 							  <b>  Scale Results: </b>   {{examen.pk|scalaPuntuacion}}
 							  {% endif %}
 							  <br>
+							  {% if instrucciones != None %}
+							  <b> Instructions</b>: 
+							  <br>
+							 <p>  
+							<textarea class="form-control" disabled> 	{{instrucciones.texto_instrucciones}}</textarea>
+							 </p>
+							 {% endif %}
 							
 							  <br>
 							  <br>

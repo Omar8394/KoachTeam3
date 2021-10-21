@@ -22,12 +22,12 @@ from django.core.files.storage import FileSystemStorage
 import os
 from django.db.models import F
 
-from ..app.models import TablasConfiguracion, Estructuraprograma
+from ..app.models import TablasConfiguracion, Estructuraprograma, Publico
 
 
 from ..security.models import ExtensionUsuario
 
-from .models import ActividadEvaluaciones, Cursos, ActividadConferencia, ActividadLeccion, ActividadTarea, EscalaEvaluacion, EvaluacionesPreguntas, EvaluacionesBloques, Paginas, PreguntasOpciones, ExamenActividad,ExamenRespuestas,ExamenResultados, Recurso, Tag, TagRecurso
+from .models import ActividadEvaluaciones, Cursos, ActividadConferencia, ActividadLeccion, ActividadTarea, EscalaEvaluacion, EvaluacionesPreguntas, EvaluacionesBloques, Paginas, PreguntasOpciones, ExamenActividad,ExamenRespuestas,ExamenResultados, Recurso, Tag, TagRecurso,EvaluacionInstrucciones
 from modules.app import models
 
 # Create your views here.
@@ -319,6 +319,12 @@ def takeExam(request):
     examen=ExamenActividad.objects.filter(fk_Actividad=pregunta).filter(usuario=user.Publico)
     print(examen)
 
+    instruciones=None
+    instruciones=EvaluacionInstrucciones.objects.filter(fk_actividad_evaluaciones=pregunta)
+    if instruciones.count()>0:
+        instruciones=instruciones[0]
+    else:
+        instruciones=None
 
     
     escalaEvaluacion=pregunta.fk_escala_evaluacion
@@ -350,7 +356,8 @@ def takeExam(request):
         'escalaEvaluacion':escalaEvaluacion,
         'listaPreguntas':listaPreguntas,
         'escalaBloque':escalaBloque,
-        'examen':examen
+        'examen':examen,
+        'instrucciones':instruciones
 
     }
     context['segment'] = 'academic'
@@ -370,8 +377,14 @@ def SeeTest(request):
 
 
     print(examen)
-
-
+    instruciones=None
+    
+    instruciones=EvaluacionInstrucciones.objects.filter(fk_actividad_evaluaciones=pregunta)
+    if instruciones.count()>0:
+        instruciones=instruciones[0]
+    else:
+        instruciones=None
+    print(instruciones)
     
     escalaEvaluacion=pregunta.fk_escala_evaluacion
     escalaBloque=pregunta.fk_escala_bloque
@@ -402,7 +415,8 @@ def SeeTest(request):
         'escalaEvaluacion':escalaEvaluacion,
         'listaPreguntas':listaPreguntas,
         'escalaBloque':escalaBloque,
-        'examen':examen
+        'examen':examen,
+        'instrucciones':instruciones
 
     }
     context['segment'] = 'academic'
@@ -435,20 +449,174 @@ def SeeTest(request):
 
 @login_required(login_url="/login/")
 def TestList(request):
-    examenes=ExamenActividad.objects.all()
+    examenes=ExamenActividad.objects.annotate(tipoTest=F('fk_Actividad__fk_estructura_programa__fk_categoria__valor_elemento')).all()
      
-    paginator = Paginator(examenes, 10)
+    fechaFinalExamen=None
+    fechaInicialExamen=None
+    tipoExamen=None
+    soloListos=None
+    PersonIdExamen=None
+ 
+
+    personaBuscarNombre=None
+
+
+    is_cookie_set = 0
+   
+    if 'fechaInicialExamen' in request.session or 'fechaFinalExamen' in request.session or 'tipoExamen' in request.session or 'soloListos' in request.session or 'PersonIdExamen' in request.session  : 
+        fechaFinalExamen = request.session['fechaFinalExamen'] if 'fechaFinalExamen' in request.session else None
+        fechaInicialExamen = request.session['fechaInicialExamen'] if 'fechaInicialExamen' in request.session else None
+        soloListos=request.session['soloListos'] if 'soloListos' in request.session else None
+        tipoExamen=request.session['tipoExamen'] if 'tipoExamen' in request.session else None
+        PersonIdExamen=request.session['PersonIdExamen'] if 'PersonIdExamen' in request.session else None
+
+
+        
+        is_cookie_set = 1
     
+    if request.method == "GET":
+      
+
+      if request.GET.get('page')==None:
+        is_cookie_set = 0
+        request.session['fechaInicialExamen']=None
+        request.session['fechaFinalExamen']=None
+        request.session['PersonIdExamen']=None
+        request.session['tipoExamen']=None
+        request.session['idOrigen']=None
+
+        request.session['soloListos']=None
+        fechaFinalExamen=None
+        fechaInicialExamen=None
+        tipoExamen=None
+        soloListos=None
+        PersonIdExamen=None
+        personaBuscarNombre=None
+
+      
+      if (is_cookie_set == 1): 
+          if fechaInicialExamen!=None and fechaInicialExamen!="":
+
+           dateI=parse_datetime(fechaInicialExamen+' 00:00:00-00')
+          
+         
+           examenes=examenes.filter(fechaInicio__gte=dateI)
+          if fechaFinalExamen!=None  and fechaFinalExamen!="":
+
+           dateF=parse_datetime(fechaFinalExamen+' 00:00:00-00')
+          
+          
+           examenes=examenes.filter(fechaInicio__lte=dateF)
+          
+          if PersonIdExamen!=None and PersonIdExamen!="":
+           examenes=examenes.filter(usuario=PersonIdExamen)
+
+   
+          if tipoExamen!=None and tipoExamen!="":
+              if tipoExamen==2:
+                 examenes=examenes.filter(tipoTest='activityExpert')
+              else:
+                 examenes=examenes.filter(tipoTest='activityTest')
+
+
+          if soloListos!=None and soloListos!="":
+           examenes=examenes.filter(estadoExamen=3)
+
+
+
+
+
+    if request.method == "POST":
+        
+        if (is_cookie_set == 1): 
+          
+          request.session['fechaFinalExamen']=None
+          request.session['fechaInicialExamen']=None
+          request.session['idPersona']=None
+          request.session['soloListos']=None
+          request.session['tipoExamen']=None
+          request.session['PersonIdExamen']=None
+
+
+       
+
+        fechaInicialExamen=request.POST.get('fechaInicialExamen') 
+        
+
+        print(request.POST)
+       
+        fechaFinalExamen=request.POST.get('fechaFinalExamen') 
+        PersonIdExamen=request.POST.get('PersonIdExamen') 
+        soloListos=request.POST.get('soloListos') 
+        tipoExamen=request.POST.get('tipoExamen') 
+     
+
+        
+     
+        if soloListos!= None and soloListos!="":
+         examenes=examenes.filter(estadoExamen=3)
+
+         request.session['soloListos'] = soloListos
+    
+
+        print("request.POST")
+
+        if tipoExamen != None and tipoExamen!="":
+         tipoExamen=int(tipoExamen)
+         if tipoExamen==2:
+                 examenes=examenes.filter(tipoTest='activityExpert')
+         else:
+                 examenes=examenes.filter(tipoTest='activityTest')
+
+         request.session['tipoExamen'] = tipoExamen
+        if PersonIdExamen != None and PersonIdExamen!="" :
+        
+         examenes=examenes.filter(usuario=PersonIdExamen)
+         request.session['PersonIdExamen'] = PersonIdExamen
+
+        
+        if fechaInicialExamen != None and fechaInicialExamen!="":
+          dateI=parse_datetime(fechaInicialExamen+' 00:00:00-00')
+          fechaI=fechaInicialExamen
+          request.session['fechaInicialExamen'] = fechaI
+          
+          examenes=examenes.filter(fechaInicio__gte=dateI)
+
+        if fechaFinalExamen != None and fechaFinalExamen!="":
+          dateF=parse_datetime(fechaFinalExamen+' 00:00:00-00')
+          fechaF=fechaFinalExamen
+          request.session['fechaFinalExamen'] = fechaF
+          
+          examenes=examenes.filter(fechaInicio__lte=dateF)
+          
+
+
+    paginator = Paginator(examenes, 10)
     msg=None
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
   
+  
+    if tipoExamen!=None and tipoExamen!="":
+     tipoExamen=int(tipoExamen)
 
-
+    if PersonIdExamen!=None and PersonIdExamen!="" :
+     personaBuscarNombre=Publico.objects.get(pk=PersonIdExamen)
+    else:
+      personaBuscarNombre=""
+      PersonIdExamen=""
             
     context = { 'msg':msg,
      'ExamenList':page_obj ,
-     'admmin':True
+     'isAdmin':True,
+     'tipoExamen':tipoExamen,
+     'fechaInicialExamen':fechaInicialExamen,
+    'fechaFinalExamen':fechaFinalExamen,
+    'personaBuscarNombre':personaBuscarNombre,
+    'soloListos':soloListos,
+     'PersonIdExamen':PersonIdExamen,
+
+     
     }
     context['segment'] = 'academic'
 
@@ -498,21 +666,177 @@ def GraficaResultados(request):
 
 @login_required(login_url="/login/")
 def MyTest(request):
-    examenes=ExamenActividad.objects.all()
+    examenes=ExamenActividad.objects.annotate(tipoTest=F('fk_Actividad__fk_estructura_programa__fk_categoria__valor_elemento')).all()
+
     examenes.filter(usuario=ExtensionUsuario.objects.get(user=request.user).Publico)
+
+    fechaFinalExamen=None
+    fechaInicialExamen=None
+    tipoExamen=None
+    soloListos=None
+    PersonIdExamen=None
+ 
+
+    personaBuscarNombre=None
+
+
+    is_cookie_set = 0
+   
+    if 'fechaInicialExamen' in request.session or 'fechaFinalExamen' in request.session or 'tipoExamen' in request.session or 'soloListos' in request.session or 'PersonIdExamen' in request.session  : 
+        fechaFinalExamen = request.session['fechaFinalExamen'] if 'fechaFinalExamen' in request.session else None
+        fechaInicialExamen = request.session['fechaInicialExamen'] if 'fechaInicialExamen' in request.session else None
+        soloListos=request.session['soloListos'] if 'soloListos' in request.session else None
+        tipoExamen=request.session['tipoExamen'] if 'tipoExamen' in request.session else None
+        PersonIdExamen=request.session['PersonIdExamen'] if 'PersonIdExamen' in request.session else None
+
+
+        
+        is_cookie_set = 1
+    
+    if request.method == "GET":
+      
+
+      if request.GET.get('page')==None:
+        is_cookie_set = 0
+        request.session['fechaInicialExamen']=None
+        request.session['fechaFinalExamen']=None
+        request.session['PersonIdExamen']=None
+        request.session['tipoExamen']=None
+        request.session['idOrigen']=None
+
+        request.session['soloListos']=None
+        fechaFinalExamen=None
+        fechaInicialExamen=None
+        tipoExamen=None
+        soloListos=None
+        PersonIdExamen=None
+        personaBuscarNombre=None
+
+      
+      if (is_cookie_set == 1): 
+          if fechaInicialExamen!=None and fechaInicialExamen!="":
+
+           dateI=parse_datetime(fechaInicialExamen+' 00:00:00-00')
+          
+         
+           examenes=examenes.filter(fechaInicio__gte=dateI)
+          if fechaFinalExamen!=None  and fechaFinalExamen!="":
+
+           dateF=parse_datetime(fechaFinalExamen+' 00:00:00-00')
+          
+          
+           examenes=examenes.filter(fechaInicio__lte=dateF)
+          
+          if PersonIdExamen!=None and PersonIdExamen!="":
+           examenes=examenes.filter(usuario=PersonIdExamen)
+
+   
+          if tipoExamen!=None and tipoExamen!="":
+              if tipoExamen==2:
+                 examenes=examenes.filter(tipoTest='activityExpert')
+              else:
+                 examenes=examenes.filter(tipoTest='activityTest')
+
+
+          if soloListos!=None and soloListos!="":
+           examenes=examenes.filter(estadoExamen=3)
+
+
+
+
+
+    if request.method == "POST":
+        
+        if (is_cookie_set == 1): 
+          
+          request.session['fechaFinalExamen']=None
+          request.session['fechaInicialExamen']=None
+          request.session['idPersona']=None
+          request.session['soloListos']=None
+          request.session['tipoExamen']=None
+          request.session['PersonIdExamen']=None
+
+
+       
+
+        fechaInicialExamen=request.POST.get('fechaInicialExamen') 
+        
+
+        print(request.POST)
+       
+        fechaFinalExamen=request.POST.get('fechaFinalExamen') 
+        PersonIdExamen=request.POST.get('PersonIdExamen') 
+        soloListos=request.POST.get('soloListos') 
+        tipoExamen=request.POST.get('tipoExamen') 
+     
+
+        
+     
+        if soloListos!= None and soloListos!="":
+         examenes=examenes.filter(estadoExamen=3)
+
+         request.session['soloListos'] = soloListos
+    
+
+        print("request.POST")
+
+        if tipoExamen != None and tipoExamen!="":
+         tipoExamen=int(tipoExamen)
+         if tipoExamen==2:
+                 examenes=examenes.filter(tipoTest='activityExpert')
+         else:
+                 examenes=examenes.filter(tipoTest='activityTest')
+
+         request.session['tipoExamen'] = tipoExamen
+        if PersonIdExamen != None and PersonIdExamen!="" :
+        
+         examenes=examenes.filter(usuario=PersonIdExamen)
+         request.session['PersonIdExamen'] = PersonIdExamen
+
+        
+        if fechaInicialExamen != None and fechaInicialExamen!="":
+          dateI=parse_datetime(fechaInicialExamen+' 00:00:00-00')
+          fechaI=fechaInicialExamen
+          request.session['fechaInicialExamen'] = fechaI
+          
+          examenes=examenes.filter(fechaInicio__gte=dateI)
+
+        if fechaFinalExamen != None and fechaFinalExamen!="":
+          dateF=parse_datetime(fechaFinalExamen+' 00:00:00-00')
+          fechaF=fechaFinalExamen
+          request.session['fechaFinalExamen'] = fechaF
+          
+          examenes=examenes.filter(fechaInicio__lte=dateF)
+          
+
+
      
     paginator = Paginator(examenes, 10)
     
     msg=None
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-  
+
+    if tipoExamen!=None and tipoExamen!="":
+     tipoExamen=int(tipoExamen)
+
+    if PersonIdExamen!=None and PersonIdExamen!="" :
+     personaBuscarNombre=Publico.objects.get(pk=PersonIdExamen)
+    else:
+      personaBuscarNombre=""
+      PersonIdExamen=""
 
 
             
     context = { 'msg':msg,
      'ExamenList':page_obj ,
-     'admin':False
+     'isAdmin':False,
+      'tipoExamen':tipoExamen,
+     'fechaInicialExamen':fechaInicialExamen,
+    'fechaFinalExamen':fechaFinalExamen,
+    'personaBuscarNombre':personaBuscarNombre,
+    'soloListos':soloListos,
+     'PersonIdExamen':PersonIdExamen,
     }
     context['segment'] = 'academic'
 
@@ -1196,6 +1520,57 @@ def getModalAddBlock(request):
     return HttpResponse(html_template.render(context, request))
 
 @login_required(login_url="/login/")
+def getModalAddInstructions(request):
+    if request.method == "POST":
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            try:
+            
+                context = {}
+                data = json.load(request)["data"]
+
+                if data["method"] == "delete":
+                     instrucciones=None
+                     instrucciones=EvaluacionInstrucciones.objects.filter(fk_actividad_evaluaciones=data["ActivityId"])
+                     if instrucciones.count()>0:
+                                instrucciones=instrucciones[0]
+                                instrucciones.delete()
+                     return JsonResponse({"message": "Deleted"})
+                
+                if data["method"] == "Show":
+                        instrucciones=None
+                        if "idTest" in data:
+                            instrucciones=EvaluacionInstrucciones.objects.filter(fk_actividad_evaluaciones=data["idTest"])
+                            if instrucciones.count()>0:
+                                instrucciones=instrucciones[0]
+
+                        context = {
+                            'instrucciones':instrucciones
+
+                        }
+                        html_template = (loader.get_template('components/modalAddInstrucciones.html'))
+                        return HttpResponse(html_template.render(context, request))
+
+                if data["method"] == "Add":
+                     instrucciones=None
+                     instrucciones=EvaluacionInstrucciones.objects.filter(fk_actividad_evaluaciones=data["ActivityId"])
+                     if instrucciones.count()>0:
+                                instrucciones=instrucciones[0]
+                                instrucciones.delete()
+                     actividad=ActividadEvaluaciones.objects.get(pk=data["ActivityId"])
+                     nuevaInstruccion=EvaluacionInstrucciones.objects.create( texto_instrucciones=data["texto"], fk_actividad_evaluaciones=actividad)
+                     nuevaInstruccion.save()
+                     return JsonResponse({"message": "Saved"})
+
+                    
+                return JsonResponse({"message": "Perfect"})     
+            except:
+                return JsonResponse({"message": "Error"}) 
+           
+    context = {}
+    html_template = (loader.get_template('components/modalAddBlock.html'))
+    return HttpResponse(html_template.render(context, request))
+
+@login_required(login_url="/login/")
 def getModalNewTest(request):
     if request.method == "POST":
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
@@ -1510,7 +1885,7 @@ def getModalNewSimple(request):
                    
                     bloque.pointUse=float(bloque.pointUse)+float(pregunta.puntos_pregunta)
                     actividad=ActividadEvaluaciones.objects.get(pk=bloque.fk_actividad_evaluaciones.pk)
-                    actividad.pointUse=float(bloque.pointUse)+float(actividad.pointUse)
+                    actividad.pointUse=float(pregunta.puntos_pregunta)+float(actividad.pointUse)
                     bloque.save()
                     actividad.save()
 
@@ -1757,7 +2132,8 @@ def getModalNewMultiple(request):
                     pregunta.puntos_pregunta=data['puntosPregunta']
                     bloque.pointUse=float(bloque.pointUse)+float(pregunta.puntos_pregunta)
                     actividad=ActividadEvaluaciones.objects.get(pk=bloque.fk_actividad_evaluaciones.pk)
-                    actividad.pointUse=float(bloque.pointUse)+float(actividad.pointUse)
+                    actividad.pointUse=float(pregunta.puntos_pregunta)+float(actividad.pointUse)
+
                     bloque.save()
                     actividad.save()
                     pregunta.fk_tipo_pregunta_evaluacion=Methods.OrigenPreguntaTipo('Multiple')
@@ -1879,7 +2255,7 @@ def getModalNewCompletion(request):
                     pregunta.puntos_pregunta=data['puntosPregunta']
                     bloque.pointUse=float(bloque.pointUse)+float(pregunta.puntos_pregunta)
                     actividad=ActividadEvaluaciones.objects.get(pk=bloque.fk_actividad_evaluaciones.pk)
-                    actividad.pointUse=float(bloque.pointUse)+float(actividad.pointUse)
+                    actividad.pointUse=float(pregunta.puntos_pregunta)+float(actividad.pointUse)
                     bloque.save()
                     actividad.save()
                     pregunta.titulo_pregunta=data['tituloPregunta']
@@ -2020,7 +2396,7 @@ def getModalNewAssociation(request):
                     actividad=ActividadEvaluaciones.objects.get(pk=bloque.fk_actividad_evaluaciones.pk)
                     actividad.pointUse=float(actividad.pointUse)-float(bloque.pointUse)
                     bloque.pointUse=float(bloque.pointUse)+float(pregunta.puntos_pregunta)
-                    actividad.pointUse=float(bloque.pointUse)+float(actividad.pointUse)
+                    actividad.pointUse=float(pregunta.puntos_pregunta)+float(actividad.pointUse)
                     bloque.save()
                     actividad.save()
                     pregunta.titulo_pregunta=data['tituloPregunta']
@@ -2159,7 +2535,7 @@ def getModalNewTof(request):
                     actividad=ActividadEvaluaciones.objects.get(pk=bloque.fk_actividad_evaluaciones.pk)
                     actividad.pointUse=float(actividad.pointUse)-float(bloque.pointUse)
                     bloque.pointUse=float(bloque.pointUse)+float(pregunta.puntos_pregunta)
-                    actividad.pointUse=float(bloque.pointUse)+float(actividad.pointUse)
+                    actividad.pointUse=float(pregunta.puntos_pregunta)+float(actividad.pointUse)
                     bloque.save()
                     actividad.save()
                     pregunta.titulo_pregunta=data['tituloPregunta']

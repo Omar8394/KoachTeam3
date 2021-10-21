@@ -47,13 +47,14 @@
 								<div class="form-row">
 									<div class="form-group col-md-12">
 										<label for="program">Program</label>
-										 <select class="form-control" id="program" name="program" onchange="programChange()" required >
+										 <select class="form-control" id="program" name="program" onchange="programChange(this)" required >
 											<option value="" selected>      </option>
-											 {% for mat in structuraProg %}
+											 {% for mat in structurasAll %}
 												 {% if mat.precio != None %}
+												   {% if mat.fk_estructura_padre == None %}
 									
 													 <option value="{{mat.idestructuraprogrmas}}"> {{mat}}</option>
-	
+													 {% endif %}
 												{% endif %}
 											{% endfor %}
 										</select>
@@ -62,7 +63,7 @@
 								<div class="form-row" id="listaProcess">
 									<div class="form-group col-md-12">
 										<label>Process</label>
-										<select class="form-control" id="cbProcess" name="cbProcess"  onchange="processChange()">
+										<select class="form-control" id="cbProcess" name="cbProcess"  onchange="processChange(this)">
 											<option value="" selected> </option>
 										</select>
 									</div>
@@ -70,7 +71,7 @@
 								<div class="form-row">
 									<div class="form-group col-md-12">
 										<label>Unit</label>
-										<select class="form-control" id="cbUnit" name="cbUnit" onchange="unitChange()">
+										<select class="form-control" id="cbUnit" name="cbUnit" onchange="unitChange(this)">
 											<option value="" selected> </option>		 
 										</select>
 									</div>
@@ -78,7 +79,7 @@
 								<div class="form-row">
 									<div class="form-group col-md-12">
 										<label>Course</label>
-										<select class="form-control" id="cbCourse" name="cbCourse" onchange="courseChange()">
+										<select class="form-control" id="cbCourse" name="cbCourse" onchange="courseChange(this)">
 											<option value="" selected>   </option>		   		 
 										</select>
 									</div>
@@ -111,6 +112,15 @@
 		</div>
 	</div>
 <script>
+let  dictPrograma=new Object();
+
+{% for mat in structurasAll %}
+
+dictPrograma[ {{mat.pk}} ]='{{mat.precio}}';
+{% endfor %}
+
+console.log(dictPrograma);
+
 
 window.addEventListener("load", function(event) {
     console.log("'Todos los recursos terminaron de cargar!");
@@ -118,9 +128,14 @@ window.addEventListener("load", function(event) {
 	//type.value='';
   });
  
-function programChange(precio){
-	console.log(precio)
-	priceSpan.innerHTML=precio;
+function programChange(combo){
+	if(!combo.value==''){
+		priceSpan.innerHTML=dictPrograma[combo.value];
+
+	}else{
+		priceSpan.innerHTML='';
+
+	}
 	
 	cbProcess.value='';
 	cbCourse.value='';
@@ -154,13 +169,14 @@ return result.text();
 
 }
 
-function processChange(precio){
+function processChange(combo){
 	cbUnit.value='';
 	cbCourse.value='';
 	let unidad=document.getElementById("cbUnit").innerHTML="";
 	let curso=document.getElementById("cbCourse").innerHTML='';
 
 	let process=document.getElementById("cbProcess").value;
+	priceSpan.innerHTML=dictPrograma[combo.value];
 
 
 
@@ -184,12 +200,13 @@ return result.text();
 
 }
 
-function unitChange(){
+function unitChange(combo){
 	cbCourse.value='';
 	let curso=document.getElementById("cbCourse").innerHTML='';
 
 	let unit=document.getElementById("cbUnit").value;
 
+	priceSpan.innerHTML=dictPrograma[combo.value];
 
 
 
@@ -211,7 +228,12 @@ return result.text();
 
 }
 
-function courseChange(){}
+function courseChange(combo){
+
+
+	priceSpan.innerHTML=dictPrograma[combo.value];
+
+}
 
 
 function enviar(){
@@ -219,6 +241,14 @@ function enviar(){
 	var xhr = new XMLHttpRequest();
 xhr.open("POST", "save/"); 
 xhr.onload = function(event){ 
+
+	console.log(event.target.response);
+	if(event.target.response==2){
+		alertaMensajitos(5,'There was a error with you application','You already have a application including this structure');
+		return
+	}
+
+	
 alerta(1); // raw response
 window.location.href="{% url 'MyEnrollments'%}";
 
@@ -227,6 +257,8 @@ window.location.href="{% url 'MyEnrollments'%}";
 }; 
 // or onerror, onabort
 var formData = new FormData(document.getElementById("enroll")); 
+formData.append('origen', 1);
+
 xhr.send(formData);
   
 }

@@ -39,13 +39,13 @@
 							color: white;">
 								<h2>Test: {{pregunta.fk_estructura_programa.descripcion}}</h2>
 							</div>
-							<div class="card-body" style='height: 600px;'>
-							{% if examen.count == 0 %}
+							<div class="card-body" >
+						{% if examen.count == 0 %}
 
-								<div class="center">
+						<div class="center">
 									<div class="centerB">
 							
-                             <button class="btn btn-primary" onclick="takeTest()"> Take Test </button>
+                             		<button class="btn btn-primary" onclick="takeTest()"> Take Test </button>
 									</div>
 							 <br>
 							 <br>
@@ -61,6 +61,13 @@
 							  <br>
 							  <b>  Number of repetitions</b>: {{pregunta.nro_repeticiones}}
 							  <br>
+							  {% if instrucciones != None %}
+							  <b> Instructions</b>: 
+							  <br>
+							 <p>  
+								<textarea class="form-control" disabled> 	{{instrucciones.texto_instrucciones}}</textarea>
+							 </p>
+							 {% endif %}
 							  
                                
 
@@ -95,6 +102,13 @@
 							  <br>
 							  <b> Number of repetitions </b>: {{pregunta.nro_repeticiones}}
 							  <br>
+							  {% if instrucciones != None %}
+							  <b> Instructions</b>: 
+							  <br>
+							 <p>  
+								<textarea class="form-control" disabled> 	{{instrucciones.texto_instrucciones}}</textarea>
+							 </p>
+							 {% endif %}
 							  
                                
 
@@ -135,7 +149,15 @@
 							  {% endif %}
 							  <br>
 							  <b>  Number of repetitions allow: </b> {{pregunta.nro_repeticiones}}
+							  <br>	 
+							   {% if instrucciones != None %}
+							  <b> Instructions</b>: 
 							  <br>
+							 <p>  
+								<textarea class="form-control" disabled> 	{{instrucciones.texto_instrucciones}}</textarea>
+							 </p>
+							 {% endif %}
+							 <br>	 
 
 							  {% if exam.estadoExamen == 3 %}
 							  <b>  Scale Results: </b>   {{examamen.pk|scalaPuntuacion}}
@@ -181,11 +203,12 @@
 							
 						
 						</div>		
-	   				</form>
-				</div>			            
+	   				
+						</div>			            
      		</div>
 	
 	</div>
+</div>
 
 
 		<!--  Modal-->

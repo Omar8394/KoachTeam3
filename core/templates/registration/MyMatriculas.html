@@ -4,6 +4,7 @@
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
+{% load Filter %}
 
 {% block content %}
 
@@ -72,6 +73,25 @@
                                                            
                                                             
                                                         </tr>
+
+                                                        <tr>
+                                                        <td class="p-2">Origen</td>
+                                                        <td></td>
+                                                        <td class="p-2">
+                                                      
+                                                            <select id="idOrigen" name="idOrigen"  class="form-control" >
+                                                                <option value=""></option>
+                    
+                                                                {% for mat in origenes %}
+                                                                <option value="{{mat.id}}"  {% if mat.id == idOrigen %} selected {% endif %}    >{{mat.origen}}</option>
+                    
+                    
+                                                                {% endfor %}
+                    
+                    
+                                                            </select>
+                                                        </td>
+                                                    </tr>
                                                         {% comment %}
                                                         <tr>
                                                             <td class="p-2">Enrollment Type</td>
@@ -138,6 +158,7 @@
                                                     <th style="width: 65px;"></th>
                                                     <th>Applicant</th>
                                                     <th>Status </th>
+                                                    <th>Origen </th>
                                                     <th>Date of application</th>
                                                     <th>Program</th>
                                                     <th>Payment</th>
@@ -151,6 +172,8 @@
                                                     <td ></td>
                                                    <td>{{mat.fk_publico}}</td>
                                                    <td>{{mat.fk_status_matricula}}</td>
+                                                   <td>{{mat.origenSolicitud|OrigenMatricula}}</td>
+
                 
                                                    <td>{{mat.fecha_matricula}}</td>
                                                    <td>{{mat.fk_estruc_programa}}</td>

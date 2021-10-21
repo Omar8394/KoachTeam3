@@ -6,7 +6,37 @@ from django.core import serializers
 
 register = template.Library()
 
+@register.filter(name='jsonTlf')
+def jsonTlf(datos):
+  tlf=None
+  data = json.loads(datos)
 
+  
+  print(data)
+  return data['telefonoPrincipal']
+
+@register.filter(name='jsonEmail')
+def jsonEmail(datos):
+  tlf=None
+  data = json.loads(datos)
+
+  
+  print(data)
+  return data['emailPrincipal']
+
+@register.filter(name='OrigenMatricula')
+def OrigenMatricula(id):
+   if id == 1:
+	   return"Manual"
+   elif id == 2:
+	   return"Administrator"
+   elif id == 3:
+	    return"Planning"
+   elif id == 4:
+	   return"Expert System"
+
+   else:
+	   return"error"
 @register.filter(name='shuffleA')
 def shuffleColumA(arg):
     aux = list(arg)[:]

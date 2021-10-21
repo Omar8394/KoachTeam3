@@ -40,20 +40,23 @@
 		<link rel="stylesheet" href="{% static 'assets/css/dropzone.css' %}">
 		<link rel="stylesheet" href="{% static 'assets/css/bootstrap-tagsinput.css' %}">
 		<link rel="stylesheet" href="{% static 'assets/css/owl.theme.default.min.css' %}">
+<style>
 
+	
+</style>
 
 		<!-- Specific Page CSS goes HERE  -->
 		{% block stylesheets %}{% endblock stylesheets %}
 	</head>
 
-	<body data-background-color="bg3">
+	<body data-background-color="bg3" class="" id="myBody">
 		<div id="app" class="wrapper sidebar_minimize">
 
 			{% include 'includes/navigation.html' %}
 
 			{% include 'includes/sidebar.html' %}
 
-			<div class="main-panel">
+			<div class="main-panel " id="casaBlanca">
 
 				{% block content %}{% endblock content %}
 

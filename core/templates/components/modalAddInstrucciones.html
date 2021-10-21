@@ -1,0 +1,41 @@
+<div class="modal-content">
+
+    <div class="modal-header">
+        <h4 style="left: initial;" class="modal-title">Instructions</h4>  
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    </div>
+    <form class="form" id="formInstructions" name="formInstructions">
+        <div class="modal-body">
+            <div id="seccionGeneral">
+                <div class="form-row">
+                   
+                </div>
+
+                 
+    
+                <div class="form-row col-md-12">
+                    <div class="form-group col-md-12">
+                        <label for="blockText">Instructions</label>
+                        </textarea>
+                        <textarea name="blockText" class="form-control"  placeholder="Write here a set of instructions for this test" id="instruccionesText" cols="100" oninput="" rows="4">{% if instrucciones != None %}{{instrucciones.texto_instrucciones}}{% endif %}</textarea> 
+                          
+                    </div>                       
+                </div>    
+    
+            
+            </div>
+            <hr>
+            <div id="seccionDetallada">
+               
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">
+                <i class="fas fa-arrow-left mr-2"></i>Back
+            </button>
+            <button type="submit" value="Submit" class="btn btn-primary">Save<i class="fas fa-save ml-2"></i></button>
+            <button type="button" onclick="deleteInstructions()" class="btn btn-danger">Delete<i class="fas fa-trash-alt ml-2"></i></button>
+
+        </div>
+    </form>
+</div><!-- /.modal-content -->

@@ -6,9 +6,18 @@ class origenPago:
     self.origen = origen
 
 
+class origenMatricula:
+  def __init__(self, id, origen):
+    self.id = id
+    self.origen = origen
+
+
 class MyMethod:
 
- def ReturnOrigen(id):
+
+
+
+ def ReturnOrigenMatricula(id):
    if id == 1:
 	   return"Manual"
    elif id == 2:
@@ -129,8 +138,38 @@ def getOrigenes():
     Origenes.append( origenPago(i+1,OrigenPagoCodigo(i+1)) )
     
 
+  return Origenes
 
+def ReturnOrigen(id):
+   if id == 1:
+	   return"Manual"
+   elif id == 2:
+	   return"Administrator"
+   elif id == 3:
+	    return"Planning"
+   elif id == 4:
+	   return"Expert System"
 
+   else:
+	   return"error"
 
+def ReturnCodeMatricula(code):
+   if code == "Manual":
+	   return 1
+   elif code == "Administrator":
+	   return 2
+   elif code == "Planning":
+	    return 3
+   elif code == "Expert System":
+	   return 4
 
+   else:
+	   return None
+
+def getOrigenesMatricula():
+  Origenes = []
+
+  for i in range(4):
+    Origenes.append( origenMatricula(i+1, ReturnOrigen(i+1)) )
+  
   return Origenes

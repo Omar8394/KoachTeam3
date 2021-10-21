@@ -11,7 +11,7 @@
 	<div class="content">
 		<div class="page-inner animated fadeInRight">
 			<div class="page-header">
-				<h4 class="page-title">Test list</h4>
+				<h4 class="page-title">Tests list</h4>
 				<ul class="breadcrumbs">
 					<li class="nav-home">
 						<a href="{% url 'home' %}">
@@ -28,7 +28,7 @@
 						<i class="flaticon-right-arrow"></i>
 					</li>
 					<li class="nav-item">
-					    <span>Test list</span>
+					    <span>Tests list</span>
 					</li>
 				</ul>
 			</div>
@@ -49,41 +49,69 @@
                                                     <form id="buscar" name="buscar" method="POST" action=".">
                                                         {% csrf_token %}
                     
-                                                        <table style="width:100%">                                            
+                                                        <table style="width:100%">    
+                                                            
+                                                            {% if isAdmin == True %}
                                                             <tr>
-                                                                <td class="p-2">Initial Date Finished</td>
+                                                                <td class="p-2">Person</td>
                                                                 <td></td>
                                                                 <td class="p-2">
-                                                                    <input id="fechaInicialPersona" name="fechaInicialPersona" value="{{fechaInicialPersona}}" type="date" class="form-control" >
+                                                                    <input  class="form-control" type="text" readonly id="PersonExamen" name="PersonExamen" value="{{personaBuscarNombre}}" >
+                                                                    <input   type="hidden" readonly id="PersonIdExamen" name="PersonIdExamen" value="{{idPersonaExamen}}" >
+                            
+                                                                </td>
+                                                                <td class="p-2">
+                                                                 <a href="javascript:void(0);"  onclick="modalBuscarPersona()">   <span class="fas fa-search">     </span></a> 
+                                                                </td>
+                                                                
+                                                            </tr>
+
+
+                                                            {% endif %}
+                                                            <tr>
+                                                                <td class="p-2">Initial Date </td>
+                                                                <td></td>
+                                                                <td class="p-2">
+                                                                    <input id="fechaInicialPersona" name="fechaInicialExamen" value="{{fechaInicialExamen}}" type="date" class="form-control" >
                                                                 </td>
                                                             </tr>
                                                             <tr>
-                                                                <td class="p-2">Final Date Finished </td>
+                                                                <td class="p-2">Final Date  </td>
                                                                 <td></td>
                                                                 <td class="p-2">
-                                                                    <input id="fechaFinalPersona" name="fechaFinalPersona" value="{{fechaFinalPersona}}" type="date" class="form-control" >
+                                                                    <input id="fechaFinalPersona" name="fechaFinalExamen" value="{{fechaFinalExamen}}" type="date" class="form-control" >
                                                                 </td>
                                                             </tr>
                                                             <tr>
-                                                                <td class="p-2">Name</td>
+                                                                <td class="p-2">Type </td>
                                                                 <td></td>
                                                                 <td class="p-2">
-                                                                    <input id="personaBuscarNombrePersona" name="personaBuscarNombrePersona" value="{{personaBuscarNombrePersona}}" type="text" class="form-control" >
+                                                                    <select id="tipoExamen" name="tipoExamen"  class="form-control" >
+                                                                            <option value="">  </option>
+                                                                            <option value="1"{% if tipoExamen == 1 %} selected {% endif %} >Regular Test </option>
+                                                                            <option value="2" {% if tipoExamen == 2 %} selected {% endif %}> Expert Test </option>
+
+
+                                                                    </select>
                                                                 </td>
                                                             </tr>
+
                                                             <tr>
-                                                                <td class="p-2">Id Number</td>
+                                                                <td class="p-2">Only Finished </td>
                                                                 <td></td>
                                                                 <td class="p-2">
-                                                                    <input id="idNumberPersona" name="idNumberPersona" value="{{idNumberPersona}}"  type="text" class="form-control" >
+                                                                  <input type="checkbox" {% if soloListos == 'on' %}  checked {% endif %} name="soloListos" id="soloListos">
                                                                 </td>
                                                             </tr>
+                                                      
+                                                   
+                                                      
                                                    
                                                             <tr>
                                                                 <td></td>
                                                                 <td></td>
                                                                 <td class="p-2">
-                                                                    <input type="" class="btn btn-primary" value="Filter" >
+                                                                    <input type="submit" class="btn btn-primary" value="Filter" >
                                                                     &nbsp;
                                                                     <input type="button" onclick="reload()" class="btn btn-default" value="Clean">
                                                                 </td>
@@ -100,7 +128,7 @@
                                         <table class="table table-hover table-component-like table-borderless text-center">
                                             <thead>
                                                 <tr>
-                                                    <th style="width: 65px;"></th>
+                                                  
                                                     <th>Names</th>
                                                     <th>Activity</th>
                                                     <th>Topic</th>
@@ -122,7 +150,7 @@
                                                 {% for exam in ExamenList %}
                             
                                                 <tr style="cursor:pointer;"  >
-                                                    <td ></td>
+                                                   
                                                    <td>{{exam.usuario}}</td>
                                                    <td>{{exam.fk_Actividad.fk_estructura_programa}}</td>
                                                    <td>{{exam.fk_Actividad.fk_estructura_programa.fk_estructura_padre}}</td>
@@ -230,9 +258,21 @@
 		</div>			            
     </div>
 	
+    <!--Buscar Personas DB Modal-->
+<div class="modal fade" tabindex="-1" role="dialog" id="BuscarPersonaModal">
+    <div class="modal-dialog" role="document" id="modalContentPersona">
+     
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+
+<!-- /.modal -->
 <script>
 var Persona=0;
 
+function reload(){
+
+    window.location.href="{% url 'TestList' %}";
+}
 function sendForm(id){
     Persona=id;
 
@@ -249,8 +289,6 @@ function sendForm(id){
 
 function ManagePersonas(id){
     Persona=id;
-    
-
 
 
 }
@@ -301,7 +339,102 @@ xhr.send(formData);
 
 </script>
 
+<!--Filtros-->
 
+
+<script>
+ 
+ 
+function modalBuscarPersona(){
+    
+
+
+    let url="{% url 'ModalPublico'%}";
+    fetch(url,{
+        mode: 'no-cors',
+      method: 'get'
+    }).then(function(result){
+    
+    return result.text();
+    
+    }).then(function(result){
+        
+        let unit=document.getElementById("modalContentPersona").innerHTML=result;
+
+    
+    });
+        $("#BuscarPersonaModal").modal("show");
+        
+      
+    }
+
+
+    function BuscarPersonaPost(){
+	
+
+    let url="{% url 'ModalPublico'%}";
+    let formData = new FormData(); 
+    formData.append("nombreBuscar", nombreBuscar.value);
+
+
+    fetch(url,{
+        headers: {
+						'Accept': 'application/json',
+						'X-Requested-With': 'XMLHttpRequest',
+						"X-CSRFToken": getCookie('csrftoken')
+					},
+					mode: 'same-origin',
+					method: 'POST',
+                    body:formData
+    }).then(function(result){
+    
+    return result.text();
+    
+    }).then(function(result){
+        
+        let unit=document.getElementById("modalContentPersona").innerHTML=result;
+     
+    
+    });
+        $("#BuscarPersonaModal").modal("show");
+        
+      
+    }
+
+
+function SelectPersona(nombre, id){
+$("#BuscarPersonaModal").modal("toggle");
+
+PersonExamen.value=nombre;
+PersonIdExamen.value=id;
+
+
+
+
+}
+function goToPage(page){
+    
+
+    paginaActual=paginaActual+1;
+    let url='ModalPublico/'+"?page="+page.toString();
+    fetch(url,{
+        mode: 'no-cors',
+      method: 'get'
+    }).then(function(result){
+    
+    return result.text();
+    
+    }).then(function(result){
+        
+        let unit=document.getElementById("modalContentPersona").innerHTML=result;
+    
+    });
+        $("#BuscarPersonaModal").modal("show");
+        
+      
+    }
+
+</script>
 
 <script>
 var labeles=[];
