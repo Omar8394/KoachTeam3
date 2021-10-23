@@ -39,23 +39,7 @@ def restabler_cuenta(enlace):
     enlace.delete()
 
 
-
-def getVerificationLink(user_email, expirationtime):
-    try:
-        user = User.objects.get(email__exact=user_email)
-        ext_user = ExtensionUsuario.objects.get(user=user)
-        enlacev = EnlaceVerificacion.objects.filter(usuario=ext_user)
-        if not enlacev:
-            code = generateVerificationLink(ext_user, user.email, expirationtime)
-            if code:
-                return code
-        else:
-            print("Este usuario ya posee un enlace de verificacion activo")
-    except Exception as e:
-        print("Error verification link:", e)
-
-
-def generateVerificationLink(user, user_email, expirationtime):
+def getVerificationLink(ext_user, user_email, expirationtime):
     try:
         x = random.randint(0, 999)
         user_email += str(x)
@@ -66,7 +50,7 @@ def generateVerificationLink(user, user_email, expirationtime):
         # key_expires = datetime.strptime(key_expires, '%Y-%m-%d %H:%M:%S')
         print("keyexpires:", key_expires)
         generate = EnlaceVerificacion.objects.create(activation_key=activation_key, key_expires=key_expires,
-                                                     usuario=user)
+                                                     usuario=ext_user)
         generate.save()
         return activation_key
     except Exception as e:
