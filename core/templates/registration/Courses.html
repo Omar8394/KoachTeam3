@@ -170,12 +170,14 @@
             
                                                     <input type="number" id="{{mat.idestructuraprogrmas}}" name="{{mat.idestructuraprogrmas}}"  value="{{mat.precio}}" >
             
-                                                    <a href="javascript:void(0);" onclick="savePrice('{{mat.idestructuraprogrmas}}')">  <span class="fas fa-save"> </span>   </a>  
+                                                   
                                                    
             
                                                    </td>
                                                   
-                                                   <td></td>
+                                                   <td>
+                                                    <a href="javascript:void(0);" onclick="savePrice('{{mat.idestructuraprogrmas}}')">  <button class="btn btn-primary btn-xs"><span class="fas fa-save"> </span> </button>  </a>  
+                                                   </td>
                                                    {% else %}
                                                    <td>
                                                     Original Price: {{mat.precio}} 
