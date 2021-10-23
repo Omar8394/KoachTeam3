@@ -1452,6 +1452,12 @@ def getModalResourcesBank(request):
             else:
                 data = json.load(request)
                 if data["method"] == "Show":
+                    #nananananananana batmannnn
+                    recursos = Recurso.objects.filter(fk_publico_autor=request.user.extensionusuario.Publico) | Recurso.objects.filter(compartido=True)
+                    recursos = recursos.order_by('-id_recurso')[:10]
+                    tags = Tag.objects.all().order_by('desc_tag')
+                    context["recursos"] = recursos
+                    context["tags"] = tags
                     html_template = (loader.get_template('components/modalBancoRecursos.html'))
                     return HttpResponse(html_template.render(context, request))
                 elif data["method"] == "Find":

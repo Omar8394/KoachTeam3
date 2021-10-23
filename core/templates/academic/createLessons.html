@@ -127,7 +127,7 @@
             if (!HTMLstring.includes("Invalid Youtube video") && $("#tagResource4").val().trim() != "") {
                dataObj = {
                   titulo: document.getElementById("titleResource4").value,
-                  path: document.getElementById("urlResource").value,
+                  path: extractCode(document.getElementById("urlResource").value),
                   tipo_path: 1,
                   compartido: document.getElementById("checkSharedCB4").checked,
                   tipo_recurso: "Recurso_video",
@@ -262,16 +262,20 @@
       })
       return recursos
    }
+   const extractCode = (linkEntry)=>{
+      let codeIndex = 0
+      if (linkEntry.includes("youtu.be/")) {
+         codeIndex = linkEntry.indexOf("youtu.be/") + 9
+      }
+      if (linkEntry.includes("youtube.com/")) {
+         codeIndex = linkEntry.indexOf("&v=") + linkEntry.indexOf("?v=") + 4
+      }
+      let code = linkEntry.slice(codeIndex, codeIndex + 11)
+      return code
+   }
    const comprobarYoutube = (linkEntry) => {
       if (linkEntry.match(/(?:https?:\/\/)?(?:www\.|m\.)?youtu(?:\.be\/|be.com\/\S*(?:watch|embed)(?:(?:(?=\/[^&\s\?]+(?!\S))\/)|(?:\S*v=|v\/)))([^&\s\?]+)/gm)) {
-         let codeIndex = 0
-         if (linkEntry.includes("youtu.be/")) {
-            codeIndex = linkEntry.indexOf("youtu.be/") + 9
-         }
-         if (linkEntry.includes("youtube.com/")) {
-            codeIndex = linkEntry.indexOf("&v=") + linkEntry.indexOf("?v=") + 4
-         }
-         let code = linkEntry.slice(codeIndex, codeIndex + 11)
+         let code = extractCode(linkEntry)
          return `<iframe width="560" height="315" src="https://www.youtube.com/embed/${code}" title="YouTube video player" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
       }
       else {
