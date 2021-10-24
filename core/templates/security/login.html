@@ -92,4 +92,10 @@
 {% endblock content %}
 
 <!-- Specific JS goes HERE -->
-{% block javascripts %}{% endblock javascripts %}
+{% block javascripts %}
+    <script language="JavaScript">
+        {% if mensaje %}
+    swal('{{mensaje}}')
+        {% endif %}
+    </script>
+{% endblock javascripts %}

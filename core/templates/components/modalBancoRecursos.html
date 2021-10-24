@@ -1,3 +1,4 @@
+{% load static%}
 <div class="modal-content">
    <div class="modal-header">
       <h5 class="modal-title">Resources bank</h5>
@@ -20,7 +21,7 @@
       </nav>
       <div class="tab-content" id="nav-tabContent">
          <div class="tab-pane fade show active" id="nav-recent" role="tabpanel" aria-labelledby="nav-recent-tab">
-            <div class="mt-2">
+            <div class="bank-header">
                <ul class="breadcrumbs m-0">
                   <li class="separator">
                      <i class="flaticon-right-arrow"></i>
@@ -32,33 +33,67 @@
                   </li>
                </ul>
             </div>
-            <div class="container-resources-bank">
-
+            <div class="bank-body" id="recentBankBody">
+               {% for recurso in recursos%}
+               <div id="resourceRecent{{recurso.pk}}" class="resources-item" onclick="selectedRecent('{{recurso.pk}}','{{recurso.path}}','{{recurso.fk_tipo_recurso.valor_elemento}}')">
+                  {% if recurso.fk_tipo_recurso.valor_elemento == 'Recurso_video'%}
+                  <div class="resources-item-front" style="background: url('http://i3.ytimg.com/vi/{{recurso.path}}/hqdefault.jpg'); background-size: cover;">
+                  {% elif recurso.fk_tipo_recurso.valor_elemento == 'Recurso_image'%}
+                  <div class="resources-item-front" style="background: url('/media/{{recurso.path}}'); background-size: contain; background-position:center; background-repeat: no-repeat;">
+                  {% elif recurso.fk_tipo_recurso.valor_elemento == 'Recurso_audio'%}
+                  <div class="resources-item-front" style="background: url('{% static 'assets/img/audio-thumbnail.png' %}'); background-size: contain; background-position:center; background-repeat: no-repeat;">
+                  {% elif recurso.fk_tipo_recurso.valor_elemento == 'Recurso_pdf'%}
+                  <div class="resources-item-front" style="background: url('{% static 'assets/img/pdf-thumbnail.png' %}'); background-size: contain; background-position:center; background-repeat: no-repeat;">
+                  {% endif %}
+                     <div class="resources-item-title">
+                        {{recurso.titulo}}
+                     </div>
+                  </div>
+                  <div class="resources-item-details">
+                     <div class="resources-item-description">
+                        <p>Type: {{recurso.fk_tipo_recurso.desc_elemento}}</p>
+                        <p>Author: {{recurso.fk_publico_autor.extensionusuario.Publico.nombre}} {{recurso.fk_publico_autor.extensionusuario.Publico.apellido}}</p>
+                     </div>
+                     <div class="resources-item-tags">
+                        {% for tag in recurso.tagrecurso_set.all %}
+                        <span>{{tag.fk_tag.desc_tag}}</span>
+                        {% endfor %}
+                     </div>
+                  </div>
+               </div>
+               {% endfor %}
             </div>
          </div>
          <div class="tab-pane fade" id="nav-bank" role="tabpanel" aria-labelledby="nav-bank-tab">
-            <div class="mt-2">
-               <ul class="breadcrumbs m-0">
-                  <li class="separator">
-                     <i class="flaticon-right-arrow"></i>
-                  </li>
-                  <li class="nav-home">
-                     <span>
-                        <i class="flaticon-home"></i>
+            <div class="bank-header" id="tagBankHeader">
+               <div class="input-group">
+                  <input id="resourceSearch" type="text" class="form-control" placeholder="Search for...">
+                  <div class="input-group-append">
+                     <span id="clearBankBtn" class="btn btn-danger">
+                        <i class="fa fa-broom"></i>
                      </span>
-                  </li>
-                  <li class="separator">
-                     <i class="flaticon-right-arrow"></i>
-                  </li>
-                  <li class="nav-item">
-                     <span>
-                        Program
+                     <span id="searchBankBtn" class="btn btn-primary">
+                        <i class="fa fa-search"></i>
                      </span>
-                  </li>
-               </ul>
+                  </div>
+               </div>
+               <div id="backBar" class="d-none justify-content-between align-center">
+                  <span id="backBankBtn" class="btn btn-danger">
+                     <i class="fas fa-arrow-left"></i>
+                  </span>
+                  <h2 id="tagNameBar" style="margin:0; display:flex; flex-grow:1; align-items:center; justify-content:center;"></h2>
+               </div>
             </div>
-            <div class="container-resources-bank">
-
+            <div class="bank-body" id="tagBankBody">
+               {% for tag in tags%}
+               <div class="resources-item" id="tagItem{{tag.pk}}" onclick="selectedTag('{{tag.pk}}','{{tag.desc_tag}}')">
+                  <div class="resources-item-front">
+                     <div class="resources-item-title" style="font-size: 1.5rem; font-weight: bold;">
+                        {{tag.desc_tag}}
+                     </div>
+                  </div>
+               </div>
+               {% endfor %}
             </div>
          </div>
          <div class="tab-pane fade" id="nav-upload" role="tabpanel" aria-labelledby="nav-upload-tab">

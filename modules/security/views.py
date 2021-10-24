@@ -39,8 +39,10 @@ def login_view(request):
         return redirect("/")
     else:
         form = LoginForm(request.POST or None)
-
-        msg = None
+        msg =None
+        if request.session.get("mensaje"):
+            msg = request.session.get("mensaje")
+            request.session.flush()
         status_cuenta = None
         rol = "rol_student"
         if request.method == "POST":
@@ -65,7 +67,7 @@ def login_view(request):
                         cuenta.respuesta_secreta = respuesta
                         cuenta.save()
                         cuenta = ExtensionUsuario.objects.create(CtaUsuario=cuenta, user=user)
-                        #primera vez configurar la cuenta de usuario por defecto
+                        # primera vez configurar la cuenta de usuario por defecto
                     print(status_cuenta)
                     if status_cuenta == 'suspended':
                         msg = 'Your account has been suspended for more information contact support.'
@@ -81,7 +83,7 @@ def login_view(request):
                     elif cuenta.CtaUsuario.fecha_ult_cambio is None:
                         # primer ingreso debe cambiar contraseña si la cuenta fue creada
                         # por el administrador
-                        code = str(Methods.getVerificationLink(user.email, 1))
+                        code = str(Methods.getVerificationLink(cuenta, user.email, 1))
                         print("cambiar contraseña primera vez")
                         logout(request)
                         if code:
@@ -92,7 +94,7 @@ def login_view(request):
                     elif tools.exp_clave(str(cuenta.CtaUsuario.fecha_ult_cambio), cuenta.CtaUsuario.dias_cambio):
                         print("cambiar contraseña por expiracion")
                         logout(request)
-                        code = str(Methods.getVerificationLink(user.email, 1))
+                        code = str(Methods.getVerificationLink(cuenta, user.email, 1))
                         if code:
                             return redirect("/emailrecovery/" + code + "/")
                         else:
@@ -136,10 +138,14 @@ def login_view(request):
                 msg = 'Error validating the form'
         return render(request, "security/login.html", {"form": form, "msg": msg})
 
+
 def register_user(request):
+    if request.user.is_authenticated:
+        return redirect("/login/")
+    if settings.LAND_PAGE_MODE == "ON":
+        return redirect("/landpage/")
     msg = None
     success = False
-
     if request.method == "POST":
         form = SignUpForm(request.POST)
         if form.is_valid():
@@ -150,7 +156,6 @@ def register_user(request):
             msg = 'User created - please <a href="/login">login</a>.'
             success = True
             return redirect("/login/")
-
         else:
             msg = 'Form is not valid'
     else:
@@ -158,54 +163,60 @@ def register_user(request):
 
     return render(request, "security/register.html", {"form": form, "msg": msg, "success": success})
 
+
 def register_user_new(request, activation_key, registertype, id):
     msg = None
-    success = False
     email = None
-    publico = None
+    form = SignUpForm()
     if request.user.is_authenticated:
         return redirect("/login/")
     try:
         enlace = EnlaceVerificacion.objects.get(activation_key=activation_key)
-        if enlace.usuario.CtaUsuario.fk_status_cuenta != "suspend":
-            if Methods.verificarenlace(enlace.key_expires):
-                print("enlace valido", activation_key)
+        if enlace.usuario.CtaUsuario.fk_status_cuenta == "suspend":
+            raise Http404("This account is locked, please contact support")
+        elif Methods.verificarenlace(enlace.key_expires):
+            print("enlace valido", activation_key)
+            if request.method == "GET":
                 if registertype == "landpage":
                     lang_page_user = LandPage.objects.get(pk=id)
                     email = json.loads(lang_page_user.correos)['emailPrincipal']
                 elif registertype == "adminregister":
                     publico_email = Publico.objects.get(pk=id)
-                    email = json.loads(publico_email)['emailPrincipal']
-                if request.method == "POST":
-                    form = SignUpForm(request.POST or None, initial={'email': email})
-                    if form.is_valid():
-                        registertype = form.cleaned_data.get("registertype")
-                        user = form.save()
-                        cuenta = create_default_ctausuario("status_active", "rol_student")
-                        if registertype == "landpage":
-                            pass
+                    email = json.loads(publico_email.correos)['emailPrincipal']
+                form = SignUpForm(initial={'email': email})
+            elif request.method == "POST":
+                form = SignUpForm(request.POST or None, initial={'email': email})
+                if form.is_valid():
+                    registertype = form.cleaned_data.get("registertype")
+                    user = form.save()
+                    cuenta = create_default_ctausuario("status_active", "rol_student")
+                    if registertype == "landpage":
+                        id_land = form.cleaned_data.get("id_request")
+                        land_page = LandPage.objects.get(pk=id_land)
+                        publico_aux = Publico.objects.create(nombre=land_page.nombre,
+                                                             apellido=land_page.apellido,direccion=land_page.direccion,
+                                                             docto_identidad="No found", correos=land_page.correos, telefonos="No Found",
+                                                             fecha_registro=datetime.today())
+                        ExtensionUsuario.objects.create(CtaUsuario=cuenta, Publico=publico_aux, user=user)
+                        enlace.delete()
+                    elif registertype == "adminregister":
+                        id_publico = form.cleaned_data.get("id_request")
+                        publico = Publico.objects.get(pk=id_publico)
+                        ExtensionUsuario.objects.create(CtaUsuario=cuenta, Publico=publico, user=user)
+                        enlace.delete()
+                    request.session['mensaje'] = "You has been register successfully, Now try login in!"
+                    return redirect("/login/")
 
-                        elif registertype == "adminregister":
-                            publico = Publico.objects.get()
-                        ExtensionUsuario.objects.create(CtaUsuario=cuenta, user=user)
-
-                        # user = authenticate(username=username, password=raw_password)
-                        msg = 'User created - please <a href="/login">login</a>.'
-                        success = True
-                        return redirect("/login/")
-
-                    else:
-                        msg = 'Form is not valid'
                 else:
-                    form = SignUpForm(initial={'email': email})
-            else:
-                raise Http404("This link has expired please request another link")
+                    form = SignUpForm(request.POST or None, initial={'email': email})
+                    msg = 'Form is not valid'
         else:
-            raise Http404("This account is locked, please contact support")
+            raise Http404("This link has expired please request another link")
     except EnlaceVerificacion.DoesNotExist:
         raise Http404("This verification link is invalid or has expired")
+
     return render(request, "security/register_new.html", {"form": form, "msg": msg, "id_request": id,
-                                                      "registertype": registertype, "email": email})
+                                                          "registertype": registertype, "email": email})
 
 
 def forgot_password(request):
@@ -256,7 +267,8 @@ def recovery_method(request):
                 typemethod = int(form.cleaned_data.get("typeMethod"))
                 user_email = form.cleaned_data.get("email")
                 if typemethod == 1:
-                    code = str(Methods.getVerificationLink(user_email, 2))
+                    ext_user = ExtensionUsuario.objects.get(user__exact=User.objects.get(email__exact=user_email))
+                    code = str(Methods.getVerificationLink(ext_user, user_email, 2))
                     if code:
                         enlace = request.get_raw_uri().split("//")[0] + "//" + \
                                  request.get_host() + "/emailrecovery/" + code + "/"
@@ -309,7 +321,7 @@ def recovery_method_question(request):
                         if form.is_valid():
                             answer = form.cleaned_data.get("secrettext")
                             if answer == ext_user.CtaUsuario.respuesta_secreta:
-                                code = str(Methods.getVerificationLink(email, 1))
+                                code = str(Methods.getVerificationLink(ext_user, email, 1))
                                 if code:
                                     return redirect("/emailrecovery/" + code + "/")
                                 else:
@@ -328,6 +340,10 @@ def recovery_method_question(request):
 
 
 def lang_page(request):
+    if request.user.is_authenticated:
+        return redirect("/")
+    if settings.LAND_PAGE_MODE == "OFF":
+        return redirect("/register/")
     form = LandingPage(request.POST or None)
     msg = None
     success = False
@@ -348,41 +364,44 @@ def lang_page(request):
         print("tipo Telefono:", tipo_telefono)
 
     return render(request, "security/landPage.html",
-                  {"form": form, "reason": True, "emailposition": True, "msg": msg, 'success': success,
+                  {"form": form, "reason": True, "emailposition": True, "mensajeland": True, "msg": msg,
+                   'success': success,
                    "tipoTelefono": tipo_telefono})
 
 
 def full_registration(request):
+    if not request.user.is_authenticated:
+        return redirect("/login/")
+    if request.session.get("user_rol") != "Admin":
+        return HttpResponse("Access Denied, this option its only for admin users", 403)
     msg = None
     success = False
     full_registration_form = FullRegistration(request.POST or None)
-    form_registration = SignUpForm(request.POST or None)
     tipo_telefono = None
     if request.method == "POST":
         print("form lanpage:", full_registration_form)
-        print("form registro:", form_registration)
-        if full_registration_form.is_valid() and form_registration.is_valid():
+        if full_registration_form.is_valid():
             publico = full_registration_form.save()
-            user = form_registration.save()
-            user.is_active = False
-            user.save()
             cuenta = create_default_ctausuario("status_verification", "rol_student")
-            ExtensionUsuario.objects.create(CtaUsuario=cuenta, user=user, Publico=publico)
+            ext_user = ExtensionUsuario.objects.create(CtaUsuario=cuenta, user=None, Publico=publico)
+            email = json.loads(publico.correos)['emailPrincipal']
             # send verification email
             success = True
-            code = str(Methods.getVerificationLink(user.email, 2))
+
+            code = str(Methods.getVerificationLink(ext_user, email, 2))
             if code:
                 enlace = request.get_raw_uri().split("//")[0] + "//" + \
-                         request.get_host() + "/verificationaccount/" + code + "/"
-                context = {"titulo": "Account Verification", "user": user.email,
-                           "content": "thank you for joining the energy solar team, follow the link below to validate your account:",
+                         request.get_host() + "/register_new/" + code + "/" + "adminregister/" \
+                         + str(publico.idpublico) + "/"
+                context = {"titulo": "Account Registration Link", "user": publico.nombre + " " + publico.apellido,
+                           "content": "Thank you for joining the energy solar team, follow the link below to register  your account:",
                            "enlace": enlace, "enlaceTexto": "click here!"}
                 send_mail(
-                    create_mail(user.email, "Account Verification", "security/base_email_template_pro.html",
+                    create_mail(email, "Account Registration Link", "security/base_email_template_pro.html",
                                 context))
                 msg = "Registration has been completed successfully."
-                information = {"mensaje": "We have sent an account verification link to your email",
-                               "titulo": "Registration has been completed successfully."}
+                information = {"mensaje": "We have sent the account registration link successfully",
+                               "titulo": "Registration link has been send"}
                 return render(request, "security/information_view.html", information)
             else:
                 msg = "Error to generate code link verification"
@@ -449,7 +468,6 @@ def emailrecovery(request, activation_key):
 
 
 def editProfile(request):
-
     profile = Publico.objects.get(idpublico=ExtensionUsuario.objects.get(user=request.user).Publico.idpublico)
     telefono = profile.telefonos
     correo = profile.correos
@@ -554,10 +572,10 @@ def rootImages(request):
 
             Ruta = settings.UPLOAD_URL + 'user/' + ctauser.url_imagen if ctauser else None
             root = settings.UPLOAD_ROOT + '/user/' + ctauser.url_imagen if ctauser else None
-            
+
             if not os.path.exists(root):
                 Ruta = None
-        
+
         else:
 
             Ruta = None
@@ -593,7 +611,7 @@ def configadmin(request):
 
 
 def borrarImages(request):
-    
+
     if request.method == "POST":
 
         ctauser = CtaUsuario.objects.filter(

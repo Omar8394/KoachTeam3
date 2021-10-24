@@ -132,7 +132,7 @@
                                                <td>{{person.docto_identidad}}</td>
                                                <td>{{person.fecha_registro}}</td>
                                                <td> 
-                                                    <a href="javascript:void(0);"  id="{{person.idpublico}}"  onclick="showModal(id)" ><i class="fa fa-plus"></i> Add Enrollment</a>
+                                                    <a href="javascript:void(0);"  id="{{person.idpublico}}"  onclick="showModal(id)" > <button class="btn btn-success btn-sm"><i class="fa fa-plus mr-1"></i> Add Enrollment </button></a>
                                                 </td>
                                                <td>  
                                                     <form id="PersonaForm" name="PersonaForm" action="{% url 'EnrollmentList'%}" onsubmit=" return ManagePersonas('{{person.idpublico}}')" method="POST">
@@ -141,7 +141,7 @@
                                                         name="PersonId">
                                                     
             
-                                                        <a  href="javascript:void(0);" onclick="sendForm('{{person.idpublico}}')" id="{{person.idpublico}}" ><i class="fa fa-tasks"></i> Manage Enrollments</a>
+                                                        <a  href="javascript:void(0);" onclick="sendForm('{{person.idpublico}}')" id="{{person.idpublico}}" > <button class="btn btn-primary btn-sm"> <i class="fas fa-edit mr-1"></i> Manage Enrollments</button></a>
             
                                                     </form>
                                                 </td>

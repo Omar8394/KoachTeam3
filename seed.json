@@ -1473,67 +1473,65 @@
     "mostrar_en_combos": 1,
     "maneja_lista": 0
   }
-},
-  {"model": "app.tablasconfiguracion",
-     "pk": 220,
-    "fields": {
-        "desc_elemento": "Security",
-        "fk_tabla_padre": 20,
-        "tipo_elemento": "0",
-        "permite_cambios": 1,
-        "valor_elemento": "sec_pre",
-        "mostrar_en_combos": 1,
-        "maneja_lista": 0
-    }
-}, 
-{
-    "model": "app.tablasconfiguracion",
-    "pk": 211,
-    "fields": {
-        "desc_elemento": "Academic",
-        "fk_tabla_padre": 20,
-        "tipo_elemento": "0",
-        "permite_cambios": 1,
-        "valor_elemento": "Aca_pre",
-        "mostrar_en_combos": 1,
-        "maneja_lista": 0
-    }
-}, {
-    "model": "app.tablasconfiguracion",
-    "pk": 212,
-    "fields": {
-        "desc_elemento": "Planning",
-        "fk_tabla_padre": 20,
-        "tipo_elemento": "0",
-        "permite_cambios": 1,
-        "valor_elemento": "Pla_pre",
-        "mostrar_en_combos": 1,
-        "maneja_lista": 0
-    }
-}, {
-    "model": "app.tablasconfiguracion",
-    "pk": 213,
-    "fields": {
-        "desc_elemento": "Registration",
-        "fk_tabla_padre": 20,
-        "tipo_elemento": "0",
-        "permite_cambios": 1,
-        "valor_elemento": "Regis_pre",
-        "mostrar_en_combos": 1,
-        "maneja_lista": 0
-    }
-}, {
-    "model": "app.tablasconfiguracion",
-    "pk": 214,
-    "fields": {
-        "desc_elemento": "Settings",
-        "fk_tabla_padre": 20,
-        "tipo_elemento": "0",
-        "permite_cambios": 1,
-        "valor_elemento": "sett_pre",
-        "mostrar_en_combos": 1,
-        "maneja_lista": 0
-    }
-  
+},{
+  "model": "app.tablasconfiguracion",
+  "pk": 211,
+  "fields": {
+    "desc_elemento": "Autor",
+    "fk_tabla_padre": 2,
+    "tipo_elemento": "0",
+    "permite_cambios": 1,
+    "valor_elemento": "rol_autor",
+    "mostrar_en_combos": 1,
+    "maneja_lista": 0
+  }
+},{
+  "model": "app.tablasconfiguracion",
+  "pk": 212,
+  "fields": {
+    "desc_elemento": "Teacher",
+    "fk_tabla_padre": 2,
+    "tipo_elemento": "0",
+    "permite_cambios": 1,
+    "valor_elemento": "rol_teacher",
+    "mostrar_en_combos": 1,
+    "maneja_lista": 0
+  }
+},{
+  "model": "app.tablasconfiguracion",
+  "pk": 213,
+  "fields": {
+    "desc_elemento": "assistant",
+    "fk_tabla_padre": 2,
+    "tipo_elemento": "0",
+    "permite_cambios": 1,
+    "valor_elemento": "rol_assistant",
+    "mostrar_en_combos": 1,
+    "maneja_lista": 0
+  }
+},{
+  "model": "app.tablasconfiguracion",
+  "pk": 214,
+  "fields": {
+    "desc_elemento": "planification and control",
+    "fk_tabla_padre": 2,
+    "tipo_elemento": "0",
+    "permite_cambios": 1,
+    "valor_elemento": "rol_planification",
+    "mostrar_en_combos": 1,
+    "maneja_lista": 0
+  }
+},{
+  "model": "app.tablasconfiguracion",
+  "pk": 215,
+  "fields": {
+    "desc_elemento": "treasury",
+    "fk_tabla_padre": 2,
+    "tipo_elemento": "0",
+    "permite_cambios": 1,
+    "valor_elemento": "rol_treasury",
+    "mostrar_en_combos": 1,
+    "maneja_lista": 0
+  }
 }
 ]

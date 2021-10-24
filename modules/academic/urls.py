@@ -31,6 +31,7 @@ urlpatterns = [
    path('contenidoCursos/', views.getContentCursos, name="contenidoCursos"),
    path('contenidoTopicos/', views.getContentTopicos, name="contenidoTopicos"),
    path('contenidoLecciones/', views.getContentLecciones, name="contenidoLecciones"),
+   path('contenidoRecursos/', views.getContentRecursos, name="contenidoRecursos"),
    path('comboOption/', views.getComboContent, name="contenidoCombo"),
    path('previewLeccion/', views.getPreviewLeccion, name="previewLeccion"),
    #modales

@@ -18,7 +18,8 @@ results for "{{query}}"
          </div>
       </li>
       {% endif %}
-
+   </ul>
+   <ul class="card-list" id="listaPaginas">
       {% for topic in data%}
       {%if topic.valor_elemento == 'Topic'%}
       <li class="card-list-item">
@@ -46,10 +47,16 @@ results for "{{query}}"
                   {% endif %}
                   {% if topic.estructuraprograma_set.all %}
                   <button type="button" class="btn btn-icon btn-sm btn-warning ml-1" data-toggle="tooltip"
-                     data-placement="top" title="Show/Hide" onclick="showChilds('{{topic.pk}}')">
-                     <i class="fas fa-clipboard"></i>
-                  </button>
-                  {% endif %}
+                  data-placement="top" title="Show/Hide" onclick="showChilds('{{topic.pk}}')">
+                  <i class="fas fa-clipboard"></i>
+               </button>
+               {% endif %}
+               {% if topic.estructuraprograma_set.all and edit %}
+               <button type="button" class="btn btn-icon btn-sm btn-dark ml-1" data-toggle="tooltip"
+                  data-placement="top" title="Sort" onclick="openSortTopic('{{topic.pk}}')">
+                  <i class="fas fa-list-ol"></i>
+               </button>
+               {% endif %}
                </div>
             </div>
             <div class="card-list-item-extra">
@@ -64,7 +71,7 @@ results for "{{query}}"
          <ul id="childsTopic{{topic.pk}}" class="card-list-item-close">
             {% for activity in topic.estructuraprograma_set.all %}
             {%if activity.valor_elemento == 'Activity'%}
-            <li class="card-list-item-content
+            <li id="itemActivity{{activity.pk}}" class="card-list-item-content
             {% if activity.fk_categoria.desc_elemento == 'Expert test'%} deg-primary{% endif %}
             {% if activity.fk_categoria.desc_elemento == 'Test'%} deg-success{% endif %}
             {% if activity.fk_categoria.desc_elemento == 'Homework'%} deg-warning{% endif %}

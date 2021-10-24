@@ -149,5 +149,7 @@ EMAIL_HOST_USER = 'jcenergysolarteam@gmail.com'
 EMAIL_HOST_PASSWORD = "KoachTeam3" #configurar en deploy config('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = 587
 
+LAND_PAGE_MODE = "ON"
+
 #############################################################
 #############################################################

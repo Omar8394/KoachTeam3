@@ -1000,9 +1000,9 @@ def getContentTopicos(request):
                 unidad=Estructuraprograma.objects.get(valor_elemento="Unit", url=data["urlUnidad"])
                 curso=Estructuraprograma.objects.get(valor_elemento="Course", url=data["urlCurso"])
                 if data["query"] == "" or data["query"] == None:
-                    lista = curso.estructuraprograma_set.all()
+                    lista = curso.estructuraprograma_set.all().order_by("orden_presentacion")
                 else:
-                    lista = curso.estructuraprograma_set.all().filter(valor_elemento="Topic", descripcion__icontains=data["query"])
+                    lista = curso.estructuraprograma_set.all().filter(valor_elemento="Topic", descripcion__icontains=data["query"]).order_by("orden_presentacion")
                 context = {"data":lista, "programa":programa, "proceso":proceso, "unidad":unidad, "curso":curso ,"add":add,"edit": edit,"take": take,"see": see, "delete":delete, "go":go, "query":data["query"]}
                 html_template = (loader.get_template('academic/contenidoTopicos.html'))
                 return HttpResponse(html_template.render(context, request))
@@ -1029,6 +1029,25 @@ def getContentLecciones(request):
                     lista = actividad.paginas_set.all().filter(titulo__icontains=data["query"]).order_by("ordenamiento")
                 context = {"data":lista, "lesson":leccion ,"add":add,"edit": edit,"take": take,"see": see, "delete":delete, "go":go, "query":data["query"]}
                 html_template = (loader.get_template('academic/contenidoLecciones.html'))
+                return HttpResponse(html_template.render(context, request))
+
+@login_required(login_url="/login/")
+def getContentRecursos(request):
+    if request.method == "POST":
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            context = {}
+            if request.body:
+                data = json.load(request)
+                if data["show"] == "tags":
+                    if data["query"] == "" or data["query"] == None:
+                        lista = Tag.objects.all().order_by("desc_tag")
+                    else:
+                        lista = Tag.objects.filter(desc_tag__icontains=data["query"]).order_by("desc_tag")
+                if data["show"] == "resources":
+                    tag = Tag.objects.get(pk=data["tag"])
+                    lista = TagRecurso.objects.filter(fk_tag=tag)
+                context = {"data":lista, "show":data["show"]}
+                html_template = (loader.get_template('academic/contenidoRecursos.html'))
                 return HttpResponse(html_template.render(context, request))
 
 @login_required(login_url="/login/")
@@ -1279,6 +1298,12 @@ def getModalTopico(request):
                         context = {"courses": courses, "modelo": modelo}
                         html_template = (loader.get_template('components/modalAddTopico.html'))
                         return HttpResponse(html_template.render(context, request))
+                    elif data["method"] == "Sort":
+                        for item in data["order"]:
+                            topico = Estructuraprograma.objects.get(pk=item["pk"])
+                            topico.orden_presentacion = item["order"]
+                            topico.save()
+                        return JsonResponse({"message":"Perfect"})
                     elif data["method"] == "Delete":
                         topico = Estructuraprograma.objects.get(pk=data["id"])
                         topico.delete()
@@ -1316,6 +1341,12 @@ def getModalActividad(request):
                         context = {"modelo": modelo}
                         html_template = (loader.get_template('components/modalAddActividad.html'))
                         return HttpResponse(html_template.render(context, request))
+                    elif data["method"] == "Sort":
+                        for item in data["order"]:
+                            actividad = Estructuraprograma.objects.get(pk=item["pk"])
+                            actividad.orden_presentacion = item["order"]
+                            actividad.save()
+                        return JsonResponse({"message":"Perfect"})
                     elif data["method"] == "Delete":
                         actividad = Estructuraprograma.objects.get(pk=data["id"])
                         actividad.delete()
@@ -1460,6 +1491,12 @@ def getModalResourcesBank(request):
             else:
                 data = json.load(request)
                 if data["method"] == "Show":
+                    #nananananananana batmannnn
+                    recursos = Recurso.objects.filter(fk_publico_autor=request.user.extensionusuario.Publico) | Recurso.objects.filter(compartido=True)
+                    recursos = recursos.order_by('-id_recurso')[:10]
+                    tags = Tag.objects.all().order_by('desc_tag')
+                    context["recursos"] = recursos
+                    context["tags"] = tags
                     html_template = (loader.get_template('components/modalBancoRecursos.html'))
                     return HttpResponse(html_template.render(context, request))
                 elif data["method"] == "Find":

@@ -6,7 +6,20 @@
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
 <!-- Specific JS goes HERE -->
-{% block javascripts %}<script src="/static/assets/js/modules/security/validations.js"></script>{% endblock javascripts %}
+{% block javascripts %}
+    <script src="/static/assets/js/modules/security/validations.js"></script>
+    <script src="/static/assets/js/plugin/sweetalert/sweetalert.min.js"></script>
+    <script language="JavaScript" >
+        {% if mensajeland %}
+        swal("Important Statement", "The landpage mode is activated therefore registration is only enabled" +
+            " for members of the jc energysolar team, if you are already part of the team ask an administrator to register you," +
+            " if you are not yet part of the team and want to participate fill in the following request form .", "info");
+        {% endif %}
+        {% if msg %}
+            swal("Error", '{{ msg }}', "error");
+        {% endif %}
+    </script>
+{% endblock javascripts %}
 
 {% block content %}
 
@@ -16,11 +29,7 @@
 
     <div class="card text-white border border-dark">
     <div class="card-header bg-dark2"  >
-    <script language="JavaScript">
-        {% if msg %}
-        swal("Error", '{{ msg }}', "error");
-         {% endif %}
-    </script>
+
           {% if msg %}
                             <span class="text-danger">{{ msg | safe }}</span>
                         {% else %}
@@ -40,13 +49,13 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="nombre">First Name</label>
-                            <input  type="text" class="form-control" id="nombre" name="nombre" pattern="[A-Za-z]{1,45}" maxlength="45"  required/>
+                            <input  type="text" class="form-control" id="nombre" name="nombre" pattern="[A-Za-z- ]{1,45}" maxlength="45"  required/>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="apellido">Last Name</label>
-                            <input  type="text" class="form-control" id="apellido" name="apellido" pattern="[A-Za-z]{1,45}" maxlength="45"  required/>
+                            <input  type="text" class="form-control" id="apellido" name="apellido" pattern="[A-Za-z- ]{1,45}" maxlength="45"  required/>
                         </div>
                     </div>
                     {% if emailposition %}

@@ -1,279 +1,289 @@
+<!--   Core JS Files   -->
+<script src="/static/assets/js/core/jquery.3.2.1.min.js"></script>
+<script src="/static/assets/js/core/popper.min.js"></script>
+<script src="/static/assets/js/core/bootstrap.min.js"></script>
+<script src="/static/assets/js/core/vue.js"></script>
+<script src="/static/assets/js/core/sortable.js"></script>
 
-	<!--   Core JS Files   -->
-	<script src="/static/assets/js/core/jquery.3.2.1.min.js"></script>
-	<script src="/static/assets/js/core/popper.min.js"></script>
-	<script src="/static/assets/js/core/bootstrap.min.js"></script>
-	<script src="/static/assets/js/core/vue.js"></script>
-	<script src="/static/assets/js/core/sortable.js"></script>
+<!-- jQuery UI -->
+<script src="/static/assets/js/plugin/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+<script src="/static/assets/js/plugin/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js"></script>
 
-	<!-- jQuery UI -->
-	<script src="/static/assets/js/plugin/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
-	<script src="/static/assets/js/plugin/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js"></script>
+<!-- jQuery Scrollbar -->
+<script src="/static/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
 
-	<!-- jQuery Scrollbar -->
-	<script src="/static/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+<!-- Chart JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.1/chart.min.js"
+	integrity="sha512-Wt1bJGtlnMtGP0dqNFH1xlkLBNpEodaiQ8ZN5JLA5wpc1sUlk/O5uuOMNgvzddzkpvZ9GLyYNa8w2s7rqiTk5Q=="
+	crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-	<!-- Chart JS -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.1/chart.min.js" integrity="sha512-Wt1bJGtlnMtGP0dqNFH1xlkLBNpEodaiQ8ZN5JLA5wpc1sUlk/O5uuOMNgvzddzkpvZ9GLyYNa8w2s7rqiTk5Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<!-- jQuery Sparkline -->
+<script src="/static/assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js"></script>
 
-	<!-- jQuery Sparkline -->
-	<script src="/static/assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js"></script>
+<!-- Chart Circle -->
+<script src="/static/assets/js/plugin/chart-circle/circles.min.js"></script>
 
-	<!-- Chart Circle -->
-	<script src="/static/assets/js/plugin/chart-circle/circles.min.js"></script>
+<!-- Datatables -->
+<script src="/static/assets/js/plugin/datatables/datatables.min.js"></script>
 
-	<!-- Datatables -->
-	<script src="/static/assets/js/plugin/datatables/datatables.min.js"></script>
+<!-- Bootstrap Notify -->
+<script src="/static/assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
 
-	<!-- Bootstrap Notify -->
-	<script src="/static/assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
+<!-- jQuery Vector Maps -->
+<script src="/static/assets/js/plugin/jqvmap/jquery.vmap.min.js"></script>
+<script src="/static/assets/js/plugin/jqvmap/maps/jquery.vmap.world.js"></script>
 
-	<!-- jQuery Vector Maps -->
-	<script src="/static/assets/js/plugin/jqvmap/jquery.vmap.min.js"></script>
-	<script src="/static/assets/js/plugin/jqvmap/maps/jquery.vmap.world.js"></script>
-
-	<!-- Sweet Alert -->
-	<script src="/static/assets/js/plugin/sweetalert/sweetalert.min.js"></script>
-
-
-
-	<!-- Atlantis JS -->
-    <script src="/static/assets/js/atlantis.min.js"></script>
-
-	<!-- Jquery validator -->
-	<script src="/static/assets/js/jqueryvalidator.js"></script>
-
-	<!-- Jquery validator methods -->
-	<script src="/static/assets/js/jqueryvalidatormethods.js"></script>
-
-	<!-- Summernote -->
-	<script src="/static/assets/js/summernote-bs4.min.js"></script>
-
-	<!-- Owl-Carousel-->
-	<script src="/static/assets/js/owl.carousel.min.js"></script>
-
-	<!-- Dropzone-->
-	
-	<script src="/static/assets/js/dropzone.js"></script>
-
-	<!-- TagInput -->
-	<script src="/static/assets/js/bootstrap-tagsinput.js"></script>
-	 <script>
-	 window.addEventListener("load", function(event) {
-
-  });
-
-	 //loader
-	 function setLoading(){
-
-		 var element = document.getElementById("over");
-		 
-  element.classList.add("is-loading");
-  element.classList.add("is-loading-lg");
-
-	 }
-	 function stopLoading(){
-
-		 var element = document.getElementById("myBody");
-  element.classList.remove("is-loading");
-	 }
+<!-- Sweet Alert -->
+<script src="/static/assets/js/plugin/sweetalert/sweetalert.min.js"></script>
 
 
-	 	// Notificaciones a la hora de crear, editar o eliminar un registro respectivamente. 
 
-	 	function alerta(tipoAlerta){
-			if(tipoAlerta === 1){
-				swal("Well done!", "Register was successfully save!", 
+<!-- Atlantis JS -->
+<script src="/static/assets/js/atlantis.min.js"></script>
+
+<!-- Jquery validator -->
+<script src="/static/assets/js/jqueryvalidator.js"></script>
+
+<!-- Jquery validator methods -->
+<script src="/static/assets/js/jqueryvalidatormethods.js"></script>
+
+<!-- Summernote -->
+<script src="/static/assets/js/summernote-bs4.min.js"></script>
+
+<!-- Owl-Carousel-->
+<script src="/static/assets/js/owl.carousel.min.js"></script>
+
+<!-- Dropzone-->
+
+<script src="/static/assets/js/dropzone.js"></script>
+
+<!-- TagInput -->
+<script src="/static/assets/js/bootstrap-tagsinput.js"></script>
+<script>
+	window.addEventListener("load", function (event) {
+
+	});
+
+	//loader
+	function setLoading() {
+
+		var element = document.getElementById("over");
+
+		element.classList.add("is-loading");
+		element.classList.add("is-loading-lg");
+
+	}
+	function stopLoading() {
+
+		var element = document.getElementById("myBody");
+		element.classList.remove("is-loading");
+	}
+
+
+	// Notificaciones a la hora de crear, editar o eliminar un registro respectivamente. 
+
+	function alerta(tipoAlerta) {
+		if (tipoAlerta === 1) {
+			swal("Well done!", "Register was successfully save!",
 				{
-					icon : "success",
-					buttons: {
-						confirm: {
-							className : 'btn btn-success'
-						}
-					},
-				});	 
-			}
-			if(tipoAlerta === 2){
-				swal("Well done!", "Register was successfully update!", 
-				 {
-					icon : "success",
-					buttons: {
-						confirm: {
-							className : 'btn btn-success'
-						}
-					},
-				});
-			}
-			if(tipoAlerta === 3){
-				return swal({
-					title: 'Delete?',
-					text: "You won't be able to revert this!",
-					icon: "warning",
-					buttons:{
-						confirm: {
-							text : 'Yes, delete it!',
-							className : 'btn btn-success'
-						},
-						cancel: {
-							visible: true,
-							className: 'btn btn-danger'
-						}
-					}
-				})					
-			}
-			if(tipoAlerta === 4){
-				swal({
-					title: 'Deleted!',
-					text: 'Register has been successfully deleted.',
-					icon: 'success',
+					icon: "success",
 					buttons: {
 						confirm: {
 							className: 'btn btn-success'
 						}
-					}
+					},
 				});
-			}
-			if(tipoAlerta === 5){
-				swal({
-					title: 'Error!',
-					text: 'An error has occurred.',
-					icon: 'error',
-					buttons: {
-						confirm: {
-							className: 'btn btn-danger'
-						}
-					}
-				});
-			}
-			if(tipoAlerta === 6){
-				swal({
-					title: 'Already exists',
-					text: 'This resource already exists on resource\'s bank.',
-					icon: 'info',
-					buttons: {
-						confirm: {
-							className: 'btn btn-info'
-						}
-					}
-				});
-			}
 		}
-
-		//con mensajitos
-		
-		function alertaMensajitos(tipoAlerta,tittle, mssg){
-			if(tipoAlerta === 1){
-				swal(tittle, mssg, 
+		if (tipoAlerta === 2) {
+			swal("Well done!", "Register was successfully update!",
 				{
-					icon : "success",
-					buttons: {
-						confirm: {
-							className : 'btn btn-success'
-						}
-					},
-				});	 
-			}
-			if(tipoAlerta === 2){
-				swal(tittle, mssg, 
- 
-				 {
-					icon : "success",
-					buttons: {
-						confirm: {
-							className : 'btn btn-success'
-						}
-					},
-				});
-			}
-			if(tipoAlerta === 3){
-				return swal({
-					title: tittle,
-					text: mssg,
-					type: 'warning',
-					icon: "warning",
-					buttons:{
-						confirm: {
-							text : 'Yes, delete it!',
-							className : 'btn btn-success'
-						},
-						cancel: {
-							visible: true,
-							className: 'btn btn-danger'
-						}
-					}
-				})					
-			}
-
-				if(tipoAlerta === 6){
-				return swal({
-					title: tittle,
-					text: mssg,
-					type: 'warning',
-					icon: "warning",
-					buttons:{
-						confirm: {
-							text : 'Yes!',
-							className : 'btn btn-success'
-						},
-						cancel: {
-							visible: true,
-							className: 'btn btn-danger'
-						}
-					}
-				})					
-			}
-			if(tipoAlerta === 4){
-				swal({
-					title: tittle,
-					text: mssg,
-					type: 'success',
-					icon: 'success',
+					icon: "success",
 					buttons: {
 						confirm: {
 							className: 'btn btn-success'
 						}
-					}
+					},
 				});
-			}
-			if(tipoAlerta === 5){
-				swal({
-					title: tittle,
-					text: mssg,
-					icon: 'error',
-					buttons: {
-						confirm: {
-							className: 'btn btn-danger'
-						}
-					}
-				});
-			}
 		}
-		 //FUNCION PARA OBTENER EL CRSFTOKEN DESDE JS EN CASO DE USAR AJAX
-		 function getCookie(name) {
-				let cookieValue = null;
-				if (document.cookie && document.cookie !== '') {
-					const cookies = document.cookie.split(';');
-					for (let i = 0; i < cookies.length; i++) {
-						const cookie = cookies[i].trim();
-						// Does this cookie string begin with the name we want?
-						if (cookie.substring(0, name.length + 1) === (name + '=')) {
-							cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-							break;
-						}
+		if (tipoAlerta === 3) {
+			return swal({
+				title: 'Delete?',
+				text: "You won't be able to revert this!",
+				icon: "warning",
+				buttons: {
+					confirm: {
+						text: 'Yes, delete it!',
+						className: 'btn btn-success'
+					},
+					cancel: {
+						visible: true,
+						className: 'btn btn-danger'
 					}
 				}
-				return cookieValue;
-			}
-
-			const fetchObject = {
-					headers: {
-						'Accept': 'application/json',
-						'X-Requested-With': 'XMLHttpRequest',
-						"X-CSRFToken": getCookie('csrftoken')
+			})
+		}
+		if (tipoAlerta === 4) {
+			swal({
+				title: 'Deleted!',
+				text: 'Register has been successfully deleted.',
+				icon: 'success',
+				buttons: {
+					confirm: {
+						className: 'btn btn-success'
+					}
+				}
+			});
+		}
+		if (tipoAlerta === 5) {
+			swal({
+				title: 'Error!',
+				text: 'An error has occurred.',
+				icon: 'error',
+				buttons: {
+					confirm: {
+						className: 'btn btn-danger'
+					}
+				}
+			});
+		}
+		if (tipoAlerta === 6) {
+			swal({
+				title: 'Already exists',
+				text: 'This resource already exists on resource\'s bank.',
+				icon: 'info',
+				buttons: {
+					confirm: {
+						className: 'btn btn-info'
+					}
+				}
+			});
+		}
+		if (tipoAlerta === 7) {
+			swal("Well done!", "List was successfully sorted!",
+				{
+					icon: "success",
+					buttons: {
+						confirm: {
+							className: 'btn btn-success'
+						}
 					},
-					mode: 'same-origin',
-					method: 'POST',
-				}	
-	 </script>
+				});
+		}
+	}
 
-    
+	//con mensajitos
+
+	function alertaMensajitos(tipoAlerta, tittle, mssg) {
+		if (tipoAlerta === 1) {
+			swal(tittle, mssg,
+				{
+					icon: "success",
+					buttons: {
+						confirm: {
+							className: 'btn btn-success'
+						}
+					},
+				});
+		}
+		if (tipoAlerta === 2) {
+			swal(tittle, mssg,
+
+				{
+					icon: "success",
+					buttons: {
+						confirm: {
+							className: 'btn btn-success'
+						}
+					},
+				});
+		}
+		if (tipoAlerta === 3) {
+			return swal({
+				title: tittle,
+				text: mssg,
+				type: 'warning',
+				icon: "warning",
+				buttons: {
+					confirm: {
+						text: 'Yes, delete it!',
+						className: 'btn btn-success'
+					},
+					cancel: {
+						visible: true,
+						className: 'btn btn-danger'
+					}
+				}
+			})
+		}
+
+		if (tipoAlerta === 6) {
+			return swal({
+				title: tittle,
+				text: mssg,
+				type: 'warning',
+				icon: "warning",
+				buttons: {
+					confirm: {
+						text: 'Yes!',
+						className: 'btn btn-success'
+					},
+					cancel: {
+						visible: true,
+						className: 'btn btn-danger'
+					}
+				}
+			})
+		}
+		if (tipoAlerta === 4) {
+			swal({
+				title: tittle,
+				text: mssg,
+				type: 'success',
+				icon: 'success',
+				buttons: {
+					confirm: {
+						className: 'btn btn-success'
+					}
+				}
+			});
+		}
+		if (tipoAlerta === 5) {
+			swal({
+				title: tittle,
+				text: mssg,
+				icon: 'error',
+				buttons: {
+					confirm: {
+						className: 'btn btn-danger'
+					}
+				}
+			});
+		}
+	}
+	//FUNCION PARA OBTENER EL CRSFTOKEN DESDE JS EN CASO DE USAR AJAX
+	function getCookie(name) {
+		let cookieValue = null;
+		if (document.cookie && document.cookie !== '') {
+			const cookies = document.cookie.split(';');
+			for (let i = 0; i < cookies.length; i++) {
+				const cookie = cookies[i].trim();
+				// Does this cookie string begin with the name we want?
+				if (cookie.substring(0, name.length + 1) === (name + '=')) {
+					cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+					break;
+				}
+			}
+		}
+		return cookieValue;
+	}
+
+	const fetchObject = {
+		headers: {
+			'Accept': 'application/json',
+			'X-Requested-With': 'XMLHttpRequest',
+			"X-CSRFToken": getCookie('csrftoken')
+		},
+		mode: 'same-origin',
+		method: 'POST',
+	}
+</script>

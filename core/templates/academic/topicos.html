@@ -68,6 +68,10 @@
                         <span id="searchBtn" class="btn btn-primary">
                            <i class="fa fa-search"></i>
                         </span>
+                        <span id="sortableBtn" class="btn btn-success">
+                           <i class="fas fa-lock mr-1"></i>
+                           Sort
+                        </span>
                      </div>
                   </div>
                </div>
@@ -105,9 +109,69 @@
 {% block javascripts %}
 <script>
    let editmode = false
+   let sortable = false
+   let sortableActivity = false
    let query = ""
    let selectedId = ""
    let selectedActivity = ""
+   let ordenamientoArray = []
+   let ordenamientoArrayActivity = []
+   let sortableList = {}
+   const updateOrderActivity = (id) =>{
+      let actividades = document.getElementById(`childsTopic${id}`).children
+      ordenamientoArrayActivity = []
+      actividades.forEach((pagina, index) => {
+         let orderObj = {
+            pk: pagina.id.slice(12),
+            order: index + 1
+         }
+         ordenamientoArrayActivity.push(orderObj)
+      })
+      fetch("{% url 'modalAddActividad'%}", {
+         ...fetchObject,
+         body: JSON.stringify({
+            query,
+            method: "Sort",
+            order: ordenamientoArrayActivity
+         })
+      })
+      .then(async (res) => {
+         let resultado = JSON.parse(await res.text())
+         if(resultado.message === "Perfect"){
+            alerta(7)
+         }
+         if(resultado.message === "Error"){
+            alerta(5)
+         }
+         sortableList[id].destroy()
+      })
+   }
+   const updateOrder = () => {
+      let paginas = document.querySelectorAll(".card-list-item-descripcion")
+      ordenamientoArray = []
+      paginas.forEach((pagina, index) => {
+         let orderObj = {
+            pk: pagina.id.slice(12),
+            order: index + 1
+         }
+         ordenamientoArray.push(orderObj)
+      })
+   }
+   const renderSortedContent = () => {
+      updateOrder()
+      document.querySelector("main.card-body").classList.add("is-loading")
+      fetch("{% url 'modalAddTopico'%}", {
+         ...fetchObject,
+         body: JSON.stringify({
+            query,
+            method: "Sort",
+            order: ordenamientoArray
+         })
+      })
+      .then(async (res) => {
+         renderContent()
+      })
+   }
    const chooseModal = async (type) => {
       $("#addChooseActivities").modal("hide")
       await renderModalActivity()
@@ -133,6 +197,13 @@
    const showChilds = (id) => {
       let contenido = document.getElementById(`childsTopic${id}`)
       contenido.classList.toggle("card-list-item-close")
+      if(sortableActivity){
+         updateOrderActivity(id)
+      }
+      sortableActivity = false
+      for (let item of contenido.children) {
+         item.classList.remove("card-list-item-sortable")
+      }
    }
    const renderContent = () => {
       document.querySelector("main.card-body").classList.add("is-loading")
@@ -150,6 +221,7 @@
             result = await res.text()
             document.querySelector("main.card-body").classList.remove("is-loading")
             document.querySelector("main.card-body").innerHTML = result
+            updateOrder()
          })
    }
    renderContent()
@@ -160,7 +232,7 @@
             method,
             data,
             id,
-            padreActivity:selectedActivity
+            padreActivity: selectedActivity
          })
       })
    }
@@ -241,7 +313,7 @@
          .then(async (res) => {
             document.getElementById("sectionDetailed").innerHTML = await res.text()
          })
-         .then(()=>{
+         .then(() => {
             const formActividad = document.getElementById("formActividad")
             formActividad.addEventListener("submit", (e) => {
                e.preventDefault()
@@ -277,12 +349,12 @@
             })
       }
    }
-   const openGoActivity = (id, type)=>{
+   const openGoActivity = (id, type) => {
       if (type === "Test") {
          window.location.href = `{% url 'createQuestions' %}?id=${id}`;
       }
       if (type === "Expert test") {
-          window.location.href = `{% url 'createQuestions' %}?id=${id}`;
+         window.location.href = `{% url 'createQuestions' %}?id=${id}`;
 
       }
       if (type === "Lesson") {
@@ -296,23 +368,23 @@
       }
    }
    const openEditActivity = (id, type) => {
-         editmode = true
-         idSeleted = id
-         fetch("{% url 'modalAddActividad'%}", {
-            ...fetchObject,
-            body: JSON.stringify({
-               method: "Find",
-               id
-            })
+      editmode = true
+      idSeleted = id
+      fetch("{% url 'modalAddActividad'%}", {
+         ...fetchObject,
+         body: JSON.stringify({
+            method: "Find",
+            id
          })
-            .then(async (res) => {
-               document.getElementById("addNewModalContent").innerHTML = await res.text()
-               await renderModalEditActivity(id, type)
-            })
-            .then(() => {
-               $("#addNewModal").modal("show")
-            })
-      }
+      })
+         .then(async (res) => {
+            document.getElementById("addNewModalContent").innerHTML = await res.text()
+            await renderModalEditActivity(id, type)
+         })
+         .then(() => {
+            $("#addNewModal").modal("show")
+         })
+   }
    const openDeleteActivity = async (id) => {
       const elimino = await alerta(3)
       if (elimino) {
@@ -404,7 +476,29 @@
             })
          })
    }
-
+   const openSortTopic = (id)=>{
+      let contenido = document.getElementById(`childsTopic${id}`)
+      let isClosed = contenido.classList.toString().includes("card-list-item-close")
+      if(isClosed){
+         showChilds(id)
+      }
+      sortableActivity = !sortableActivity
+      const listaPaginas = document.getElementById(`childsTopic${id}`)
+      if (sortableActivity) {
+         for (let item of listaPaginas.children) {
+            item.classList.add("card-list-item-sortable")
+         }
+         sortableList[id] = new Sortable(listaPaginas, {
+            animation: 150,
+            ghostClass: 'blue-background-class'
+         });
+         return
+      }
+      updateOrderActivity(id)
+      for (let item of listaPaginas.children) {
+         item.classList.remove("card-list-item-sortable")
+      }
+   }
    const toggleTime = () => {
       const time = document.getElementById("timeActivity")
       const duration = document.getElementById("durationActivity")
@@ -417,7 +511,7 @@
 
    }
 
-    const toggleExpert = () => {
+   const toggleExpert = () => {
       const time = document.getElementById("timeActivity")
       const toggle = document.getElementById("checkDurationCB")
       const duration = document.getElementById("durationActivity")
@@ -426,25 +520,25 @@
       const Minimun = document.getElementById("minApp")
 
 
-      
+
       if (!time.disabled) {
          time.value = null
          duration.value = null
          time.disabled = !time.disabled
-      duration.disabled = !duration.disabled
+         duration.disabled = !duration.disabled
       }
-         
+
       if (!block.disabled) {
          block.value = null
-          
-       
+
+
       }
       repeats.value = null
-      Minimun.value=null
+      Minimun.value = null
       repeats.disabled = !repeats.disabled
       Minimun.disabled = !Minimun.disabled
-      toggle.checked=false
-     
+      toggle.checked = false
+
       toggle.disabled = !toggle.disabled
       block.disabled = !block.disabled
 
@@ -459,6 +553,28 @@
    const searchBar = document.querySelector('#txtSearch')
    const clearBtn = document.querySelector('#clearBtn')
    const searchBtn = document.querySelector('#searchBtn')
+   const sortableBtn = document.querySelector('#sortableBtn')
+
+   sortableBtn.addEventListener('click', () => {
+      sortable = !sortable
+      const listaPaginas = document.getElementById("listaPaginas")
+      if (sortable) {
+         sortableBtn.innerHTML = `<i class="fas fa-lock-open mr-1"></i> Sort`
+         for (let item of listaPaginas.children) {
+            item.children[0].classList.add("card-list-item-sortable")
+         }
+         new Sortable(listaPaginas, {
+            animation: 150,
+            ghostClass: 'blue-background-class'
+         });
+         return
+      }
+      sortableBtn.innerHTML = `<i class="fas fa-lock mr-1"></i> Sort`
+      for (let item of listaPaginas.children) {
+         item.children[0].classList.remove("card-list-item-sortable")
+      }
+      renderSortedContent()
+   })
 
    clearBtn.addEventListener('click', () => {
       searchBar.value = ""
