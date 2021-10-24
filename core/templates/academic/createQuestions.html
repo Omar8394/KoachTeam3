@@ -11,7 +11,7 @@
     <div class="content">
         <div class="page-inner animated fadeInRight">
             <div class="page-header">
-                <h4 class="page-title">Create questions</h4>
+                <h4 class="page-title">Create questions </h4>
                 <ul class="breadcrumbs">
                     <li class="nav-home">
                         <a href="{% url 'home' %}">
@@ -215,7 +215,7 @@
         let selectedId=null
         let editmode = false
         let ActivityId={{pregunta.idactividad_evaluaciones}}
-
+        let numExamenes={{listaExamenes}}
 
 
   
@@ -251,6 +251,11 @@
     
 
         const chooseModal = async (type) => {
+            if(numExamenes>0){
+                alertaMensajitos(5,'This Test can not be modified', 'This test has been already been taken by users')
+                return;
+            }
+            
            $("#chooseTypeQuestion").modal("hide")
            await renderModalQuestions()
            let url
@@ -292,6 +297,10 @@
        // Guardar
    
         async function clickSave (url)  {
+            if(numExamenes>0){
+                alertaMensajitos(5,'This Test can not be modified', 'This test has been already been taken by users')
+                return;
+            }
 
             
             const questionText= document.getElementById("questionText")
@@ -569,6 +578,10 @@
         }   
 
         const openDeleteModal = async (id, type) => {
+            if(numExamenes>0){
+                alertaMensajitos(5,'This Test can not be modified', 'This test has been already been taken by users')
+                return;
+            }
         const elimino = await alerta(3)
         console.log(type)
         if (elimino) {

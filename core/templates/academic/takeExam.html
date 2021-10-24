@@ -28,6 +28,10 @@
 				text-align: center;
 
 			}
+			h2{
+				text-align: center;
+
+			}
 
 		</style>
 	
@@ -55,17 +59,18 @@
 							  <br>
 							  <b>  Minimum to Approve</b>: {{pregunta.calificacion_aprobar}}
 							  <br>
+							 
+							  <b>  Number of repetitions allow</b>: {{pregunta.nro_repeticiones}}
+							  <br>
 							  {% if pregunta.duracion %}
 							  <b>  Duration</b>: {{pregunta.duracion}}&nbsp; {{pregunta.fk_tipo_duracion}}
 							  {% endif %}
-							  <br>
-							  <b>  Number of repetitions</b>: {{pregunta.nro_repeticiones}}
 							  <br>
 							  {% if instrucciones != None %}
 							  <b> Instructions</b>: 
 							  <br>
 							 <p>  
-								<textarea class="form-control" disabled> 	{{instrucciones.texto_instrucciones}}</textarea>
+								<textarea rows="10" class="form-control" disabled> 	{{instrucciones.texto_instrucciones}}</textarea>
 							 </p>
 							 {% endif %}
 							  
@@ -93,6 +98,8 @@
 							  <br>
 							  <b> Max Points </b>: {{escalaEvaluacion.maxima_puntuacion}}
 							  <br>
+							  <b>Repetition</b>: {{examen.0.nro_repeticiones}}
+							  <br>
 							 
 							  <b> Minimum to Approve </b>: {{pregunta.calificacion_aprobar}}
 							  <br>
@@ -106,7 +113,7 @@
 							  <b> Instructions</b>: 
 							  <br>
 							 <p>  
-								<textarea class="form-control" disabled> 	{{instrucciones.texto_instrucciones}}</textarea>
+								<textarea  rows="10" class="form-control" disabled> 	{{instrucciones.texto_instrucciones}}</textarea>
 							 </p>
 							 {% endif %}
 							  
@@ -121,7 +128,7 @@
 							 {% if examen.0.estadoExamen == 3 %}
 							 <div class="center">
 
-							 <h4  >Test Finished</h4>
+							 <h2  >Test Finished</h2>
 							 <br>
 
 							 <div class="centerB">
@@ -136,6 +143,8 @@
 							  <b>Started</b>: {{examen.0.fechaInicio}}
 							  <br>
 							  <b> Max Points</b>: {{escalaEvaluacion.maxima_puntuacion}}
+							  <br>
+							  <b>Repetition</b>: {{examen.0.nro_repeticiones}}
 							  <br>
 							  <b> Minimum to Approve</b>: {{pregunta.calificacion_aprobar}}
 							  <br>
@@ -154,7 +163,7 @@
 							  <b> Instructions</b>: 
 							  <br>
 							 <p>  
-								<textarea class="form-control" disabled> 	{{instrucciones.texto_instrucciones}}</textarea>
+								<textarea rows="10" class="form-control" disabled> 	{{instrucciones.texto_instrucciones}}</textarea>
 							 </p>
 							 {% endif %}
 							 <br>	 
@@ -168,13 +177,23 @@
 							  <br>
 								{%if pregunta.fk_estructura_programa.fk_categoria.valor_elemento != 'activityExpert' %}	
 								<div class="center" style="text-align: center;">
-										{% if examen.PuntuacionFinal <= pregunta.calificacion_aprobar%}
-											<h1 style='color:red'> Reproved! </h2>
+										{% if examen.0.PuntuacionFinal <= pregunta.calificacion_aprobar%}
+											<h1 style='color:red'> Repproved! </h2>
 											
 											{%else%}
 											<h1 style='color:green'> Approved! </h2>
+											
 
 										{% endif %}
+										
+										{% if examen.0.nro_repeticiones < pregunta.nro_repeticiones %}
+										<br>	 
+										<div class="centerB">
+
+											<button class="btn btn-success"onclick="retake()" type="button"  > Retake Test</button>
+											</div>
+											{% endif %}
+									</div>
 
 										{%else%}
 								<div class="centerB">
@@ -183,7 +202,6 @@
 									</div>
 								{% endif %}
 
-								</div>
 							  
                                
 
@@ -295,6 +313,35 @@
 			await renderContent();
             })
         }    
+
+		const retake= () => {
+        
+		retakeTest().then(async () => {
+		await renderContent();
+		})
+	}    
+
+
+	const retakeTest = () => {
+           
+		   return fetch("{% url 'contenidoExamen' %}", {
+			   ...fetchObject,
+			   body: JSON.stringify({
+			data: {
+				   
+				   method:'Retake',
+				   idExamen:examenId
+
+			   }
+		   })
+		   })
+		   .then(async (res) => {
+			
+			
+		   }).then(()=>{
+			 
+		   })
+	   }   
 
 	  const ContinueTest = () => {
         

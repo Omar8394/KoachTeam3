@@ -28,6 +28,10 @@
 				text-align: center;
 
 			}
+			h2{
+				text-align: center;
+
+			}
 
 		</style>
 	
@@ -46,7 +50,7 @@
 							 {% if examen.estadoExamen == 3 %}
 							 <div class="center">
 
-							 <h4  >Test Finished</h4>
+							 <h2 >Test Finished</h2>
 							 <br>
 
 							 <div class="centerB">
@@ -61,6 +65,8 @@
 								<b>User</b>: {{examen.usuario}}
 							  <br>
 							  <b>Started</b>: {{examen.fechaInicio}}
+							  <br>
+							  <b>Repetition</b>: {{examen.nro_repeticiones}}
 							  <br>
 							  <b> Max Points</b>: {{escalaEvaluacion.maxima_puntuacion}}
 							  <br>
@@ -85,7 +91,7 @@
 							  <b> Instructions</b>: 
 							  <br>
 							 <p>  
-							<textarea class="form-control" disabled> 	{{instrucciones.texto_instrucciones}}</textarea>
+							<textarea rows="10" class="form-control" disabled> 	{{instrucciones.texto_instrucciones}}</textarea>
 							 </p>
 							 {% endif %}
 							
@@ -93,24 +99,24 @@
 							  <br>
 								{%if pregunta.fk_estructura_programa.fk_categoria.valor_elemento != 'activityExpert' %}	
 								<div class="center" style="text-align: center;">
-                                {% if examen.PuntuacionFinal <= pregunta.calificacion_aprobar%}
-   									<h1 style='color:red'> Reproved! </h2>
+                             		   {% if examen.PuntuacionFinal <= pregunta.calificacion_aprobar%}
+   									<h1 style='color:red'> Repproved! </h2>
 									   
-									   {%else%}
-   									<h1 style='color:green'> Approved! </h2>
+											   {%else%}
+   										<h1 style='color:green'> Approved! </h2>
 
-								{% endif %}
+											{% endif %}
 									 
+										</div>
 
-										{% else %}
+								{% else %}
 										<div class="centerB">
 
 											<button class="btn btn-success"onclick="openSeeResults({{examen.pk}})" > See Results </button>
 											</div>
-								{% endif %}
+							
 
-								</div>
-							  
+								{% endif %}
                                
 
 

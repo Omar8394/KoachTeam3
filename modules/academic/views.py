@@ -106,6 +106,7 @@ def createQuestions(request):
     escalaBloque=pregunta.fk_escala_bloque
 
     escalaBloque=pregunta.fk_escala_bloque
+    listaExamenes=ExamenActividad.objects.filter(fk_Actividad=pregunta).count()
 
     listaPreguntas=None
     boque=None
@@ -130,7 +131,8 @@ def createQuestions(request):
         'bloque':bloque,
         'escalaEvaluacion':escalaEvaluacion,
         'listaPreguntas':listaPreguntas,
-        'escalaBloque':escalaBloque
+        'escalaBloque':escalaBloque,
+        'listaExamenes':listaExamenes
 
     }
     context['segment'] = 'academic'
@@ -207,6 +209,23 @@ def contenidoExamen(request):
                     bloque.comentario=data['textoBloque']
                     bloque.titulo_bloque=data['tituloBloque']
                     bloque.save()
+                if data["method"] == "Retake":
+                    
+                    Examen=ExamenActividad.objects.get(pk=data['idExamen'])
+
+                    
+                    Examen.estadoExamen=2
+                    Examen.nro_repeticiones=Examen.nro_repeticiones+1
+                    Examen.fechaInicio=datetime.datetime.now() 
+                    Examen.fechaTermino=None
+                    Examen.PuntuacionFinal=0
+                    resultados=ExamenResultados.objects.filter(fk_Examen=Examen)
+                    opciones=ExamenRespuestas.objects.filter(fk_Examen=Examen)
+                    resultados.delete()
+                    opciones.delete()
+                
+                    Examen.save()
+                    return JsonResponse({"id": Examen.pk})  
 
 
 
@@ -219,6 +238,7 @@ def contenidoExamen(request):
                     Examen.nro_repeticiones=1
                     Examen.fechaInicio=datetime.datetime.now() 
                     Examen.fk_Actividad=actividad
+                 
 
 
                     Examen.save()
@@ -293,7 +313,7 @@ def contenidoExamen(request):
                         
                    examen.estadoExamen=3
                    examen.fechaTermino=datetime.datetime.now() 
-                   examen.nro_repeticiones=examen.nro_repeticiones+1
+                  # examen.nro_repeticiones=examen.nro_repeticiones+1
                    examen.save()
 
 

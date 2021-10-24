@@ -294,6 +294,8 @@ const toBase64 = file => new Promise((resolve, reject) => {
         let editmodeBlock = false
         var dict = new Object()
         let editModePoints=0
+        let numExamenes={{listaExamenes}}
+
 
         {% for block in bloque%}
 
@@ -342,6 +344,10 @@ const toBase64 = file => new Promise((resolve, reject) => {
 
 
         const openAddBlock = () => {
+            if(numExamenes>0){
+                alertaMensajitos(5,'This Test can not be modified', 'This test has been already been taken by users')
+                return;
+            }
             if(  Number(PointinUse)+Number(MaxPointBlock)>Number(MaxPoint) ){
 
                 alertaMensajitos(5,'Invalid Command', 'Your Block total points can surpass the total test points')
@@ -355,6 +361,10 @@ const toBase64 = file => new Promise((resolve, reject) => {
         }    
 
         const openAddNewQuestion = (id) => {
+            if(numExamenes>0){
+                alertaMensajitos(5,'This Test can not be modified', 'This test has been already been taken by users')
+                return;
+            }
             BlockId=id
             renderModalQuestions().then(()=>{
             
@@ -376,7 +386,10 @@ const toBase64 = file => new Promise((resolve, reject) => {
        // Guardar
    
         async function  clickSave ()  {
-
+            if(numExamenes>0){
+                alertaMensajitos(5,'This Test can not be modified', 'This test has been already been taken by users')
+                return;
+            }
          
        
             const questionText= document.getElementById("questionText")
@@ -543,6 +556,10 @@ const toBase64 = file => new Promise((resolve, reject) => {
 
         
         const clickSaveBlock = (url) => {
+            if(numExamenes>0){
+                alertaMensajitos(5,'This Test can not be modified', 'This test has been already been taken by users')
+                return;
+            }
        
        const bloqueText= document.getElementById("blockText")
        const bloqueTittle= document.getElementById("blockTitle")
@@ -841,6 +858,10 @@ fetch("{% url 'getModalAddInstructions' %}", {
     
         }   
         const openDeletePregunta = async (id) => {
+            if(numExamenes>0){
+                alertaMensajitos(5,'This Test can not be modified', 'This test has been already been taken by users')
+                return;
+            }
         const elimino = await alerta(3)
      
         if (elimino) {
@@ -860,6 +881,10 @@ fetch("{% url 'getModalAddInstructions' %}", {
     }
 
     const openDeleteBlock = async (id) => {
+        if(numExamenes>0){
+                alertaMensajitos(5,'This Test can not be modified', 'This test has been already been taken by users')
+                return;
+            }
         const elimino = await alerta(3)
      
         if (elimino) {
