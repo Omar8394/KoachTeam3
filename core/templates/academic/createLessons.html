@@ -76,14 +76,21 @@
 {% block javascripts %}
 <script>
    let query = ""
+   let queryResource = ""
    let selectedId = ""
    let editmode = false
    let sortable = false
    let ordenamientoArray = []
    let recursosArray = []
+   let selectedResources = []
    let bankPage = 1
+   //RESOURCES BAAAAAAANK
    const setBankEvents = (dropzoneObj) => {
+      //set initial state
+      selectedResources = []
       bankPage = 1
+
+      //Tabs state
       $("#nav-recent-tab").click(() => {
          bankPage = 1
       })
@@ -96,12 +103,32 @@
       $("#nav-youtube-tab").click(() => {
          bankPage = 4
       })
+
+      //HTML objects
       const formBotones = document.getElementById("formBotones")
       const formYoutube = document.getElementById("formYoutube")
       const youtubeBtn = document.getElementById("findInYoutube")
       const inputYT = document.getElementById("urlResource")
       const frameYT = document.getElementById("previewYoutube")
       const cleanBtn = document.getElementById("cleanBankBtn")
+      const searchBankBar = document.querySelector('#resourceSearch')
+      const clearBankBtn = document.querySelector('#clearBankBtn')
+      const searchBankBtn = document.querySelector('#searchBankBtn')
+
+      //Events
+      clearBankBtn.addEventListener('click', () => {
+         searchBankBar.value = ""
+         query = ""
+         searchResource("")
+      })
+      searchBankBtn.addEventListener('click', () => {
+         searchResource(searchBankBar.value)
+      })
+      searchBankBar.addEventListener('keypress', (e) => {
+         if (e.key === 'Enter') {
+            searchResource(searchBankBar.value)
+         }
+      });
       formYoutube.addEventListener("submit", (e) => {
          e.preventDefault()
          if (inputYT.value.trim()) {
@@ -115,7 +142,14 @@
       formBotones.addEventListener("submit", async (e) => {
          e.preventDefault()
          $("#insertBankBtn").attr("disabled", "disabled")
-         if (bankPage === 1) { }
+         if (bankPage === 1) {
+            if(selectedResources.length > 0){
+               recursosArray.push(...selectedResources)
+               $(`#summernote${selectedId}`).summernote('pasteHTML', renderRecourcesHTML(selectedResources))
+               document.querySelector("#addNewModalContent").innerHTML = ""
+               $("#addNewModal").modal("hide")
+            }
+         }
          if (bankPage === 2) { }
          if (bankPage === 3) {
             if (dropzoneObj.getQueuedFiles().length >= 1 && $("#tagResource3").val().trim() != "") {
@@ -157,7 +191,9 @@
       })
       cleanBtn.addEventListener("click", (e) => {
          e.preventDefault()
-         if (bankPage === 1) { }
+         if (bankPage === 1) {
+            clearSelectedRecent()
+          }
          if (bankPage === 2) { }
          if (bankPage === 3) {
             dropzoneObj.removeAllFiles()
@@ -173,6 +209,26 @@
          }
       })
    }
+   const selectedTag = (idTag, name)=>{
+      renderContentResource("resources", idTag)
+      const childs = document.getElementById("tagBankHeader").children
+      const tagName = document.getElementById("tagNameBar")
+      childs[0].classList.remove("d-flex")
+      childs[0].classList.add("d-none")
+      childs[1].classList.remove("d-none")
+      childs[1].classList.add("d-flex")
+      tagName.innerText = name
+      
+      document.getElementById("backBankBtn").addEventListener("click", ()=>{
+         queryResource = null
+         document.querySelector('#resourceSearch').value = ""
+         childs[1].classList.remove("d-flex")
+         childs[1].classList.add("d-none")
+         childs[0].classList.remove("d-none")
+         childs[0].classList.add("d-flex")
+         renderContentResource("tags", null)
+      })
+   }
    const renderRecourcesHTML = (array)=>{
       let HTMLstring = ""
       array.map(({type, path})=>{
@@ -185,6 +241,9 @@
          }
          if(type === "Recurso_image"){
             recursoHTML=`<img src="/media/${path}"/>`
+         }
+         if(type === "Recurso_video"){
+            recursoHTML = `<iframe width="560" height="315" src="https://www.youtube.com/embed/${path}" title="YouTube video player" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
          }
          HTMLstring+=recursoHTML
       })
@@ -242,6 +301,27 @@
       })
 
    }
+   const selectedRecent = (idRecent, path, type)=>{
+      let recentItem = document.getElementById(`resourceRecent${idRecent}`)
+      let isSelected = recentItem.classList.toString().includes("resources-item-selected")
+      if(isSelected){
+         selectedResources = selectedResources.filter((resource)=>{
+            return resource.id != idRecent
+         })
+      }
+      else{
+         selectedResources.push({id:idRecent, path, type})
+      }
+      recentItem.classList.toggle("resources-item-selected")
+   }
+   const clearSelectedRecent = ()=>{
+      const bankBody = document.getElementById("recentBankBody")
+      for (let item of bankBody.children){
+         item.classList.remove("resources-item-selected")
+      }
+      selectedResources = []
+   }
+   //SUMMERNOTEEEEEEEEEEE
    const updateRecursosArray = ()=>{
       recursosArray = []
       let testArray = document.querySelector("#resourcesList")
@@ -322,6 +402,22 @@
          }
          ordenamientoArray.push(orderObj)
       })
+   }
+   const renderContentResource = (show, idTag) => {
+      document.querySelector("#tagBankBody").classList.add("is-loading")
+      fetch("{% url 'contenidoRecursos'%}", {
+         ...fetchObject,
+         body: JSON.stringify({
+            show,
+            tag:idTag,
+            query: queryResource
+         })
+      })
+         .then(async (res) => {
+            result = await res.text()
+            document.querySelector("#tagBankBody").classList.remove("is-loading")
+            document.querySelector("#tagBankBody").innerHTML = result
+         })
    }
    const renderContent = () => {
       document.querySelector("main.card-body").classList.add("is-loading")
@@ -555,7 +651,13 @@
       query = output
       renderContent()
    }
-
+   
+   const searchResource = (text) => {
+      let output = text.trim()
+      if (output.length > 20) return
+      queryResource = output
+      renderContentResource("tags", null)
+   }
    const searchBar = document.querySelector('#txtSearch')
    const clearBtn = document.querySelector('#clearBtn')
    const searchBtn = document.querySelector('#searchBtn')

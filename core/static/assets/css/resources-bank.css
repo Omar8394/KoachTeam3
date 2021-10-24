@@ -20,6 +20,9 @@
    opacity: 1;
    z-index: 9999;
 }
+.resources-item-selected{
+   border: solid 5px #31ce36;
+}
 .resources-item-front{
    display: flex;
    background-color: #bbb;

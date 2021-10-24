@@ -33,9 +33,9 @@
                   </li>
                </ul>
             </div>
-            <div class="bank-body">
+            <div class="bank-body" id="recentBankBody">
                {% for recurso in recursos%}
-               <div class="resources-item">
+               <div id="resourceRecent{{recurso.pk}}" class="resources-item" onclick="selectedRecent('{{recurso.pk}}','{{recurso.path}}','{{recurso.fk_tipo_recurso.valor_elemento}}')">
                   {% if recurso.fk_tipo_recurso.valor_elemento == 'Recurso_video'%}
                   <div class="resources-item-front" style="background: url('http://i3.ytimg.com/vi/{{recurso.path}}/hqdefault.jpg'); background-size: cover;">
                   {% elif recurso.fk_tipo_recurso.valor_elemento == 'Recurso_image'%}
@@ -65,22 +65,28 @@
             </div>
          </div>
          <div class="tab-pane fade" id="nav-bank" role="tabpanel" aria-labelledby="nav-bank-tab">
-            <div class="bank-header">
+            <div class="bank-header" id="tagBankHeader">
                <div class="input-group">
                   <input id="resourceSearch" type="text" class="form-control" placeholder="Search for...">
                   <div class="input-group-append">
-                     <span id="clearBtn" class="btn btn-danger">
+                     <span id="clearBankBtn" class="btn btn-danger">
                         <i class="fa fa-broom"></i>
                      </span>
-                     <span id="searchBtn" class="btn btn-primary">
+                     <span id="searchBankBtn" class="btn btn-primary">
                         <i class="fa fa-search"></i>
                      </span>
                   </div>
                </div>
+               <div id="backBar" class="d-none justify-content-between align-center">
+                  <span id="backBankBtn" class="btn btn-danger">
+                     <i class="fas fa-arrow-left"></i>
+                  </span>
+                  <h2 id="tagNameBar" style="margin:0; display:flex; flex-grow:1; align-items:center; justify-content:center;"></h2>
+               </div>
             </div>
-            <div class="bank-body">
+            <div class="bank-body" id="tagBankBody">
                {% for tag in tags%}
-               <div class="resources-item">
+               <div class="resources-item" id="tagItem{{tag.pk}}" onclick="selectedTag('{{tag.pk}}','{{tag.desc_tag}}')">
                   <div class="resources-item-front">
                      <div class="resources-item-title" style="font-size: 1.5rem; font-weight: bold;">
                         {{tag.desc_tag}}

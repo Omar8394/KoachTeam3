@@ -1012,6 +1012,25 @@ def getContentLecciones(request):
                 return HttpResponse(html_template.render(context, request))
 
 @login_required(login_url="/login/")
+def getContentRecursos(request):
+    if request.method == "POST":
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            context = {}
+            if request.body:
+                data = json.load(request)
+                if data["show"] == "tags":
+                    if data["query"] == "" or data["query"] == None:
+                        lista = Tag.objects.all().order_by("desc_tag")
+                    else:
+                        lista = Tag.objects.filter(desc_tag__icontains=data["query"]).order_by("desc_tag")
+                if data["show"] == "resources":
+                    tag = Tag.objects.get(pk=data["tag"])
+                    lista = TagRecurso.objects.filter(fk_tag=tag)
+                context = {"data":lista, "show":data["show"]}
+                html_template = (loader.get_template('academic/contenidoRecursos.html'))
+                return HttpResponse(html_template.render(context, request))
+
+@login_required(login_url="/login/")
 def getModalCategorias(request):
     if request.method == "POST":
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
