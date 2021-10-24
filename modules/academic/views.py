@@ -112,7 +112,7 @@ def createQuestions(request):
     boque=None
 
     if(Estructuraprograma.objects.get(pk=preguntaId).fk_categoria.valor_elemento=='activityExpert'):
-     bloque=EvaluacionesBloques.objects.filter(fk_actividad_evaluaciones=pregunta.idactividad_evaluaciones)
+     bloque=EvaluacionesBloques.objects.filter(fk_actividad_evaluaciones=pregunta.idactividad_evaluaciones).order_by('orden')
      
     else:
      bloque=EvaluacionesBloques.objects.get(fk_actividad_evaluaciones=pregunta.idactividad_evaluaciones)
@@ -1554,6 +1554,28 @@ def getModalChooseTypeQuestion(request):
     html_template = (loader.get_template('components/modalTypeQuestion.html'))
     return HttpResponse(html_template.render(context, request))
 
+
+@login_required(login_url="/login/")
+def sortPreguntas(request):
+    if request.method == "POST":
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            try:
+                context = {}
+                data = json.load(request)["data"]
+
+                if data["method"] == "Sort":
+                        print(data["order"])
+                        for item in data["order"]:
+                            pregunta = EvaluacionesPreguntas.objects.get(pk=item["pk"])
+                            print(pregunta)
+                            pregunta.orden= item["order"]
+                            pregunta.save()
+
+                
+                return JsonResponse({"message": "Perfect"})     
+            except:
+                return JsonResponse({"message": "Error"}) 
+
 @login_required(login_url="/login/")
 def getModalAddBlock(request):
     if request.method == "POST":
@@ -1577,6 +1599,13 @@ def getModalAddBlock(request):
                         value.orden = idx
                         value.save()
                     return JsonResponse({"message": "Deleted"})
+                if data["method"] == "Sort":
+                        print(data["order"])
+                        for item in data["order"]:
+                            bloque = EvaluacionesBloques.objects.get(pk=item["pk"])
+                            print(bloque)
+                            bloque.orden= item["order"]
+                            bloque.save()
                 if "idFind" in data:
                     
                     bloque=EvaluacionesBloques.objects.filter(pk=data["idFind"])

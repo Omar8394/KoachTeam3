@@ -34,6 +34,9 @@ urlpatterns = [
    path('contenidoRecursos/', views.getContentRecursos, name="contenidoRecursos"),
    path('comboOption/', views.getComboContent, name="contenidoCombo"),
    path('previewLeccion/', views.getPreviewLeccion, name="previewLeccion"),
+   path('sortPreguntas/', views.sortPreguntas, name="sortPreguntas"),
+
+   
    #modales
    path('GraficaResultados/', views.GraficaResultados, name="GraficaResultados"),
    path('modalResourcesBank/', views.getModalResourcesBank, name="modalResourcesBank"),

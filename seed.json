@@ -1533,5 +1533,67 @@
     "mostrar_en_combos": 1,
     "maneja_lista": 0
   }
+},{"model": "app.tablasconfiguracion",
+  "pk": 230,
+ "fields": {
+     "desc_elemento": "Security",
+     "fk_tabla_padre": 20,
+     "tipo_elemento": "0",
+     "permite_cambios": 1,
+     "valor_elemento": "sec_pre",
+     "mostrar_en_combos": 1,
+     "maneja_lista": 0
+ }
+}, 
+{
+ "model": "app.tablasconfiguracion",
+ "pk": 231,
+ "fields": {
+     "desc_elemento": "Academic",
+     "fk_tabla_padre": 20,
+     "tipo_elemento": "0",
+     "permite_cambios": 1,
+     "valor_elemento": "Aca_pre",
+     "mostrar_en_combos": 1,
+     "maneja_lista": 0
+ }
+}, {
+ "model": "app.tablasconfiguracion",
+ "pk": 232,
+ "fields": {
+     "desc_elemento": "Planning",
+     "fk_tabla_padre": 20,
+     "tipo_elemento": "0",
+     "permite_cambios": 1,
+     "valor_elemento": "Pla_pre",
+     "mostrar_en_combos": 1,
+     "maneja_lista": 0
+ }
+}, {
+ "model": "app.tablasconfiguracion",
+ "pk": 233,
+ "fields": {
+     "desc_elemento": "Registration",
+     "fk_tabla_padre": 20,
+     "tipo_elemento": "0",
+     "permite_cambios": 1,
+     "valor_elemento": "Regis_pre",
+     "mostrar_en_combos": 1,
+     "maneja_lista": 0
+ }
+}, {
+ "model": "app.tablasconfiguracion",
+ "pk": 234,
+ "fields": {
+     "desc_elemento": "Settings",
+     "fk_tabla_padre": 20,
+     "tipo_elemento": "0",
+     "permite_cambios": 1,
+     "valor_elemento": "sett_pre",
+     "mostrar_en_combos": 1,
+     "maneja_lista": 0
+ }
+
 }
+
 ]

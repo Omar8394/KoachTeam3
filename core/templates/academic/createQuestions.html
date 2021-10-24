@@ -43,7 +43,14 @@
                                     </div>
                                     
                                     <div class="form-group col-md-6 d-flex justify-content-end">
+                                        <span id="sortableBtn" class="btn btn-success">
+                                            <i class="fas fa-lock mr-1"></i>
+                                            Sort
+                                         </span>
 
+                                         &nbsp;
+                                         &nbsp;
+                                         &nbsp;
                                         <button type="button" class="btn btn-success" onclick="openAddInstructions()">
                                             Instructions<i class="fas fa-tasks ml-1"></i>
                                         </button>
@@ -92,7 +99,7 @@
                                                 </thead>
                                                 <tbody  id="tableContent">
                                                 {% for pregunta in listaPreguntas %}
-                                                <tr>
+                                                <tr id="itemPregunta{{pregunta.pk}}" >
                                                     <td>
                                                         {{pregunta.orden}}
                                                     </td>
@@ -160,7 +167,6 @@
                                 {% endcomment %}            
                             </div>
                             <div class="card-footer d-flex justify-content-end">
-                               <button type="submit" value="Submit" class="btn btn-primary">Save<i class="fas fa-save ml-2"></i></button>
                             </div>
                         </div>           
                     </div>
@@ -216,6 +222,67 @@
         let editmode = false
         let ActivityId={{pregunta.idactividad_evaluaciones}}
         let numExamenes={{listaExamenes}}
+        let sortable = false
+        let ordenamientoArray = []
+        let sortableList = {}
+
+        const sortableBtn = document.querySelector('#sortableBtn')
+
+sortableBtn.addEventListener('click', () => {
+sortable = !sortable
+const listaPaginas = document.getElementById("tableContent")
+console.log(listaPaginas)
+if (sortable) {
+ sortableBtn.innerHTML = `<i class="fas fa-lock-open mr-1"></i> Sort`
+ for (let item of listaPaginas.children) {
+    //item.classList.add("card-list-item-sortable")
+ }
+ new Sortable(listaPaginas, {
+    animation: 150,
+    ghostClass: 'blue-background-class'
+ });
+ return
+}
+sortableBtn.innerHTML = `<i class="fas fa-lock mr-1"></i> Sort`
+for (let item of listaPaginas.children) {
+ //item.children[0].classList.remove("card-list-item-sortable")
+}
+renderSortedContent()
+})
+
+const renderSortedContent = () => {
+      updateOrder()
+      
+     // document.querySelector("main.card-body").classList.add("is-loading")
+      fetch("{% url 'sortPreguntas'%}", {
+         ...fetchObject,
+         body: JSON.stringify({
+          data:{
+            method: "Sort",
+            order: ordenamientoArray
+          }
+           
+         })
+      })
+      .then(async (res) => {
+          alertaMensajitos(1,'Done!', 'Changes Saved')
+          reload()
+        // renderContent()
+      })
+   }
+
+   const updateOrder = () => {
+      let paginas = listaPaginas = document.getElementById("tableContent").children
+      ordenamientoArray = []
+      paginas.forEach((pagina, index) => {
+         let orderObj = {
+            pk: pagina.id.slice(12),
+            order: index + 1
+         }
+         ordenamientoArray.push(orderObj)
+      })
+      console.log(ordenamientoArray)
+   }
 
 
   
