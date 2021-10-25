@@ -30,7 +30,7 @@
                                          
                                           
                                             <ul class="card-list" id="listaPaginas">
-                                               {% for block in actividad.bloque_actividad.all %}
+                                               {% for block in actividad.bloque_actividad.all|dictsort:"orden" %}
                                            
                                                <li class="card-list-item">
                                                   <div class="card-list-item-inner">
@@ -61,7 +61,7 @@
                                    <div id="contentBlock{{block.pk}}" class="card-list-item-descripcion card-list-item-close"><strong>Comment:</strong> &nbsp;{{block.comentario}}</div>
                                    <ul id="childsBlock{{block.pk}}" class="card-list-item-close">
                                     
-                                    {% for pregunta in block.bloque_pregunta.all %}
+                                    {% for pregunta in block.bloque_pregunta.all|dictsort:"orden" %}
 
                           
 

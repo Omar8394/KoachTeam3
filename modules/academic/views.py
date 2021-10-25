@@ -14,6 +14,7 @@ import uuid
 import base64
 import datetime
 from django.core.paginator import Paginator
+from django.db.models import Max
 
 from django.utils.dateparse import parse_datetime
 import mimetypes
@@ -26,8 +27,8 @@ from ..app.models import TablasConfiguracion, Estructuraprograma, Publico
 
 
 from ..security.models import ExtensionUsuario
-
-from .models import ActividadEvaluaciones, Cursos, ActividadConferencia, ActividadLeccion, ActividadTarea, EscalaEvaluacion, EvaluacionesPreguntas, EvaluacionesBloques, Paginas, PreguntasOpciones, ExamenActividad,ExamenRespuestas,ExamenResultados, Recurso, RecursoPaginas, Tag, TagRecurso,EvaluacionInstrucciones
+from modules.registration.models import MatriculaAlumnos
+from .models import ActividadEvaluaciones, Cursos, ActividadConferencia, ActividadLeccion, ActividadTarea, EscalaCalificacion, EscalaEvaluacion, EvaluacionesPreguntas, EvaluacionesBloques, Paginas, PreguntasOpciones, ExamenActividad,ExamenRespuestas,ExamenResultados, Recurso, RecursoPaginas, Tag, TagRecurso,EvaluacionInstrucciones,SugerenciasBloques
 from modules.app import models
 
 # Create your views here.
@@ -644,6 +645,57 @@ def TestList(request):
     return render(request, 'academic/TestList.html', context)
 
 @login_required(login_url="/login/")
+def saveMatricula(request):
+
+     if request.method == "POST":
+     
+      try:
+        idEstruct=request.POST.get('id')
+
+
+
+        
+       # publico=Publico.objects.get(user=request.user)
+
+
+        
+        publico=ExtensionUsuario.objects.get(user=request.user).Publico
+        print(idEstruct)
+
+        struct=Estructuraprograma.objects.get(idestructuraprogrmas=idEstruct)
+        print(struct)
+
+        padre=struct.fk_estructura_padre
+        matriculaAlumno=MatriculaAlumnos.objects.filter(fk_publico=publico)
+
+        if matriculaAlumno.filter(fk_estruc_programa=struct)!=None:
+          for matricula in matriculaAlumno.filter(fk_estruc_programa=struct):
+            if matricula.fk_status_matricula.valor_elemento!='EstatusCancelado':
+              return HttpResponse(2)
+        count =0
+        while padre !=None:
+          print(count)
+          if matriculaAlumno.filter(fk_estruc_programa=padre)!=None:
+            for matricula in matriculaAlumno.filter(fk_estruc_programa=padre):
+              if matricula.fk_status_matricula.valor_elemento!='EstatusCancelado':
+                return HttpResponse(2)
+          padre=padre.fk_estructura_padre
+          count=count+1
+
+      
+
+        statusDB=TablasConfiguracion.objects.get(valor_elemento='EstatusRevision')
+       
+
+
+        
+        matricula=MatriculaAlumnos.objects.create(fk_publico=publico,fk_estruc_programa=struct, fecha_matricula=datetime.date.today(),fk_status_matricula=statusDB,fecha_aprobada=None, origenSolicitud=4  )
+        matricula.save()
+        return HttpResponse(1)
+
+      except:
+        return HttpResponse("Error, try again later")
+@login_required(login_url="/login/")
 def GraficaResultados(request):
     if request.method == "POST":
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
@@ -653,6 +705,30 @@ def GraficaResultados(request):
                 data = json.load(request)["data"]
 
                 if data["method"] == "Show":
+                        Examen=ExamenActividad.objects.get(pk=data["id"])
+                        resultados=ExamenResultados.objects.annotate(bloque_respuesta=F('bloque__titulo_bloque'),escala=F('bloque__titulo_bloque')).filter(fk_Examen=Examen)
+                        dataResults=[]
+                        escalaBloques=Examen.fk_Actividad.fk_escala_bloque.escalaMenor.all().order_by("puntos_maximo")
+                        escalaTotal=Examen.fk_Actividad.fk_escala_evaluacion.escalaMenor.all()
+                        for res in resultados:
+                            for item in escalaBloques:
+                                print(item.puntos_maximo)
+                                if res.puntuacionBloques<=item.puntos_maximo:
+                                    sugerencia=SugerenciasBloques.objects.filter(fk_bloque=res.bloque).filter(escalaOpcion=item)
+                                    if sugerencia.count()>0:
+                                     dataResults.append(sugerencia[0])
+                                   
+
+                                    break
+                        
+                        rol=ExtensionUsuario.objects.get(user=request.user).CtaUsuario.fk_rol_usuario
+                        publico=ExtensionUsuario.objects.get(user=request.user).Publico
+                        context={
+                                'dataResults':dataResults,
+                                'rol':rol,
+                                'publico':publico,
+                                'Examen':Examen
+                        }
                         html_template = (loader.get_template('components/modalSeeResults.html'))
                         return HttpResponse(html_template.render(context, request))
 
@@ -660,6 +736,7 @@ def GraficaResultados(request):
                         Examen=ExamenActividad.objects.get(pk=data["id"])
                         resultados=ExamenResultados.objects.annotate(bloque_respuesta=F('bloque__titulo_bloque'),escala=F('bloque__titulo_bloque')).filter(fk_Examen=Examen)
                         dataSet=[]
+                        
                         dataSet.append(' ')
                         escalaBloques=Examen.fk_Actividad.fk_escala_bloque.escalaMenor.all().order_by("puntos_maximo")
                         escalaTotal=Examen.fk_Actividad.fk_escala_evaluacion.escalaMenor.all()
@@ -668,6 +745,8 @@ def GraficaResultados(request):
                                 print(item.puntos_maximo)
                                 if res.puntuacionBloques<=item.puntos_maximo:
                                     dataSet.append(item.desc_calificacion)
+                                    
+
                                     break
 
                         print(dataSet)
@@ -678,7 +757,7 @@ def GraficaResultados(request):
                         escalaBloquesJson = list(escalaBloques.values())
                         escalaTotalJson = list(escalaTotal.values())
 
-                        return JsonResponse({"resultadosJson":resultadosJson, "escalaBloquesJson":escalaBloquesJson,'escalaTotalJson':escalaTotalJson, 'dataSet':dataSet}, safe=False)
+                        return JsonResponse({"resultadosJson":resultadosJson, "escalaBloquesJson":escalaBloquesJson,'escalaTotalJson':escalaTotalJson, 'dataSet':dataSet, }, safe=False)
                
     
         
@@ -1573,6 +1652,66 @@ def sortPreguntas(request):
 
                 
                 return JsonResponse({"message": "Perfect"})     
+            except:
+                return JsonResponse({"message": "Error"}) 
+
+@login_required(login_url="/login/")
+def getModalAddRespuestas(request):
+     if request.method == "POST":
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            try:
+                context = {}
+                data = json.load(request)["data"]
+                
+
+                if data["method"] == "Get":
+                        
+                    sugerencias=SugerenciasBloques.objects.annotate(nombreEscala=F('escalaOpcion__desc_calificacion'), nombreEstructura=F('fk_estructura_programa__descripcion') ).filter(fk_bloque=data['idBlock'])
+                    listaChilds = list(sugerencias.values())
+                    
+                    return JsonResponse({"childs":listaChilds}, safe=False)
+                
+                if data["method"] == "Show":
+                        structurasAll=Estructuraprograma.objects.all()
+                        structurasAll=structurasAll.annotate(precio=F('prize__precio'), fechaIngreso=F('prize__fecha_registro'), id=F('prize__idprograma_precios'), descuento=F('prize__PorcentajeDescuento'), max=Max('prize__idprograma_precios'), amountDiscount=Max('prize__idprograma_precios')  ).filter(id=Max('prize__idprograma_precios')  )
+
+                        structurasAll=structurasAll.exclude(precio=None)
+
+                        bloque=EvaluacionesBloques.objects.get(pk=data['idBlock'])
+                        escalaBloque=bloque.fk_actividad_evaluaciones.fk_escala_bloque.escalaMenor.all()
+
+                        context={
+                            'structurasAll':structurasAll,
+                            'scale':escalaBloque
+
+                        }
+                            
+
+                        html_template = (loader.get_template('components/modalAddRespuestas.html'))
+                        return HttpResponse(html_template.render(context, request))
+                        return JsonResponse({"message": "Perfect"})     
+
+                if data["method"] == "Save":
+                     sugerencias=SugerenciasBloques.objects.filter(fk_bloque=data['idBlock'])
+                     sugerencias.delete()
+                     bloque=EvaluacionesBloques.objects.get(pk=data['idBlock'])
+                     hijos = data["hijos"]
+                     if hijos:   
+                                for newOpcion in hijos:
+                                    
+                                    newSugerencia=SugerenciasBloques()
+                                    newSugerencia.fk_bloque=bloque
+                                    newSugerencia.comentario=newOpcion['Comment']
+                                    scale=EscalaCalificacion.objects.get(pk=newOpcion['scale'])
+                                    newSugerencia.escalaOpcion=scale
+
+                                    if newOpcion['structura'] and newOpcion['structura']!='' and newOpcion['structura']!=' ':
+                                        estructura=Estructuraprograma.objects.get(pk=newOpcion['structura'])
+                                        newSugerencia.fk_estructura_programa=estructura
+                                    
+                                   
+                                    newSugerencia.save()
+                     return JsonResponse({"message": "Saved"})
             except:
                 return JsonResponse({"message": "Error"}) 
 

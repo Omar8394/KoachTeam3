@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'modules.communication',
 
     'modules.registration',
+    'modules.professors',
 
 
 ]

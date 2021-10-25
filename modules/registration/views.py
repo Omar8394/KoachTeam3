@@ -1839,15 +1839,17 @@ def hashPay(request):
   
          
        
-       hash = uuid.uuid4()
+     #  hash = uuid.uuid4()
+       hash=hashlib.md5()
+       hash.update(str(request.user.pk).encode())
       # contraseña_cifrada = hashlib.sha512(contraseña.encode()) 
-      # print(contraseña_cifrada.hexdigest())
+      #print(contraseña_cifrada.hexdigest())
       # hash=contraseña_cifrada.hexdigest()   
        #print (hash.hexdigest())
        #m = hashlib.shake_128(b.binary_converted)
        #hash=m.hexdigest(15)
-       print(hash)
-       return HttpResponse(hash)
+       
+       return HttpResponse(str(hash.hexdigest()))
 
 
 @login_required(login_url="/login/")

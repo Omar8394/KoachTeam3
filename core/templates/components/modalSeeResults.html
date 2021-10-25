@@ -19,6 +19,43 @@
                 
                 
                 </div>
+                <br>
+                <br>
+
+                <br>
+                <br>
+
+
+                   <div class="row justify-content-center" style="text-align: center;">
+                          {% for item in dataResults %}
+                        <div class="form-group col-md-12">
+                               Your result for block<b> {{item.fk_bloque}} </b> were in the category <b> {{item.escalaOpcion}}</b>
+                               <br>
+                               {{item.comentario}}
+                               
+                               <br>
+                               {% if item.fk_estructura_programa != None %}
+                               We have a suggestion for you to get better results the time:
+                               <br>
+                              <b> {{item.fk_estructura_programa}} </b>
+                              <br>
+                              {% if Examen.usuario == publico %}
+                              Get yout self enroll by clicking here <button type="button" class="btn btn-success" onclick="matricular({{item.fk_estructura_programa.pk}})">Apply</button>
+                              {%endif%}
+                              <br>
+                              <br>
+                              <br>
+                               {%endif%}
+                            </div>
+
+
+
+                          {% endfor %}
+                        
+                        
+                
+                
+                </div>
 
         </div>
         

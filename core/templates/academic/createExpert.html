@@ -124,6 +124,10 @@
                                                               data-placement="top" title="Show/Hide" onclick="showChilds('{{block.pk}}')">
                                                               <i class="fas fa-clipboard"></i>
                                                            </button>
+                                                           <button type="button" class="btn btn-icon btn-sm btn-info ml-1" data-toggle="tooltip"
+                                                              data-placement="top" title="Add Suggestions" onclick="addRespuesta('{{block.pk}}')">
+                                                              <i class="fas fa-comments"></i>
+                                                           </button>
                                                            <button type="button" class="btn btn-icon btn-sm btn-dark ml-1" data-toggle="tooltip"
                                                            data-placement="top" title="Sort" onclick="openSortTopic('{{block.pk}}')">
                                                            <i class="fas fa-list-ol"></i>
@@ -226,6 +230,13 @@
         </div>
     </div>
 
+      <!-- Modal sugerencia -->
+      <div class="modal fade" tabindex="-1" role="dialog" id="addNewRespuesta">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document" id="modalRespuesta">
+        
+            
+        </div>
+    </div>
 {% endblock content %}
 
 {% block javascripts %}
@@ -282,6 +293,171 @@ const toBase64 = file => new Promise((resolve, reject) => {
     
     }
     </script>
+
+
+<!--Sugerencias-->
+<script>
+
+let tablaSugerencias= []
+let idStructuraSeleccionada=null
+let textoStructuraSeleccionada=null
+
+
+    
+function programChange(combo){
+    idStructuraSeleccionada=combo.value
+    textoStructuraSeleccionada=combo.options[combo.selectedIndex].text
+    console.log(textoStructuraSeleccionada)
+
+	cbProcess.value='';
+	cbCourse.value='';
+	cbUnit.value=-'';
+	let proceso=document.getElementById("cbProcess").innerHTML="";
+	let unidad=document.getElementById("cbUnit").innerHTML="";
+	let curso=document.getElementById("cbCourse").innerHTML="";
+               
+let program=document.getElementById("program").value;
+
+
+if (program=='')
+{
+	return;
+
+}
+let url='{%url "ComboOptions" %}?structuraProg='+program;
+fetch(url,{
+	mode: 'no-cors',
+  method: 'get'
+}).then(function(result){
+
+return result.text();
+
+}).then(function(result){
+	
+	let cbProcess=document.getElementById("cbProcess").innerHTML=result;
+
+});
+
+}
+
+function processChange(combo){
+    idStructuraSeleccionada=combo.value
+    textoStructuraSeleccionada=combo.options[combo.selectedIndex].text
+
+	cbUnit.value='';
+	cbCourse.value='';
+	let unidad=document.getElementById("cbUnit").innerHTML="";
+	let curso=document.getElementById("cbCourse").innerHTML='';
+
+	let process=document.getElementById("cbProcess").value;
+	
+
+
+
+
+
+let url='{%url "ComboOptions" %}?structuraProg='+process;
+fetch(url,{
+	mode: 'no-cors',
+  method: 'get'
+}).then(function(result){
+
+return result.text();
+
+}).then(function(result){
+	
+	let unit=document.getElementById("cbUnit").innerHTML=result;
+
+});
+
+
+}
+
+function unitChange(combo){
+    idStructuraSeleccionada=combo.value
+    textoStructuraSeleccionada=combo.options[combo.selectedIndex].text
+
+	cbCourse.value='';
+	let curso=document.getElementById("cbCourse").innerHTML='';
+
+	let unit=document.getElementById("cbUnit").value;
+
+
+
+
+
+
+let url='{%url "ComboOptions" %}?structuraProg='+unit;
+fetch(url,{
+	mode: 'no-cors',
+  method: 'get'
+}).then(function(result){
+
+return result.text();
+
+}).then(function(result){
+	
+	let unit=document.getElementById("cbCourse").innerHTML=result;
+
+});
+
+}
+
+function courseChange(combo){
+    idStructuraSeleccionada=combo.value
+    textoStructuraSeleccionada=combo.options[combo.selectedIndex].text
+
+
+
+
+}
+
+const rowsSuggestion=()=>{
+    console.log('aqui')
+
+
+}
+
+function actualizarListaSugerencia() {
+    console.log('22')
+    tableSuggestions.innerHTML = "";
+        let contenido = "";
+
+     
+
+
+        tablaSugerencias.map((dato, index) => {
+            
+            let fila =
+                `<tr>
+                    <td>
+                        ${dato.scaleText}
+                    </td>
+                        
+                    <td>
+                        ${dato.Comment}
+                    </td>
+                    <td>
+                        ${dato.estructuraText}
+                    </td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <button onclick="borrarItemSugerencia(${index})" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip"  data-placement="top" title="Delete" >
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </td>              
+                </tr>`
+            contenido += fila;
+        })
+        tableSuggestions.innerHTML = contenido;
+    }
+</script>
+
+
+
+
+<!--un monton de cosas-->
 
     <script>
 
@@ -463,6 +639,11 @@ const toBase64 = file => new Promise((resolve, reject) => {
         if(tipoPreguntaSelected==5)
         actualizarListaTF()
     }
+    function borrarItemSugerencia(id) {
+        tablaSugerencias.splice(id, 1)
+
+        actualizarListaSugerencia()
+    }
 
     function respuestaCorrecta(radio){
             respuesta=radio.value
@@ -499,6 +680,15 @@ const toBase64 = file => new Promise((resolve, reject) => {
             renderModalQuestions().then(()=>{
             
                $("#addNewQuestion").modal("show")
+            })
+        }    
+
+        const addRespuesta= (id) => {
+           
+            BlockId=id
+            renderModalRespuesta(BlockId).then(()=>{
+            
+               $("#addNewRespuesta").modal("show")
             })
         }    
 
@@ -614,6 +804,52 @@ const toBase64 = file => new Promise((resolve, reject) => {
             }            
      
         }
+
+        
+        async function  clickSaveSuggestion (id)  {
+           
+              
+            form = {
+           
+               idBlock:id,
+               method:'Save',
+               hijos: tablaSugerencias,
+
+            
+
+            
+            }
+           
+                saveSugerencia(form)
+                
+     
+        }
+
+        const saveSugerencia = (form) => {
+        fetch("{% url 'getModalAddRespuestas' %}", {
+            ...fetchObject,
+            body: JSON.stringify({
+                data: {
+                    ...form,
+                    
+                }
+            }),
+        })
+            .then(async (res) => {
+                let result = JSON.parse(await res.text())
+                if (result.message === "Error") {
+                    alerta(5)
+                }
+                alerta(2)
+            })
+            .then(() => {
+               // renderTable()
+                $("#addNewRespuesta").modal("hide");
+                tablaSugerencias=[]
+                idStructuraSeleccionada=null
+                textoStructuraSeleccionada=null
+            })
+    }
 
 
 
@@ -934,8 +1170,134 @@ fetch("{% url 'getModalAddInstructions' %}", {
                })   
            })
        }   
-        
+       const renderModalRespuesta = (id) => {
+           console.log(id)
+           let idBlock=id
+          return fetch("{% url 'getModalAddRespuestas' %}", {
+              ...fetchObject,
+              body: JSON.stringify({
+           data: {
+                  
+                  method:'Show',
+                  idBlock:idBlock
+              }
+          })
+          })
+          .then(async (res) => {
+              document.getElementById("modalRespuesta").innerHTML = await res.text()
+          
+            await   getSugerencias(idBlock)
 
+              $("#addRow").click(function () {
+                event.preventDefault()
+
+                elementoEscala=document.getElementById("scaleResult")
+                elementoComentario=document.getElementById("commentResultado")
+                if(isEmpty(elementoEscala.value)){
+                    alertaMensajitos(5,'Invalid Input', 'You must select a scale')
+                    return
+                }
+                if(isEmpty(elementoComentario.value)){
+                    alertaMensajitos(5,'Invalid Input', 'You must enter a comment')
+                    return
+                }
+
+                for(const element of tablaSugerencias ){
+                    if(element.scale==elementoEscala.value){
+                        alertaMensajitos(5,'Invalid Input', 'There is already a suggestion for that scale')
+                    return
+
+                    }
+               
+
+
+                }
+            
+
+                let datos = {
+                    Comment: document.getElementById("commentResultado").value,
+                    id:tablaSugerencias.length,
+                    structura:idStructuraSeleccionada,
+                    estructuraText:!isEmpty(textoStructuraSeleccionada)?textoStructuraSeleccionada:'' ,
+                    scale:document.getElementById("scaleResult").value,
+                    scaleText:document.getElementById("scaleResult").options[document.getElementById("scaleResult").selectedIndex].text,
+                    
+                    actions: `
+                    <div class="btn-group" role="group">
+                        <button onclick="borrarItemSugerencia(${tablaSugerencias.length})" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip"  data-placement="top" title="Delete" >
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>`
+                }
+
+                tablaSugerencias.push(datos)
+            
+                actualizarListaSugerencia()
+
+            })
+
+            const formSuggestions = document.getElementById("formSuggestions")
+            formSuggestions.addEventListener("submit", (e) => {
+                    e.preventDefault()
+                    clickSaveSuggestion(idBlock)
+                })   
+          }).then(()=>{
+          })
+      }   
+       
+      async function  getSugerencias (id){
+            let idBlock=id
+          return fetch("{% url 'getModalAddRespuestas' %}", {
+              ...fetchObject,
+              body: JSON.stringify({
+           data: {
+                  
+                  method:'Get',
+                  idBlock:idBlock
+              }
+          })
+          })
+          .then(async (res) => {
+            let PreguntaDatos = JSON.parse(await res.text())
+            console.log(PreguntaDatos)
+            let listaLoca = PreguntaDatos.childs
+       
+                if(listaLoca){
+                 
+
+                    
+                    listaLoca.map((el)=>{
+                     
+                        
+
+                        let datos = {
+                            Comment: el.comentario,
+                            id:tablaSugerencias.length,
+                            structura:el.fk_estructura_programa_id,
+                            estructuraText:!isEmpty(el.nombreEstructura)?el.nombreEstructura:'' ,
+                            scale:el.escalaOpcion_id,
+                            scaleText:el.nombreEscala,
+                    
+                            actions: `
+                            <div class="btn-group" role="group">
+                                <button onclick="borrarItem(${tablaPreguntas.length})" type="button" class="btn btn-icon btn-sm btn-danger ml-1" data-toggle="tooltip"  data-placement="top" title="Delete" >
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>`
+                        }
+                        tablaSugerencias.push(datos)
+                        console.log(datos)
+
+                    })
+
+                    actualizarListaSugerencia()
+
+                }
+
+
+          })
+
+        }
         const renderModalQuestions = () => {
             return fetch("{% url 'getModalNewExpert' %}", {
                 ...fetchObject,

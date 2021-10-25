@@ -89,6 +89,16 @@ class EvaluacionesBloques(models.Model):
     def __str__(self):
         return self.titulo_bloque
 
+class SugerenciasBloques(models.Model):
+    id=models.AutoField(primary_key=True)
+    fk_estructura_programa = models.ForeignKey(Estructuraprograma,on_delete=models.CASCADE,  default=None, null=True, related_name='estructura_sugerencia')
+
+    escalaOpcion= models.ForeignKey(EscalaCalificacion, on_delete=models.CASCADE, default=None, null=True, related_name='sugerencia_escala')
+    comentario = models.TextField(null=True)
+    fk_bloque = models.ForeignKey(EvaluacionesBloques, on_delete=models.CASCADE, default=None, null=True, related_name='bloque_sugerencia')
+
+    
+
 class EvaluacionesPreguntas(models.Model):
     orden=models.IntegerField(null=True)
     idevaluaciones_preguntas = models.AutoField(primary_key=True)

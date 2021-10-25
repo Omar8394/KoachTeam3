@@ -18,6 +18,8 @@ urlpatterns = [
    path('TestList/', views.TestList, name="TestList"),
    path('SeeTest/', views.SeeTest, name="SeeTest"),
    path('MyTest/', views.MyTest, name="MyTest"),
+   path('saveMatricula/', views.saveMatricula, name="saveMatricula"),
+
 
 
 
@@ -57,6 +59,7 @@ urlpatterns = [
    path('modalChooseTypeQuestion/', views.getModalChooseTypeQuestion, name="modalTypeQuestion"),
    path('getModalAddInstructions/', views.getModalAddInstructions, name="getModalAddInstructions"),
    path('modalAddBlock/', views.getModalAddBlock, name="getModalAddBlock"),
+   path('getModalAddRespuestas/', views.getModalAddRespuestas, name="getModalAddRespuestas"),
 
    path('modalNewExpert/', views.getModalNewExpert, name="getModalNewExpert"),
 

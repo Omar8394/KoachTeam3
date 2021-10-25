@@ -1,0 +1,143 @@
+<div class="modal-content">
+
+    <div class="modal-header">
+        <h4 style="left: initial;" class="modal-title">Suggestions</h4>  
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    </div>
+    <form class="form" id="formSuggestions" name="formSuggestions">
+        <div class="modal-body">
+            <div id="seccionGeneral">
+                <div class="form-row">
+                   
+
+
+                    <div class="col-md-6">
+                        <div class="form-group col-md-12">
+                            <label for="program">Scale Result</label>
+                             <select class="form-control" id="scaleResult" name="scaleResult" onchange=""  >
+                                <option value="" selected>      </option>
+                                 {% for mat in scale %}
+                                  
+                                         <option value="{{mat.pk}}"> {{mat}}</option>
+                                     
+                                {% endfor %}
+                            </select>
+                        </div>
+    
+                        <div class="form-group col-md-12">
+                            <label for="blockText">Comment</label>
+                            </textarea>
+                            <textarea name="blockText" class="form-control"  placeholder="Write here a suggestion or comment for the selected result" id="commentResultado" cols="100" oninput="" rows="4">{% if instrucciones != None %}{{instrucciones.texto_instrucciones}}{% endif %}</textarea> 
+                              
+                        </div>                       
+                    </div>    
+    
+    
+                    <div class=" col-md-6">
+                        <div class="form-row">
+                            <div class="form-group col-md-12">
+                                <label for="program">Program</label>
+                                 <select class="form-control" id="program" name="program" onchange="programChange(this)"  >
+                                    <option value="" selected>      </option>
+                                     {% for mat in structurasAll %}
+                                         {% if mat.precio != None %}
+                                           {% if mat.fk_estructura_padre == None %}
+                            
+                                             <option value="{{mat.idestructuraprogrmas}}"> {{mat}}</option>
+                                             {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row" id="listaProcess">
+                            <div class="form-group col-md-12">
+                                <label>Process</label>
+                                <select class="form-control" id="cbProcess" name="cbProcess"  onchange="processChange(this)">
+                                    <option value="" selected> </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-12">
+                                <label>Unit</label>
+                                <select class="form-control" id="cbUnit" name="cbUnit" onchange="unitChange(this)">
+                                    <option value="" selected> </option>		 
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-12">
+                                <label>Course</label>
+                                <select class="form-control" id="cbCourse" name="cbCourse" onchange="courseChange(this)">
+                                    <option value="" selected>   </option>		   		 
+                                </select>
+                            </div>
+                        </div>
+                   
+                                       
+                    </div>   
+        
+
+
+
+
+
+
+
+
+
+                </div>
+                <div class="form-row col-md-12">
+                    <div class="form-group col-md-12 d-flex justify-content-start">
+                        <button class="btn btn-success mt-4" type="button" id="addRow">
+                            Add  <i class="fas fa-arrow-down ml-1"></i>
+                
+                        </button>     
+                                            
+                
+                    </div>
+                </div>
+                 
+    
+       
+            
+            </div>
+            <hr>
+            <div class="form-row col-md-12 text-center">
+                <div class="form-group col-md-12">
+                      <table class="table table-sm table-bordered table-striped table-hover table-responsive">
+                        <thead class="form-group col-md-12">
+                            <tr>
+                                <th class="">
+                                    Scale Result
+                                </th>
+                                <th>
+                                    Comment
+                                </th>                     
+                                <th>
+                                    Structure
+                                </th>
+                                <th>
+                                    
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody  id="tableSuggestions">
+                           
+                        </tbody>
+                    </table>
+                </div>
+            </div>  
+
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">
+                <i class="fas fa-arrow-left mr-2"></i>Back
+            </button>
+            <button type="submit" value="Submit" class="btn btn-primary">Save<i class="fas fa-save ml-2"></i></button>
+
+        </div>
+    </form>
+</div><!-- /.modal-content -->
