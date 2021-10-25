@@ -1,0 +1,298 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Dashboard {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+
+{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="content">
+		<div class="page-inner animated fadeInDown">
+			<div class="page-header"></div>
+			<div class="page-category d-flex justify-content-center">
+           	 	<div class="card" style="width: 50rem;">
+					<div class="card-header" style="background-color: #1a2035 !important; color: white;">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <h2 class="card-text mt-2">
+                                   Pre Requirements
+                                </h2>
+                            </div>
+                        </div>
+					</div>
+                    
+                    <div class="card-body">
+                        
+                        <div class="form-group" id="groupSelect">
+                        <label for="estatusLesson">Program:</label>
+                        <div class="input-group mb-3">
+                                    
+                            <select class="form-control" id="estatusLesson" name="estatusLesson"></select>
+
+                        </div>
+                        <label for="estatusProcess">Process:</label>
+                        <div class="input-group mb-3">
+                                    
+                            <select class="form-control" id="estatusProcess" name="estatusProcess"></select>
+
+                        </div>
+                        <label for="estatusUnit">Unit:</label>
+                        <div class="input-group mb-3">
+                                    
+                            <select class="form-control" id="estatusUnit" name="estatusUnit"></select>
+
+                        </div>
+                        <label for="estatusCourse">Course:</label>
+                        <div class="input-group mb-3">
+                                    
+                            <select class="form-control" id="estatusCourse" name="estatusCourse"></select>
+
+                        </div>
+                        <label for="estatusTopic">Topic:</label>
+                        <div class="input-group mb-3">
+                                    
+                            <select class="form-control" id="estatusTopic" name="estatusTopic"></select>
+
+                        </div>
+                        <label for="estatusActivity">Activity:</label>
+                        <div class="input-group mb-3">
+                                    
+                            <select class="form-control" id="estatusActivity" name="estatusActivity"></select>
+
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="groupDate">
+
+                        <div class="row">
+                            <div class="card col-5">
+                                <div class="card-header" style="background-color: #1a2035 !important; color: white;" title="This is the list of available activities. You may choose some by selecting them in the box below and then double clicking it.">
+                                    <h2>Activities</h2>
+                                    <!-- <p id="id_permissions_filter" class="selector-filter">
+                                        <label for="id_permissions_input">
+                                            <span class="help-tooltip search-label-icon" title="Type into this box to filter down the list of available permissions."></span>
+                                        </label> 
+                                        <input type="text" placeholder="Filter" id="id_permissions_input">
+                                    </p> -->
+                                </div>
+                                <div class="card-body m-0 p-0">
+                                    <select name="permissions_old" id="idRequirement" multiple="" class="form-control multiple" style="overflow-y: auto;">
+                                        <!-- <option value="40" title="security | land page | Can view land page">security | land page | Can view land page</option>
+                                        <option value="29" title="security | log seguridad | Can add log seguridad">security | log seguridad | Can add log seguridad</option>
+                                        <option value="30" title="security | log seguridad | Can change log seguridad">security | log seguridad | Can change log seguridad</option>
+                                        <option value="31" title="security | log seguridad | Can delete log seguridad">security | log seguridad | Can delete log seguridad</option>
+                                        <option value="32" title="security | log seguridad | Can view log seguridad">security | log seguridad | Can view log seguridad</option>
+                                        <option value="21" title="sessions | session | Can add session">sessions | session | Can add session</option>
+                                        <option value="22" title="sessions | session | Can change session">sessions | session | Can change session</option>
+                                        <option value="23" title="sessions | session | Can delete session">sessions | session | Can delete session</option>
+                                        <option value="24" title="sessions | session | Can view session">sessions | session | Can view session</option> -->
+                                    </select>
+                                </div>
+                                <!-- <a title="Click to choose all permissions at once." href="#" id="id_permissions_add_all_link" class="selector-chooseall active">Choose all</a> -->
+                            </div>
+
+                            <div class="col-2 d-flex align-items-center justify-content-center">
+                                <i class="fas fa-exchange-alt"></i>
+                            </div>
+
+                            <div class="card col-5">
+                                
+                                <div class="card-header" style="background-color: #1a2035 !important; color: white;" title="This is the list of chosen activities. You may remove some by selecting them in the box below and then double clicking it.">
+                                    <h2>Requirements</h2>
+                                </div>
+                                <div class="card-body m-0 p-0">
+                                    <select id="idRequirementTo" multiple="" size="0" name="permissions" class="form-control multiple" style="overflow-y: auto;"></select>
+                                </div>
+                                <!-- <a title="Click to remove all chosen permissions at once." href="#" id="id_permissions_remove_all_link" class="selector-clearall">Remove all</a> -->
+                            </div>
+                        </div>
+
+                    </div>
+
+
+				</div>        
+      		</div>
+		</div>
+	</div>
+
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  planning/edit-->
+{% block javascripts %}
+
+<script>
+
+    //cargo los programas
+    $(document).ready(function () {
+
+        $.ajax({
+            type: "POST",
+            data: {
+                'tipo': "Estructuraprograma",
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+
+            },
+            url: "{% url 'renderListasPublic' %}",
+            success: function (response) {
+
+                document.getElementById('estatusLesson').innerHTML = response.competence
+
+            },
+            error: function (response) {
+                console.log(response.responseJSON.errors)
+            }
+        });
+        
+    });
+
+    //aqui se cambian los hijos de las estructuras programas
+    $(document).on('change', "#groupSelect select", function(e){
+        console.log( $(this).val())
+        let idSelect = $(this).attr('id')
+        if($(this).val() && idSelect !== 'estatusActivity'){
+            
+            $.ajax({
+                type: "POST",
+                data: {
+                    'tipo': "Estructuraprograma",
+                    'tipoHijo': $(this).val(),
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+
+                },
+                url: "{% url 'renderListasPublic' %}",
+                success: function (response) {
+
+                    document.getElementById(idSelect==='estatusLesson'?'estatusProcess':idSelect==='estatusProcess'?'estatusUnit':idSelect==='estatusUnit'?'estatusCourse':idSelect==='estatusCourse'?'estatusTopic':'estatusActivity').innerHTML = response.competence
+
+                    if(idSelect==='estatusLesson'){
+
+                        document.getElementById('estatusUnit').innerHTML = null
+                        document.getElementById('estatusCourse').innerHTML = null
+                        document.getElementById('estatusTopic').innerHTML = null
+                        document.getElementById('estatusActivity').innerHTML = null
+
+                    }else if(idSelect==='estatusProcess'){
+
+                        document.getElementById('estatusCourse').innerHTML = null
+                        document.getElementById('estatusTopic').innerHTML = null
+                        document.getElementById('estatusActivity').innerHTML = null
+
+                    }else if(idSelect==='estatusUnit'){
+
+                        document.getElementById('estatusTopic').innerHTML = null
+                        document.getElementById('estatusActivity').innerHTML = null
+
+                    }else if(idSelect==='estatusCourse')
+
+                        document.getElementById('estatusActivity').innerHTML = null
+
+                    document.getElementById('idRequirement').innerHTML = null
+                    document.getElementById('idRequirementTo').innerHTML = null
+
+                },
+                error: function (response) {
+                    console.log(response.responseJSON.errors)
+                }
+            });
+
+        }else if(idSelect !== 'estatusActivity'){
+
+            if(idSelect==='estatusLesson'){
+
+                document.getElementById('estatusProcess').innerHTML = null
+                document.getElementById('estatusUnit').innerHTML = null
+                document.getElementById('estatusCourse').innerHTML = null
+                document.getElementById('estatusTopic').innerHTML = null
+                document.getElementById('estatusActivity').innerHTML = null
+
+            }else if(idSelect==='estatusProcess'){
+
+                document.getElementById('estatusUnit').innerHTML = null
+                document.getElementById('estatusCourse').innerHTML = null
+                document.getElementById('estatusTopic').innerHTML = null
+                document.getElementById('estatusActivity').innerHTML = null
+
+            }else if(idSelect==='estatusUnit'){
+
+                document.getElementById('estatusCourse').innerHTML = null
+                document.getElementById('estatusTopic').innerHTML = null
+                document.getElementById('estatusActivity').innerHTML = null
+
+            }else if(idSelect==='estatusCourse'){
+
+                document.getElementById('estatusTopic').innerHTML = null
+                document.getElementById('estatusActivity').innerHTML = null
+
+            }else if(idSelect==='estatusTopic')
+            
+                document.getElementById('estatusActivity').innerHTML = null
+            
+            document.getElementById('idRequirement').innerHTML = null
+            document.getElementById('idRequirementTo').innerHTML = null
+                
+            }else if($(this).val() && idSelect==='estatusActivity')
+
+                $.ajax({
+                    type: "POST",
+                    data: {
+                        'tipo': "Estructuraprograma",
+                        'tipoHijo': $(this).val(),
+                        'tipoPadre': $('#estatusTopic').val(),
+                        csrfmiddlewaretoken: '{{ csrf_token }}',
+
+                    },
+                    url: "{% url 'renderListasPublic' %}",
+                    success: function (response) {
+
+                        document.getElementById('idRequirement').innerHTML = response.competence
+                        document.getElementById('idRequirementTo').innerHTML = response.requirements
+
+                    },
+                    error: function (response) {
+                        console.log(response.responseJSON.errors)
+                    }
+                });
+
+            else{
+                document.getElementById('idRequirement').innerHTML = null
+                document.getElementById('idRequirementTo').innerHTML = null
+
+            }
+
+    });
+    
+    //metodo para agregar o eliminar prerequisitos
+    $(document).on('dblclick', ".multiple option", function(e){
+
+        var parent = $(this).parent().attr('id')==='idRequirement'?'idRequirementTo':'idRequirement'
+        var child = $(this)
+        $.ajax({
+            type: "POST",
+            data: {
+                'tipo': parent === 'idRequirementTo'?'agregar':'borrar',
+                'requisito': child.val(),
+                'actividad': $('#estatusActivity').val(),
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+
+            },
+            url: "{% url 'requirements' %}",
+            success: function (response) {
+
+                var element = child.detach();
+                $('#'+parent).append(element);
+
+            },
+            error: function (response) {
+                console.log(response.responseJSON.errors)
+            }
+        });
+
+    })
+
+</script>
+
+{% endblock javascripts %}

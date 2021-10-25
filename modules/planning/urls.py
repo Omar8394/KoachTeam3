@@ -8,7 +8,7 @@ from django.urls import path, re_path
 from django.urls import path  
 from .views import show, showCompetences, destroy, destroyCompetence, showCompetencesAdq, destroyCompetenceAdq, \
 showProgram, editProgram, validate_username, validate_competence, renderListasPublic, paginar, renderListasCombos, renderCompetencesPublic, \
-saveProgram, managePublic, lockPublic, unlockPublic, modalForm, createProfile, createCompetence, createCompetenceAdq
+saveProgram, managePublic, lockPublic, unlockPublic, modalForm, createProfile, createCompetence, createCompetenceAdq, preRequirements, requirements
 # from .views import edit
 # from modules.planning import views
 
@@ -25,6 +25,8 @@ urlpatterns = [
     path('createProfile/', createProfile, name="createProfile"),  
     path('createCompetence/', createCompetence, name="createCompetence"),  
     path('createCompetenceAdq/', createCompetenceAdq, name="createCompetenceAdq"), 
+    path('preRequirements/', preRequirements, name="preRequirements"), 
+    path('requirements/', requirements, name="requirements"), 
 
     
     path('delete/', destroy, name="destroyProfilage"),  

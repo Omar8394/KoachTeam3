@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.contrib.messages.api import success
 from django.shortcuts import render, redirect  
 from .forms import competenciaAdqForm, competenciaForm, perfilForm
-from .models import CompetenciasAdq, Perfil, CompetenciasReq
+from .models import CompetenciasAdq, Perfil, CompetenciasReq, cursos_prerequisitos
 from ..app.models import Estructuraprograma, TablasConfiguracion, Publico
 from ..app.Methods import MyMethod
 from ..security.models import ExtensionUsuario, CtaUsuario
@@ -18,6 +18,7 @@ import re
 from django.core import serializers
 from django.http import HttpResponse
 import json
+from ..security import Methods
 # Create your views here.
 TITULOPERFIL = {'idperfil': '#', 'deescripcion': 'Name', 'desc_corta': 'Description', 'fk_rama': 'Branch'}
 TITULOCOMPETENCIA = {'idcompetenciasreq': '#', 'desc_competencia': 'Name', 'fk_perfil': 'Profile', 'fk_tipo_competencia': 'Type', 'fk_nivel': 'Minimum Level'}
@@ -186,6 +187,8 @@ def renderListasPublic(request):
     id = request.POST.get('id', None)
     tipo = request.POST.get('tipo', None)
     tipoHijo = request.POST.get('tipoHijo', None)
+    tipoPadre = request.POST.get('tipoPadre', None)
+    req = None
 
     if(not tipo):
 
@@ -214,16 +217,32 @@ def renderListasPublic(request):
         
     elif (tipo == 'Estructuraprograma'):
 
-        structuras=Estructuraprograma.objects.all()
-        structuras=structuras.filter(fk_estructura_padre=tipoHijo)
-        if(structuras.first()): print(structuras.first().valor_elemento)
-        message = 'You can select a specific %s if you wish'%(structuras.first().valor_elemento,) if tipoHijo and structuras.first() else "Select a program"
-        html = render_to_string('planning/lista.html', {'lista': structuras, 'defecto': message if len(structuras) > 0 else 'There are no more elements for this selection', 'tipo': 'Estructuraprograma'})
+        if tipoPadre: 
+
+            structuras=Estructuraprograma.objects.all()
+            structuras=structuras.filter(fk_estructura_padre=tipoPadre)
+            structuras=structuras.exclude(idestructuraprogrmas=tipoHijo)
+            actividad = Estructuraprograma.objects.get(idestructuraprogrmas=tipoHijo)
+            requisitos=cursos_prerequisitos.objects.filter(fk_estructura_programa=actividad)
+            for x in requisitos:
+                structuras=structuras.exclude(idestructuraprogrmas=x.fk_estructura_programa_pre.idestructuraprogrmas)
+
+            if(structuras.first()): print(structuras.first().valor_elemento)
+            html = render_to_string('planning/lista.html', {'lista': structuras, 'tipo': 'Estructuraprograma'})
+            req = render_to_string('planning/lista.html', {'lista': requisitos, 'tipo': 'cursos_prerequisitos'})
+
+        else:
+
+            structuras=Estructuraprograma.objects.all()
+            structuras=structuras.filter(fk_estructura_padre=tipoHijo)
+            if(structuras.first()): print(structuras.first().valor_elemento)
+            message = 'You can select a specific %s if you wish'%(structuras.first().valor_elemento,) if tipoHijo and structuras.first() else "Select a program"
+            html = render_to_string('planning/lista.html', {'lista': structuras, 'defecto': message if len(structuras) > 0 else 'There are no more elements for this selection', 'tipo': 'Estructuraprograma'})
 
     response = {
 
         'competence': html,
-        # 'levels': lvl
+        'requirements': req if req else None
 
     }
 
@@ -534,6 +553,8 @@ def lockPublic(request):
     
 def unlockPublic(request):
 
+    code = str(Methods.getVerificationLink(request.user.email, 1))
+
     if request.method == "POST":  
 
         try:
@@ -671,4 +692,32 @@ def createCompetenceAdq(request):
             return JsonResponse({'mensaje': 'error'})
 
     print('no entro')
+    return JsonResponse({}) 
+
+    
+def preRequirements(request):  
+
+    return render(request,"planning/prerequisitos.html") 
+    
+
+
+def requirements(request):  
+
+
+    if request.method == "POST":  
+        
+        tipo = request.POST.get('tipo')
+        requisito = Estructuraprograma.objects.get(idestructuraprogrmas=request.POST.get('requisito'))
+        actividad = Estructuraprograma.objects.get(idestructuraprogrmas=request.POST.get('actividad'))
+
+        if tipo == 'agregar':
+            matricula=cursos_prerequisitos.objects.create(fk_estructura_programa=actividad,fk_estructura_programa_pre=requisito)
+            matricula.save()
+
+        else:
+            matricula = cursos_prerequisitos.objects.get(fk_estructura_programa=actividad,fk_estructura_programa_pre=requisito)  
+            matricula.delete()  
+
+        return JsonResponse({'mensaje': 'succes'})
+
     return JsonResponse({}) 

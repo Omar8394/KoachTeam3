@@ -2,7 +2,11 @@
 
 {% if tipo != 'Schedule' %}
 
-    <option value selected>{{ defecto }}</option>
+    {% if defecto %}
+
+        <option value selected>{{ defecto }}</option>
+    
+    {% endif %}
     
     {% for p in lista %}  
         
@@ -18,42 +22,46 @@
 
     <option value={{ p.idestructuraprogrmas }}>{{ p.descripcion }}</option>
 
+        {% elif tipo == 'cursos_prerequisitos' %}
+
+    <option value={{ p.fk_estructura_programa_pre.idestructuraprogrmas }}>{{ p.fk_estructura_programa_pre.descripcion }}</option>
+
         {% endif %}
 
     {% endfor %} 
 
 {% else %}
     {% comment %} 
-    <ul class="list-group">
-    {% for p in lista %}  
+        <ul class="list-group">
+        {% for p in lista %}  
 
-        <li class="list-group-item d-flex justify-content-between align-items-center listaCompetencia" id="{{p.idcompetenciasreq}}">
+            <li class="list-group-item d-flex justify-content-between align-items-center listaCompetencia" id="{{p.idcompetenciasreq}}">
 
-          {{p.desc_competencia}}
+            {{p.desc_competencia}}
 
-            {% if resultados|get_list:forloop.counter %}
-            
-                <span class="badge badge-success badge-pill">
+                {% if resultados|get_list:forloop.counter %}
+                
+                    <span class="badge badge-success badge-pill">
 
-                    <i class="fas fa-check-circle"></i>
+                        <i class="fas fa-check-circle"></i>
 
-                </span>
+                    </span>
 
-            {% else %}
+                {% else %}
 
-                <span class="badge badge-danger badge-pill">
+                    <span class="badge badge-danger badge-pill">
 
-                    <i class="fas fa-times-circle"></i>
+                        <i class="fas fa-times-circle"></i>
 
-                </span>
+                    </span>
 
-            {% endif %}
+                {% endif %}
 
-        </li>
+            </li>
 
-    {% endfor %} 
+        {% endfor %} 
 
-      </ul>
+        </ul>
     {% endcomment %}
 
         {% for p in lista %}  

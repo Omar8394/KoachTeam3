@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models.fields import SmallIntegerField
-from ..app.models import TablasConfiguracion, Publico
+from ..app.models import TablasConfiguracion, Publico, Estructuraprograma
 
 
 class Perfil(models.Model):
@@ -66,3 +66,9 @@ class CompetenciasAdq(models.Model):
     class Meta:
 
         ordering = ['-idcompetencias_adq']
+
+class cursos_prerequisitos(models.Model):
+    
+    id_curosPrerequisitos = models.AutoField(primary_key=True)
+    fk_estructura_programa = models.ForeignKey(Estructuraprograma, on_delete=models.CASCADE, default=None, null=True)
+    fk_estructura_programa_pre = models.ForeignKey(Estructuraprograma, on_delete=models.CASCADE, default=None, null=True, related_name='estructura_programa_prerequisito')
