@@ -14,7 +14,7 @@
 
 {% if show == 'resources' %}
 {% for recurso in data %}
-<div id="resourceRecent{{recurso.fk_recurso.pk}}" class="resources-item" onclick="selectedResource('{{recurso.fk_recurso.pk}}','{{recurso.fk_recurso.path}}','{{recurso.fk_recurso.fk_tipo_recurso.valor_elemento}}')">
+<div id="resourceItem{{recurso.fk_recurso.pk}}" class="resources-item" onclick="selectedResource('{{recurso.fk_recurso.pk}}','{{recurso.fk_recurso.path}}','{{recurso.fk_recurso.fk_tipo_recurso.valor_elemento}}')">
    {% if recurso.fk_recurso.fk_tipo_recurso.valor_elemento == 'Recurso_video'%}
    <div class="resources-item-front" style="background: url('http://i3.ytimg.com/vi/{{recurso.fk_recurso.path}}/hqdefault.jpg'); background-size: cover;">
    {% elif recurso.fk_recurso.fk_tipo_recurso.valor_elemento == 'Recurso_image'%}
