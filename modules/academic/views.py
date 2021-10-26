@@ -1472,6 +1472,7 @@ def getModalPagina(request):
                     elif data["method"] == "Create":
                         pagina = Paginas()
                     pagina.titulo = data["data"]["titlePage"]
+                    pagina.contenido=None
                     if data["data"]["summernote"] != "<p><br></p>":
                         pagina.contenido = data["data"]["summernote"]
                     pagina.save()
@@ -1583,10 +1584,6 @@ def getModalResourcesBank(request):
                     context = {"modelo": modelo}
                     html_template = (loader.get_template('components/modalAddPagina.html'))
                     return HttpResponse(html_template.render(context, request))
-                elif data["method"] == "Delete":
-                    pagina = Paginas.objects.get(pk=data["id"])
-                    pagina.delete()
-                    return JsonResponse({"message":"Deleted"})
                 elif data["method"] == "Create":
                     recurso = Recurso.objects.filter(path=data["data"]["path"])
                     if recurso.exists():
@@ -1970,41 +1967,62 @@ def getModalNewHomework(request):
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             context = {}
             modelo = {}
-            try:
-                if request.body:
-                    data = json.load(request)
-                    if data["method"] == "Show":
-                        html_template = (loader.get_template('components/modalAddHomework.html'))
-                        return HttpResponse(html_template.render(context, request))
-                    elif data["method"] == "Find":
-                        modelo = ActividadTarea.objects.get(fk_estructura_programa=data["id"])
-                        context = {"modelo": modelo}
-                        html_template = (loader.get_template('components/modalAddHomework.html'))
-                        return HttpResponse(html_template.render(context, request))
-                    elif data["method"] == "Delete":
-                        actividad = Estructuraprograma.objects.get(pk=data["id"])
-                        actividad.delete()
-                        return JsonResponse({"message":"Deleted"})
-                    elif data["method"] == "Update":
-                        actividad = Estructuraprograma.objects.get(pk=data["id"])
-                        homework = ActividadTarea.objects.get(fk_estructura_programa=data["id"])
-                    elif data["method"] == "Create":
-                        actividad = Estructuraprograma()
-                        homework = ActividadTarea()
-                        actividad.valor_elemento = "Activity"
-                        actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").get(desc_elemento="Homework").pk
-                        actividad.fk_estructura_padre_id=data["padreActivity"]
-                    actividad.descripcion = data["data"]["descriptionActivity"]
-                    actividad.resumen = data["data"]["resumenActivity"]
-                    actividad.url = data["data"]["urlActivity"]
-                    actividad.peso_creditos = None
-                    actividad.save()
-                    homework.fk_estructura_programa = actividad
-                    homework.fecha_entrega = data["data"]["entregaHomework"]
-                    homework.save()
-                    return JsonResponse({"message":"Perfect"})
-            except:
-                return JsonResponse({"message":"error"}, status=500)
+            # try:
+            if request.body:
+                data = json.load(request)
+                if data["method"] == "Show":
+                    html_template = (loader.get_template('components/modalAddHomework.html'))
+                    return HttpResponse(html_template.render(context, request))
+                elif data["method"] == "Find":
+                    modelo = ActividadTarea.objects.get(fk_estructura_programa=data["id"])
+                    pagina = modelo.fk_estructura_programa.paginas_set.all()[0]
+                    context = {"modelo": modelo, "pagina":pagina}
+                    html_template = (loader.get_template('components/modalAddHomework.html'))
+                    return HttpResponse(html_template.render(context, request))
+                elif data["method"] == "Delete":
+                    actividad = Estructuraprograma.objects.get(pk=data["id"])
+                    actividad.delete()
+                    return JsonResponse({"message":"Deleted"})
+                elif data["method"] == "Update":
+                    actividad = Estructuraprograma.objects.get(pk=data["id"])
+                    pagina = actividad.paginas_set.all()[0]
+                    homework = ActividadTarea.objects.get(fk_estructura_programa=data["id"])
+                elif data["method"] == "Create":
+                    actividad = Estructuraprograma()
+                    homework = ActividadTarea()
+                    actividad.valor_elemento = "Activity"
+                    actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").get(desc_elemento="Homework").pk
+                    actividad.fk_estructura_padre_id=data["padreActivity"]
+                    pagina = Paginas()
+                    pagina.titulo = ""
+                    pagina.contenido = ""
+                    pagina.ordenamiento = None
+                actividad.descripcion = data["data"]["descriptionActivity"]
+                actividad.resumen = data["data"]["resumenActivity"]
+                actividad.url = data["data"]["urlActivity"]
+                actividad.peso_creditos = None
+                actividad.save()
+                pagina.fk_estructura_programa = actividad
+                pagina.titulo = actividad.descripcion
+                pagina.contenido = None
+                if data["data"]["summernote"] != "<p><br></p>":
+                    pagina.contenido = data["data"]["summernote"]
+                pagina.save()
+                recursos = data["data"]["recursos"]
+                oldResources = RecursoPaginas.objects.filter(fk_pagina=pagina.pk)
+                oldResources.delete()
+                for recurso in recursos:
+                    resource = Recurso.objects.get(pk=recurso["id"])
+                    newResource = RecursoPaginas()
+                    newResource.fk_pagina = pagina
+                    newResource.fk_recurso = resource
+                    newResource.save()
+                homework.fk_estructura_programa = actividad
+                homework.fecha_entrega = data["data"]["entregaHomework"]
+                homework.save()
+                return JsonResponse({"message":"Perfect"})
+            # except:
+            #     return JsonResponse({"message":"error"}, status=500)
 
 @login_required(login_url="/login/")
 def getModalNewForum(request):

@@ -86,7 +86,13 @@
 
 <!-- Modal nuevo tópico -->
 <div class="modal fade" id="addNewModal" tabindex="-1" role="dialog">
-   <div class="modal-dialog  modal-dialog-centered" role="document" id="addNewModalContent">
+   <div class="modal-dialog modal-lg modal-dialog-centered" role="document" id="addNewModalContent">
+
+   </div>
+</div>
+<!-- Modal banco de recursos -->
+<div class="modal fade" id="bankModal" tabindex="-1" role="dialog">
+   <div class="modal-dialog  modal-dialog-centered" role="document" id="bankModalContent">
 
    </div>
 </div>
@@ -117,7 +123,444 @@
    let ordenamientoArray = []
    let ordenamientoArrayActivity = []
    let sortableList = {}
-   const updateOrderActivity = (id) =>{
+
+   //
+   //RESOURCES BANK - GLOBAL VARIABLES
+   //
+   let queryResource = ""
+   let recursosArray = []
+   let selectedResources = []
+   let bankPage = 1
+
+   ///////////////////
+   //RESOURCES BANK//
+   //////////////////
+
+   const setBankEvents = (dropzoneObj) => {
+
+      //
+      //RESOURCES BANK - set initial state
+      //
+
+      selectedResources = []
+      bankPage = 1
+
+      //
+      //RESOURCES BANK - Tabs state
+      //
+
+      $("#nav-recent-tab").click(() => {
+         bankPage = 1
+      })
+      $("#nav-bank-tab").click(() => {
+         bankPage = 2
+      })
+      $("#nav-upload-tab").click(() => {
+         bankPage = 3
+      })
+      $("#nav-youtube-tab").click(() => {
+         bankPage = 4
+      })
+
+      //
+      //RESOURCES BANK - HTML objects
+      //
+
+      const formBotones = document.getElementById("formBotones")
+      const formYoutube = document.getElementById("formYoutube")
+      const youtubeBtn = document.getElementById("findInYoutube")
+      const inputYT = document.getElementById("urlResource")
+      const frameYT = document.getElementById("previewYoutube")
+      const cleanBtn = document.getElementById("cleanBankBtn")
+      const searchBankBar = document.querySelector('#resourceSearch')
+      const clearBankBtn = document.querySelector('#clearBankBtn')
+      const searchBankBtn = document.querySelector('#searchBankBtn')
+
+      //
+      //RESOURCES BANK - Events
+      //
+
+      clearBankBtn.addEventListener('click', () => {
+         searchBankBar.value = ""
+         query = ""
+         searchResource("")
+      })
+      searchBankBtn.addEventListener('click', () => {
+         searchResource(searchBankBar.value)
+      })
+      searchBankBar.addEventListener('keypress', (e) => {
+         if (e.key === 'Enter') {
+            searchResource(searchBankBar.value)
+         }
+      });
+      formYoutube.addEventListener("submit", (e) => {
+         e.preventDefault()
+         if (inputYT.value.trim()) {
+            let youtubeFrame = comprobarYoutube(inputYT.value.trim())
+            frameYT.innerHTML = youtubeFrame
+         }
+         else {
+            frameYT.innerHTML = ""
+         }
+      })
+      formBotones.addEventListener("submit", async (e) => {
+         e.preventDefault()
+         $("#insertBankBtn").attr("disabled", "disabled")
+         if (bankPage === 1 || bankPage === 2) {
+            if (selectedResources.length > 0) {
+               recursosArray.push(...selectedResources)
+               $(`#summernote`).summernote('pasteHTML', renderResourcesHTML(selectedResources))
+               document.querySelector("#bankModalContent").innerHTML = ""
+               $("#bankModal").modal("hide")
+            }
+         }
+         if (bankPage === 3) {
+            if (dropzoneObj.getQueuedFiles().length >= 1 && $("#tagResource3").val().trim() != "") {
+               dropzoneObj.processQueue()
+            }
+         }
+         if (bankPage === 4) {
+            let HTMLstring = comprobarYoutube(inputYT.value.trim())
+            if (!HTMLstring.includes("Invalid Youtube video") && $("#tagResource4").val().trim() != "") {
+               dataObj = {
+                  titulo: document.getElementById("titleResource4").value,
+                  path: extractCode(document.getElementById("urlResource").value),
+                  tipo_path: 1,
+                  compartido: document.getElementById("checkSharedCB4").checked,
+                  tipo_recurso: "Recurso_video",
+                  tags: $("#tagResource4").val().toLowerCase()
+               }
+               const response = await updateModel("{% url 'modalResourcesBank'%}", "Create", dataObj, null)
+               const text = JSON.parse(await response.text())
+               if (text.message == "error") {
+                  alerta(5)
+                  return
+               }
+               if (text.message == "Already exists") alerta(6)
+               if (text.message == "Perfect") alerta(1)
+               let recursoTemp = {
+                  id: text.id,
+                  path: text.path,
+                  type: text.type
+               }
+               recursosArray.push(recursoTemp)
+               $(`#summernote`).summernote('pasteHTML', HTMLstring)
+               document.querySelector("#bankModalContent").innerHTML = ""
+               $("#bankModal").modal("hide")
+            }
+
+         }
+         $("#insertBankBtn").removeAttr("disabled")
+      })
+      cleanBtn.addEventListener("click", (e) => {
+         e.preventDefault()
+         if (bankPage === 1) {
+            clearSelectedRecent()
+         }
+         if (bankPage === 2) {
+            clearSelectedResources()
+         }
+         if (bankPage === 3) {
+            dropzoneObj.removeAllFiles()
+            document.getElementById("checkSharedCB3").checked = false
+            $("#tagResource3").tagsinput('removeAll')
+         }
+         if (bankPage === 4) {
+            frameYT.innerHTML = ""
+            inputYT.value = ""
+            document.getElementById("checkSharedCB4").checked = false
+            $("#titleResource4").val("")
+            $("#tagResource4").tagsinput('removeAll')
+         }
+      })
+   }
+
+   //////////////////////////////////////
+   //RESOURCES BANK ASSOCIATED METHODS//
+   /////////////////////////////////////
+   
+   //
+   //RESOURCES BANK - SHOW RESOURCES BY CATEGORY ON CLICK
+   //
+
+   const renderContentResource = (show, idTag) => {
+      document.querySelector("#tagBankBody").classList.add("is-loading")
+      fetch("{% url 'contenidoRecursos'%}", {
+         ...fetchObject,
+         body: JSON.stringify({
+            show,
+            tag: idTag,
+            query: queryResource
+         })
+      })
+         .then(async (res) => {
+            result = await res.text()
+            document.querySelector("#tagBankBody").classList.remove("is-loading")
+            document.querySelector("#tagBankBody").innerHTML = result
+         })
+   }
+
+   //
+   //RESOURCES BANK - HANDLE OF HIGHLIGHT SELECTED RESOURCES FOR PAGES 1 & 2
+   //
+
+   const selectedTag = (idTag, name) => {
+      renderContentResource("resources", idTag)
+      const childs = document.getElementById("tagBankHeader").children
+      const tagName = document.getElementById("tagNameBar")
+      childs[0].classList.remove("d-flex")
+      childs[0].classList.add("d-none")
+      childs[1].classList.remove("d-none")
+      childs[1].classList.add("d-flex")
+      tagName.innerText = name
+
+      document.getElementById("backBankBtn").addEventListener("click", () => {
+         queryResource = null
+         selectedResources = []
+         document.querySelector('#resourceSearch').value = ""
+         childs[1].classList.remove("d-flex")
+         childs[1].classList.add("d-none")
+         childs[0].classList.remove("d-none")
+         childs[0].classList.add("d-flex")
+         renderContentResource("tags", null)
+      })
+   }
+   const selectedResource = (idRecent, path, type) => {
+      let recentItem = document.getElementById(`resourceItem${idRecent}`)
+      let isSelected = recentItem.classList.toString().includes("resources-item-selected")
+      if (isSelected) {
+         selectedResources = selectedResources.filter((resource) => {
+            return resource.id != idRecent
+         })
+      }
+      else {
+         selectedResources.push({ id: idRecent, path, type })
+      }
+      recentItem.classList.toggle("resources-item-selected")
+   }
+   const selectedRecent = (idRecent, path, type) => {
+      let recentItem = document.getElementById(`resourceRecent${idRecent}`)
+      let isSelected = recentItem.classList.toString().includes("resources-item-selected")
+      if (isSelected) {
+         selectedResources = selectedResources.filter((resource) => {
+            return resource.id != idRecent
+         })
+      }
+      else {
+         selectedResources.push({ id: idRecent, path, type })
+      }
+      recentItem.classList.toggle("resources-item-selected")
+   }
+   const clearSelectedRecent = () => {
+      const bankBody = document.getElementById("recentBankBody")
+      for (let item of bankBody.children) {
+         item.classList.remove("resources-item-selected")
+      }
+      selectedResources = []
+   }
+   const clearSelectedResources = () => {
+      const bankBody = document.getElementById("tagBankBody")
+      for (let item of bankBody.children) {
+         item.classList.remove("resources-item-selected")
+      }
+      selectedResources = []
+   }
+
+   //
+   //RESOURCES BANK - YOUTUBE PART METHODS
+   //
+
+   const extractCode = (linkEntry) => {
+      let codeIndex = 0
+      if (linkEntry.includes("youtu.be/")) {
+         codeIndex = linkEntry.indexOf("youtu.be/") + 9
+      }
+      if (linkEntry.includes("youtube.com/")) {
+         codeIndex = linkEntry.indexOf("&v=") + linkEntry.indexOf("?v=") + 4
+      }
+      let code = linkEntry.slice(codeIndex, codeIndex + 11)
+      return code
+   }
+   const comprobarYoutube = (linkEntry) => {
+      if (linkEntry.match(/(?:https?:\/\/)?(?:www\.|m\.)?youtu(?:\.be\/|be.com\/\S*(?:watch|embed)(?:(?:(?=\/[^&\s\?]+(?!\S))\/)|(?:\S*v=|v\/)))([^&\s\?]+)/gm)) {
+         let code = extractCode(linkEntry)
+         return `<iframe width="560" height="315" src="https://www.youtube.com/embed/${code}" title="YouTube video player" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
+      }
+      else {
+         return `<div>Invalid Youtube video</div>`
+      }
+   }
+
+   //
+   //RESOURCES BANK - TRANSLATE RESOURCES TO HTML FOR SUMMERNOTE
+   //
+
+   const renderResourcesHTML = (array) => {
+      let HTMLstring = ""
+      array.map(({ type, path }) => {
+         let recursoHTML = ""
+         if (type === "Recurso_pdf") {
+            recursoHTML = `<iframe src="/media/${path}#toolbar=0" width="100%" height="600px"></iframe>`
+         }
+         if (type === "Recurso_audio") {
+            recursoHTML = `<p><audio controls><source src="/media/${path}">Your browser does not support the audio element.</audio></p>`
+         }
+         if (type === "Recurso_image") {
+            recursoHTML = `<img src="/media/${path}"/>`
+         }
+         if (type === "Recurso_video") {
+            recursoHTML = `<iframe width="560" height="315" src="https://www.youtube.com/embed/${path}" title="YouTube video player" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
+         }
+         HTMLstring += recursoHTML
+      })
+      return HTMLstring
+   }
+
+   //
+   //RESOURCES BANK - RENDERING BANK'S MODAL
+   //
+
+   const renderResourcesBank = () => {
+      //render resources bank
+      fetch("{% url 'modalResourcesBank'%}", {
+         ...fetchObject,
+         body: JSON.stringify({
+            method: "Show"
+         })
+      }).then(async (res) => {
+         result = await res.text()
+         document.querySelector("#bankModalContent").innerHTML = result
+         $("#bankModal").modal("show")
+         const dropzoneObj = new Dropzone("form#my-awesome-dropzone", {
+            url: "{% url 'modalResourcesBank' %}",
+            headers: { "idPagina": 1 },
+            autoProcessQueue: false,
+            uploadMultiple: true,
+            acceptedFiles: "image/*,audio/*, application/pdf",
+            maxFiles: 100,
+            parallelUploads: 100,
+            init: function () {
+               this.on("successmultiple", function (files, response) {
+                  recursosArray.push(...response.recursos)
+                  $(`#summernote`).summernote('pasteHTML', renderResourcesHTML(response.recursos))
+                  document.querySelector("#bankModalContent").innerHTML = ""
+                  $("#bankModal").modal("hide")
+                  alerta(1)
+               });
+               this.on("errormultiple", function (files, response) {
+                  alerta(5)
+               });
+            }
+         });
+         setBankEvents(dropzoneObj)
+         $('#tagResource3').tagsinput({
+            tagClass: 'badge badge-info d-inline',
+            allowDuplicates: false,
+            trimValue: true,
+            maxChars: 10,
+            maxTags: 3,
+            cancelConfirmKeysOnEmpty: true
+         });
+         $('#tagResource4').tagsinput({
+            tagClass: 'badge badge-info d-inline',
+            allowDuplicates: false,
+            trimValue: true,
+            maxChars: 10,
+            maxTags: 3,
+            cancelConfirmKeysOnEmpty: true
+         });
+      })
+
+   }
+
+   //
+   //RESOURCES BANK - END
+   //
+
+   ///////////////
+   //SUMMERNOTE//
+   /////////////
+
+   //
+   //SUMMERNOTE - SETUP
+   //
+
+   const setupSummernote = () => {
+
+      $(document).ready(function () {
+         $(`#summernote`).summernote({
+            dialogsInBody: true,
+            height: 300,
+            placeholder: 'write homework here...',
+            disableDragAndDrop: true,
+            toolbar: [
+               ['style', ['style']],
+               ['font', ['bold', 'underline', 'clear']],
+               ['fontname', ['fontname']],
+               ['color', ['color']],
+               ['para', ['ul', 'ol', 'paragraph']],
+               ['table', ['table']],
+               ['insert', ['resource']],
+            ],
+            buttons: {
+               resource: HelloButton
+            }
+         });
+      });
+   }
+
+   //
+   //SUMMERNOTE -  BUTTON TO INVOKE RESOURCES BANK
+   //
+
+   const HelloButton = (context) => {
+      var ui = $.summernote.ui;
+      // create button for resource bank
+      var button = ui.button({
+         contents: '<i class="fas fa-folder-open"/> Resources',
+         tooltip: 'Resources bank',
+         click: () => {
+            // invoke resource bank here
+            renderResourcesBank()
+         }
+      });
+      return button.render();
+   }
+
+   //
+   //SUMMERNOTE - GET LIST OF RESOURCES
+   //
+
+   const updateRecursosArray = () => {
+      recursosArray = []
+      let testArray = document.querySelector("#resourcesList")
+      if (!testArray) return
+      testArray = testArray.value.split("/")
+      testArray.map((element) => {
+         if (element.trim() != "") {
+            recursosArray.push(JSON.parse(element))
+         }
+      })
+   }
+
+   //
+   //SUMMERNOTE - LOOK FOR RESOURCES ADDED IN SUMMERNOTE TEXTAREA
+   //
+
+   const comprobarRecursosArray = () => {
+      let codigo = $(`#summernote`).summernote('code')
+      recursos = []
+      recursosArray.map((recurso) => {
+         if (codigo.includes(recurso.path))
+            recursos.push(recurso)
+      })
+      return recursos
+   }
+
+   //
+   //SUMMERNOTE - END
+   //
+   const updateOrderActivity = (id) => {
       let actividades = document.getElementById(`childsTopic${id}`).children
       ordenamientoArrayActivity = []
       actividades.forEach((pagina, index) => {
@@ -135,16 +578,16 @@
             order: ordenamientoArrayActivity
          })
       })
-      .then(async (res) => {
-         let resultado = JSON.parse(await res.text())
-         if(resultado.message === "Perfect"){
-            alerta(7)
-         }
-         if(resultado.message === "Error"){
-            alerta(5)
-         }
-         sortableList[id].destroy()
-      })
+         .then(async (res) => {
+            let resultado = JSON.parse(await res.text())
+            if (resultado.message === "Perfect") {
+               alerta(7)
+            }
+            if (resultado.message === "Error") {
+               alerta(5)
+            }
+            sortableList[id].destroy()
+         })
    }
    const updateOrder = () => {
       let paginas = document.querySelectorAll(".card-list-item-descripcion")
@@ -168,9 +611,9 @@
             order: ordenamientoArray
          })
       })
-      .then(async (res) => {
-         renderContent()
-      })
+         .then(async (res) => {
+            renderContent()
+         })
    }
    const chooseModal = async (type) => {
       $("#addChooseActivities").modal("hide")
@@ -197,7 +640,7 @@
    const showChilds = (id) => {
       let contenido = document.getElementById(`childsTopic${id}`)
       contenido.classList.toggle("card-list-item-close")
-      if(sortableActivity){
+      if (sortableActivity) {
          updateOrderActivity(id)
       }
       sortableActivity = false
@@ -279,8 +722,14 @@
          })
          .then(() => {
             const formActividad = document.getElementById("formActividad")
+            if (url === "{% url 'modalNewHomework' %}") {
+               setupSummernote()
+            }
             formActividad.addEventListener("submit", (e) => {
                e.preventDefault()
+               if (url === "{% url 'modalNewHomework' %}") {
+                  $(`#summernote`).html($(`#summernote`).summernote('code'))
+               }
                clickSave(formActividad, url)
                   .then(() => {
                      $("#addNewModal").modal("hide")
@@ -315,8 +764,15 @@
          })
          .then(() => {
             const formActividad = document.getElementById("formActividad")
+            if (url === "{% url 'modalNewHomework' %}") {
+               setupSummernote()
+               updateRecursosArray()
+            }
             formActividad.addEventListener("submit", (e) => {
                e.preventDefault()
+               if (url === "{% url 'modalNewHomework' %}") {
+                  $(`#summernote`).html($(`#summernote`).summernote('code'))
+               }
                clickSave(formActividad, url)
                   .then(() => {
                      $("#addNewModal").modal("hide")
@@ -332,6 +788,7 @@
       for (var [key, value] of formData.entries()) {
          data[key] = value
       }
+      data["recursos"] = comprobarRecursosArray()
       if (editmode) {
          return updateModel(url, "Update", data, idSeleted)
             .then(async (res) => {
@@ -476,10 +933,10 @@
             })
          })
    }
-   const openSortTopic = (id)=>{
+   const openSortTopic = (id) => {
       let contenido = document.getElementById(`childsTopic${id}`)
       let isClosed = contenido.classList.toString().includes("card-list-item-close")
-      if(isClosed){
+      if (isClosed) {
          showChilds(id)
       }
       sortableActivity = !sortableActivity

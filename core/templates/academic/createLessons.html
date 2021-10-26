@@ -78,12 +78,12 @@
    let query = ""
    let editmode = false
    let sortable = false
+   let ordenamientoArray = []
    //
    //RESOURCES BANK - GLOBAL VARIABLES
    //
    let queryResource = ""
    let selectedId = ""
-   let ordenamientoArray = []
    let recursosArray = []
    let selectedResources = []
    let bankPage = 1
@@ -236,6 +236,27 @@
    /////////////////////////////////////
 
    //
+   //RESOURCES BANK - SHOW RESOURCES BY CATEGORY ON CLICK
+   //
+
+   const renderContentResource = (show, idTag) => {
+      document.querySelector("#tagBankBody").classList.add("is-loading")
+      fetch("{% url 'contenidoRecursos'%}", {
+         ...fetchObject,
+         body: JSON.stringify({
+            show,
+            tag: idTag,
+            query: queryResource
+         })
+      })
+         .then(async (res) => {
+            result = await res.text()
+            document.querySelector("#tagBankBody").classList.remove("is-loading")
+            document.querySelector("#tagBankBody").innerHTML = result
+         })
+   }
+
+   //
    //RESOURCES BANK - HANDLE OF HIGHLIGHT SELECTED RESOURCES FOR PAGES 1 & 2
    //
 
@@ -251,6 +272,7 @@
 
       document.getElementById("backBankBtn").addEventListener("click", () => {
          queryResource = null
+         selectedResources = []
          document.querySelector('#resourceSearch').value = ""
          childs[1].classList.remove("d-flex")
          childs[1].classList.add("d-none")
@@ -523,22 +545,7 @@
          ordenamientoArray.push(orderObj)
       })
    }
-   const renderContentResource = (show, idTag) => {
-      document.querySelector("#tagBankBody").classList.add("is-loading")
-      fetch("{% url 'contenidoRecursos'%}", {
-         ...fetchObject,
-         body: JSON.stringify({
-            show,
-            tag: idTag,
-            query: queryResource
-         })
-      })
-         .then(async (res) => {
-            result = await res.text()
-            document.querySelector("#tagBankBody").classList.remove("is-loading")
-            document.querySelector("#tagBankBody").innerHTML = result
-         })
-   }
+
    const renderContent = () => {
       document.querySelector("main.card-body").classList.add("is-loading")
       fetch("{% url 'contenidoLecciones'%}", {

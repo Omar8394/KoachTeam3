@@ -3,4 +3,11 @@
       <label for="disponibleLesson">Delivery date</label>
       <input type="date" class="form-control" name="entregaHomework" id="entregaHomework" required {% if modelo %} {% if modelo.fecha_entrega %} value="{{ modelo.fecha_entrega|date:'Y-m-d'}}" {% endif %}{% endif %}>
    </div>
+   <div class="form-group col-12">
+      <label for="summernote" class="col-form-label">Content</label>
+      <textarea id="summernote" class="form-control" name="summernote">{% if pagina %}{% if pagina.contenido%}{{pagina.contenido}}{% endif %}{% endif %}</textarea>
+   </div>
+   {% if pagina.recursopaginas_set.all %}
+   <input type="hidden" id="resourcesList" value='{% for recurso in pagina.recursopaginas_set.all %}{"id":"{{recurso.fk_recurso_id}}","path":"{{recurso.fk_recurso.path}}"}/{% endfor %}'>
+   {% endif %}
 </div>
