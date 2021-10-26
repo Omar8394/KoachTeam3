@@ -1,0 +1,104 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %}{% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+
+{% endblock stylesheets %}
+
+{% block content %}
+
+<div class="content">
+   <div class="page-inner animated fadeInRight">
+      <div class="page-header">
+         <h4 class="page-title">Academic</h4>
+         <ul class="breadcrumbs">
+            <li class="nav-home">
+               <a href="{% url 'home' %}">
+                  <i class="flaticon-home"></i>
+               </a>
+            </li>
+            <li class="separator">
+               <i class="flaticon-right-arrow"></i>
+            </li>
+            <li class="nav-item">
+               <a href="{% url 'academic' %}">Academic</a>
+            </li>
+            <li class="separator">
+               <i class="flaticon-right-arrow"></i>
+            </li>
+            <li class="nav-item">
+               <a href="{% url 'programa' programa.url %}">{{programa.descripcion}}</a>
+            </li>
+            <li class="separator">
+               <i class="flaticon-right-arrow"></i>
+            </li>
+            <li class="nav-item">
+               <a href="{% url 'proceso' programa=programa.url proceso=proceso.url %}">{{proceso.descripcion}}</a>
+            </li>
+            <li class="separator">
+               <i class="flaticon-right-arrow"></i>
+            </li>
+            <li class="nav-item">
+               <a
+                  href="{% url 'unidad' programa=programa.url proceso=proceso.url unidad=unidad.url %}">{{unidad.descripcion}}</a>
+            </li>
+            <li class="separator">
+               <i class="flaticon-right-arrow"></i>
+            </li>
+            <li class="nav-item">
+               <a
+                  href="{% url 'curso' programa=programa.url proceso=proceso.url unidad=unidad.url curso=curso.url %}">{{curso.descripcion}}</a>
+            </li>
+            <li class="separator">
+               <i class="flaticon-right-arrow"></i>
+            </li>
+            <li class="nav-item">
+               <a
+                  href="{% url 'curso' programa=programa.url proceso=proceso.url unidad=unidad.url curso=curso.url %}">{{topico.descripcion}}</a>
+            </li>
+            <li class="separator">
+               <i class="flaticon-right-arrow"></i>
+            </li>
+            <li class="nav-item">
+               {{actividad.descripcion}}
+            </li>
+         </ul>
+      </div>
+      <div class="page-category">
+         <div class="card">
+            <div class="card-header">
+               <h2>{{actividad.descripcion}}</h2>
+            </div>
+            <main class="card-body">
+               {% if actividad.fk_categoria.valor_elemento == 'activityLesson' %}
+               {% for leccion in actividad.paginas_set.all %}
+               {{leccion.contenido | safe}}
+               {% endfor %}
+               {% elif actividad.fk_categoria.valor_elemento == 'activityHome' %}
+               {% for tarea in actividad.paginas_set.all %}
+               {{tarea.contenido | safe}}
+               {% endfor %}
+               {% else %}
+               <p>There is no preview for this activity</p>
+               {% endif %}
+            </main>
+         </div>
+      </div>
+   </div>
+</div>
+
+<!-- Modal amigable -->
+<div class="modal fade" id="addNewModal" tabindex="-1" role="dialog">
+   <div class="modal-dialog modal-lg modal-dialog-centered" role="document" id="addNewModalContent">
+
+   </div>
+</div>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+{% endblock javascripts %}

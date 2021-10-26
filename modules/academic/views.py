@@ -2902,8 +2902,18 @@ def curso(request, programa, proceso, unidad, curso):
     return HttpResponse(html_template.render(context, request))
 
 @login_required(login_url="/login/")
-def actividad(request):
-    return
+def actividad(request, programa, proceso, unidad, curso, topico, idActividad):
+    program = Estructuraprograma.objects.get(url=programa)
+    process = Estructuraprograma.objects.get(url=proceso)
+    unit = Estructuraprograma.objects.get(url=unidad)
+    course = Estructuraprograma.objects.get(url=curso)
+    topic = Estructuraprograma.objects.get(url=topico)
+    actividad = Estructuraprograma.objects.get(pk=idActividad)
+    context = {"programa" : program, "proceso":process, "unidad":unit, "curso":course, "topico":topic, "actividad":actividad}
+    #Vista del gestor
+    html_template = (loader.get_template('academic/actividad.html'))
+    #Vista del profesor
+    return HttpResponse(html_template.render(context, request))
 
 @login_required(login_url="/login/")
 def getComboContent(request):

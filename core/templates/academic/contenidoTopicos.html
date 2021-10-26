@@ -72,26 +72,26 @@ results for "{{query}}"
             {% for activity in topic.estructuraprograma_set.all %}
             {%if activity.valor_elemento == 'Activity'%}
             <li id="itemActivity{{activity.pk}}" class="card-list-item-content
-            {% if activity.fk_categoria.desc_elemento == 'Expert test'%} deg-primary{% endif %}
-            {% if activity.fk_categoria.desc_elemento == 'Test'%} deg-success{% endif %}
-            {% if activity.fk_categoria.desc_elemento == 'Homework'%} deg-warning{% endif %}
-            {% if activity.fk_categoria.desc_elemento == 'Lesson'%} deg-info{% endif %}
-            {% if activity.fk_categoria.desc_elemento == 'Forum'%} deg-danger{% endif %}
+            {% if activity.fk_categoria.valor_elemento == 'activityExpert'%} deg-primary{% endif %}
+            {% if activity.fk_categoria.valor_elemento == 'activityTest'%} deg-success{% endif %}
+            {% if activity.fk_categoria.valor_elemento == 'activityHome'%} deg-warning{% endif %}
+            {% if activity.fk_categoria.valor_elemento == 'activityLesson'%} deg-info{% endif %}
+            {% if activity.fk_categoria.valor_elemento == 'activityForum'%} deg-danger{% endif %}
             ">
                <div class="card-list-item-icon">
-                  {% if activity.fk_categoria.desc_elemento == 'Expert test'%}
+                  {% if activity.fk_categoria.valor_elemento == 'activityExpert'%}
                   <i class="fas fa-file-contract"></i>
                   {% endif %}
-                  {% if activity.fk_categoria.desc_elemento == 'Test'%}
+                  {% if activity.fk_categoria.valor_elemento == 'activityTest'%}
                   <i class="fas fa-file-alt"></i>
                   {% endif %}
-                  {% if activity.fk_categoria.desc_elemento == 'Homework'%}
+                  {% if activity.fk_categoria.valor_elemento == 'activityHome'%}
                   <i class="fas fa-pencil-alt"></i>
                   {% endif %}
-                  {% if activity.fk_categoria.desc_elemento == 'Lesson'%}
+                  {% if activity.fk_categoria.valor_elemento == 'activityLesson'%}
                   <i class="fas fa-chalkboard-teacher"></i>
                   {% endif %}
-                  {% if activity.fk_categoria.desc_elemento == 'Forum'%}
+                  {% if activity.fk_categoria.valor_elemento == 'activityForum'%}
                   <i class="fas fa-headset"></i>
                   {% endif %}
                </div>
@@ -100,10 +100,10 @@ results for "{{query}}"
                <div class="card-list-item-actions">
                   <div class="btn-group" role="group">
                      {% if take %}
-                     <button type="button" class="btn btn-icon btn-sm btn-success ml-1" data-toggle="tooltip" data-placement="top" title="Take"
-                        onclick="openTakeActivity('{{activity.pk}}','{{activity.fk_categoria.desc_elemento}}')">
+                     <a type="button" class="btn btn-icon btn-sm btn-success ml-1" data-toggle="tooltip" data-placement="top" title="Take"
+                        href="{% url 'actividad' programa=programa.url proceso=proceso.url unidad=unidad.url curso=curso.url topico=topic.url idActividad=activity.pk %}">
                         <i class="fas fa-sign-out-alt"></i>
-                     </button>
+                  </a>
                      {% endif %}
                      {% if go %}
                      <button type="button" class="btn btn-icon btn-sm btn-success ml-1" data-toggle="tooltip" data-placement="top" title="Go"
