@@ -60,16 +60,16 @@ results for "{{query}}"
                </div>
             </div>
             <div class="card-list-item-extra">
-               Teacher: Fulano de tal
-               <br>
-               Requirements: topico 2 y cualquier otro
-               <br>
-               Credits: {{topic.peso_creditos}}
+               {% with teachers=topic.fk_estructura_padre.programaprofesores_set.all|dictsortreversed:'idprograma_profesores'%}
+               {% with myteacher=teachers|first %}
+               <span>Teacher: {{myteacher.fk_publico.nombre}} {{myteacher.fk_publico.apellido}}</span>
+               {% endwith %}
+               {% endwith %}
             </div>
          </div>
          <div id="contentTopic{{topic.pk}}" class="card-list-item-descripcion card-list-item-close"><strong>Description:</strong> &nbsp;{{topic.resumen}}</div>
          <ul id="childsTopic{{topic.pk}}" class="card-list-item-close">
-            {% for activity in topic.estructuraprograma_set.all %}
+            {% for activity in topic.estructuraprograma_set.all|dictsort:'orden_presentacion' %}
             {%if activity.valor_elemento == 'Activity'%}
             <li id="itemActivity{{activity.pk}}" class="card-list-item-content
             {% if activity.fk_categoria.valor_elemento == 'activityExpert'%} deg-primary{% endif %}

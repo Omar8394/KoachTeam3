@@ -4,7 +4,7 @@ from django.db.models import query
 from django.db.models.aggregates import Count
 from django.shortcuts import render
 from django.template import loader
-from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect, HttpResponseForbidden
 from django.urls import reverse
 from django import template
 from modules.app import Methods
@@ -17,6 +17,7 @@ from django.core.paginator import Paginator
 from django.db.models import Max
 
 from django.utils.dateparse import parse_datetime
+from django.utils import timezone
 import mimetypes
 import json
 from django.core.files.storage import FileSystemStorage
@@ -28,19 +29,23 @@ from ..app.models import TablasConfiguracion, Estructuraprograma, Publico
 
 from ..security.models import ExtensionUsuario
 from modules.registration.models import MatriculaAlumnos
-from .models import ActividadEvaluaciones, Cursos, ActividadConferencia, ActividadLeccion, ActividadTarea, EscalaCalificacion, EscalaEvaluacion, EvaluacionesPreguntas, EvaluacionesBloques, Paginas, PreguntasOpciones, ExamenActividad,ExamenRespuestas,ExamenResultados, Recurso, RecursoPaginas, Tag, TagRecurso,EvaluacionInstrucciones,SugerenciasBloques
+from .models import ActividadEvaluaciones, Cursos, ActividadConferencia, ActividadLeccion, ActividadTarea, EscalaCalificacion, EscalaEvaluacion, EvaluacionesPreguntas, EvaluacionesBloques, Paginas, PreguntasOpciones, ExamenActividad,ExamenRespuestas,ExamenResultados, ProgramaProfesores, Recurso, RecursoPaginas, Tag, TagRecurso,EvaluacionInstrucciones,SugerenciasBloques
 from modules.app import models
 
 # Create your views here.
 @login_required(login_url="/login/")
 def index(request):
     
+    rol = request.session.get("user_rol")
+    user = request.user.extensionusuario.Publico
     context = {}
     context['segment'] = 'academic'
-    #Vista del gestor
-    html_template = (loader.get_template('academic/gestor.html'))
-    #Vista del profesor
-    #html_template = (loader.get_template('academic/index.html'))
+    context['rol'] = rol
+    context['user'] = user
+    if rol == "Admin" or rol == "Student" or rol == "Teacher":
+        html_template = (loader.get_template('academic/gestor.html'))
+    else:
+        return HttpResponseForbidden()
     return HttpResponse(html_template.render(context, request))
 
 
@@ -988,19 +993,48 @@ def getContentProgramas(request):
     if request.method == "POST":
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             context = {}
+            rol = request.session.get("user_rol")
+            user = request.user.extensionusuario.Publico
             if request.body:
                 data = json.load(request)    
                 lista = {}
-                edit=True
-                delete=True
+                edit=False
+                delete=False
                 categorias = TablasConfiguracion.obtenerHijos("CatPrograma")
-                if data["query"] == "" or data["query"] == None:
-                    for categoria in categorias:
-                        lista[categoria.desc_elemento]=categoria.estructuraprograma_set.all().filter(valor_elemento="Program")
+                if rol == "Admin":
+                    edit=True
+                    delete=True
+                    if data["query"] == "" or data["query"] == None:
+                        for categoria in categorias:
+                            lista[categoria.desc_elemento]=categoria.estructuraprograma_set.all().filter(valor_elemento="Program")
+                    else:
+                        for categoria in categorias:
+                            lista[categoria.desc_elemento]=categoria.estructuraprograma_set.all().filter(valor_elemento="Program", descripcion__icontains=data["query"])
+                elif rol == "Teacher":
+                    edit=True
+                    delete=False
+                    today = timezone.now().date()
+                    cursos = ProgramaProfesores.objects.filter(fk_publico=user, fecha_retiro__gt=today).filter(fk_estructura_programa__valor_elemento="Course")
+                    if cursos.exists():
+                        if data["query"] == "" or data["query"] == None:
+                            for categoria in categorias:
+                                lista[categoria.desc_elemento] = cursos.filter(fk_estructura_programa__fk_categoria=categoria)
+                        else:
+                            for categoria in categorias:
+                                lista[categoria.desc_elemento] = cursos.filter(fk_estructura_programa__fk_categoria=categoria, fk_estructura_programa__descripcion__icontains=data["query"])
+                elif rol == "Student":
+                    estatus = TablasConfiguracion.obtenerHijos("EstMatricula").get(valor_elemento="EstatusAprovado")
+                    cursos = MatriculaAlumnos.objects.filter(fk_publico=user, fk_tipo_matricula=estatus)
+                    if cursos.exists():
+                        if data["query"] == "" or data["query"] == None:
+                            for categoria in categorias:
+                                lista[categoria.desc_elemento] = cursos.filter(fk_estructura_programa__fk_categoria=categoria)
+                        else:
+                            for categoria in categorias:
+                                lista[categoria.desc_elemento] = cursos.filter(fk_estructura_programa__fk_categoria=categoria, fk_estructura_programa__descripcion__icontains=data["query"])
                 else:
-                    for categoria in categorias:
-                        lista[categoria.desc_elemento]=categoria.estructuraprograma_set.all().filter(valor_elemento="Program", descripcion__icontains=data["query"])
-                context = {"data" : lista, "edit": edit, "delete":delete, "query":data["query"]}
+                    return HttpResponseForbidden()
+                context = {"data" : lista, "edit": edit, "delete":delete, "query":data["query"], "rol":rol}
                 html_template = (loader.get_template('academic/contenidoProgramas.html'))
                 return HttpResponse(html_template.render(context, request))
 
@@ -1009,15 +1043,27 @@ def getContentProcesos(request):
     if request.method == "POST":
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             context = {}
+            rol = request.session.get("user_rol")
             if request.body:
-                data = json.load(request)    
-                edit=True
-                delete=True
+                data = json.load(request)
+                edit=False
+                delete=False
                 programa=Estructuraprograma.objects.get(valor_elemento="Program", url=data["url"])
                 if data["query"] == "" or data["query"] == None:
                     lista = programa.estructuraprograma_set.all()
                 else:
                     lista = programa.estructuraprograma_set.all().filter(valor_elemento="Process", descripcion__icontains=data["query"])
+                if rol == "Admin":
+                    edit=True
+                    delete=True
+                elif rol == "Teacher":
+                    edit=True
+                    delete=False
+                elif rol == "Student":
+                    edit=False
+                    delete=False
+                else:
+                    return HttpResponseForbidden()
                 context = {"data":lista, "programa":programa, "edit": edit, "delete":delete, "query":data["query"]}
                 html_template = (loader.get_template('academic/contenidoProcesos.html'))
                 return HttpResponse(html_template.render(context, request))
@@ -2859,60 +2905,87 @@ def getModalNewTof(request):
 
 @login_required(login_url="/login/")
 def programa(request, programa):
-    program = Estructuraprograma.objects.get(url=programa)
-    context = {"programa" : program}
-    context['segment'] = 'academic'
-    #Vista del gestor
-    html_template = (loader.get_template('academic/procesos.html'))
-    #Vista del profesor
+    context = {}
+    try:
+        program = Estructuraprograma.objects.get(url=programa, valor_elemento="Program")
+        rol = request.session.get("user_rol")
+        context = {"programa" : program}
+        context['segment'] = 'academic'
+        #Vista del gestor
+        if rol == "Admin" or rol == "Student":
+            html_template = (loader.get_template('academic/procesos.html'))
+        else:
+            return HttpResponseForbidden()
+        #Vista del profesor
+    except:
+        html_template = loader.get_template( 'errors/page-404.html' )
     return HttpResponse(html_template.render(context, request))
 
 @login_required(login_url="/login/")
 def proceso(request, programa, proceso):
-    program = Estructuraprograma.objects.get(url=programa)
-    process = Estructuraprograma.objects.get(url=proceso)
-    context = {"programa" : program, "proceso":process}
-    #Vista del gestor
-
-    html_template = (loader.get_template('academic/unidades.html'))
-    #Vista del profesor
+    context = {}
+    try:
+        program = Estructuraprograma.objects.get(url=programa, valor_elemento="Program")
+        process = Estructuraprograma.objects.get(url=proceso, valor_elemento="Process")
+        context = {"programa" : program, "proceso":process}
+        context['segment'] = 'academic'
+        #Vista del gestor
+        html_template = (loader.get_template('academic/unidades.html'))
+        #Vista del profesor
+    except:
+        html_template = loader.get_template( 'errors/page-404.html' )
     return HttpResponse(html_template.render(context, request))
 @login_required(login_url="/login/")
 def unidad(request, programa, proceso, unidad):
-    program = Estructuraprograma.objects.get(url=programa)
-    process = Estructuraprograma.objects.get(url=proceso)
-    unit = Estructuraprograma.objects.get(url=unidad)
-    context = {"programa" : program, "proceso":process, "unidad":unit}
-    #Vista del gestor
+    context = {}
+    try:
+        program = Estructuraprograma.objects.get(url=programa, valor_elemento="Program")
+        process = Estructuraprograma.objects.get(url=proceso, valor_elemento="Process")
+        unit = Estructuraprograma.objects.get(url=unidad, valor_elemento="Unit")
+        context = {"programa" : program, "proceso":process, "unidad":unit}
+        context['segment'] = 'academic'
+        #Vista del gestor
 
-    html_template = (loader.get_template('academic/cursos.html'))
-    #Vista del profesor
+        html_template = (loader.get_template('academic/cursos.html'))
+        #Vista del profesor
+    except:
+        html_template = loader.get_template( 'errors/page-404.html' )
     return HttpResponse(html_template.render(context, request))
 
 @login_required(login_url="/login/")
 def curso(request, programa, proceso, unidad, curso):
-    program = Estructuraprograma.objects.get(url=programa)
-    process = Estructuraprograma.objects.get(url=proceso)
-    unit = Estructuraprograma.objects.get(url=unidad)
-    course = Estructuraprograma.objects.get(url=curso)
-    context = {"programa" : program, "proceso":process, "unidad":unit, "curso":course}
-    #Vista del gestor
-    html_template = (loader.get_template('academic/topicos.html'))
-    #Vista del profesor
+    context = {}
+    try:
+        program = Estructuraprograma.objects.get(url=programa, valor_elemento="Program")
+        process = Estructuraprograma.objects.get(url=proceso, valor_elemento="Process")
+        unit = Estructuraprograma.objects.get(url=unidad, valor_elemento="Unit")
+        course = Estructuraprograma.objects.get(url=curso, valor_elemento="Course")
+        context = {"programa" : program, "proceso":process, "unidad":unit, "curso":course}
+        context['segment'] = 'academic'
+        #Vista del gestor
+        html_template = (loader.get_template('academic/topicos.html'))
+        #Vista del profesor
+    except:
+        html_template = loader.get_template( 'errors/page-404.html' )
     return HttpResponse(html_template.render(context, request))
 
 @login_required(login_url="/login/")
 def actividad(request, programa, proceso, unidad, curso, topico, idActividad):
-    program = Estructuraprograma.objects.get(url=programa)
-    process = Estructuraprograma.objects.get(url=proceso)
-    unit = Estructuraprograma.objects.get(url=unidad)
-    course = Estructuraprograma.objects.get(url=curso)
-    topic = Estructuraprograma.objects.get(url=topico)
-    actividad = Estructuraprograma.objects.get(pk=idActividad)
-    context = {"programa" : program, "proceso":process, "unidad":unit, "curso":course, "topico":topic, "actividad":actividad}
-    #Vista del gestor
-    html_template = (loader.get_template('academic/actividad.html'))
-    #Vista del profesor
+    context = {}
+    try:
+        program = Estructuraprograma.objects.get(url=programa, valor_elemento="Program")
+        process = Estructuraprograma.objects.get(url=proceso, valor_elemento="Process")
+        unit = Estructuraprograma.objects.get(url=unidad, valor_elemento="Unit")
+        course = Estructuraprograma.objects.get(url=curso, valor_elemento="Course")
+        topic = Estructuraprograma.objects.get(url=topico, valor_elemento="Topic")
+        actividad = Estructuraprograma.objects.get(pk=idActividad, valor_elemento="Activity")
+        context = {"programa" : program, "proceso":process, "unidad":unit, "curso":course, "topico":topic, "actividad":actividad}
+        context['segment'] = 'academic'
+        #Vista del gestor
+        html_template = (loader.get_template('academic/actividad.html'))
+        #Vista del profesor
+    except:
+        html_template = loader.get_template( 'errors/page-404.html' )
     return HttpResponse(html_template.render(context, request))
 
 @login_required(login_url="/login/")

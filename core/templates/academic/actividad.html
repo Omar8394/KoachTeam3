@@ -74,9 +74,15 @@
             </div>
             <main class="card-body">
                {% if actividad.fk_categoria.valor_elemento == 'activityLesson' %}
-               {% for leccion in actividad.paginas_set.all %}
-               {{leccion.contenido | safe}}
+               <div class="owl-carousel owl-theme">
+               {% for leccion in actividad.paginas_set.all|dictsort:'ordenamiento' %}
+                  {% if leccion.contenido %}
+                  <div class="item">
+                     {{leccion.contenido | safe}}
+                  </div>
+                  {% endif %}
                {% endfor %}
+               </div>
                {% elif actividad.fk_categoria.valor_elemento == 'activityHome' %}
                {% for tarea in actividad.paginas_set.all %}
                {{tarea.contenido | safe}}
@@ -100,5 +106,30 @@
 {% endblock content %}
 
 {% block javascripts %}
+<script>
+   let hijos = $('.owl-carousel').children.length
+   if(hijos === 1){
+      console.log("congratulations u have reached the last page")
+   }
+   const revisarPag = (event)=>{
+      if(event.property.name === "position"){
+         if(event.page.index === event.page.count -1){
+            console.log("congratulations u have reached the last page")
+         }
+      }
+   }
+   $('.owl-carousel').owlCarousel({
+      onChanged:revisarPag,
+      loop: false,
+      margin: 10,
+      nav: true,
+      responsive: {
+         0: {
+            items: 1
+         }
+      }
+   })
+
+</script>
 
 {% endblock javascripts %}

@@ -28,7 +28,13 @@
       <div class="page-category">
          <div class="card">
             <div class="card-header">
+               {% if rol == 'Student' %}
+               <h2>Welcome {{user.nombre}}! this is your library</h2>
+               {% elif rol == 'Teacher' %}
+               <h2>Welcome {{user.nombre}}! your courses are here</h2>
+               {% elif rol == 'Admin' %}
                <h2>Programs</h2>
+               {% endif %}
                <div class="form-group">
                   <div class="input-group">
                      <input id="txtSearch" type="text" class="form-control" placeholder="Search for...">
