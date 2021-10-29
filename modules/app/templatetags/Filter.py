@@ -1,10 +1,21 @@
 from django import template
-from modules.academic.models import EvaluacionesPreguntas, ExamenActividad,ExamenRespuestas,EscalaCalificacion
+from modules.academic.models import EvaluacionesPreguntas, ExamenActividad,ExamenRespuestas,EscalaCalificacion, ProgramaProfesores
 import random
+from django.utils import timezone
 import json
 from django.core import serializers
 
 register = template.Library()
+
+@register.filter(name='editableCourse')
+def editableCourse(curso, teacher):
+  response = False
+  publico = teacher
+  today = timezone.now().date()
+  activo = ProgramaProfesores.objects.filter(fk_publico=publico, fecha_retiro__gt=today, fk_estructura_programa=curso)
+  if activo.exists():
+      response = True
+  return response
 
 @register.filter(name='jsonTlf')
 def jsonTlf(datos):

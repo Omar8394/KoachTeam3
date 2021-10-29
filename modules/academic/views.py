@@ -36,12 +36,13 @@ from modules.app import models
 @login_required(login_url="/login/")
 def index(request):
     
-    rol = request.session.get("user_rol")
-    user = request.user.extensionusuario.Publico
+    user = request.user.extensionusuario
+    rol = user.CtaUsuario.fk_rol_usuario.desc_elemento
+    publico = user.Publico
     context = {}
     context['segment'] = 'academic'
     context['rol'] = rol
-    context['user'] = user
+    context['user'] = publico
     if rol == "Admin" or rol == "Student" or rol == "Teacher":
         html_template = (loader.get_template('academic/gestor.html'))
     else:
@@ -54,52 +55,66 @@ def createLessons(request):
     if request.method == "POST":
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             context = {}
-            # try:
-            if request.body:
-                data = json.load(request)
-                if data["method"] == "Delete":
-                    pagina = Paginas.objects.get(pk=data["id"])
-                    leccion = pagina.fk_estructura_programa
-                    pagina.delete()
-                    #update order
-                    paginas = leccion.paginas_set.all().order_by('ordenamiento')
-                    for idx, value in enumerate(paginas, start=1):
-                        value.ordenamiento = idx
-                        value.save()
-                    return JsonResponse({"message":"Deleted"})
-                elif data["method"] == "Sort":
-                    for item in data["order"]:
-                        tempPage = Paginas.objects.get(pk=item["pk"])
-                        tempPage.ordenamiento = item["order"]
-                        tempPage.save()
+            try:
+                if request.body:
+                    data = json.load(request)
+                    if data["method"] == "Delete":
+                        pagina = Paginas.objects.get(pk=data["id"])
+                        leccion = pagina.fk_estructura_programa
+                        pagina.delete()
+                        #update order
+                        paginas = leccion.paginas_set.all().order_by('ordenamiento')
+                        for idx, value in enumerate(paginas, start=1):
+                            value.ordenamiento = idx
+                            value.save()
+                        return JsonResponse({"message":"Deleted"})
+                    elif data["method"] == "Sort":
+                        for item in data["order"]:
+                            tempPage = Paginas.objects.get(pk=item["pk"])
+                            tempPage.ordenamiento = item["order"]
+                            tempPage.save()
+                        return JsonResponse({"message":"Perfect"})
+                    elif data["method"] == "Update":
+                        pass
+                    elif data["method"] == "Create":
+                        leccion = ActividadLeccion.objects.get(pk=data["id"]).fk_estructura_programa
+                        paginas = leccion.paginas_set.all().order_by('ordenamiento')
+                        ordenamiento = paginas.count()
+                        for idx, value in enumerate(paginas, start=1):
+                            value.ordenamiento = idx
+                            value.save()
+                        pagina = Paginas()
+                        pagina.titulo = ""
+                        pagina.contenido = ""
+                        pagina.ordenamiento = ordenamiento + 1
+                        pagina.fk_estructura_programa = leccion
+                    pagina.save()
                     return JsonResponse({"message":"Perfect"})
-                elif data["method"] == "Update":
-                    pass
-                elif data["method"] == "Create":
-                    leccion = ActividadLeccion.objects.get(pk=data["id"]).fk_estructura_programa
-                    paginas = leccion.paginas_set.all().order_by('ordenamiento')
-                    ordenamiento = paginas.count()
-                    for idx, value in enumerate(paginas, start=1):
-                        value.ordenamiento = idx
-                        value.save()
-                    pagina = Paginas()
-                    pagina.titulo = ""
-                    pagina.contenido = ""
-                    pagina.ordenamiento = ordenamiento + 1
-                    pagina.fk_estructura_programa = leccion
-                pagina.save()
-                return JsonResponse({"message":"Perfect"})
-            else:
-                html_template = (loader.get_template('academic/createLessons.html'))
-                return HttpResponse(html_template.render(context, request))
-            # except:
-            #     return JsonResponse({"message":"error"}, status=500)
+                else:
+                    html_template = (loader.get_template('academic/createLessons.html'))
+                    return HttpResponse(html_template.render(context, request))
+            except:
+                return JsonResponse({"message":"error"}, status=500)
     lessonId=request.GET.get('id')
     context = {}
-    leccion=ActividadLeccion.objects.get(fk_estructura_programa=lessonId)
-    context['segment'] = 'academic'
-    context['lesson'] = leccion
-    return render(request, 'academic/createLessons.html', context)
+    user = request.user.extensionusuario
+    publico = user.Publico
+    rol = user.CtaUsuario.fk_rol_usuario.desc_elemento
+    if rol == "Teacher":
+        leccion=ActividadLeccion.objects.get(fk_estructura_programa=lessonId)
+        actividad=leccion.fk_estructura_programa
+        curso=actividad.fk_estructura_padre.fk_estructura_padre
+        today = timezone.now().date()
+        activo = ProgramaProfesores.objects.filter(fk_publico=publico, fecha_retiro__gt=today, fk_estructura_programa=curso)
+        if activo.exists():
+            context['segment'] = 'academic'
+            context['lesson'] = leccion
+            return render(request, 'academic/createLessons.html', context)
+        else:
+            return HttpResponseForbidden()
+    else:
+        return HttpResponseForbidden()
+        
 
 @login_required(login_url="/login/")
 def createQuestions(request):
@@ -993,8 +1008,9 @@ def getContentProgramas(request):
     if request.method == "POST":
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             context = {}
-            rol = request.session.get("user_rol")
-            user = request.user.extensionusuario.Publico
+            user = request.user.extensionusuario
+            rol = user.CtaUsuario.fk_rol_usuario.desc_elemento
+            publico = user.Publico
             if request.body:
                 data = json.load(request)    
                 lista = {}
@@ -1011,11 +1027,11 @@ def getContentProgramas(request):
                         for categoria in categorias:
                             lista[categoria.desc_elemento]=categoria.estructuraprograma_set.all().filter(valor_elemento="Program", descripcion__icontains=data["query"])
                 elif rol == "Teacher":
-                    edit=True
-                    delete=False
                     today = timezone.now().date()
-                    cursos = ProgramaProfesores.objects.filter(fk_publico=user, fecha_retiro__gt=today).filter(fk_estructura_programa__valor_elemento="Course")
+                    cursos = ProgramaProfesores.objects.filter(fk_publico=publico, fecha_retiro__gt=today).filter(fk_estructura_programa__valor_elemento="Course")
                     if cursos.exists():
+                        edit=True
+                        delete=False
                         if data["query"] == "" or data["query"] == None:
                             for categoria in categorias:
                                 lista[categoria.desc_elemento] = cursos.filter(fk_estructura_programa__fk_categoria=categoria)
@@ -1024,7 +1040,7 @@ def getContentProgramas(request):
                                 lista[categoria.desc_elemento] = cursos.filter(fk_estructura_programa__fk_categoria=categoria, fk_estructura_programa__descripcion__icontains=data["query"])
                 elif rol == "Student":
                     estatus = TablasConfiguracion.obtenerHijos("EstMatricula").get(valor_elemento="EstatusAprovado")
-                    cursos = MatriculaAlumnos.objects.filter(fk_publico=user, fk_tipo_matricula=estatus)
+                    cursos = MatriculaAlumnos.objects.filter(fk_publico=publico, fk_tipo_matricula=estatus)
                     if cursos.exists():
                         if data["query"] == "" or data["query"] == None:
                             for categoria in categorias:
@@ -1043,7 +1059,8 @@ def getContentProcesos(request):
     if request.method == "POST":
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             context = {}
-            rol = request.session.get("user_rol")
+            user = request.user.extensionusuario
+            rol = user.CtaUsuario.fk_rol_usuario.desc_elemento
             if request.body:
                 data = json.load(request)
                 edit=False
@@ -1057,7 +1074,7 @@ def getContentProcesos(request):
                     edit=True
                     delete=True
                 elif rol == "Teacher":
-                    edit=True
+                    edit=False
                     delete=False
                 elif rol == "Student":
                     edit=False
@@ -1073,16 +1090,29 @@ def getContentUnidades(request):
     if request.method == "POST":
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             context = {}
+            user = request.user.extensionusuario
+            rol = user.CtaUsuario.fk_rol_usuario.desc_elemento
             if request.body:
                 data = json.load(request)    
-                edit=True
-                delete=True
+                edit=False
+                delete=False
                 programa=Estructuraprograma.objects.get(valor_elemento="Program", url=data["url"])
                 proceso=Estructuraprograma.objects.get(valor_elemento="Process", url=data["urlProceso"])
                 if data["query"] == "" or data["query"] == None:
                     lista = proceso.estructuraprograma_set.all()
                 else:
                     lista = proceso.estructuraprograma_set.all().filter(valor_elemento="Unit", descripcion__icontains=data["query"])
+                if rol == "Admin":
+                    edit=True
+                    delete=True
+                elif rol == "Teacher":
+                    edit=False
+                    delete=False
+                elif rol == "Student":
+                    edit=False
+                    delete=False
+                else:
+                    return HttpResponseForbidden()
                 context = {"data":lista, "programa":programa, "proceso":proceso ,"edit": edit, "delete":delete, "query":data["query"]}
                 html_template = (loader.get_template('academic/contenidoUnidades.html'))
                 return HttpResponse(html_template.render(context, request))
@@ -1092,10 +1122,13 @@ def getContentCursos(request):
     if request.method == "POST":
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             context = {}
+            user = request.user.extensionusuario
+            publico = user.Publico
+            rol = user.CtaUsuario.fk_rol_usuario.desc_elemento
             if request.body:
                 data = json.load(request)    
-                edit=True
-                delete=True
+                edit=False
+                delete=False
                 programa=Estructuraprograma.objects.get(valor_elemento="Program", url=data["url"])
                 proceso=Estructuraprograma.objects.get(valor_elemento="Process", url=data["urlProceso"])
                 unidad=Estructuraprograma.objects.get(valor_elemento="Unit", url=data["urlUnidad"])
@@ -1103,7 +1136,18 @@ def getContentCursos(request):
                     lista = unidad.estructuraprograma_set.all()
                 else:
                     lista = unidad.estructuraprograma_set.all().filter(valor_elemento="Course", descripcion__icontains=data["query"])
-                context = {"data":lista, "programa":programa, "proceso":proceso, "unidad":unidad ,"edit": edit, "delete":delete, "query":data["query"]}
+                if rol == "Admin":
+                    edit=True
+                    delete=True
+                elif rol == "Teacher":
+                    edit=False
+                    delete=False
+                elif rol == "Student":
+                    edit=False
+                    delete=False
+                else:
+                    return HttpResponseForbidden()
+                context = {"data":lista, "user":publico, "rol":rol, "programa":programa, "proceso":proceso, "unidad":unidad ,"edit": edit, "delete":delete, "query":data["query"]}
                 html_template = (loader.get_template('academic/contenidoCursos.html'))
                 return HttpResponse(html_template.render(context, request))
 
@@ -1112,14 +1156,17 @@ def getContentTopicos(request):
     if request.method == "POST":
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             context = {}
+            user = request.user.extensionusuario
+            publico = user.Publico
+            rol = user.CtaUsuario.fk_rol_usuario.desc_elemento
             if request.body:
                 data = json.load(request)    
-                take=True
-                go=True
-                see=True
-                edit=True
-                add=True
-                delete=True
+                take=False
+                go=False
+                add=False
+                edit=False
+                delete=False
+                see=False
                 programa=Estructuraprograma.objects.get(valor_elemento="Program", url=data["url"])
                 proceso=Estructuraprograma.objects.get(valor_elemento="Process", url=data["urlProceso"])
                 unidad=Estructuraprograma.objects.get(valor_elemento="Unit", url=data["urlUnidad"])
@@ -1128,6 +1175,27 @@ def getContentTopicos(request):
                     lista = curso.estructuraprograma_set.all().order_by("orden_presentacion")
                 else:
                     lista = curso.estructuraprograma_set.all().filter(valor_elemento="Topic", descripcion__icontains=data["query"]).order_by("orden_presentacion")
+                if rol == "Admin":
+                    edit=True
+                    delete=True
+                    go=True
+                    add=True
+                elif rol == "Teacher":
+                    today = timezone.now().date()
+                    activo = ProgramaProfesores.objects.filter(fk_publico=publico, fecha_retiro__gt=today, fk_estructura_programa=curso)
+                    if activo.exists():
+                        edit=True
+                        delete=True
+                        go=True
+                        add=True
+                elif rol == "Student":
+                    edit=False
+                    delete=False
+                    take=True
+                    go=False
+                    add=False
+                else:
+                    return HttpResponseForbidden()
                 context = {"data":lista, "programa":programa, "proceso":proceso, "unidad":unidad, "curso":curso ,"add":add,"edit": edit,"take": take,"see": see, "delete":delete, "go":go, "query":data["query"]}
                 html_template = (loader.get_template('academic/contenidoTopicos.html'))
                 return HttpResponse(html_template.render(context, request))
@@ -1395,8 +1463,6 @@ def getModalCursos(request):
                     curso_char.fk_estruc_programa = curso
                     curso_char.save()
                     return JsonResponse({"message":"Perfect"})
-                # else:
-                
             except:
                 return JsonResponse({"message":"error"}, status=500)
 
@@ -1485,6 +1551,7 @@ def getModalActividad(request):
                     actividad.descripcion = data["data"]["descriptionActivity"]
                     actividad.resumen = data["data"]["resumenActivity"]
                     actividad.url = data["data"]["urlActivity"]
+                    actividad.orden_presentacion = len(Estructuraprograma.objects.filter(fk_estructura_padre=data["padreActivity"]))
                     actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").filter(desc_elemento=data["tipoActividad"])[0].pk
                     actividad.peso_creditos = None
                     actividad.save()
@@ -1920,11 +1987,11 @@ def getModalNewTest(request):
                             actividad.valor_elemento = "Activity"
                             actividad.pointUsed = 0
                             actividad.fk_estructura_padre_id=data["padreActivity"]
-                        
                         actividad.descripcion = data["data"]["descriptionActivity"]
                         actividad.resumen = data["data"]["resumenActivity"]
                         actividad.url = data["data"]["urlActivity"]
                         actividad.peso_creditos = None
+                        actividad.orden_presentacion = len(Estructuraprograma.objects.filter(fk_estructura_padre=data["padreActivity"]))
                         actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").get(desc_elemento="Test").pk
                         if "checkExpertCB" in data["data"]:
                             actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").get(desc_elemento="Expert test").pk
@@ -1997,6 +2064,7 @@ def getModalNewLesson(request):
                     actividad.resumen = data["data"]["resumenActivity"]
                     actividad.url = data["data"]["urlActivity"]
                     actividad.peso_creditos = None
+                    actividad.orden_presentacion = len(Estructuraprograma.objects.filter(fk_estructura_padre=data["padreActivity"]))
                     actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").get(desc_elemento="Lesson").pk
                     lesson.disponible_desde = data["data"]["disponibleLesson"]
                     lesson.estatus_id = data["data"]["estatusLesson"]
@@ -2013,62 +2081,63 @@ def getModalNewHomework(request):
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             context = {}
             modelo = {}
-            # try:
-            if request.body:
-                data = json.load(request)
-                if data["method"] == "Show":
-                    html_template = (loader.get_template('components/modalAddHomework.html'))
-                    return HttpResponse(html_template.render(context, request))
-                elif data["method"] == "Find":
-                    modelo = ActividadTarea.objects.get(fk_estructura_programa=data["id"])
-                    pagina = modelo.fk_estructura_programa.paginas_set.all()[0]
-                    context = {"modelo": modelo, "pagina":pagina}
-                    html_template = (loader.get_template('components/modalAddHomework.html'))
-                    return HttpResponse(html_template.render(context, request))
-                elif data["method"] == "Delete":
-                    actividad = Estructuraprograma.objects.get(pk=data["id"])
-                    actividad.delete()
-                    return JsonResponse({"message":"Deleted"})
-                elif data["method"] == "Update":
-                    actividad = Estructuraprograma.objects.get(pk=data["id"])
-                    pagina = actividad.paginas_set.all()[0]
-                    homework = ActividadTarea.objects.get(fk_estructura_programa=data["id"])
-                elif data["method"] == "Create":
-                    actividad = Estructuraprograma()
-                    homework = ActividadTarea()
-                    actividad.valor_elemento = "Activity"
-                    actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").get(desc_elemento="Homework").pk
-                    actividad.fk_estructura_padre_id=data["padreActivity"]
-                    pagina = Paginas()
-                    pagina.titulo = ""
-                    pagina.contenido = ""
-                    pagina.ordenamiento = None
-                actividad.descripcion = data["data"]["descriptionActivity"]
-                actividad.resumen = data["data"]["resumenActivity"]
-                actividad.url = data["data"]["urlActivity"]
-                actividad.peso_creditos = None
-                actividad.save()
-                pagina.fk_estructura_programa = actividad
-                pagina.titulo = actividad.descripcion
-                pagina.contenido = None
-                if data["data"]["summernote"] != "<p><br></p>":
-                    pagina.contenido = data["data"]["summernote"]
-                pagina.save()
-                recursos = data["data"]["recursos"]
-                oldResources = RecursoPaginas.objects.filter(fk_pagina=pagina.pk)
-                oldResources.delete()
-                for recurso in recursos:
-                    resource = Recurso.objects.get(pk=recurso["id"])
-                    newResource = RecursoPaginas()
-                    newResource.fk_pagina = pagina
-                    newResource.fk_recurso = resource
-                    newResource.save()
-                homework.fk_estructura_programa = actividad
-                homework.fecha_entrega = data["data"]["entregaHomework"]
-                homework.save()
-                return JsonResponse({"message":"Perfect"})
-            # except:
-            #     return JsonResponse({"message":"error"}, status=500)
+            try:
+                if request.body:
+                    data = json.load(request)
+                    if data["method"] == "Show":
+                        html_template = (loader.get_template('components/modalAddHomework.html'))
+                        return HttpResponse(html_template.render(context, request))
+                    elif data["method"] == "Find":
+                        modelo = ActividadTarea.objects.get(fk_estructura_programa=data["id"])
+                        pagina = modelo.fk_estructura_programa.paginas_set.all()[0]
+                        context = {"modelo": modelo, "pagina":pagina}
+                        html_template = (loader.get_template('components/modalAddHomework.html'))
+                        return HttpResponse(html_template.render(context, request))
+                    elif data["method"] == "Delete":
+                        actividad = Estructuraprograma.objects.get(pk=data["id"])
+                        actividad.delete()
+                        return JsonResponse({"message":"Deleted"})
+                    elif data["method"] == "Update":
+                        actividad = Estructuraprograma.objects.get(pk=data["id"])
+                        pagina = actividad.paginas_set.all()[0]
+                        homework = ActividadTarea.objects.get(fk_estructura_programa=data["id"])
+                    elif data["method"] == "Create":
+                        actividad = Estructuraprograma()
+                        homework = ActividadTarea()
+                        actividad.valor_elemento = "Activity"
+                        actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").get(desc_elemento="Homework").pk
+                        actividad.fk_estructura_padre_id=data["padreActivity"]
+                        pagina = Paginas()
+                        pagina.titulo = ""
+                        pagina.contenido = ""
+                        pagina.ordenamiento = None
+                    actividad.descripcion = data["data"]["descriptionActivity"]
+                    actividad.orden_presentacion = len(Estructuraprograma.objects.filter(fk_estructura_padre=data["padreActivity"]))
+                    actividad.resumen = data["data"]["resumenActivity"]
+                    actividad.url = data["data"]["urlActivity"]
+                    actividad.peso_creditos = None
+                    actividad.save()
+                    pagina.fk_estructura_programa = actividad
+                    pagina.titulo = actividad.descripcion
+                    pagina.contenido = None
+                    if data["data"]["summernote"] != "<p><br></p>":
+                        pagina.contenido = data["data"]["summernote"]
+                    pagina.save()
+                    recursos = data["data"]["recursos"]
+                    oldResources = RecursoPaginas.objects.filter(fk_pagina=pagina.pk)
+                    oldResources.delete()
+                    for recurso in recursos:
+                        resource = Recurso.objects.get(pk=recurso["id"])
+                        newResource = RecursoPaginas()
+                        newResource.fk_pagina = pagina
+                        newResource.fk_recurso = resource
+                        newResource.save()
+                    homework.fk_estructura_programa = actividad
+                    homework.fecha_entrega = data["data"]["entregaHomework"]
+                    homework.save()
+                    return JsonResponse({"message":"Perfect"})
+            except:
+                return JsonResponse({"message":"error"}, status=500)
 
 @login_required(login_url="/login/")
 def getModalNewForum(request):
@@ -2076,45 +2145,46 @@ def getModalNewForum(request):
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             context = {}
             modelo = {}
-            # try:
-            if request.body:
-                data = json.load(request)
-                if data["method"] == "Show":
-                    html_template = (loader.get_template('components/modalAddForum.html'))
-                    return HttpResponse(html_template.render(context, request))
-                elif data["method"] == "Find":
-                    modelo = ActividadConferencia.objects.get(fk_estructura_programa=data["id"])
-                    context = {"modelo": modelo}
-                    html_template = (loader.get_template('components/modalAddForum.html'))
-                    return HttpResponse(html_template.render(context, request))
-                elif data["method"] == "Delete":
-                    actividad = Estructuraprograma.objects.get(pk=data["id"])
-                    actividad.delete()
-                    return JsonResponse({"message":"Deleted"})
-                elif data["method"] == "Update":
-                    actividad = Estructuraprograma.objects.get(pk=data["id"])
-                    forum = ActividadConferencia.objects.get(fk_estructura_programa=data["id"])
-                elif data["method"] == "Create":
-                    actividad = Estructuraprograma()
-                    forum = ActividadConferencia()
-                    actividad.valor_elemento = "Activity"
-                    actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").get(desc_elemento="Forum").pk
-                    actividad.fk_estructura_padre_id=data["padreActivity"]
-                actividad.descripcion = data["data"]["descriptionActivity"]
-                actividad.resumen = data["data"]["resumenActivity"]
-                actividad.url = data["data"]["urlActivity"]
-                actividad.peso_creditos = None
-                forum.fecha_hora = data["data"]["datetimeForum"]
-                forum.enlace = data["data"]["linkForum"]
-                forum.id_conferencia = data["data"]["idForum"]
-                forum.clave = data["data"]["keyForum"]
-                # forum.fk_publico
-                actividad.save()
-                forum.fk_estructura_programa = actividad
-                forum.save()
-                return JsonResponse({"message":"Perfect"})
-            # except:
-            #     return JsonResponse({"message":"error"}, status=500)
+            try:
+                if request.body:
+                    data = json.load(request)
+                    if data["method"] == "Show":
+                        html_template = (loader.get_template('components/modalAddForum.html'))
+                        return HttpResponse(html_template.render(context, request))
+                    elif data["method"] == "Find":
+                        modelo = ActividadConferencia.objects.get(fk_estructura_programa=data["id"])
+                        context = {"modelo": modelo}
+                        html_template = (loader.get_template('components/modalAddForum.html'))
+                        return HttpResponse(html_template.render(context, request))
+                    elif data["method"] == "Delete":
+                        actividad = Estructuraprograma.objects.get(pk=data["id"])
+                        actividad.delete()
+                        return JsonResponse({"message":"Deleted"})
+                    elif data["method"] == "Update":
+                        actividad = Estructuraprograma.objects.get(pk=data["id"])
+                        forum = ActividadConferencia.objects.get(fk_estructura_programa=data["id"])
+                    elif data["method"] == "Create":
+                        actividad = Estructuraprograma()
+                        forum = ActividadConferencia()
+                        actividad.valor_elemento = "Activity"
+                        actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").get(desc_elemento="Forum").pk
+                        actividad.fk_estructura_padre_id=data["padreActivity"]
+                    actividad.descripcion = data["data"]["descriptionActivity"]
+                    actividad.orden_presentacion = len(Estructuraprograma.objects.filter(fk_estructura_padre=data["padreActivity"]))
+                    actividad.resumen = data["data"]["resumenActivity"]
+                    actividad.url = data["data"]["urlActivity"]
+                    actividad.peso_creditos = None
+                    forum.fecha_hora = data["data"]["datetimeForum"]
+                    forum.enlace = data["data"]["linkForum"]
+                    forum.id_conferencia = data["data"]["idForum"]
+                    forum.clave = data["data"]["keyForum"]
+                    # forum.fk_publico
+                    actividad.save()
+                    forum.fk_estructura_programa = actividad
+                    forum.save()
+                    return JsonResponse({"message":"Perfect"})
+            except:
+                return JsonResponse({"message":"error"}, status=500)
 
 @login_required(login_url="/login/")
 def getModalQuestion(request): 
@@ -2955,13 +3025,29 @@ def unidad(request, programa, proceso, unidad):
 @login_required(login_url="/login/")
 def curso(request, programa, proceso, unidad, curso):
     context = {}
+    user = request.user.extensionusuario
+    publico = user.Publico
+    rol = user.CtaUsuario.fk_rol_usuario.desc_elemento
     try:
         program = Estructuraprograma.objects.get(url=programa, valor_elemento="Program")
         process = Estructuraprograma.objects.get(url=proceso, valor_elemento="Process")
         unit = Estructuraprograma.objects.get(url=unidad, valor_elemento="Unit")
         course = Estructuraprograma.objects.get(url=curso, valor_elemento="Course")
+        sort = False
+        if rol == "Admin":
+            sort=True
+        elif rol == "Teacher":
+            today = timezone.now().date()
+            activo = ProgramaProfesores.objects.filter(fk_publico=publico, fecha_retiro__gt=today, fk_estructura_programa=course)
+            if activo.exists():
+                sort=True
+        elif rol == "Student":
+            sort=False
+        else:
+            return HttpResponseForbidden()
         context = {"programa" : program, "proceso":process, "unidad":unit, "curso":course}
         context['segment'] = 'academic'
+        context['sort'] = sort
         #Vista del gestor
         html_template = (loader.get_template('academic/topicos.html'))
         #Vista del profesor

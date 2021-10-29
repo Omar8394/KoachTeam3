@@ -3,6 +3,7 @@ from django.forms.utils import pretty_name
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template import loader
 from django.http import HttpResponse, JsonResponse
+from django.http.response import HttpResponseForbidden
 from django import template
 import json, math
 from django.core.paginator import Paginator
@@ -22,6 +23,11 @@ def index(request):
 
 @login_required(login_url="/login/")
 def indexSettings(request):
+    user = request.user.extensionusuario
+    rol = user.CtaUsuario.fk_rol_usuario.desc_elemento
+
+    if rol != 'Admin':
+        return HttpResponseForbidden()
     
     context = {}
     context['segment'] = 'settings'
@@ -147,6 +153,11 @@ def componentTabla(request):
 
 @login_required(login_url="/login/")
 def tables(request):
+    user = request.user.extensionusuario
+    rol = user.CtaUsuario.fk_rol_usuario.desc_elemento
+
+    if rol != 'Admin':
+        return HttpResponseForbidden()
     if request.method == "POST":
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             try:
@@ -188,6 +199,11 @@ def getModalSetting(request):
 
 @login_required(login_url="/login/")
 def scales(request):
+    user = request.user.extensionusuario
+    rol = user.CtaUsuario.fk_rol_usuario.desc_elemento
+
+    if rol != 'Admin':
+        return HttpResponseForbidden()
     if request.method == "POST":
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             # try:

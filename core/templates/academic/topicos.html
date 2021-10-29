@@ -68,10 +68,12 @@
                         <span id="searchBtn" class="btn btn-primary">
                            <i class="fa fa-search"></i>
                         </span>
+                        {% if sort %}
                         <span id="sortableBtn" class="btn btn-success">
                            <i class="fas fa-lock mr-1"></i>
                            Sort
                         </span>
+                        {% endif %}
                      </div>
                   </div>
                </div>
@@ -1011,27 +1013,29 @@
    const clearBtn = document.querySelector('#clearBtn')
    const searchBtn = document.querySelector('#searchBtn')
    const sortableBtn = document.querySelector('#sortableBtn')
-
-   sortableBtn.addEventListener('click', () => {
-      sortable = !sortable
-      const listaPaginas = document.getElementById("listaPaginas")
-      if (sortable) {
-         sortableBtn.innerHTML = `<i class="fas fa-lock-open mr-1"></i> Sort`
-         for (let item of listaPaginas.children) {
-            item.children[0].classList.add("card-list-item-sortable")
+   
+   if (sortableBtn){
+      sortableBtn.addEventListener('click', () => {
+         sortable = !sortable
+         const listaPaginas = document.getElementById("listaPaginas")
+         if (sortable) {
+            sortableBtn.innerHTML = `<i class="fas fa-lock-open mr-1"></i> Sort`
+            for (let item of listaPaginas.children) {
+               item.children[0].classList.add("card-list-item-sortable")
+            }
+            new Sortable(listaPaginas, {
+               animation: 150,
+               ghostClass: 'blue-background-class'
+            });
+            return
          }
-         new Sortable(listaPaginas, {
-            animation: 150,
-            ghostClass: 'blue-background-class'
-         });
-         return
-      }
-      sortableBtn.innerHTML = `<i class="fas fa-lock mr-1"></i> Sort`
-      for (let item of listaPaginas.children) {
-         item.children[0].classList.remove("card-list-item-sortable")
-      }
-      renderSortedContent()
-   })
+         sortableBtn.innerHTML = `<i class="fas fa-lock mr-1"></i> Sort`
+         for (let item of listaPaginas.children) {
+            item.children[0].classList.remove("card-list-item-sortable")
+         }
+         renderSortedContent()
+      })
+   }
 
    clearBtn.addEventListener('click', () => {
       searchBar.value = ""
