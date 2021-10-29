@@ -13,10 +13,14 @@ from core import settings
 
 @login_required(login_url="/login/")
 def index(request):
-    
+    user = request.user.extensionusuario
+    rol = user.CtaUsuario.fk_rol_usuario.desc_elemento
     context = {}
     context['segment'] = 'index'
     context['url'] = settings.UPLOAD_URL + 'user/'
+    context['rol'] = rol
+
+
 
     html_template = loader.get_template( 'index.html' )
     return HttpResponse(html_template.render(context, request))
