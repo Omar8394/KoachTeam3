@@ -152,13 +152,36 @@
          .then(() => {
             $("#addNewModal").modal("show")
             const formPrograma = document.getElementById("formPrograma")
+            let rules = {
+               resumenProgram: {
+                  required: true,
+                  maxlength: 200,
+                  minlength: 20
+               },
+               urlProgram: {
+                  required: true,
+                  maxlength: 15,
+                  minlength: 3
+               },
+            }
+            commonValidator = $("#formPrograma").validate({
+               rules,
+               highlight: function (element) {
+                  $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+               },
+               success: function (element) {
+                  $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+               },
+            });
             formPrograma.addEventListener("submit", (e) => {
                e.preventDefault()
-               clickSave(formPrograma, "{% url 'modalAddPrograma' %}")
-                  .then(() => {
-                     $("#addNewModal").modal("hide")
-                     renderContent()
-                  })
+               if ($("#formPrograma").valid()){
+                  clickSave(formPrograma, "{% url 'modalAddPrograma' %}")
+                     .then(() => {
+                        $("#addNewModal").modal("hide")
+                        renderContent()
+                     })
+               }
             })
          })
    }
@@ -173,13 +196,37 @@
          .then(() => {
             $("#addNewModal").modal("show")
             const formPrograma = document.getElementById("formPrograma")
+            let rules = {
+               resumenProgram: {
+                  required: true,
+                  maxlength: 200,
+                  minlength: 20
+               },
+               urlProgram: {
+                  required: true,
+                  maxlength: 15,
+                  minlength: 3
+               },
+            }
+            commonValidator = $("#formPrograma").validate({
+               rules,
+               highlight: function (element) {
+                  $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+               },
+               success: function (element) {
+                  $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+               },
+            });
             formPrograma.addEventListener("submit", (e) => {
                e.preventDefault()
-               clickSave(formPrograma, "{% url 'modalAddPrograma' %}")
-                  .then(() => {
-                     $("#addNewModal").modal("hide")
-                     renderContent()
-                  })
+               if($("#formPrograma").valid()){
+                  clickSave(formPrograma, "{% url 'modalAddPrograma' %}")
+                     .then(() => {
+                        $("#addNewModal").modal("hide")
+                        renderContent()
+                     })
+
+               }
             })
          })
    }
@@ -193,13 +240,23 @@
          .then(() => {
             $("#addNewModal").modal("show")
             const formCategoria = document.getElementById("formCategoria")
+            commonValidator = $("#formCategoria").validate({
+               highlight: function (element) {
+                  $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+               },
+               success: function (element) {
+                  $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+               },
+            });
             formCategoria.addEventListener("submit", (e) => {
                e.preventDefault()
-               clickSave(formCategoria, "{% url 'modalAddCategoria'%}")
-                  .then(() => {
-                     $("#addNewModal").modal("hide")
-                     renderContent()
-                  })
+               if($("#formCategoria").valid()){
+                  clickSave(formCategoria, "{% url 'modalAddCategoria'%}")
+                     .then(() => {
+                        $("#addNewModal").modal("hide")
+                        renderContent()
+                     })
+               }
             })
          })
    }

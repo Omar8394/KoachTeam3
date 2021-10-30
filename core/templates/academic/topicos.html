@@ -68,10 +68,12 @@
                         <span id="searchBtn" class="btn btn-primary">
                            <i class="fa fa-search"></i>
                         </span>
+                        {% if sort %}
                         <span id="sortableBtn" class="btn btn-success">
                            <i class="fas fa-lock mr-1"></i>
                            Sort
                         </span>
+                        {% endif %}
                      </div>
                   </div>
                </div>
@@ -722,6 +724,27 @@
          })
          .then(() => {
             const formActividad = document.getElementById("formActividad")
+            let rules = {
+               resumenActivity: {
+                  required: true,
+                  maxlength: 200,
+                  minlength: 20
+               },
+               urlActivity: {
+                  required: true,
+                  maxlength: 15,
+                  minlength: 3
+               },
+            }
+            commonValidator = $("#formActividad").validate({
+               rules,
+               highlight: function (element) {
+                  $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+               },
+               success: function (element) {
+                  $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+               },
+            });
             if (url === "{% url 'modalNewHomework' %}") {
                setupSummernote()
             }
@@ -730,6 +753,7 @@
                if (url === "{% url 'modalNewHomework' %}") {
                   $(`#summernote`).html($(`#summernote`).summernote('code'))
                }
+               if (!$("#formActividad").valid()) return
                clickSave(formActividad, url)
                   .then(() => {
                      $("#addNewModal").modal("hide")
@@ -764,12 +788,34 @@
          })
          .then(() => {
             const formActividad = document.getElementById("formActividad")
+            let rules = {
+               resumenActivity: {
+                  required: true,
+                  maxlength: 200,
+                  minlength: 20
+               },
+               urlActivity: {
+                  required: true,
+                  maxlength: 15,
+                  minlength: 3
+               },
+            }
+            commonValidator = $("#formActividad").validate({
+               rules,
+               highlight: function (element) {
+                  $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+               },
+               success: function (element) {
+                  $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+               },
+            });
             if (url === "{% url 'modalNewHomework' %}") {
                setupSummernote()
                updateRecursosArray()
             }
             formActividad.addEventListener("submit", (e) => {
                e.preventDefault()
+               if (!$("#formActividad").valid()) return
                if (url === "{% url 'modalNewHomework' %}") {
                   $(`#summernote`).html($(`#summernote`).summernote('code'))
                }
@@ -898,8 +944,30 @@
          .then(() => {
             $("#addNewModal").modal("show")
             const formTopico = document.getElementById("formTopico")
+            let rules = {
+               resumenTopic: {
+                  required: true,
+                  maxlength: 200,
+                  minlength: 20
+               },
+               urlTopic: {
+                  required: true,
+                  maxlength: 15,
+                  minlength: 3
+               },
+            }
+            commonValidator = $("#formTopico").validate({
+               rules,
+               highlight: function (element) {
+                  $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+               },
+               success: function (element) {
+                  $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+               },
+            });
             formTopico.addEventListener("submit", (e) => {
                e.preventDefault()
+               if (!$("#formTopico").valid()) return
                clickSave(formTopico, "{% url 'modalAddTopico' %}")
                   .then(() => {
                      $("#addNewModal").modal("hide")
@@ -923,8 +991,30 @@
          .then(() => {
             $("#addNewModal").modal("show")
             const formTopico = document.getElementById("formTopico")
+            let rules = {
+               resumenTopic: {
+                  required: true,
+                  maxlength: 200,
+                  minlength: 20
+               },
+               urlTopic: {
+                  required: true,
+                  maxlength: 15,
+                  minlength: 3
+               },
+            }
+            commonValidator = $("#formTopico").validate({
+               rules,
+               highlight: function (element) {
+                  $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+               },
+               success: function (element) {
+                  $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+               },
+            });
             formTopico.addEventListener("submit", (e) => {
                e.preventDefault()
+               if (!$("#formTopico").valid()) return
                clickSave(formTopico, "{% url 'modalAddTopico' %}")
                   .then(() => {
                      $("#addNewModal").modal("hide")
@@ -1011,27 +1101,29 @@
    const clearBtn = document.querySelector('#clearBtn')
    const searchBtn = document.querySelector('#searchBtn')
    const sortableBtn = document.querySelector('#sortableBtn')
-
-   sortableBtn.addEventListener('click', () => {
-      sortable = !sortable
-      const listaPaginas = document.getElementById("listaPaginas")
-      if (sortable) {
-         sortableBtn.innerHTML = `<i class="fas fa-lock-open mr-1"></i> Sort`
-         for (let item of listaPaginas.children) {
-            item.children[0].classList.add("card-list-item-sortable")
+   
+   if (sortableBtn){
+      sortableBtn.addEventListener('click', () => {
+         sortable = !sortable
+         const listaPaginas = document.getElementById("listaPaginas")
+         if (sortable) {
+            sortableBtn.innerHTML = `<i class="fas fa-lock-open mr-1"></i> Sort`
+            for (let item of listaPaginas.children) {
+               item.children[0].classList.add("card-list-item-sortable")
+            }
+            new Sortable(listaPaginas, {
+               animation: 150,
+               ghostClass: 'blue-background-class'
+            });
+            return
          }
-         new Sortable(listaPaginas, {
-            animation: 150,
-            ghostClass: 'blue-background-class'
-         });
-         return
-      }
-      sortableBtn.innerHTML = `<i class="fas fa-lock mr-1"></i> Sort`
-      for (let item of listaPaginas.children) {
-         item.children[0].classList.remove("card-list-item-sortable")
-      }
-      renderSortedContent()
-   })
+         sortableBtn.innerHTML = `<i class="fas fa-lock mr-1"></i> Sort`
+         for (let item of listaPaginas.children) {
+            item.children[0].classList.remove("card-list-item-sortable")
+         }
+         renderSortedContent()
+      })
+   }
 
    clearBtn.addEventListener('click', () => {
       searchBar.value = ""

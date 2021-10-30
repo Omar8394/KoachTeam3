@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.messages.api import success
+from django.http.response import HttpResponseForbidden
 from django.shortcuts import render, redirect  
 from .forms import competenciaAdqForm, competenciaForm, perfilForm
 from .models import CompetenciasAdq, Perfil, CompetenciasReq, cursos_prerequisitos
@@ -524,6 +525,11 @@ def saveProgram(request):
 
 
 def managePublic(request):
+    user = request.user.extensionusuario
+    rol = user.CtaUsuario.fk_rol_usuario.desc_elemento
+
+    if rol != 'Admin':
+        return HttpResponseForbidden()
 
     search_query = request.GET.get('search_box', "")
     program = ExtensionUsuario.objects.select_related().all()

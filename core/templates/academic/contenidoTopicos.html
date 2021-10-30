@@ -5,8 +5,9 @@ results for "{{query}}"
    <div class="section-header">
       <h3 class="section-title">Topics</h3>
    </div>
+   {% if not query %}
+   {% if add %}
    <ul class="card-list">
-      {% if not query %}
       <li class="card-list-item">
          <div class="card-list-item-inner">
             <div class="card-list-item-title">Add new topic</div>
@@ -17,8 +18,9 @@ results for "{{query}}"
             </div>
          </div>
       </li>
-      {% endif %}
    </ul>
+   {% endif %}
+   {% endif %}
    <ul class="card-list" id="listaPaginas">
       {% for topic in data%}
       {%if topic.valor_elemento == 'Topic'%}
@@ -100,10 +102,17 @@ results for "{{query}}"
                <div class="card-list-item-actions">
                   <div class="btn-group" role="group">
                      {% if take %}
-                     <a type="button" class="btn btn-icon btn-sm btn-success ml-1" data-toggle="tooltip" data-placement="top" title="Take"
+                     {% if activity.fk_categoria.valor_elemento == 'activityExpert' or activity.fk_categoria.valor_elemento == 'activityTest'%}
+                     <a class="btn btn-icon btn-sm btn-success" data-toggle="tooltip" data-placement="top" title="Take"
+                        href="{% url 'takeExam' %}?id={{activity.pk}}">
+                        <i class="fas fa-sign-out-alt mt-2"></i>
+                  	</a>
+                     {% else %}
+                     <a class="btn btn-icon btn-sm btn-success" data-toggle="tooltip" data-placement="top" title="Take"
                         href="{% url 'actividad' programa=programa.url proceso=proceso.url unidad=unidad.url curso=curso.url topico=topic.url idActividad=activity.pk %}">
-                        <i class="fas fa-sign-out-alt"></i>
-                  </a>
+                        <i class="fas fa-sign-out-alt mt-2"></i>
+                     </a>
+                     {% endif %}
                      {% endif %}
                      {% if go %}
                      <button type="button" class="btn btn-icon btn-sm btn-success ml-1" data-toggle="tooltip" data-placement="top" title="Go"

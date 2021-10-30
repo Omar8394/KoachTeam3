@@ -1,3 +1,4 @@
+{% load Filter %}
 {% if query%}
 results for "{{query}}"
 {% endif %}
@@ -21,6 +22,9 @@ results for "{{query}}"
       {% for course in data%}
       {%if course.valor_elemento == 'Course'%}
       <div class="card-academic">
+         <!-- <div class="card-academic-locked">
+                     <i class="fas fa-lock"></i>
+                  </div> -->
          <div class="card-academic-content">
             <div class="over-title">
                <p><span class="subtitle">Type</span> {{course.valor_elemento}}</p>
@@ -33,9 +37,16 @@ results for "{{query}}"
             <h2 class="card-academic-title">{{course.descripcion}}</h2>
             <p class="card-academic-body">{{course.resumen}}</p>
             <div class="btn-group" role="group">
-               {%if edit%}
-               <a href="#" onclick="openEditCourses('{{course.pk}}')" class="button btn btn-primary"><i
-                     class="fas fa-edit"></i></a>
+               {%if rol == 'Teacher'%}
+                  {%if course|editableCourse:user %}
+                  <a href="#" onclick="openEditCourses('{{course.pk}}')" class="button btn btn-primary"><i
+                        class="fas fa-edit"></i></a>
+                  {%endif%}
+               {%else%}
+                  {%if edit%}
+                  <a href="#" onclick="openEditCourses('{{course.pk}}')" class="button btn btn-primary"><i
+                        class="fas fa-edit"></i></a>
+                  {%endif%}
                {%endif%}
                <a href="{% url 'curso' programa=programa.url proceso=proceso.url unidad=unidad.url curso=course.url %}"
                   class="button btn btn-success"><strong>Open</strong></a>

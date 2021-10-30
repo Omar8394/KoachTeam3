@@ -42,7 +42,7 @@
             </div>
             <div class="form-group col-6">
                <label for="creditos" class="col-form-label">Credits</label>
-               <input type="number" class="form-control" name="creditos" id="creditos" placeholder="1" required
+               <input type="number" class="form-control" name="creditos" id="creditos" placeholder="#" required
                   value="{% if modelo %}{{ modelo.peso_creditos }}{% endif %}">
             </div>
          </div>
@@ -56,7 +56,7 @@
          <div class="form-row">
             <div class="form-group col-6">
                <label for="statusCourse" class="col-form-label">Status</label>
-               <select class="form-control" name="statusCourse" id="statusCourse">
+               <select class="form-control" name="statusCourse" id="statusCourse" required>
                   <option value="null" {% if not modeloCurso %}selected{% endif %} disabled>Select a status</option>
                   {% for item in status %}
                   <option value="{{item.pk}}" {% if modeloCurso %}{% if modeloCurso.fk_estatus_curso_id == item.pk %}selected{% endif %}{% endif %}>{{item.desc_elemento}}</option>

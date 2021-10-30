@@ -29,6 +29,7 @@
 			</div>
 		</div>
 		<div class="page-inner animated fadeInUp mt--5">
+			{% if rol == 'Student'%}
 			<section id="alumno">
 				<div class="row mt--2 d-flex justify-content-center">
 					<div class="col-md-12">
@@ -126,7 +127,7 @@
 				</div> -->
 			</section>
 
-			{% if rol == queso %}
+			{% elif rol == 'Teacher' %}
 			<section id="profesor">
 				<div class="row mt--2 d-flex justify-content-center">
 					<div class="col-md-12">
@@ -157,8 +158,7 @@
 					</div>
 				</div>
 			</section>
-			{% endif %}
-			{% if rol == jamon  %}
+			{% elif rol == 'Admin'  %}
 			<section id="gestor">
 				<div class="row mt--2 d-flex justify-content-center">
 					<div class="col-md-12">

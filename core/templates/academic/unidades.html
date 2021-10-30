@@ -190,8 +190,30 @@
          .then(() => {
             $("#addNewModal").modal("show")
             const formUnidad = document.getElementById("formUnidad")
+            let rules = {
+               resumenUnit: {
+                  required: true,
+                  maxlength: 200,
+                  minlength: 20
+               },
+               urlUnit: {
+                  required: true,
+                  maxlength: 15,
+                  minlength: 3
+               },
+            }
+            commonValidator = $("#formUnidad").validate({
+               rules,
+               highlight: function (element) {
+                  $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+               },
+               success: function (element) {
+                  $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+               },
+            });
             formUnidad.addEventListener("submit", (e) => {
                e.preventDefault()
+               if(!$("#formUnidad").valid()) return
                clickSave(formUnidad, "{% url 'modalAddUnidad' %}")
                   .then(() => {
                      $("#addNewModal").modal("hide")
@@ -214,8 +236,30 @@
          .then(() => {
             $("#addNewModal").modal("show")
             const formUnidad = document.getElementById("formUnidad")
+            let rules = {
+               resumenUnit: {
+                  required: true,
+                  maxlength: 200,
+                  minlength: 20
+               },
+               urlUnit: {
+                  required: true,
+                  maxlength: 15,
+                  minlength: 3
+               },
+            }
+            commonValidator = $("#formUnidad").validate({
+               rules,
+               highlight: function (element) {
+                  $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+               },
+               success: function (element) {
+                  $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+               },
+            });
             formUnidad.addEventListener("submit", (e) => {
                e.preventDefault()
+               if (!$("#formUnidad").valid()) return
                clickSave(formUnidad, "{% url 'modalAddUnidad' %}")
                   .then(() => {
                      $("#addNewModal").modal("hide")

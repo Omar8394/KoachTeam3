@@ -5,7 +5,7 @@
    </div>
    <div class="form-group col-md-6">
       <label for="estatusLesson">Status</label>
-      <select class="form-control" id="estatusLesson" name="estatusLesson">
+      <select class="form-control" id="estatusLesson" name="estatusLesson" required>
          <option value="null" disabled {% if not modelo %} selected {% endif %}>Select an option</option>
          {% for item in status %}
          <option value="{{item.pk}}" {% if modelo %} {% if modelo.estatus_id == item.pk %} selected {% endif %} {% endif %}>{{item.desc_elemento}}</option>

@@ -153,8 +153,30 @@
          .then(() => {
             $("#addNewModal").modal("show")
             const formProceso = document.getElementById("formProceso")
+            let rules = {
+               resumenProcess: {
+                  required: true,
+                  maxlength: 200,
+                  minlength: 20
+               },
+               urlProcess: {
+                  required: true,
+                  maxlength: 15,
+                  minlength: 3
+               },
+            }
+            commonValidator = $("#formProceso").validate({
+               rules,
+               highlight: function (element) {
+                  $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+               },
+               success: function (element) {
+                  $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+               },
+            });
             formProceso.addEventListener("submit", (e) => {
                e.preventDefault()
+               if(!$("#formProceso").valid())return
                clickSave(formProceso, "{% url 'modalAddProceso' %}")
                   .then(() => {
                      $("#addNewModal").modal("hide")
@@ -174,8 +196,30 @@
          .then(() => {
             $("#addNewModal").modal("show")
             const formProceso = document.getElementById("formProceso")
+            let rules = {
+               resumenProcess: {
+                  required: true,
+                  maxlength: 200,
+                  minlength: 20
+               },
+               urlProcess: {
+                  required: true,
+                  maxlength: 15,
+                  minlength: 3
+               },
+            }
+            commonValidator = $("#formProceso").validate({
+               rules,
+               highlight: function (element) {
+                  $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+               },
+               success: function (element) {
+                  $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+               },
+            });
             formProceso.addEventListener("submit", (e) => {
                e.preventDefault()
+               if(!$("#formProceso").valid())return
                clickSave(formProceso, "{% url 'modalAddProceso' %}")
                   .then(() => {
                      $("#addNewModal").modal("hide")

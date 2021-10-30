@@ -185,8 +185,30 @@
          .then(() => {
             $("#addNewModal").modal("show")
             const formCurso = document.getElementById("formCurso")
+            let rules = {
+               resumenCourse: {
+                  required: true,
+                  maxlength: 200,
+                  minlength: 20
+               },
+               urlCourse: {
+                  required: true,
+                  maxlength: 15,
+                  minlength: 3
+               },
+            }
+            commonValidator = $("#formCurso").validate({
+               rules,
+               highlight: function (element) {
+                  $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+               },
+               success: function (element) {
+                  $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+               },
+            });
             formCurso.addEventListener("submit", (e) => {
                e.preventDefault()
+               if (!$("#formCurso").valid()) return
                clickSave(formCurso, "{% url 'modalAddCurso' %}")
                   .then(() => {
                      $("#addNewModal").modal("hide")
@@ -210,8 +232,30 @@
          .then(() => {
             $("#addNewModal").modal("show")
             const formCurso = document.getElementById("formCurso")
+            let rules = {
+               resumenCourse: {
+                  required: true,
+                  maxlength: 200,
+                  minlength: 20
+               },
+               urlCourse: {
+                  required: true,
+                  maxlength: 15,
+                  minlength: 3
+               },
+            }
+            commonValidator = $("#formCurso").validate({
+               rules,
+               highlight: function (element) {
+                  $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+               },
+               success: function (element) {
+                  $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+               },
+            });
             formCurso.addEventListener("submit", (e) => {
                e.preventDefault()
+               if (!$("#formCurso").valid()) return
                clickSave(formCurso, "{% url 'modalAddCurso' %}")
                   .then(() => {
                      $("#addNewModal").modal("hide")
