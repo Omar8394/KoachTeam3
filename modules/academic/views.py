@@ -100,8 +100,8 @@ def createLessons(request):
     user = request.user.extensionusuario
     publico = user.Publico
     rol = user.CtaUsuario.fk_rol_usuario.desc_elemento
+    leccion=ActividadLeccion.objects.get(fk_estructura_programa=lessonId)
     if rol == "Teacher":
-        leccion=ActividadLeccion.objects.get(fk_estructura_programa=lessonId)
         actividad=leccion.fk_estructura_programa
         curso=actividad.fk_estructura_padre.fk_estructura_padre
         today = timezone.now().date()
@@ -112,6 +112,10 @@ def createLessons(request):
             return render(request, 'academic/createLessons.html', context)
         else:
             return HttpResponseForbidden()
+    elif rol == "Admin":
+        context['segment'] = 'academic'
+        context['lesson'] = leccion
+        return render(request, 'academic/createLessons.html', context)
     else:
         return HttpResponseForbidden()
         

@@ -5,16 +5,16 @@
    </div>
    <div class="form-group col-md-6">
       <label for="linkForum">Link</label>
-      <input type="text" class="form-control" name="linkForum" id="linkForum" placeholder="Enter a ZOOM link" {% if modelo %} {% if modelo.enlace %} value="{{ modelo.enlace}}"{% endif %}{% endif %}>
+      <input type="text" class="form-control" name="linkForum" id="linkForum" placeholder="Enter a ZOOM link" {% if modelo %} {% if modelo.enlace %} value="{{ modelo.enlace}}"{% endif %}{% endif %} required>
    </div>
 </div>
 <div class="form-row">
    <div class="form-group col-md-6">
       <label for="idForum">Id zoom</label>
-      <input type="text" class="form-control" name="idForum" id="idForum" placeholder="Enter ZOOM Id" {% if modelo %} {% if modelo.id_conferencia %} value="{{ modelo.id_conferencia}}"{% endif %}{% endif %}>
+      <input type="text" class="form-control" name="idForum" id="idForum" placeholder="Enter ZOOM Id" {% if modelo %} {% if modelo.id_conferencia %} value="{{ modelo.id_conferencia}}"{% endif %}{% endif %} required>
    </div>
    <div class="form-group col-md-6">
       <label for="keyForum">Key</label>
-      <input type="text" class="form-control" name="keyForum" id="keyForum" placeholder="Enter the key" {% if modelo %} {% if modelo.clave %} value="{{ modelo.clave}}"{% endif %}{% endif %}>
+      <input type="text" class="form-control" name="keyForum" id="keyForum" placeholder="Enter the key" {% if modelo %} {% if modelo.clave %} value="{{ modelo.clave}}"{% endif %}{% endif %} required>
    </div>
 </div>

@@ -22,6 +22,9 @@ results for "{{query}}"
       {% for course in data%}
       {%if course.valor_elemento == 'Course'%}
       <div class="card-academic">
+         <!-- <div class="card-academic-locked">
+                     <i class="fas fa-lock"></i>
+                  </div> -->
          <div class="card-academic-content">
             <div class="over-title">
                <p><span class="subtitle">Type</span> {{course.valor_elemento}}</p>
