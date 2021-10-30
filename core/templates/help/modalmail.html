@@ -1,0 +1,52 @@
+<div class="modal-content">
+    <div class="modal-header">
+       <h5 class="modal-title">Approve Request</h5>
+       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+       </button>
+    </div>
+    <form id="formSave" class="form">
+
+      <div class="modal-body">
+            {% for p in form %}
+         <div class="form-row">
+         
+            <div class="form-group col-12">
+               <label for="descriptionProgram" class="col-form-label">Name</label>
+              
+               <input type="text" class="form-control" placeholder= "{{ p.nombre }}" value="{{ p.nombre }}">
+              
+            </div>
+   
+         </div>
+           <div class="form-row">
+
+            <div class="form-group col-12">
+               <label for="descriptionProgram" class="col-form-label" >Last Name</label>
+               <input type="text" class="form-control"  placeholder= "{{ p.apellido }}" value="{{ p.apellido }}">
+            </div>
+
+        </div>
+         <div class="form-row">
+
+            <div class="form-group col-12">
+               <label for="descriptionProgram" class="col-form-label" >Email</label>
+               <input type="text" class="form-control"  placeholder= "{{ p.correos }}" value="{{ p.correos }}" id="email" name="email">
+            </div>
+
+        </div>
+        {% endfor %}
+
+      </div>
+
+         
+
+      <div class="modal-footer">
+          <button type="button" class="btn btn-danger mr-auto" data-dismiss="modal"><i
+                class="fas fa-arrow-left mr-2"></i>Back</button>
+          <button type="submit" class="btn btn-primary">Submit<i class="fas fa-save ml-2"></i></button>
+      </div>
+
+
+    </form>
+ </div>

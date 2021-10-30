@@ -124,7 +124,7 @@ def createLessons(request):
 def createQuestions(request):
     cta=ExtensionUsuario.objects.get(user=request.user).CtaUsuario.fk_rol_usuario.valor_elemento 
     if cta== 'rol_student':
-      return HttpResponseForbidden
+      return HttpResponseForbidden()
     
 
     preguntaId=request.GET.get('id')
@@ -208,7 +208,7 @@ def getCurrentTime(request):
 def contenidoExamen(request):
     cta=ExtensionUsuario.objects.get(user=request.user).CtaUsuario.fk_rol_usuario.valor_elemento 
     if cta!= 'rol_student':
-      return HttpResponseForbidden
+      return HttpResponseForbidden()
     if request.method == "POST":
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             
@@ -379,7 +379,7 @@ def contenidoExamen(request):
 def takeExam(request):
     cta=ExtensionUsuario.objects.get(user=request.user).CtaUsuario
     if cta.fk_rol_usuario.valor_elemento != 'rol_student':
-      return HttpResponseForbidden
+      return HttpResponseForbidden()
     preguntaId=request.GET.get('id')
     #la modificacion es para que los busque por el id de estructuras programa (me facilita la vida)
     pregunta=ActividadEvaluaciones.objects.get(fk_estructura_programa=preguntaId)
@@ -458,10 +458,13 @@ def takeExam(request):
 @login_required(login_url="/login/")
 def SeeTest(request):
     cta=ExtensionUsuario.objects.get(user=request.user).CtaUsuario.fk_rol_usuario.valor_elemento 
-    
+    usuario=ExtensionUsuario.objects.get(user=request.user).Publico
     
     Id=request.GET.get('id')
     examen=ExamenActividad.objects.get(pk=Id)
+    if examen.fk_publico!= usuario:
+        return HttpResponseForbidden()
+
     
     
     pregunta=ActividadEvaluaciones.objects.get(pk=examen.fk_Actividad.pk)
@@ -469,7 +472,7 @@ def SeeTest(request):
     user=ExtensionUsuario.objects.get(user=request.user)
     if cta== 'rol_student':
       if examen.fk_publico !=user:
-          return HttpResponseForbidden
+          return HttpResponseForbidden()
 
 
     print(examen)
@@ -556,7 +559,7 @@ def SeeTest(request):
 def TestList(request):
     cta=ExtensionUsuario.objects.get(user=request.user).CtaUsuario.fk_rol_usuario.valor_elemento 
     if cta== 'rol_student':
-      return HttpResponseForbidden
+      return HttpResponseForbidden()
 
     examenes=ExamenActividad.objects.annotate(tipoTest=F('fk_Actividad__fk_estructura_programa__fk_categoria__valor_elemento')).all()
      
@@ -1064,7 +1067,7 @@ def GraficaResultados(request):
 def MyTest(request):
     cta=ExtensionUsuario.objects.get(user=request.user).CtaUsuario.fk_rol_usuario.valor_elemento 
     if cta!= 'rol_student':
-      return HttpResponseForbidden
+      return HttpResponseForbidden()
 
     examenes=ExamenActividad.objects.annotate(tipoTest=F('fk_Actividad__fk_estructura_programa__fk_categoria__valor_elemento')).all()
 

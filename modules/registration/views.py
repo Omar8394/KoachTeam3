@@ -41,7 +41,7 @@ import hashlib
 def enrollment(request):
     cta=ExtensionUsuario.objects.get(user=request.user).CtaUsuario
     if cta.fk_rol_usuario.valor_elemento != 'rol_student':
-      return HttpResponseForbidden
+      return HttpResponseForbidden()
 
 
     form = forms.MatriculaForm(request.POST or None)
@@ -77,7 +77,7 @@ def enrollment(request):
 def ManageEnrollments(request):
    cta=ExtensionUsuario.objects.get(user=request.user).CtaUsuario
    if cta.fk_rol_usuario.valor_elemento != 'rol_admin':
-      return HttpResponseForbidden
+      return HttpResponseForbidden()
    msg = None
    matriculaList=MatriculaAlumnos.objects.all()
 
@@ -124,7 +124,7 @@ def ManageEnrollments(request):
 def PublicoAdmin(request):
     cta=ExtensionUsuario.objects.get(user=request.user).CtaUsuario
     if cta.fk_rol_usuario.valor_elemento != 'rol_admin':
-      return HttpResponseForbidden
+      return HttpResponseForbidden()
   
     publicoObject=Publico.objects.all()
 
@@ -269,7 +269,7 @@ def PublicoAdmin(request):
 def MatriculacionAdmin(request):
     cta=ExtensionUsuario.objects.get(user=request.user).CtaUsuario
     if cta.fk_rol_usuario.valor_elemento != 'rol_admin':
-      return HttpResponseForbidden
+      return HttpResponseForbidden()
 
   
     msg = None
@@ -481,7 +481,7 @@ login_required(login_url="/login/")
 def MyEnrollments(request):
     cta=ExtensionUsuario.objects.get(user=request.user).CtaUsuario
     if cta.fk_rol_usuario.valor_elemento != 'rol_student':
-      return HttpResponseForbidden
+      return HttpResponseForbidden()
 
     msg = None
     extension=ExtensionUsuario.objects.get(user=request.user)
@@ -675,7 +675,7 @@ def MyEnrollments(request):
 def ManagePrices(request):
    cta=ExtensionUsuario.objects.get(user=request.user).CtaUsuario
    if cta.fk_rol_usuario.valor_elemento != 'rol_admin':
-      return HttpResponseForbidden
+      return HttpResponseForbidden()
    #structuras=Estructuraprograma.objects.raw("Select * from app_Estructuraprograma INNER  join registration_PreciosFormacion on app_Estructuraprograma.idestructuraprogrmas=registration_PreciosFormacion Where ( select fk_estruc_programa from registration_PreciosFormacion) ")
    structuras=Estructuraprograma.objects.all()
    structuras=structuras.annotate(precio=F('prize__precio'), fechaIngreso=F('prize__fecha_registro'), id=F('prize__idprograma_precios'), descuento=F('prize__PorcentajeDescuento'), max=Max('prize__idprograma_precios'), amountDiscount=Max('prize__idprograma_precios')  ).filter(id=Max('prize__idprograma_precios'))
@@ -938,7 +938,7 @@ def MasterPiece(request):
 def ViewPayments(request):
    cta=ExtensionUsuario.objects.get(user=request.user).CtaUsuario
    if cta.fk_rol_usuario.valor_elemento != 'rol_admin':
-      return HttpResponseForbidden
+      return HttpResponseForbidden()
 
    
    structuras=MatriculasPagos.objects.all()
@@ -1395,7 +1395,7 @@ def save(request):
 def saveDiscount(request):
    cta=ExtensionUsuario.objects.get(user=request.user).CtaUsuario
    if cta.fk_rol_usuario.valor_elemento != 'rol_admin':
-      return HttpResponseForbidden
+      return HttpResponseForbidden()
    if request.method == "POST":
      
       try:
@@ -1521,7 +1521,7 @@ def saveDiscount(request):
 def savePrices(request):
    cta=ExtensionUsuario.objects.get(user=request.user).CtaUsuario
    if cta.fk_rol_usuario.valor_elemento != 'rol_admin':
-      return HttpResponseForbidden
+      return HttpResponseForbidden()
    if request.method == "POST":
      
       try:
