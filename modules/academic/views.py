@@ -25,7 +25,7 @@ from django.core.files.storage import FileSystemStorage
 import os
 from django.db.models import F
 
-from ..app.models import TablasConfiguracion, Estructuraprograma, Publico
+from ..app.models import HistoricoUser, TablasConfiguracion, Estructuraprograma, Publico
 
 
 from ..security.models import ExtensionUsuario
@@ -3402,6 +3402,33 @@ def actividad(request, programa, proceso, unidad, curso, topico, idActividad):
     except:
         html_template = loader.get_template( 'errors/page-404.html' )
     return HttpResponse(html_template.render(context, request))
+
+@login_required(login_url="/login/")
+def logUser(request):
+    if request.method == "POST":
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            user = request.user.extensionusuario
+            publico = user.Publico
+            rol = user.CtaUsuario.fk_rol_usuario.desc_elemento
+            try:
+                if request.body:
+                    data=json.load(request)
+                    if rol == 'Student':
+                        idEstructura = data["pk"]
+                        fecha = timezone.now()
+                        estado = data["estado"]
+                        update = HistoricoUser.objects.filter(fk_publico=publico, fk_estructura_programa=idEstructura)
+                        if update.exists():
+                            historia = update.order_by("-fecha")[0]
+                        else:
+                            historia = HistoricoUser()
+                        historia.fecha = fecha
+                        historia.estado = estado
+                        historia.fk_estructura_programa_id = idEstructura
+                        historia.fk_publico = publico
+                        historia.save()     
+            except:
+                return JsonResponse({"message":"error"}, status=500)
 
 @login_required(login_url="/login/")
 def getComboContent(request):

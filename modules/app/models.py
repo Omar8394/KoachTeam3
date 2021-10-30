@@ -105,8 +105,6 @@ class Estructuraprograma(models.Model):
     def __str__(self):
         return self.descripcion
 
-
-
 class Nivelesprog(models.Model):
     idprogniveles = models.SmallAutoField(primary_key=True)
     programa = models.TextField()
@@ -128,3 +126,10 @@ class PreguntasFrecuentes(models.Model):
     texto_pregunta = models.TextField(null=True)
     texto_respuesta = models.TextField(null=True)
     fk_tipo_pregunta_frecuente = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE, default=None, null=True)
+
+class HistoricoUser(models.Model):
+    id_historico_user = models.AutoField(primary_key=True)
+    fk_publico = models.ForeignKey(Publico, on_delete=models.CASCADE, default=None, null=True)
+    fk_estructura_programa = models.ForeignKey(Estructuraprograma, on_delete=models.CASCADE, default=None, null=True)
+    fecha = models.DateTimeField(null=True)
+    estado = models.BooleanField(null=True)

@@ -108,13 +108,23 @@
 {% block javascripts %}
 <script>
    let hijos = $('.owl-carousel').children.length
+   const updateLog = (num)=>{
+      return fetch("{% url 'logUser' %}", {
+         ...fetchObject,
+         body: JSON.stringify({
+            pk:"{{actividad.pk}}",
+            estado: num
+         })
+      })
+   }
+   updateLog(0)
    if(hijos === 1){
-      console.log("congratulations u have reached the last page")
+      updateLog(1)
    }
    const revisarPag = (event)=>{
       if(event.property.name === "position"){
          if(event.page.index === event.page.count -1){
-            console.log("congratulations u have reached the last page")
+            updateLog(1)
          }
       }
    }
