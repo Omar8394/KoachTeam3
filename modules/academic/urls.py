@@ -24,12 +24,6 @@ urlpatterns = [
    path('getCurrentTime/', views.getCurrentTime, name="getCurrentTime"),
 
 
-
-
-
-
-
-
    #contenidos AJAX
    path('contenidoProgramas/', views.getContentProgramas, name="contenidoProgramas"),
    path('contenidoProcesos/', views.getContentProcesos, name="contenidoProcesos"),
@@ -41,6 +35,7 @@ urlpatterns = [
    path('comboOption/', views.getComboContent, name="contenidoCombo"),
    path('previewLeccion/', views.getPreviewLeccion, name="previewLeccion"),
    path('sortPreguntas/', views.sortPreguntas, name="sortPreguntas"),
+   path('logUser/', views.logUser, name="logUser"),
 
    
    #modales
@@ -64,11 +59,9 @@ urlpatterns = [
    path('getModalAddInstructions/', views.getModalAddInstructions, name="getModalAddInstructions"),
    path('modalAddBlock/', views.getModalAddBlock, name="getModalAddBlock"),
    path('getModalAddRespuestas/', views.getModalAddRespuestas, name="getModalAddRespuestas"),
-
    path('modalNewExpert/', views.getModalNewExpert, name="getModalNewExpert"),
 
    
-
    path('modalNewSimple/', views.getModalNewSimple, name="modalNewSimple"),
    path('modalNewMultiple/', views.getModalNewMultiple, name="modalNewMultiple"),
    path('modalNewCompletion/', views.getModalNewCompletion, name="modalNewCompletion"),
