@@ -33,7 +33,8 @@ class ActividadEvaluaciones(models.Model):
     idactividad_evaluaciones = models.AutoField(primary_key=True)
     nro_repeticiones = models.IntegerField(blank=True, null=True)
     pointUse =  models.DecimalField(max_digits=9, decimal_places=2, blank=True, null=True, default=0)
-    duracion = models.DecimalField(max_digits=5, decimal_places=2, null=True)
+    duracion = models.IntegerField( null=True)
+
     fk_estructura_programa = models.OneToOneField(Estructuraprograma,on_delete=models.CASCADE,  default=None, null=True)
     fk_tipo_duracion = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE, default=None, null=True, related_name="actividad_tipo_duracion")
     fk_escala_evaluacion = models.ForeignKey(EscalaEvaluacion, on_delete=models.CASCADE,  default=None, null=True, related_name='escalaEvaluacion')

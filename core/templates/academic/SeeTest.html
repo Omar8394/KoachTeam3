@@ -78,7 +78,7 @@
 							  <b>Total Score</b>: {{examen.PuntuacionFinal}}
 							  <br>
 							  {% if pregunta.duracion %}
-							  <b>  Duration </b>: {{pregunta.duracion}}&nbsp; {{pregunta.fk_tipo_duracion}}
+							  <b>  Duration </b>: {{pregunta.duracion}}&nbsp; Minutes {% comment %} {{pregunta.fk_tipo_duracion}} {% endcomment%}
 							  {% endif %}
 							  <br>
 							  <b>  Number of repetitions allow: </b> {{pregunta.nro_repeticiones}}
@@ -159,7 +159,7 @@
 	idActividad={{pregunta.pk}};
 	preguntas=[];
 	respuestas=[];
-
+	let autoSave=false;
 	preguntasOpciones=[];
 	let hayVacias=false;
 
@@ -315,7 +315,7 @@
 
 			   await reviewRespuestas();
 			   let guardar=true;
-			   if(hayVacias){
+			   if(hayVacias=true && autoSave==false){
 
 				const save = await alertaMensajitos(6,'There are Questions without answer', 'Continue Anyway?')
 				if(!save){
@@ -566,6 +566,47 @@
 	var variablesTitulos=[];
 	var titulos=[];
 	
+		
+function matricular(id){
+
+
+
+
+let url="{% url 'saveMatricula'%}";
+    let formData = new FormData(); 
+    formData.append("id", id);
+
+
+
+    fetch(url,{
+        headers: {
+						'Accept': 'application/json',
+						'X-Requested-With': 'XMLHttpRequest',
+						"X-CSRFToken": getCookie('csrftoken')
+					},
+					mode: 'same-origin',
+					method: 'POST',
+                    body:formData
+    }).then(async function(result){
+		let resultado=await result.text()
+	
+		if(resultado==2){
+		alertaMensajitos(5,'There was a error with you application','You already have a application including this structure');
+		return
+	}
+
+	
+alerta(1); // raw response
+window.location.href="{% url 'MyEnrollments'%}";
+    
+    }).then(function(result){
+        
+    
+    });
+        
+        
+      
+    }
 	async function openSeeResults  (id)  {
 		   
 				renderModalResults(id).then(()=>{
@@ -581,6 +622,7 @@
 				 data: {
 						
 						method:'Show',
+						id:id
 						
 					}
 				})

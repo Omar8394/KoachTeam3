@@ -15,7 +15,10 @@
                     <div class="form-row d-flex justify-content-center">
                         <div class="card mt-3" style="width: 80rem;" >
                             <div class="card-header">
-                                                                  
+                                   {% if actividad.duracion != None%}
+                                   
+                                  <h2> Time Left:<span id="timer">{{time}}</span>  </h2>
+                                   {% endif %}
                             </div>
                             <div class="card-body" id="tabQuestions">
                                 <div class="table-responsive" id="renderContainer">

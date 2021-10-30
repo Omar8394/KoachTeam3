@@ -16,9 +16,13 @@ urlpatterns = [
    path('contenidoExamen/', views.contenidoExamen, name="contenidoExamen"),
    path('reviewExamen/', views.reviewExamen, name="reviewExamen"),
    path('TestList/', views.TestList, name="TestList"),
+   path('TeacherTests/', views.TeacherTests, name="TeacherTests"),
+
    path('SeeTest/', views.SeeTest, name="SeeTest"),
    path('MyTest/', views.MyTest, name="MyTest"),
    path('saveMatricula/', views.saveMatricula, name="saveMatricula"),
+   path('getCurrentTime/', views.getCurrentTime, name="getCurrentTime"),
+
 
 
 

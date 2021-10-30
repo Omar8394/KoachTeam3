@@ -63,7 +63,7 @@
 							  <b>  Number of repetitions allow</b>: {{pregunta.nro_repeticiones}}
 							  <br>
 							  {% if pregunta.duracion %}
-							  <b>  Duration</b>: {{pregunta.duracion}}&nbsp; {{pregunta.fk_tipo_duracion}}
+							  <b>  Duration</b>: {{pregunta.duracion}}&nbsp; Minutes {% comment %} {{pregunta.fk_tipo_duracion}} {% endcomment%}
 							  {% endif %}
 							  <br>
 							  {% if instrucciones != None %}
@@ -104,7 +104,7 @@
 							  <b> Minimum to Approve </b>: {{pregunta.calificacion_aprobar}}
 							  <br>
 							  {% if pregunta.duracion %}
-							  <b> Duration </b>: {{pregunta.duracion}}&nbsp; {{pregunta.fk_tipo_duracion}}
+							  <b> Duration </b>: {{pregunta.duracion}}&nbsp; Minutes {% comment %} {{pregunta.fk_tipo_duracion}} {% endcomment%}
 							  {% endif %}
 							  <br>
 							  <b> Number of repetitions </b>: {{pregunta.nro_repeticiones}}
@@ -154,7 +154,7 @@
 							  <b> Score</b>: {{examen.0.PuntuacionFinal}}
 							  <br>
 							  {% if pregunta.duracion %}
-							  <b>  Duration </b>: {{pregunta.duracion}}&nbsp; {{pregunta.fk_tipo_duracion}}
+							  <b>  Duration </b>: {{pregunta.duracion}}&nbsp;Minutes {% comment %} {{pregunta.fk_tipo_duracion}} {% endcomment%}
 							  {% endif %}
 							  <br>
 							  <b>  Number of repetitions allow: </b> {{pregunta.nro_repeticiones}}
@@ -248,9 +248,14 @@
 	idActividad={{pregunta.pk}};
 	preguntas=[];
 	respuestas=[];
-
+	let autoSave=false
 	preguntasOpciones=[];
 	let hayVacias=false;
+	let time ='{{time}}'
+	console.log(time)
+	let timerOn=false
+	let manejaTiempo={{manejaTiempo}}
+	let TimeServer=null
 
 
 
@@ -311,6 +316,7 @@
         
             createTest().then(async () => {
 			await renderContent();
+			
             })
         }    
 
@@ -318,6 +324,8 @@
         
 		retakeTest().then(async () => {
 		await renderContent();
+		timerOn=true;
+
 		})
 	}    
 
@@ -343,10 +351,11 @@
 		   })
 	   }   
 
-	  const ContinueTest = () => {
+	  async function ContinueTest (){
         
             
-			 renderContent();
+		await	 renderContent();
+
            
         }    	
 
@@ -393,6 +402,8 @@
 		   .then(async (res) => {
 			 idTest= JSON.parse(await res.text());
 			examenId=idTest.id;
+			time=idTest.inicio;
+			console.log(time)
 			
 		   }).then(()=>{
 			 
@@ -400,19 +411,25 @@
 	   }   
 
 
-	   const renderContent= ()=>{
+	   async function renderContent (){
 		fetch("{% url 'contenidoExamen' %}", {
             ...fetchObject,
             body: JSON.stringify({
                 data: {
 					method:'Show',
-					ActivityId:idActividad
+					ActivityId:idActividad,
+					idExamen:examenId
 
 
                 }
             }),
         }).then(async (res) => {
                 document.getElementById("Contenido").innerHTML= await res.text()
+			
+		
+		await getServerTime()
+		
+
 
             
             })
@@ -433,7 +450,7 @@
 
 			   await reviewRespuestas();
 			   let guardar=true;
-			   if(hayVacias){
+			   if(hayVacias== true && autoSave==false){
 
 				const save = await alertaMensajitos(6,'There are Questions without answer', 'Continue Anyway?')
 				if(!save){
@@ -474,11 +491,37 @@
                    alerta(5)
                 }
                 alerta(1)
+
+				window.location='{%url "MyTest"%}'
+
             })
             .then(() => {
              
             })
    }
+
+   
+   async function getServerTime(){
+
+fetch("{% url 'getCurrentTime' %}", {
+			...fetchObject,
+			body: JSON.stringify({
+			  
+			}),
+		   
+		})
+		.then(async (res) => {
+			respuesta=await res.text()
+			console.log(respuesta+'aquitoy')
+			TimeServer= respuesta
+			console.log(TimeServer+'aquitoy22')
+			setTimers()
+
+			timerOn=true;
+			
+		})
+		
+}
 
    async function reviewRespuestas(){
 
@@ -704,12 +747,115 @@
 
 
 </script>
+<!--timer-->
+<script>
+//Set the date we're counting down to
+var countDownDate = null
+var serverTime = null
+async function setTimers(){
+	console.log(time)
+  console.log(TimeServer)
+	 countDownDate = new Date(time).getTime();
+ serverTime = new Date(TimeServer).getTime();
+}
 
+// Update the count down every 1 second
+let counterT=0
+var x = setInterval(function() {
+	if(manejaTiempo==0){
+		return
+	}
+if(timerOn==false){
+	return
+}
+
+
+  // Get today's date and time
+ // var now = new Date().getTime();
+    
+  // Find the distance between now and the count down date
+  //var distance = countDownDate - now;
+  
+
+
+  var distance = countDownDate - serverTime-counterT;
+  console.log(distance)
+
+    
+  // Time calculations for days, hours, minutes and seconds
+  var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+  //var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  var hours = Math.floor(distance /(1000 * 60 * 60) );
+ 
+  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    
+  // Output the result in an element with id="demo"
+  document.getElementById("timer").innerHTML =  hours + "h "
+  + minutes + "m " + seconds + "s ";
+    
+  // If the count down is over, write some text 
+  if (distance == 10000) {
+alertaMensajitos(7,'Timer Alert','You have a little time left')
+
+  }
+  if (distance < 0) {
+    clearInterval(x);
+    document.getElementById("timer").innerHTML = "EXPIRED";
+	autoSave=true
+	clickSave () ;
+  }
+  counterT=counterT+1000
+}, 1000);
+
+</script>
 <!--Grafica-->
 <script>
 	var labeles=[];
 	var variablesTitulos=[];
 	var titulos=[];
+	
+function matricular(id){
+
+
+
+
+let url="{% url 'saveMatricula'%}";
+    let formData = new FormData(); 
+    formData.append("id", id);
+
+
+
+    fetch(url,{
+        headers: {
+						'Accept': 'application/json',
+						'X-Requested-With': 'XMLHttpRequest',
+						"X-CSRFToken": getCookie('csrftoken')
+					},
+					mode: 'same-origin',
+					method: 'POST',
+                    body:formData
+    }).then(async function(result){
+		let resultado=await result.text()
+	
+		if(resultado==2){
+		alertaMensajitos(5,'There was a error with you application','You already have a application including this structure');
+		return
+	}
+
+	
+alerta(1); // raw response
+window.location.href="{% url 'MyEnrollments'%}";
+    
+    }).then(function(result){
+        
+    
+    });
+        
+        
+      
+    }
+
 	
 	async function openSeeResults  (id)  {
 		   

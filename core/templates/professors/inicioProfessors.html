@@ -21,7 +21,7 @@
                     <i class="flaticon-right-arrow"></i>
                 </li>
                 <li class="nav-item">
-                    <a href="{% url 'professors' %}">Professors' Assignment</a>
+                    <a href="{% url 'professors' %}">Teacher' Assignment</a>
                 </li>
             </ul>
         </div>
@@ -172,7 +172,7 @@
         if (id_Course > 0 ){
             window.location.href ="{% url 'SlProfessors' id=12345 %}".replace(/12345/, id_Course.toString());
         }else{
-            alert("Todos los campos son required")
+            alert("All fields are required")
             return false;
         }
         

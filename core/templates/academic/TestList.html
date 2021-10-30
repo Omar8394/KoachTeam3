@@ -128,8 +128,9 @@
                                         <table class="table table-hover table-component-like table-borderless text-center">
                                             <thead>
                                                 <tr>
-                                                  
+                                                    {% if isAdmin == True %}
                                                     <th>Names</th>
+                                                    {%endif%}
                                                     <th>Activity</th>
                                                     <th>Topic</th>
 
@@ -150,8 +151,9 @@
                                                 {% for exam in ExamenList %}
                             
                                                 <tr style="cursor:pointer;"  >
-                                                   
+                                                    {% if isAdmin == True %}
                                                    <td>{{exam.usuario}}</td>
+                                                   {%endif%}
                                                    <td>{{exam.fk_Actividad.fk_estructura_programa}}</td>
                                                    <td>{{exam.fk_Actividad.fk_estructura_programa.fk_estructura_padre}}</td>
 
@@ -456,7 +458,7 @@ async function renderModalResults(id){
              data: {
                     
                     method:'Show',
-                    
+                    id:id
                 }
             })
             })
@@ -550,7 +552,47 @@ async function getGrafica(id){
 <!-- /.Graficaa -->
 <script>
 
+	
+function matricular(id){
 
+
+
+
+let url="{% url 'saveMatricula'%}";
+    let formData = new FormData(); 
+    formData.append("id", id);
+
+
+
+    fetch(url,{
+        headers: {
+						'Accept': 'application/json',
+						'X-Requested-With': 'XMLHttpRequest',
+						"X-CSRFToken": getCookie('csrftoken')
+					},
+					mode: 'same-origin',
+					method: 'POST',
+                    body:formData
+    }).then(async function(result){
+		let resultado=await result.text()
+	
+		if(resultado==2){
+		alertaMensajitos(5,'There was a error with you application','You already have a application including this structure');
+		return
+	}
+
+	
+alerta(1); // raw response
+window.location.href="{% url 'MyEnrollments'%}";
+    
+    }).then(function(result){
+        
+    
+    });
+        
+        
+      
+    }
 async function setGrafica(){
 
 
