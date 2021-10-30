@@ -43,6 +43,12 @@
                                             <i class="glyphicon glyphicon-search"></i> Filter
                                         
                                         </button>
+                                        {% if isAdmin == True %}
+                                        <button   class="btn btn-default btn-info" type="button" id="SetTime" onclick="SetTimeOuts()">
+                                            <i class="fa fa-clock mr-1"></i> Update TimeOuts
+                                        
+                                        </button>
+                                        {%endif%}
                                         <div class="dropdown-menu">
                                             <div class="panel">
                                                 <div class="panel-body">
@@ -171,13 +177,13 @@
 
 
                                                    <td> 
-                                                       {% if exam.estadoExamen == 3 %} <a target="blank" href="{%url 'SeeTest'  %}?id={{exam.pk}}"   onclick="" > <button class="btn btn-info btn-sm"> <i class="fas fa-search"></i> Review</a> </button> {% endif %}
+                                                       {% if exam.estadoExamen != 1 %} <a style="color: white;" target="blank" href="{%url 'SeeTest'  %}?id={{exam.pk}}"   onclick="" > <button class="btn btn-info btn-sm"> <i class="fas fa-search mr-1"></i> Review</a> </button> {% endif %}
                                                     </td>
                                                    <td>  
                                                     
                                                     {%if exam.fk_Actividad.fk_estructura_programa.fk_categoria.valor_elemento == 'activityExpert' %}	
                                       
-                                                    {% if exam.estadoExamen == 3 %}        <a  href="javascript:void(0);" ><button class="btn btn-info btn-sm" onclick="openSeeResults({{exam.pk}})" > <i class="fas fa-search"></i> See Results</a> </button> {% endif %}
+                                                    {% if exam.estadoExamen == 3 %}        <a style="color: white;"   href="javascript:void(0);" ><button class="btn btn-info btn-sm" onclick="openSeeResults({{exam.pk}})" > <i class="fas fa-search mr-1"></i> See Results</a> </button> {% endif %}
 
                                                     {% endif %}
                                                        
@@ -465,6 +471,24 @@ async function renderModalResults(id){
             .then(async (res) => {
                 document.getElementById("modalContentResults").innerHTML = await res.text()
                 await getGrafica(id)
+
+            }).then(()=>{
+             
+
+            })
+
+}
+
+async function SetTimeOuts(id){
+    return fetch("{% url 'setTimeOuts' %}", {
+                ...fetchObject,
+                body: JSON.stringify({
+           
+            })
+            })
+            .then(async (res) => {
+                alertaMensajitos(1,'Done', 'Registers Updated')
+                window.location.href="{% url 'TestList' %}"
 
             }).then(()=>{
              

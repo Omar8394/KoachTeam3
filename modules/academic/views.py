@@ -2,6 +2,7 @@ from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
 from django.db.models import query
 from django.db.models.aggregates import Count
+from django.http.response import Http404
 from django.shortcuts import render
 from django.template import loader
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect, HttpResponseForbidden
@@ -383,12 +384,46 @@ def takeExam(request):
     preguntaId=request.GET.get('id')
     #la modificacion es para que los busque por el id de estructuras programa (me facilita la vida)
     pregunta=ActividadEvaluaciones.objects.get(fk_estructura_programa=preguntaId)
-    escalas = EscalaEvaluacion.objects.all()
     user=ExtensionUsuario.objects.get(user=request.user)
 
 
+
+    curso=pregunta.fk_estructura_programa.fk_estructura_padre.fk_estructura_padre
+    unidad=curso.fk_estructura_padre
+    proceso=unidad.fk_estructura_padre
+    programa=proceso.fk_estructura_padre
+
+    print(curso)
+    print(unidad)
+    print(proceso)
+    print(programa)
+
+    matriculas= MatriculaAlumnos.objects.annotate(estado=F('fk_status_matricula__valor_elemento')).filter(fk_publico=user.user.pk)
+
+    isRegistred=False
+
+    if matriculas.filter(fk_estruc_programa=curso).filter(estado='EstatusAprovado').count()>0:
+        isRegistred=True
+
+    if isRegistred==False:
+     if matriculas.filter(fk_estruc_programa=unidad).filter(estado='EstatusAprovado').count()>0:
+        isRegistred=True
+
+    if isRegistred==False:
+     if matriculas.filter(fk_estruc_programa=proceso).filter(estado='EstatusAprovado').count()>0:
+        isRegistred=True
+
+    if isRegistred==False:
+     if matriculas.filter(fk_estruc_programa=programa).filter(estado='EstatusAprovado').count()>0:
+        isRegistred=True
+
+    if isRegistred==False:
+        return HttpResponseForbidden()
+    escalas = EscalaEvaluacion.objects.all()
+
+
     examen=ExamenActividad.objects.filter(fk_Actividad=pregunta).filter(usuario=user.Publico)
-    print(examen)
+  
 
     instruciones=None
     instruciones=EvaluacionInstrucciones.objects.filter(fk_actividad_evaluaciones=pregunta)
@@ -462,7 +497,8 @@ def SeeTest(request):
     
     Id=request.GET.get('id')
     examen=ExamenActividad.objects.get(pk=Id)
-    if examen.fk_publico!= usuario:
+    if cta =='rol_student':
+      if examen.usuario!= usuario:
         return HttpResponseForbidden()
 
     
@@ -503,11 +539,11 @@ def SeeTest(request):
 
     if pregunta.duracion != None:
         
-        if examen.count()> 0:
-         time=examen[0].fechaInicio+ datetime.timedelta(0,(pregunta.duracion*60))
+       # if examen.count()> 0:
+         time=examen.fechaInicio+ datetime.timedelta(0,(pregunta.duracion*60))
          if time.replace(tzinfo=None)  <= datetime.datetime.now():
              print('aqui')
-             test=ExamenActividad.objects.get(pk=examen[0].pk)
+             test=ExamenActividad.objects.get(pk=examen.pk)
              test.fechaTermino=time
              test.estadoExamen=4
              test.save()
@@ -745,7 +781,11 @@ def getChilds(estructura):
 
     return 0
 
-def setTimeOuts(estructura):
+def setTimeOuts(request):
+    cta=ExtensionUsuario.objects.get(user=request.user).CtaUsuario.fk_rol_usuario.valor_elemento 
+    if cta!= 'rol_admin':
+      return HttpResponseForbidden()
+
     examenes=ExamenActividad.objects.annotate(tipoTest=F('fk_Actividad__fk_estructura_programa__fk_categoria__valor_elemento'), actividad=F('fk_Actividad__fk_estructura_programa')).all()
     for item in examenes:
         actividad=item.fk_Actividad
@@ -756,11 +796,16 @@ def setTimeOuts(estructura):
              item.estadoExamen=4
              item.save()
 
+    return HttpResponse('OK')
+
 @login_required(login_url="/login/")
 def TeacherTests(request):
-    examenes=ExamenActividad.objects.annotate(tipoTest=F('fk_Actividad__fk_estructura_programa__fk_categoria__valor_elemento'), actividad=F('fk_Actividad__fk_estructura_programa')).all()
+    examenes=ExamenActividad.objects.annotate(tipoTest=F('fk_Actividad__fk_estructura_programa__fk_categoria__valor_elemento'), actividad=F('fk_Actividad__fk_estructura_programa__fk_estructura_padre__fk_estructura_padre')).all()
     user=ExtensionUsuario.objects.get(user=request.user).Publico
     programasProfes=ProgramaProfesores.objects.filter(fk_publico=user)
+
+    for item in examenes: 
+        print (item.actividad.valor_elemento)
 
     for item in programasProfes:
 

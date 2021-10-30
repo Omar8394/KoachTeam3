@@ -22,6 +22,8 @@ urlpatterns = [
    path('MyTest/', views.MyTest, name="MyTest"),
    path('saveMatricula/', views.saveMatricula, name="saveMatricula"),
    path('getCurrentTime/', views.getCurrentTime, name="getCurrentTime"),
+   path('setTimeOuts/', views.setTimeOuts, name="setTimeOuts"),
+
 
 
 

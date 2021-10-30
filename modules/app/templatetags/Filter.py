@@ -198,6 +198,8 @@ def TipoExamen(id):
 	   return"in Progress"
    elif id == 3:
 	    return"Finished"
+   elif id == 4:
+	    return"TimeOut"
   
    else:
 	   return"error"
