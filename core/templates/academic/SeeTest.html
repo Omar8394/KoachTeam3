@@ -127,6 +127,76 @@
 
 							 {% endif %}
 
+							 {% if examen.estadoExamen == 4 %}
+							 <div class="center">
+
+							 <h2 >Test Finished</h2>
+							 <br>
+
+							 <div class="centerB">
+
+							
+							 </div>
+							 <br>
+							 <br>
+
+							 <p>
+
+								<b>User</b>: {{examen.usuario}}
+							  <br>
+							  <b>Started</b>: {{examen.fechaInicio}}
+							  <br>
+							  <b>Repetition</b>: {{examen.nro_repeticiones}}
+							  <br>
+							  <b> Max Points</b>: {{escalaEvaluacion.maxima_puntuacion}}
+							  <br>
+							  <b> Minimum to Approve</b>: {{pregunta.calificacion_aprobar}}
+							  <br>
+							 
+							  <b>  Finished</b>: {{examen.fechaTermino}}
+							  <br>
+							  <b>Total Score</b>: {{examen.PuntuacionFinal}}
+							  <br>
+							  {% if pregunta.duracion %}
+							  <b>  Duration </b>: {{pregunta.duracion}}&nbsp; Minutes {% comment %} {{pregunta.fk_tipo_duracion}} {% endcomment%}
+							  {% endif %}
+							  <br>
+							  <b>  Number of repetitions allow: </b> {{pregunta.nro_repeticiones}}
+							  <br>
+							  {% if examen.estadoExamen == 3 %}
+							  <b>  Scale Results: </b>   {{examen.pk|scalaPuntuacion}}
+							  {% endif %}
+							  <br>
+							  {% if instrucciones != None %}
+							  <b> Instructions</b>: 
+							  <br>
+							 <p>  
+							<textarea rows="10" class="form-control" disabled> 	{{instrucciones.texto_instrucciones}}</textarea>
+							 </p>
+							 {% endif %}
+							
+							  <br>
+							  <br>
+								
+								<div class="center" style="text-align: center;">
+                             		 
+   									<h1 style='color:red'> TimeOut! </h2>
+									   
+										
+									 
+										</div>
+
+						
+                               
+
+
+							 </p>
+							 </div>
+
+
+
+							 {% endif %}
+
 					
 							
 
@@ -216,7 +286,7 @@
      
 	{% endfor %}
 	
-	console.log(preguntas)
+//	console.log(preguntas)
   
   const takeTest = () => {
         
@@ -398,7 +468,7 @@
 						if(item.tipo==2){
 					
   						item.opciones.forEach(function(opciones, index, object) {
-							  console.log(`Multiple${opciones.id}`)
+							//  console.log(`Multiple${opciones.id}`)
 							  const elemento=document.getElementById(`Multiple${opciones.id}`)
 
 							  if(elemento.checked ==true){
@@ -428,7 +498,7 @@
 			if(item.tipo==3){
 					
 							  const elemento=document.getElementById(`Completar${item.id}`);
-							  console.log(elemento)
+							//  console.log(elemento)
 							
 
 							    if(elemento.value !=""  && elemento.selectedIndex  >-1){
@@ -531,7 +601,7 @@
 
 					}
 		
-		console.log(respuestas);
+	//	console.log(respuestas);
  
             });
 
@@ -652,13 +722,13 @@ window.location.href="{% url 'MyEnrollments'%}";
 				})
 				.then(async (res) => {
 					let datos = JSON.parse(await res.text())
-					console.log(datos)
+				//	console.log(datos)
 	
 					escalaBloques=datos.escalaBloquesJson;
 					escalaTOtal=datos.escalaTotalJson;
 					resultados=datos.resultadosJson;
-					console.log(resultados)
-					console.log(datos.resultadosJson)
+					//console.log(resultados)
+					//console.log(datos.resultadosJson)
 	
 				   
 					variablesTitulos=[...datos.dataSet]
@@ -668,7 +738,7 @@ window.location.href="{% url 'MyEnrollments'%}";
 	
 	
 						labeles.push(item.bloque_respuesta)
-						console.log(item.bloque_respuesta)
+						//console.log(item.bloque_respuesta)
 	
 				 
 	
@@ -680,7 +750,7 @@ window.location.href="{% url 'MyEnrollments'%}";
 						
 					
 					})      
-					console.log(variablesTitulos)
+					//console.log(variablesTitulos)
 					labeles.push('')
 					
 	

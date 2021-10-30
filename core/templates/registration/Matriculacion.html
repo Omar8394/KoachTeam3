@@ -119,11 +119,11 @@ let  dictPrograma=new Object();
 dictPrograma[ {{mat.pk}} ]='{{mat.precio}}';
 {% endfor %}
 
-console.log(dictPrograma);
+//console.log(dictPrograma);
 
 
 window.addEventListener("load", function(event) {
-    console.log("'Todos los recursos terminaron de cargar!");
+   // console.log("'Todos los recursos terminaron de cargar!");
 	program.value='';
 	//type.value='';
   });
@@ -242,7 +242,7 @@ function enviar(){
 xhr.open("POST", "save/"); 
 xhr.onload = function(event){ 
 
-	console.log(event.target.response);
+//	console.log(event.target.response);
 	if(event.target.response==2){
 		alertaMensajitos(5,'There was a error with you application','You already have a application including this structure');
 		return

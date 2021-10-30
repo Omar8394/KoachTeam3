@@ -267,21 +267,21 @@ const toBase64 = file => new Promise((resolve, reject) => {
 <script>
 
     function Repartir(){
-        console.log(22)
+      //  console.log(22)
     
     if(!document.getElementById("questionPoints") || document.getElementById("questionPoints")<=0 ){
         alertaMensajitos(5,'Invalid Value', 'The current point can not be divided')
         return;
     }
     let dividido=document.getElementById("questionPoints").value/tablaPreguntas.length
-    console.log(document.getElementById("questionPoints"))
-    console.log(tablaPreguntas.length)
+   // console.log(document.getElementById("questionPoints"))
+   // console.log(tablaPreguntas.length)
     
-    console.log(dividido)
+   // console.log(dividido)
     
     for (const item of tablaPreguntas){
     
-    console.log(item)
+   // console.log(item)
     
     item.value=dividido
     
@@ -307,7 +307,7 @@ let textoStructuraSeleccionada=null
 function programChange(combo){
     idStructuraSeleccionada=combo.value
     textoStructuraSeleccionada=combo.options[combo.selectedIndex].text
-    console.log(textoStructuraSeleccionada)
+   // console.log(textoStructuraSeleccionada)
 
 	cbProcess.value='';
 	cbCourse.value='';
@@ -413,13 +413,11 @@ function courseChange(combo){
 }
 
 const rowsSuggestion=()=>{
-    console.log('aqui')
 
 
 }
 
 function actualizarListaSugerencia() {
-    console.log('22')
     tableSuggestions.innerHTML = "";
         let contenido = "";
 
@@ -499,7 +497,7 @@ function actualizarListaSugerencia() {
          }
          ordenamientoArrayPreguntas.push(orderObj)
       })
-      console.log(ordenamientoArrayPreguntas)
+     // console.log(ordenamientoArrayPreguntas)
   
       fetch("{% url 'sortPreguntas'%}", {
          ...fetchObject,
@@ -600,7 +598,7 @@ function actualizarListaSugerencia() {
          }
          ordenamientoArray.push(orderObj)
       })
-      console.log(ordenamientoArray)
+   //   console.log(ordenamientoArray)
    }
 
         {% for block in bloque%}
@@ -608,7 +606,7 @@ function actualizarListaSugerencia() {
         dict[ {{block.pk}} ]={{block.pointUse}}
         {% endfor %}
 
-        console.log(dict)
+       // console.log(dict)
 
 
 
@@ -747,12 +745,12 @@ function actualizarListaSugerencia() {
 
             }
             else{
-                console.log(dict['3'] )
+              //  console.log(dict['3'] )
 
-                console.log(dict[Number(BlockId)] )
+              //  console.log(dict[Number(BlockId)] )
                 
-                console.log(editModePoints )
-                console.log(MaxPointBlock )
+              //  console.log(editModePoints )
+              //  console.log(MaxPointBlock )
 
 
                 
@@ -1171,7 +1169,7 @@ fetch("{% url 'getModalAddInstructions' %}", {
            })
        }   
        const renderModalRespuesta = (id) => {
-           console.log(id)
+         //  console.log(id)
            let idBlock=id
           return fetch("{% url 'getModalAddRespuestas' %}", {
               ...fetchObject,
@@ -1259,7 +1257,7 @@ fetch("{% url 'getModalAddInstructions' %}", {
           })
           .then(async (res) => {
             let PreguntaDatos = JSON.parse(await res.text())
-            console.log(PreguntaDatos)
+          //  console.log(PreguntaDatos)
             let listaLoca = PreguntaDatos.childs
        
                 if(listaLoca){
@@ -1286,7 +1284,7 @@ fetch("{% url 'getModalAddInstructions' %}", {
                             </div>`
                         }
                         tablaSugerencias.push(datos)
-                        console.log(datos)
+                        //console.log(datos)
 
                     })
 
@@ -1492,7 +1490,7 @@ fetch("{% url 'getModalAddInstructions' %}", {
                             </div>`
                         }
                         tablaPreguntas.push(datos)
-                        console.log(datos)
+                     //   console.log(datos)
 
                     })
 
@@ -1519,7 +1517,7 @@ fetch("{% url 'getModalAddInstructions' %}", {
                                     </div>`
                                 }
                                 tablaPreguntas.push(datos)
-                                console.log(datos)
+                             //   console.log(datos)
 
                             })
 
@@ -1554,7 +1552,7 @@ fetch("{% url 'getModalAddInstructions' %}", {
                                         </div>`
                                     }
                                     tablaPreguntas.push(datos)
-                                    console.log(datos)
+                                  //  console.log(datos)
 
                                 })
 
@@ -1591,7 +1589,7 @@ fetch("{% url 'getModalAddInstructions' %}", {
                                     </div>`
                                 }
                                 tablaPreguntas.push(datos)
-                                console.log(datos)
+                             ////   console.log(datos)
 
                             })
 
@@ -1622,7 +1620,7 @@ fetch("{% url 'getModalAddInstructions' %}", {
                                     </div>`
                                 }
                                 tablaPreguntas.push(datos)
-                                console.log(datos)
+                          //      console.log(datos)
 
                                 })
 
@@ -1639,7 +1637,7 @@ fetch("{% url 'getModalAddInstructions' %}", {
                 //$("#addNewScaleGe").modal("show")
 
                 if (tipoPreguntaSelected==3){
-                    console.log(indicePalabra)
+                 //   console.log(indicePalabra)
 
                                     
                     document.getElementById(`wordSelected`).innerHTML=document.getElementById(`${indicePalabra}word`).innerHTML
@@ -1703,7 +1701,7 @@ fetch("{% url 'getModalAddInstructions' %}", {
                 })   
                  
                 const questionText = document.getElementById("questionText")
-                   console.log(questionText)
+                //   console.log(questionText)
                    CargarModalOpciones()    
 
              
@@ -1741,7 +1739,7 @@ fetch("{% url 'getModalAddInstructions' %}", {
                 .then(async (res) => {
                     result = await res.text()
                     if (result[0] != '<') {
-                        console.log(result)
+                     //   console.log(result)
                         result = "<h3 class='display-4'>There are no items</h3>"
                     }
                     return result
@@ -1815,7 +1813,7 @@ fetch("{% url 'getModalAddInstructions' %}", {
 
    <script>
   async function verificaOpciones(){
-           console.log('sss');
+        //   console.log('sss');
          
            let totalValue=0;
 
@@ -1836,13 +1834,13 @@ fetch("{% url 'getModalAddInstructions' %}", {
 
                 }
                 totalValue=Number(totalValue)+Number(element.value);
-                console.log(totalValue);
+             //   console.log(totalValue);
 
 
             
           
         }
-        console.log(document.getElementById("questionPoints").value);
+       // console.log(document.getElementById("questionPoints").value);
      
         if(totalValue>document.getElementById("questionPoints").value){
                  //   alertaMensajitos(5,'Invalid Options Value','The options total value can not surpass the question max points');
@@ -1873,7 +1871,7 @@ function isEmptyOrSpaces(str){
     
         tablaPreguntas.forEach(function(item, index, object) {
          if(item.isCorrect==1){
-             console.log(item);
+           //  console.log(item);
 
               object.splice(index, 1);
              }
@@ -1954,8 +1952,8 @@ function isEmptyOrSpaces(str){
                     actualizarListaCompletations();
      indiceRespuesta=datos.id;
      indicePalabra=text;
-     console.log((document.getElementById(`questionText`).value));
-
+  //   console.log((document.getElementById(`questionText`).value));
+//
     
      reDraw(document.getElementById(`questionText`));
      document.getElementById(`wordSelected`).innerHTML=element;
@@ -1972,14 +1970,14 @@ function isEmptyOrSpaces(str){
 
 
          tablaPreguntas[id].value=number.value;
-         console.log( tablaPreguntas[id]);
+    //     console.log( tablaPreguntas[id]);
      }
 
       function tfChange(id, tf) {
 
 
          tablaPreguntas[id].trueFalse=tf.value;
-         console.log( tablaPreguntas[id]);
+      //   console.log( tablaPreguntas[id]);
      }
    
        
@@ -2030,7 +2028,7 @@ function isEmptyOrSpaces(str){
 
         tablaPreguntas.map((dato, index) => {
             let checked=dato.selected? 'checked':''
-            console.log(dato)
+          //  console.log(dato)
             let fila =
                 `<tr>
                     <td>

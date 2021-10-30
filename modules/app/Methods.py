@@ -112,6 +112,8 @@ def TipoExamen(id):
 	   return"in Progress"
    elif id == 3:
 	    return"Finished"
+   elif id == 4:
+	    return"TimeOut"
   
    else:
 	   return"error"
@@ -123,6 +125,8 @@ def OrigenTipoExamen(code):
 	   return 2
    elif code == "Finished":
 	    return 3
+   elif code == "TimeOut":
+	    return 4
 
     
   

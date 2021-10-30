@@ -231,7 +231,7 @@
 sortableBtn.addEventListener('click', () => {
 sortable = !sortable
 const listaPaginas = document.getElementById("tableContent")
-console.log(listaPaginas)
+//console.log(listaPaginas)
 if (sortable) {
  sortableBtn.innerHTML = `<i class="fas fa-lock-open mr-1"></i> Sort`
  for (let item of listaPaginas.children) {
@@ -281,7 +281,7 @@ const renderSortedContent = () => {
          }
          ordenamientoArray.push(orderObj)
       })
-      console.log(ordenamientoArray)
+   //   console.log(ordenamientoArray)
    }
 
 
@@ -403,11 +403,11 @@ const renderSortedContent = () => {
 
             }
             else{
-                console.log('aqui')
-                console.log(editModePoints)
-                console.log(MaxPoint-PointinUse+editModePoints)
+                
+              ///  console.log(editModePoints)
+             //   console.log(MaxPoint-PointinUse+editModePoints)
                todal=Number(MaxPoint)+Number(editModePoints)-Number(PointinUse)
-               console.log(todal)
+             //  console.log(todal)
 
 
                 if(todal<questionPoints.value){
@@ -650,7 +650,7 @@ const renderSortedContent = () => {
                 return;
             }
         const elimino = await alerta(3)
-        console.log(type)
+      //  console.log(type)
         if (elimino) {
 
             let urlDelete=''
@@ -768,7 +768,7 @@ const renderSortedContent = () => {
                 
 
                 let listaLoca = PreguntaDatos.childs
-                console.log(listaLoca)
+            //    console.log(listaLoca)
                 if(listaLoca){
                     if (type==1){
 
@@ -789,7 +789,7 @@ const renderSortedContent = () => {
                             </div>`
                         }
                         tablaPreguntas.push(datos)
-                        console.log(datos)
+                   //     console.log(datos)
 
                     })
 
@@ -816,7 +816,7 @@ const renderSortedContent = () => {
                                     </div>`
                                 }
                                 tablaPreguntas.push(datos)
-                                console.log(datos)
+                         //       console.log(datos)
 
                             })
 
@@ -851,7 +851,7 @@ const renderSortedContent = () => {
                                         </div>`
                                     }
                                     tablaPreguntas.push(datos)
-                                    console.log(datos)
+                               ///     console.log(datos)
 
                                 })
 
@@ -888,7 +888,7 @@ const renderSortedContent = () => {
                                     </div>`
                                 }
                                 tablaPreguntas.push(datos)
-                                console.log(datos)
+                            //    console.log(datos)
 
                             })
 
@@ -919,7 +919,7 @@ const renderSortedContent = () => {
                                     </div>`
                                 }
                                 tablaPreguntas.push(datos)
-                                console.log(datos)
+                           //     console.log(datos)
 
                                 })
 
@@ -936,7 +936,7 @@ const renderSortedContent = () => {
                 //$("#addNewScaleGe").modal("show")
 
                 if (tipoPreguntaSelected==3){
-                    console.log(indicePalabra)
+                  //  console.log(indicePalabra)
 
                                     
                     document.getElementById(`wordSelected`).innerHTML=document.getElementById(`${indicePalabra}word`).innerHTML
@@ -969,7 +969,7 @@ const renderSortedContent = () => {
                 })   
                  
                 const questionText = document.getElementById("questionText")
-                   console.log(questionText)
+               //    console.log(questionText)
                    CargarModalOpciones()    
 
              
@@ -1007,7 +1007,7 @@ const renderSortedContent = () => {
                 .then(async (res) => {
                     result = await res.text()
                     if (result[0] != '<') {
-                        console.log(result)
+                    //    console.log(result)
                         result = "<h3 class='display-4'>There are no items</h3>"
                     }
                     return result
@@ -1257,21 +1257,21 @@ const renderTable = async() => {
 <script>
 
 function Repartir(){
-    console.log(22)
+   /// console.log(22)
 
 if(!document.getElementById("questionPoints") || document.getElementById("questionPoints")<=0 ){
     alertaMensajitos(5,'Invalid Value', 'The current point can not be divided')
     return;
 }
 let dividido=document.getElementById("questionPoints").value/tablaPreguntas.length
-console.log(document.getElementById("questionPoints"))
-console.log(tablaPreguntas.length)
+//console.log(document.getElementById("questionPoints"))
+//console.log(tablaPreguntas.length)
 
-console.log(dividido)
+//console.log(dividido)
 
 for (const item of tablaPreguntas){
 
-console.log(item)
+//console.log(item)
 
 item.value=dividido
 
@@ -1300,12 +1300,12 @@ if(tipoPreguntaSelected==1)
    <script>
 
        async function verificaOpciones(){
-           console.log('sss');
+         //  console.log('sss');
            let HayCorrectos=false;
            let totalValue=0;
 
         for(const element of tablaPreguntas ){
-           console.log(element);
+           //console.log(element);
 
             if(tipoPreguntaSelected==1 || tipoPreguntaSelected==3 ){
                 if(element.isCorrect==true){
@@ -1364,7 +1364,7 @@ function isEmptyOrSpaces(str){
     
         tablaPreguntas.forEach(function(item, index, object) {
          if(item.isCorrect==1){
-             console.log(item);
+            // console.log(item);
 
               object.splice(index, 1);
              }
@@ -1448,7 +1448,7 @@ function isEmptyOrSpaces(str){
                     actualizarListaCompletations();
      indiceRespuesta=datos.id;
      indicePalabra=text;
-     console.log((document.getElementById(`questionText`).value));
+    // console.log((document.getElementById(`questionText`).value));
 
     
      reDraw(document.getElementById(`questionText`));
@@ -1466,14 +1466,14 @@ function isEmptyOrSpaces(str){
 
 
          tablaPreguntas[id].value=number.value;
-         console.log( tablaPreguntas[id]);
+        // console.log( tablaPreguntas[id]);
      }
 
       function tfChange(id, tf) {
 
 
          tablaPreguntas[id].trueFalse=tf.value;
-         console.log( tablaPreguntas[id]);
+       //  console.log( tablaPreguntas[id]);
      }
    
        
@@ -1524,7 +1524,7 @@ function isEmptyOrSpaces(str){
 
         tablaPreguntas.map((dato, index) => {
             let checked=dato.isCorrect? 'checked':''
-            console.log(dato)
+          //  console.log(dato)
             let fila =
                 `<tr>
                     <td>

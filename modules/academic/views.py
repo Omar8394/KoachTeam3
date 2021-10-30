@@ -122,6 +122,11 @@ def createLessons(request):
 
 @login_required(login_url="/login/")
 def createQuestions(request):
+    cta=ExtensionUsuario.objects.get(user=request.user).CtaUsuario.fk_rol_usuario.valor_elemento 
+    if cta== 'rol_student':
+      return HttpResponseForbidden
+    
+
     preguntaId=request.GET.get('id')
     #la modificacion es para que los busque por el id de estructuras programa (me facilita la vida)
     pregunta=ActividadEvaluaciones.objects.get(fk_estructura_programa=preguntaId)
@@ -201,6 +206,9 @@ def getCurrentTime(request):
 
 @login_required(login_url="/login/")
 def contenidoExamen(request):
+    cta=ExtensionUsuario.objects.get(user=request.user).CtaUsuario.fk_rol_usuario.valor_elemento 
+    if cta!= 'rol_student':
+      return HttpResponseForbidden
     if request.method == "POST":
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             
@@ -369,6 +377,9 @@ def contenidoExamen(request):
 
 @login_required(login_url="/login/")
 def takeExam(request):
+    cta=ExtensionUsuario.objects.get(user=request.user).CtaUsuario
+    if cta.fk_rol_usuario.valor_elemento != 'rol_student':
+      return HttpResponseForbidden
     preguntaId=request.GET.get('id')
     #la modificacion es para que los busque por el id de estructuras programa (me facilita la vida)
     pregunta=ActividadEvaluaciones.objects.get(fk_estructura_programa=preguntaId)
@@ -411,7 +422,16 @@ def takeExam(request):
         manejaTiempo=1
         if examen.count()> 0:
          time=examen[0].fechaInicio+ datetime.timedelta(0,(pregunta.duracion*60))
-         time=time.strftime("%b %d %Y %H:%M:%S")
+         if time.replace(tzinfo=None)  <= datetime.datetime.now():
+             print('aqui')
+             test=ExamenActividad.objects.get(pk=examen[0].pk)
+             test.fechaTermino=time
+             test.estadoExamen=4
+             test.save()
+             
+             
+         else:
+          time=time.strftime("%b %d %Y %H:%M:%S")
 
     
     context = {
@@ -437,12 +457,19 @@ def takeExam(request):
 
 @login_required(login_url="/login/")
 def SeeTest(request):
+    cta=ExtensionUsuario.objects.get(user=request.user).CtaUsuario.fk_rol_usuario.valor_elemento 
+    
+    
     Id=request.GET.get('id')
     examen=ExamenActividad.objects.get(pk=Id)
+    
     
     pregunta=ActividadEvaluaciones.objects.get(pk=examen.fk_Actividad.pk)
     escalas = EscalaEvaluacion.objects.all()
     user=ExtensionUsuario.objects.get(user=request.user)
+    if cta== 'rol_student':
+      if examen.fk_publico !=user:
+          return HttpResponseForbidden
 
 
     print(examen)
@@ -471,7 +498,16 @@ def SeeTest(request):
      listaPreguntas=EvaluacionesPreguntas.objects.filter(fk_evaluaciones_bloque=bloque).order_by('orden')
 
 
-
+    if pregunta.duracion != None:
+        
+        if examen.count()> 0:
+         time=examen[0].fechaInicio+ datetime.timedelta(0,(pregunta.duracion*60))
+         if time.replace(tzinfo=None)  <= datetime.datetime.now():
+             print('aqui')
+             test=ExamenActividad.objects.get(pk=examen[0].pk)
+             test.fechaTermino=time
+             test.estadoExamen=4
+             test.save()
      
 
     
@@ -518,6 +554,10 @@ def SeeTest(request):
 
 @login_required(login_url="/login/")
 def TestList(request):
+    cta=ExtensionUsuario.objects.get(user=request.user).CtaUsuario.fk_rol_usuario.valor_elemento 
+    if cta== 'rol_student':
+      return HttpResponseForbidden
+
     examenes=ExamenActividad.objects.annotate(tipoTest=F('fk_Actividad__fk_estructura_programa__fk_categoria__valor_elemento')).all()
      
     fechaFinalExamen=None
@@ -692,10 +732,41 @@ def TestList(request):
     
     return render(request, 'academic/TestList.html', context)
 
+def getChilds(estructura):
+    
+    struct=Estructuraprograma.objects.get(pk=estructura)
+    if struct.valor_elemento=='Course':
+        return
+
+
+
+    return 0
+
+def setTimeOuts(estructura):
+    examenes=ExamenActividad.objects.annotate(tipoTest=F('fk_Actividad__fk_estructura_programa__fk_categoria__valor_elemento'), actividad=F('fk_Actividad__fk_estructura_programa')).all()
+    for item in examenes:
+        actividad=item.fk_Actividad
+        if actividad.duracion != None:
+         time=item.fechaInicio+ datetime.timedelta(0,(actividad.duracion*60))
+         if time >= datetime.datetime.now():
+             item.fechaTermino=time
+             item.estadoExamen=4
+             item.save()
+
 @login_required(login_url="/login/")
 def TeacherTests(request):
-    examenes=ExamenActividad.objects.annotate(tipoTest=F('fk_Actividad__fk_estructura_programa__fk_categoria__valor_elemento')).all()
-    examenes.filter(usuario=ExtensionUsuario.objects.get(user=request.user).Publico)
+    examenes=ExamenActividad.objects.annotate(tipoTest=F('fk_Actividad__fk_estructura_programa__fk_categoria__valor_elemento'), actividad=F('fk_Actividad__fk_estructura_programa')).all()
+    user=ExtensionUsuario.objects.get(user=request.user).Publico
+    programasProfes=ProgramaProfesores.objects.filter(fk_publico=user)
+
+    for item in programasProfes:
+
+     examenes.filter()
+
+
+
+
+
 
      
     fechaFinalExamen=None
@@ -991,6 +1062,10 @@ def GraficaResultados(request):
 
 @login_required(login_url="/login/")
 def MyTest(request):
+    cta=ExtensionUsuario.objects.get(user=request.user).CtaUsuario.fk_rol_usuario.valor_elemento 
+    if cta!= 'rol_student':
+      return HttpResponseForbidden
+
     examenes=ExamenActividad.objects.annotate(tipoTest=F('fk_Actividad__fk_estructura_programa__fk_categoria__valor_elemento')).all()
 
     examenes.filter(usuario=ExtensionUsuario.objects.get(user=request.user).Publico)
