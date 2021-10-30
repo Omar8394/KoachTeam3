@@ -3362,7 +3362,6 @@ def actividad(request, programa, proceso, unidad, curso, topico, idActividad):
 def logUser(request):
     if request.method == "POST":
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            context = {}
             user = request.user.extensionusuario
             publico = user.Publico
             rol = user.CtaUsuario.fk_rol_usuario.desc_elemento
