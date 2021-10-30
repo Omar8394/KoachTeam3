@@ -1,534 +1,1452 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+
+{% extends "layouts/base.html" %}
+
 
 	<title>
-      {% block title %}Helping{% endblock %}
-    </title>
-
-	<meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />
-	<link rel="icon" href="/static/assets/img/icon.png" type="image/x-icon"/>
-	<link rel="canonical" href="">
-
-	<!-- Fonts and icons -->
-	<script src="/static/assets/js/plugin/webfont/webfont.min.js"></script>
-	<!-- SCROOLL REVEAL JS LIBRARY CDN -->
-	<script src="/static/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
-    <script src="/static/assets/js/plugin/scrollRevel/scrollReveal.js"></script>
-	<script>
-		WebFont.load({
-			google: {"families":["Lato:300,400,700,900"]},
-			custom: {"families":["Flaticon", "Font Awesome 5 Solid", "Font Awesome 5 Regular", "Font Awesome 5 Brands", "simple-line-icons"], 
-			urls: ['/static/assets/css/fonts.min.css']},
-			active: function() {
-				sessionStorage.fonts = true;
-			}
-		});
-	</script>
-
-	<!-- CSS Files -->
-	<link rel="stylesheet" href="/static/assets/css/bootstrap.min.css">
-	<link rel="stylesheet" href="/static/assets/css/atlantis.min.css">
-
-
-    <!-- Specific Page CSS goes HERE  -->
-    {% block stylesheets %}
-	<style>
-		.content{
-          background: rgb(37, 45, 70);
-		  width: 100%;
-		 
-		}
-
-		#cont-security{
-			background: rgba(128, 128, 128, 0.582);
-			color: whitesmoke;
-			
-		}
-
-		#cont_title{
-			background: rgba(128, 128, 128, 0.856);
-			color: whitesmoke;
-		
-		}
-
-	    #cont-security .container{
-          font-size: 150%;
-		}
-
-		
-
-	</style>
-	
-	{% endblock stylesheets %}
-
-</head>
-<body style="background-color: #dde2e1;">
-	<div class="wrapper sidebar_minimize">
-
-        {% include 'help/navigationHelping.html' %}
-       
-		{% include 'help/sidebarHelping.html' %}  
-	
-		<div class="main-panel">
-			
-			{% block content %} 
-		 
-			<div class="content">
-				<div class="page-inner">
-					<div class="page-category animated fadeInRight">
-	
-					
-						<div class="row border-warning border-bottom" id="cont_title" >
-	
-							<section class="col" style="padding: 2%;">
-								<h1 class="d-inline p-2 " id="">The User's Manual</h1>
-								<i class="fas fa-tv"></i>
-							</section>
-	
-						</div>
-
-						<div class="row mt-4" id="cont-security">
-	
-							<div class="container-fluid border-warning border-bottom">
-								<section class="row mt-4">
-									<h2 class="container">Manual of Security</h2>
-								</section>
-		
-								<article class="row">
-									     <h3 class="container" id="a1">Registration:</h3>
-										   <p class="container">
-											To be able to register in the system, for favvor it follows the step that we show him next.</p>
-								</article>
-                                             
-								<article class="row">
-									<p class="container">Step 1: enter user's name and a mail been worth.</p>
-									<div class="container text-center"> 
-										
-										<img src="/static/help-style/hepl_Imag/img_security_reg_1.png" alt="" style="width: 80%;">
-									</div>
-						        </article>
-								
-							</div>
-
-							<div class="container-fluid border-warning border-bottom">
-								<section class="row mt-4">
-									<h2 class="container">Modulo de Seguridad</h2>
-								</section>
-		
-								<article class="row">
-									     <h3 class="container" id="a2">Step 2: Password Creation:</h3>
-										   <p class="container">
-											The password must contain a minimum of 8 characters, it must have uppercase, lowercase, numbers and a special character.
-                                            Enter a password and then type it again for confirmation.
-										    </p>
-								</article>
-
-								<article class="row">
-									
-									<div class="container text-center">
-										<img src="/static/help-style/hepl_Imag/img_security_in_password1.png" alt="" style="width: 80%;">
-									</div>
-						        </article>
-								
-							</div>
-
-							<div class="container-fluid border-warning border-bottom">
-								<section class="row mt-4">
-									<h2 class="container">Modulo de Seguridad</h2>
-								</section>
-		
-								<article class="row">
-									     <h3 class="container" id="a2">Step 3: Registro Exitoso:</h3>
-										   <p class="container">
-											If their user name and countersign have been verified correctly, of he/she would see appear in the superior part of the form written in red letters the following User created-please login. such and like it is shown in the following image
-											</p>
-								</article>
-
-								<article class="row">
-									
-									<div class="container text-center">
-										<img src="/static/help-style/hepl_Imag/registro(81).png" alt="" style="width: 80%;">
-									</div>
-						        </article>
-								
-							</div>
-
-							<div class="container-fluid border-warning border-bottom">
-								<section class="row mt-4">
-									<h2 class="container">Manual of Security</h2>
-								</section>
-		
-								<article class="row">
-									     <h3 class="container" id="">Unsatisfied Verification:</h3>
-										   <p class="container">
-											If their countersign doesn't fulfill the established requirements of security for the system, write a new countersign again.
-											</p>
-								</article>
-
-								<article class="row">
-									<div class="container text-center">
-										<img src="/static/help-style/hepl_Imag/img_security_caracter.png" alt="" style="width: 80%;">
-									</div>
-						        </article>
-								
-							</div>
-
-							
-
-
-							<div class="container-fluid border-warning border-bottom">
-								<section class="row mt-4">
-									<h2 class="container">Manual of Security</h2>
-								</section>
-		
-								<article class="row">
-									     <h3 class="container" id="a3">Sing in:</h3>
-										   <p class="container">
-											To consent to the system it should enter their user name and the previously created countersign.</p>
-								</article>
-
-								<article class="row">
-									<div class="container text-center">
-										<img src="/static/help-style/hepl_Imag/img_security_sing_in.png" alt="" style="width: 80%;">
-									</div>
-						        </article>
-								
-							</div>
+		{% block title %}Helping{% endblock %}
+  	</title>
 
 
 
-						</div>
-                         <br><br>
+{% block stylesheets %}
+<style>
+	.content {
+		background: rgb(37, 45, 70);
+		width: 100%;
 
-						<div class="row mt-4" id="cont-security">
-	
-							<div class="container-fluid border-warning border-bottom">
-								<section class="row mt-4">
-									<h2 class="container">Manual of Registration</h2>
-								</section>
-		
-								<article class="row">
-									     <h3 class="container" id="b1">Enrollment</h3>
-										   <p class="container">
-											Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis, aliquam placeat? At, dolorum reprehenderit fugiat soluta aliquid voluptas molestias similique quas hic itaque ab officia, tenetur quisquam ex, aut iste minus recusandae quidem? Temporibus cupiditate expedita repellat sequi eligendi rem incidunt pariatur voluptatem.</p>
-								</article>
+	}
 
-								<article class="row">
-									<div class="container text-center">
-										<img src="/static/help-style/hepl_Imag/regist (85).png" alt="" style="width: 80%;">
-									</div>
-						        </article>
-								
-							</div>
+	#cont-security,
+	#cont-Registration,
+	#cont-academic,
+	#cont-planning {
+		background: rgba(128, 128, 128, 0.582);
+		color: whitesmoke;
 
-							<div class="container-fluid border-warning border-bottom">
-								<section class="row mt-4">
-									<h2 class="container">Manual of Registration</h2>
-								</section>
-		
-								<article class="row">
-									     <h3 class="container" id="b2">Enrollment List</h3>
-										   <p class="container">
-											Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis, aliquam placeat? At, dolorum reprehenderit fugiat soluta aliquid voluptas molestias similique quas hic itaque ab officia, tenetur quisquam ex, aut iste minus recusandae quidem? Temporibus cupiditate expedita repellat sequi eligendi rem incidunt pariatur voluptatem.</p>
-								</article>
+	}
 
-								<article class="row">
-									<div class="container text-center">
-										<img src="/static/help-style/hepl_Imag/regis(84).png" alt="" style="width: 80%;">
-									</div>
-						        </article>
-								
-							</div>
+	#cont_title {
+		background: rgba(128, 128, 128, 0.856);
+		color: whitesmoke;
 
-							<div class="container-fluid border-warning border-bottom">
-								<section class="row mt-4">
-									<h2 class="container">Manual of Registration</h2>
-								</section>
-		
-								<article class="row">
-									     <h3 class="container" id="b3">Manage Persons</h3>
-										   <p class="container">
-											Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis, aliquam placeat? At, dolorum reprehenderit fugiat soluta aliquid voluptas molestias similique quas hic itaque ab officia, tenetur quisquam ex, aut iste minus recusandae quidem? Temporibus cupiditate expedita repellat sequi eligendi rem incidunt pariatur voluptatem.</p>
-								</article>
+	}
 
-								<article class="row">
-									<div class="container text-center">
-										<img src="/static/help-style/hepl_Imag/regist (86).png" alt="" style="width: 80%;">
-									</div>
-						        </article>
-								
-							</div>
+	#cont-security .container {
+		font-size: 150%;
+	}
 
-							
+	#cont-Registration .container {
+		font-size: 150%;
+	}
+
+	#cont-academic .container {
+		font-size: 150%;
+	}
+
+	#cont-planning .container {
+		font-size: 150%;
+	}
+</style>
+{% endblock stylesheets%}
+{% block content %}
+
+<div class="content">
+	<div class="page-inner">
+		<div class="page-category animated fadeInRight">
 
 
-							<div class="container-fluid border-warning border-bottom">
-								<section class="row mt-4">
-									<h2 class="container">Manual of Registration</h2>
-								</section>
-		
-								<article class="row">
-									     <h3 class="container" id="b4"></h3>
-										   <p class="container">
-											Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis, aliquam placeat? At, dolorum reprehenderit fugiat soluta aliquid voluptas molestias similique quas hic itaque ab officia, tenetur quisquam ex, aut iste minus recusandae quidem? Temporibus cupiditate expedita repellat sequi eligendi rem incidunt pariatur voluptatem.</p>
-								</article>
+			<div class="row border-warning border-bottom" id="cont_title">
 
-								<article class="row">
-									<div class="container text-center">
-										<img src="" alt="" style="width: 80%;">
-									</div>
-						        </article>
-								
-							</div>
+				<section class="col" style="padding: 2%;">
+					<h1 class="d-inline p-2 " id="">The User's Manual</h1>
+					<i class="fas fa-tv"></i>
+				</section>
 
-
-
-						</div>
-                        <br><br>
-
-						<div class="row mt-4" id="cont-security">
-
-							<div class="container-fluid border-warning border-bottom">
-								<section class="row mt-4">
-									<h2 class="container">Manual of Planning</h2>
-								</section>
-		
-								<article class="row">
-									     <h3 class="container" id="e1">Add Profile</h3>
-										   <p class="container">
-											to add an element to the list, press the button green color</p>
-								</article>
-
-								<article class="row">
-									<div class="container text-center">
-										<img src="/static/help-style/hepl_Imag/img_plannig/Add_Profiles(89).png" alt="" style="width: 80%;">
-									</div>
-						        </article>
-
-								<article class="row mt-4">
-									<h3 class="container" id="e1">Add Profile</h3>
-									<p class="container">
-										after pressing the button of adding him he/she will appear in screen following form, enter a name a description and select the branch to which belongs the element that goes to add to the list, then press the long button of dark blue color "submit"</p>
-								</article>
-								
-								<article class="row">
-									<div class="container text-center">
-										<img src="/static/help-style/hepl_Imag/img_plannig/img_planning_form_add(128).png" alt="" style="width: 80%;">
-									</div>
-								</article>
-								<br>
-								
-							</div>
-	
-							<div class="container-fluid border-warning border-bottom">
-								<section class="row mt-4">
-									<h2 class="container">Manual of Planning</h2>
-								</section>
-		
-								<article class="row">
-									     <h3 class="container" id="e2">To see clever of profiles</h3>
-										   <p class="container">
-											To see the list of profiles that they have been added, it should be positioned in the lash of profiles.</p>
-								</article>
-
-								<article class="row">
-									<div class="container text-center">
-										<img src="/static/help-style/hepl_Imag/img_plannig/show_list1(89).png" alt="" style="width: 80%;">
-									</div>
-						        </article>
-								
-							</div>
-
-							<div class="container-fluid border-warning border-bottom">
-								<section class="row mt-4">
-									<h2 class="container">Manual of Planning</h2>
-								</section>
-		
-								<article class="row">
-									     <h3 class="container" id="e3">Publish list</h3>
-										   <p class="container">
-											To carry out changes in an element of the list of profiles, the button of dark blue color that has the image of a pencil pulse.</p>
-								</article>
-
-								<article class="row">
-									<div class="container text-center">
-										<img src="/static/help-style/hepl_Imag/img_plannig/para_edit(89).png" alt="" style="width: 80%;">
-									</div>
-						        </article>
-								
-							</div>
-
-							<div class="container-fluid border-warning border-bottom">
-								<section class="row mt-4">
-									<h2 class="container">Manual of Planning</h2>
-								</section>
-		
-								<article class="row">
-									     <h3 class="container" id="e4">Eliminate list</h3>
-										   <p class="container">
-											To eliminate an element of the list of profiles, the button red color that has an image of a basket of garbage pulse.</p>
-								</article>
-
-								<article class="row">
-									<div class="container text-center">
-										<img src="/static/help-style/hepl_Imag/img_plannig/para_drop(89).png" alt="" style="width: 80%;">
-									</div>
-						        </article>
-								
-							</div>
-
-							<div class="container-fluid border-warning border-bottom">
-								<section class="row mt-4">
-									<h2 class="container">Manual of Planning</h2>
-								</section>
-		
-								<article class="row">
-									     <h3 class="container" id="e5">add Competence</h3>
-										   <p class="container">
-											To add a competition to the list it should be before registered one or but you profile. If there are already profiles the green button that is pointed out in the image pulses.
-											</p>
-								</article>
-
-								<article class="row">
-									<div class="container text-center">
-										<img src="/static/help-style/hepl_Imag/img_plannig/img_competens/add_competens (1).png" alt="" style="width: 80%;">
-									</div>
-						        </article>
-
-								<article class="row mt-4">
-									<h3 class="container" id="e5">add Competence</h3>
-									<p class="container">
-										After pressing the button to add, a form is shown that should fill, enter a description, select an option in each one of the lists desplegables it is necessary that all the boxes are full, then press the button of dark blue color "Submit"
-										<br><br>
-										notice: in the text box where he/she is asked to enter a description, it should place a different to those that already exist.
-									</p>
-								</article>
-								
-								<article class="row">
-									<div class="container text-center">
-										<img src="/static/help-style/hepl_Imag/img_plannig/img_competens/form_addCompete(2).png" alt=""
-											style="width: 80%;">
-									</div>
-								
-								</article>
-								<br>
-
-								<article class="row mt-4">
-									<h3 class="container" id="e5">Sailing map</h3>
-									<p class="container">
-										To return behind he/she makes click in the superior part, in the subindex that is shown in the following image.
-									</p>
-								</article>
-								
-								<article class="row">
-									<div class="container text-center">
-										<img src="/static/help-style/hepl_Imag/img_plannig/img_competens/ir_atras(3).png" alt=""
-											style="width: 80%;">
-									</div>
-								
-								</article>
-								<br>
-							</div>
-
-							<div class="container-fluid border-warning border-bottom">
-								<section class="row mt-4">
-									<h2 class="container">Manual of Planning</h2>
-								</section>
-		
-								<article class="row">
-									     <h3 class="container" id="e6">See competences</h3>
-										   <p class="container">
-											To see the list of competences, it must be located in the competences tab, in the example image it shows us a red rectangle that encloses the correct tab, a text box is also indicated with a blue date to facilitate the search of elements and a green arrow that allows us to update the list of competences</p>
-								</article>
-
-								<article class="row">
-									<div class="container text-center">
-										<img src="/static/help-style/hepl_Imag/img_plannig/img_competens/See_Compet (135).png" alt="" style="width: 80%;">
-									</div>
-						        </article>
-								<br>
-							</div>
-
-							<div class="container-fluid border-warning border-bottom">
-								<section class="row mt-4">
-									<h2 class="container">Manual of Planning</h2>
-								</section>
-		
-								<article class="row">
-									     <h3 class="container" id="e7">Edit Row</h3>
-										   <p class="container">
-											To edit one or but data of the list of competitions, make click in the button of clear blue color with the image of a pencil which is indicated with an arrow of blue color.</p>
-								</article>
-
-								<article class="row">
-									<div class="container text-center">
-										<img src="/static/help-style/hepl_Imag/img_plannig/img_competens/edit_compete(88).png" alt="" style="width: 80%;">
-									</div>
-						        </article>
-								<br>
-							</div>
-
-							<div class="container-fluid border-warning border-bottom">
-								<section class="row mt-4">
-									<h2 class="container">Manual of Planning</h2>
-								</section>
-		
-								<article class="row">
-									     <h3 class="container" id="e8">Delete Row</h3>
-										   <p class="container">
-											To delete one or but data of the list of competitions, make click in the button of red color that has the image of a basket of garbage which is indicated with an arrow of blue color.</p>
-								</article>
-
-								<article class="row">
-									<div class="container text-center">
-										<img src="/static/help-style/hepl_Imag/img_plannig/img_competens/delete_compet(88).png" alt="" style="width: 80%;">
-									</div>
-						        </article>
-								<br>
-							</div>
-                     
-
-
-						</div>
-	
-				         
-	
-						
-				</div>
-				</div>
 			</div>
-			   
-			{% endblock content %}
+			<!--  modulo de security help   -->
+			<div class="row mt-4" id="cont-security">
 
-			
+				<div class="container-fluid border-warning border-bottom">
+
+					<br>
+					<section class="row mt-4">
+						<h2 class="container">Manual of Security</h2>
+					</section>
+
+					<article class="row">
+						<h3 class="container" id="a1">Registration:</h3>
+						<p class="container">Please follow the following steps to register in the system.</p>
+					</article>
+
+					<article class="row">
+						<p class="container">Step 1: For registers he/she makes click in the link that he/she says
+							"Register" that is located in the inferior part of the such form and like it is shown in the
+							example. </p>
+						<div class="container text-center">
+
+							<img src="/static/help-style/hepl_Imag/link register(10).png" alt="" style="width: 80%;">
+						</div>
+					</article>
+					<br>
+
+
+					<article class="row">
+						<h3 class="container" id="a1">Registration:</h3>
+						<p class="container">
+							To be able to register in the system, for favvor it follows the step that we show him next.
+						</p>
+					</article>
+
+					<article class="row">
+						<p class="container">Step 2: enter user's name and a mail been worth.</p>
+						<div class="container text-center">
+
+							<img src="/static/help-style/hepl_Imag/img_security_reg_60.png.png" alt=""
+								style="width: 80%;">
+						</div>
+					</article>
+					<br>
+
+					<article class="row">
+						<h3 class="container" id="a2">Step 3: Password Creation:</h3>
+						<p class="container">
+							The password must contain a minimum of 8 characters, it must have uppercase, lowercase,
+							numbers and a special character.
+							Enter a password and then type it again for confirmation.
+						</p>
+					</article>
+
+					<article class="row">
+
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_security_in_password10.png" alt=""
+								style="width: 80%;">
+						</div>
+					</article>
+
+					<br>
+
+					<article class="row">
+						<h3 class="container" id="a2">Step 3: Registro Exitoso:</h3>
+						<p class="container">
+							If their registration has been verified successfully, you will be redirigido to the
+							beginning page to enter to the system, but it is he/she makes this way click in the link
+							that is in the inferior part of the form that he/she says "Login".
+						</p>
+					</article>
+
+					<article class="row">
+
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/registro exitoso.png" alt="" style="width: 80%;">
+						</div>
+					</article>
+
+					<br>
+				</div>
+
+
+
+				<div class="container-fluid border-warning border-bottom">
+
+
+				</div>
+
+				<div class="container-fluid border-warning border-bottom">
+					<section class="row mt-4">
+						<h2 class="container">Manual of Security</h2>
+					</section>
+
+					<article class="row">
+						<h3 class="container" id="">Unsatisfied Verification:</h3>
+						<p class="container">
+							If their countersign doesn't fulfill the established requirements of security for the
+							system, write a new countersign again.
+						</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_security_caracter (20).png" alt=""
+								style="width: 80%;">
+						</div>
+					</article>
+					<br>
+				</div>
+
+				<div class="container-fluid border-warning border-bottom">
+					<section class="row mt-4">
+						<h2 class="container">Manual of Security</h2>
+					</section>
+
+					<article class="row">
+						<h3 class="container" id="a3">Sing in:</h3>
+						<p class="container">
+							To consent to the system it should enter their user name and the previously created
+							countersign.</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_security_sing_in(10).png" alt=""
+								style="width: 80%;">
+						</div>
+					</article>
+					<br>
+				</div>
+
+				<div class="container-fluid border-warning border-bottom">
+					<section class="row mt-4">
+						<h2 class="container">Manual of Security</h2>
+					</section>
+
+					<article class="row">
+						<h3 class="container" id="a4">Forgot Password or Account Blocked</h3>
+						<p class="container">
+							For it recovered or to unblock their password should enter the email address with which
+							registered in the system, make click in the button "Submit" then he/she was sent a recovery
+							code to their email, enter with that code and change their password</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/recuperar password(63).png" alt=""
+								style="width: 80%;">
+						</div>
+					</article>
+					<br>
+				</div>
+
+
+
+			</div>
+
+
+			<br><br>
+
+
+
+
+			<!--  modulo de registration help   -->
+			<div class="row mt-4" id="cont-Registration">
+
+				<div class="container-fluid border-warning border-bottom">
+					<section class="row mt-4">
+						<h2 class="container">Manual of Registration</h2>
+					</section>
+
+					<article class="row">
+						<h3 class="container" id="b1">Enrollment</h3>
+						<p class="container">
+							Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis, aliquam placeat? At,
+							dolorum reprehenderit fugiat soluta aliquid voluptas molestias similique quas hic itaque ab
+							officia, tenetur quisquam ex, aut iste minus recusandae quidem? Temporibus cupiditate
+							expedita repellat sequi eligendi rem incidunt pariatur voluptatem.</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/regist (85).png" alt="" style="width: 80%;">
+						</div>
+					</article>
+
+				</div>
+
+				<div class="container-fluid border-warning border-bottom">
+					<section class="row mt-4">
+						<h2 class="container">Manual of Registration</h2>
+					</section>
+
+					<article class="row">
+						<h3 class="container" id="b2">Enrollment List</h3>
+						<p class="container">
+							Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis, aliquam placeat? At,
+							dolorum reprehenderit fugiat soluta aliquid voluptas molestias similique quas hic itaque ab
+							officia, tenetur quisquam ex, aut iste minus recusandae quidem? Temporibus cupiditate
+							expedita repellat sequi eligendi rem incidunt pariatur voluptatem.</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/regis(84).png" alt="" style="width: 80%;">
+						</div>
+					</article>
+
+				</div>
+
+				<div class="container-fluid border-warning border-bottom">
+					<section class="row mt-4">
+						<h2 class="container">Manual of Registration</h2>
+					</section>
+
+					<article class="row">
+						<h3 class="container" id="b3">Manage Persons</h3>
+						<p class="container">
+							Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis, aliquam placeat? At,
+							dolorum reprehenderit fugiat soluta aliquid voluptas molestias similique quas hic itaque ab
+							officia, tenetur quisquam ex, aut iste minus recusandae quidem? Temporibus cupiditate
+							expedita repellat sequi eligendi rem incidunt pariatur voluptatem.</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/regist (86).png" alt="" style="width: 80%;">
+						</div>
+					</article>
+
+				</div>
+
+
+
+
+				<div class="container-fluid border-warning border-bottom">
+					<section class="row mt-4">
+						<h2 class="container">Manual of Registration</h2>
+					</section>
+
+					<article class="row">
+						<h3 class="container" id="b4"></h3>
+						<p class="container">
+							Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis, aliquam placeat? At,
+							dolorum reprehenderit fugiat soluta aliquid voluptas molestias similique quas hic itaque ab
+							officia, tenetur quisquam ex, aut iste minus recusandae quidem? Temporibus cupiditate
+							expedita repellat sequi eligendi rem incidunt pariatur voluptatem.</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="" alt="" style="width: 80%;">
+						</div>
+					</article>
+
+				</div>
+
+
+
+			</div>
+			<br><br>
+
+
+
+
+			<!--  modulo de planning help   -->
+			<div class="row mt-4" id="cont-planning">
+
+				<div class="container-fluid border-warning border-bottom">
+					<section class="row mt-4">
+						<h2 class="container">Manual of Academic</h2>
+					</section>
+
+					<article class="row">
+						<h3 class="container" id="e1">Add Profile</h3>
+						<p class="container">To add a profile he/she makes click in the lateral bar where he/she says
+							"planning" and then in "profile" he/she was shown a screen similar to that of the example,
+							which a searcher contains to filter pro names, a button to refresh the window which is
+							indicated in the rectangle of color orange, to add a new profile makes in the button of
+							green color which is locked in a rectangle of red color.</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_plannig/Add_Profiles.png" alt=""
+								style="width: 80%;">
+						</div>
+					</article>
+
+					<article class="row mt-4">
+						<h3 class="container" id="e1">Add Profile</h3>
+						<p class="container">
+							after pressing the button of adding him he/she will appear in screen following form, enter a
+							name a description and select the branch to which belongs the element that goes to add to
+							the list, then press the long button of blue color "save"</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_plannig/img_planning_form_add1.png" alt=""
+								style="width: 80%;">
+						</div>
+					</article>
+					<br>
+
+				</div>
+
+				<div class="container-fluid border-warning border-bottom">
+					<section class="row mt-4">
+						<h2 class="container">Manual of Planning</h2>
+					</section>
+
+					<article class="row">
+						<h3 class="container" id="e2">To see clever of profiles</h3>
+						<p class="container">
+							To see the list of profiles that they have been added, it should be positioned in the lash
+							of profiles.</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_plannig/show_list10.png" alt=""
+								style="width: 80%;">
+						</div>
+					</article>
+
+				</div>
+
+				<div class="container-fluid border-warning border-bottom">
+					<section class="row mt-4">
+						<h2 class="container">Manual of Planning</h2>
+					</section>
+
+					<article class="row">
+						<h3 class="container" id="e3">Edit list</h3>
+						<p class="container">
+							To carry out changes in an element of the list of profiles, the button of dark blue color
+							that has the image of a pencil pulse.</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_plannig/para_edit(10).png" alt=""
+								style="width: 80%;">
+						</div>
+					</article>
+					<br>
+				</div>
+
+				<div class="container-fluid border-warning border-bottom">
+					<section class="row mt-4">
+						<h2 class="container">Manual of Planning</h2>
+					</section>
+
+					<article class="row">
+						<h3 class="container" id="e4">Delete list</h3>
+						<p class="container">
+							To eliminate an element of the list of profiles, the button red color that has an image of a
+							basket of garbage pulse.</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_plannig/para_drop(10).png" alt=""
+								style="width: 80%;">
+						</div>
+					</article>
+					<br>
+				</div>
+
+				<div class="container-fluid border-warning border-bottom">
+					<section class="row mt-4">
+						<h2 class="container">Manual of Planning</h2>
+					</section>
+
+					<article class="row">
+						<h3 class="container" id="e5">add Competence</h3>
+						<p class="container">
+							To add a competence to the list you must have saved one or more profiles. If you do not add
+							one, if there is already a profile click on the green button that says "add competence".
+						</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_plannig/img_competens/add_competens (41).png"
+								alt="" style="width: 80%;">
+						</div>
+					</article>
+
+					<article class="row mt-4">
+						<h3 class="container" id="e5">add Competence</h3>
+						<p class="container">
+							All the fields of this form are required, add a description, select an option for each
+							drop-down list and click on the blue button that says “save”.
+							<br><br>
+							notice: in the text box where he/she is asked to enter a description, it should place a
+							different to those that already exist.
+						</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_plannig/img_competens/form_addCompete.png" alt=""
+								style="width: 80%;">
+						</div>
+
+					</article>
+					<br>
+
+					<article class="row mt-4">
+						<h3 class="container" id="e5">Sailing map</h3>
+						<p class="container">
+							To return behind he/she makes click in the superior part, in the subindex that is shown in
+							the following image.
+						</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_plannig/img_competens/Ir Atras(40).png" alt=""
+								style="width: 80%;">
+						</div>
+
+					</article>
+					<br>
+				</div>
+
+				<div class="container-fluid border-warning border-bottom">
+					<section class="row mt-4">
+						<h2 class="container">Manual of Planning</h2>
+					</section>
+
+					<article class="row">
+						<h3 class="container" id="e6">See competences</h3>
+						<p class="container">
+							To see the list of competences, it must be located in the competences tab, in the example
+							image it shows us a red rectangle that encloses the correct tab, a text box is also
+							indicated with a blue date to facilitate the search of elements and a green arrow that
+							allows us to update the list of competences</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_plannig/img_competens/See_Compet.png" alt=""
+								style="width: 80%;">
+						</div>
+					</article>
+					<br>
+				</div>
+
+				<div class="container-fluid border-warning border-bottom">
+					<section class="row mt-4">
+						<h2 class="container">Manual of Planning</h2>
+					</section>
+
+					<article class="row">
+						<h3 class="container" id="e7">Edit Row</h3>
+						<p class="container">
+							To edit one or but data of the list of competitions, make click in the button of clear blue
+							color with the image of a pencil which is indicated with an arrow of blue color.</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_plannig/img_competens/edit_compete.png" alt=""
+								style="width: 80%;">
+						</div>
+					</article>
+					<br>
+				</div>
+
+				<div class="container-fluid border-warning border-bottom">
+					<section class="row mt-4">
+						<h2 class="container">Manual of Planning</h2>
+					</section>
+
+					<article class="row">
+						<h3 class="container" id="e8">Delete Row</h3>
+						<p class="container">
+							To delete one or but data of the list of competitions, make click in the button of red color
+							that has the image of a basket of garbage which is indicated with an arrow of blue color.
+						</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_plannig/img_competens/delete_compet.png" alt=""
+								style="width: 80%;">
+						</div>
+					</article>
+					<br>
+				</div>
+
+				<div class="container-fluid border-warning border-bottom">
+					<section class="row mt-4">
+						<h2 class="container">Manual of Planning</h2>
+					</section>
+
+					<article class="row">
+						<h3 class="container" id="e9">Add List Of Public</h3>
+						<p class="container">
+							To add a line to the list of I publish he/she makes click in the button of green color that
+							has the icon of the sign but.</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_plannig/img_program/buton add schedule.png"
+								alt="" style="width: 80%;">
+						</div>
+					</article>
+					<br><br>
+					<article class="row">
+						<h3 class="container">Form To Add Schedule </h3>
+						<p class="container"> Once executed the previous step, was shown in screen a similar form to
+							which is presented in the example which has a clever desplegable that contains the profiles
+							he/she chooses the one that you want. </p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_plannig/img_program/form add schedul(57).png"
+								alt="" style="width: 80%;">
+						</div>
+					</article>
+					<br>
+				</div>
+
+				<div class="container-fluid border-warning border-bottom">
+
+					<section class="row mt-4">
+						<h2 class="container">Manual of Planning</h2>
+					</section>
+
+					<article class="row">
+						<h3 class="container" id="e10">Show Schedule</h3>
+						<p class="container">To be able to see the kept schedules he/she makes click in the button of
+							color orange that has the icon of a portfolio.</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_plannig/img_program/buton show schedelu.png"
+								alt="" style="width: 80%;">
+						</div>
+					</article>
+
+					<br><br>
+
+					<article class="row">
+						<h3 class="container">Form to see schedules </h3>
+						<p class="container">Once executed the previous step a form the one will be shown which contains
+							a brief record of the schedules that you/they have stayed, to go behind he/she makes click
+							in the button of red color that he/she says "close".</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_plannig/img_program/form show.png" alt=""
+								style="width: 80%;">
+						</div>
+					</article>
+					<br>
+				</div>
+
+			</div>
+
+			<br><br>
+
+			<!--  modulo de academic help   -->
+
+			<div class="row mt-4" id="cont-academic">
+
+				<div class="container-fluid border-warning border-bottom">
+					<section class="row mt-4">
+						<h2 class="container">Manual of Academic </h2>
+					</section>
+
+					<article class="row">
+						<h3 class="container" id="d1">Add category</h3>
+						<p class="container">
+							To add a new program before to the list he/she should add a category, for it follows it the
+							following steps:</p>
+					</article>
+
+					<article class="row">
+						<p class="container">Step 1: To add a category he/she makes click in the button of green color
+							that has the icon of the sign more, which is locked in the rectangle of color orange that is
+							shown in the example.</p>
+						<div class="container text-center">
+
+							<img src="/static/help-style/hepl_Imag/img_academic/add Category.png" alt=""
+								style="width: 80%;">
+						</div>
+					</article>
+					<br>
+					<article class="row">
+						<p class="container">Step 1.1: Once executed the previous action was shown a form, introduce a
+							description and make click in "Save", if he/she doesn't make click in "Back." </p>
+						<div class="container text-center">
+
+							<img src="/static/help-style/hepl_Imag/img_academic/form_add_category.png" alt=""
+								style="width: 80%;">
+						</div>
+					</article>
+					<br>
+					<article class="row">
+						<h3 class="container">Add Program</h3>
+
+					</article>
+
+					<article class="row">
+						<p class="container">Step 2: To add a new program he/she makes click in the button of green
+							color that has the icon of the sign of but, which is locked in a rectangle of red color as
+							you can appreciate in the example. </p>
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_academic/Add Programs(68).png" alt=""
+								style="width: 80%;">
+						</div>
+					</article>
+					<br>
+					<article class="row">
+						<p class="container">Step 2.1: When executing the previous action he/she was shown an emergent
+							window with a form, all the fields are required, once it has filled the form he/she makes
+							click in "Save", if he/she doesn't want to keep he/she makes click in "back."</p>
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_academic/add_program(18).png" alt=""
+								style="width: 80%;">
+						</div>
+					</article>
+					<br>
+				</div>
+
+				<div class="container-fluid border-warning border-bottom">
+					<section class="row mt-4">
+						<h2 class="container">Modulo de Academic</h2>
+					</section>
+
+					<article class="row">
+						<h3 class="container" id="d2">Acceder a Program</h3>
+						<p class="container">
+							If he/she already added one or more programs to the list goes to the part of below, their
+							screen will shine
+							similar to that of the example, to consent it follows the following steps.
+						</p>
+					</article>
+
+					<article class="row">
+
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_academic/acceder (69).png" alt=""
+								style="width: 80%;">
+						</div>
+					</article>
+					<br>
+
+					<article class="row">
+						<h3 class="container">Acceder a Program</h3>
+						<p class="container">
+							To consent to the program it places the cursor inside the perimeter of the rectangle of blue
+							color that
+							is locked in a rectangle of red color in the example, a block it was shown with the title, a
+							description
+							and a group of bellboys makes click in the button of green color that he/she says "to
+							consent", if it moves
+							away the cursor outside of the perimeter of the rectangle the objects they hid.
+						</p>
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_academic/acceder(70).png" alt=""
+								style="width: 80%;">
+						</div>
+					</article>
+					<br>
+
+				</div>
+
+				<div class="container-fluid border-warning border-bottom">
+					<section class="row mt-4">
+						<h2 class="container">Manual of Academic</h2>
+					</section>
+
+					<article class="row">
+						<h3 class="container" id="d3">Edit</h3>
+						<p class="container">
+							To publish a program it places the cursor inside the perimeter of the rectangle of blue
+							color that is locked
+							in a rectangle of red color in the example, a block it was shown with the title, a
+							description and a group of
+							bellboys makes click in the button of blue color that has the icon of a pencil, if it moves
+							away the cursor outside
+							of the perimeter of the rectangle the objects they hid.
+						</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_academic/acceder(70).png" alt=""
+								style="width: 80%;">
+						</div>
+					</article>
+					<br>
+				</div>
+
+				<div class="container-fluid border-warning border-bottom">
+					<section class="row mt-4">
+						<h2 class="container">Manual of Academic</h2>
+					</section>
+
+					<article class="row">
+						<h3 class="container" id="d4">Delete</h3>
+						<p class="container">
+							To erase a program it places the cursor inside the perimeter of the rectangle of blue color
+							that is locked in a
+							rectangle of red color in the example, a block it was shown with the title, a description
+							and a group of bellboys
+							makes click in the button of red color that has the icon of a basket of garbage, if it moves
+							away the cursor outside
+							of the perimeter of the rectangle the objects they hid.
+						</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_academic/acceder(70).png" alt=""
+								style="width: 80%;">
+						</div>
+					</article>
+					<br>
+
+				</div>
+
+				<div class="container-fluid border-warning border-bottom">
+					<section class="row mt-4">
+						<h2 class="container">Manual of Academic</h2>
+					</section>
+
+					<article class="row">
+						<h3 class="container" id="d5">Add Topic</h3>
+						<p class="container">
+							To add a new topic it should create a category, a program, a process, an unit,
+							and a course until arriving next to the topic, we show an example of as making it
+						</p>
+					</article>
+
+					<br>
+					<article class="row">
+						<h3 class="container">Step 1: To create a new category he/she makes click in the button of green
+							color that has the icon of the sign more "+"
+							that is contained in a rectangle of color orange in our example.</h3>
+						<p class="container">
+
+						</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_academic/add topic/add Category(66).png" alt=""
+								style="width: 80%;">
+						</div>
+					</article>
+
+					<br>
+					<article class="row">
+						<h3 class="container">step 1.1: An emergent sale will open up with a form that he/she will
+							request him that it enters a description, such and like
+							it is indicated in the example, make click in "Save" to conclude.</h3>
+						<p class="container">
+
+						</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_academic/add topic/add Category(67).png" alt=""
+								style="width: 80%;">
+						</div>
+					</article>
+
+					<br>
+					<article class="row">
+						<h3 class="container">Step 2: To create a program he/she makes click in the button of green
+							color that is locked in a
+							rectangle of red color in our example.</h3>
+						<p class="container">
+
+						</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_academic/add topic/Add Programs(68).png" alt=""
+								style="width: 80%;">
+						</div>
+					</article>
+
+					<br>
+					<article class="row">
+						<h3 class="container">Step 2.1: An emergent sale will open up with a form, where he/she has to
+							fill some fields which are required, such and like
+							it is indicated in the example, make click in "Save" to conclude.</h3>
+						<p class="container">
+
+						</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_academic/add topic/Captura de pantalla (72).png"
+								alt="" style="width: 80%;">
+						</div>
+					</article>
+					<br>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_academic/add topic/Captura de pantalla (73).png"
+								alt="" style="width: 80%;">
+						</div>
+					</article>
+
+					<br>
+					<article class="row">
+						<h3 class="container">Step 2.2 Place in the search bar the name of the category that has just
+							created or move down, it was shown the title of the
+							category and a rectangle that it contains the name of the program, a comment and a group of
+							bellboys that of blue color it is to edit, that of
+							green color is to acceder at the following level and that of red color is to erase so that
+							these objects are shown it should it places the cursor
+							on the rectangle that is indicated in the example, to continue he/she makes click in the
+							button of green color that he/she says "Acceder".</h3>
+						<p class="container">
+
+						</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_academic/add topic/Captura de pantalla (74).png"
+								alt="" style="width: 80%;">
+						</div>
+					</article>
+
+					<br>
+					<article class="row">
+						<h3 class="container">Step 3: To create a process he/she makes click in the button of green
+							color that is locked in a rectangle of red color in our
+							example.</h3>
+						<p class="container">
+
+						</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_academic/add topic/Captura de pantalla (75).png"
+								alt="" style="width: 80%;">
+						</div>
+					</article>
+
+					<br>
+					<article class="row">
+						<h3 class="container">Step 3.1: An emergent sale will open up with a form, where he/she has to
+							fill some fields which are required,
+							such and like it is indicated in the example, make click in "Save" to conclude.</h3>
+						<p class="container">
+
+						</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_academic/add topic/Captura de pantalla (76).png"
+								alt="" style="width: 80%;">
+						</div>
+					</article>
+
+					<br>
+					<article class="row">
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_academic/add topic/Captura de pantalla (77).png"
+								alt="" style="width: 80%;">
+						</div>
+					</article>
+
+					<br>
+					<article class="row">
+						<h3 class="container">Step 3.2: A rectangle will be shown that contains the name of the process,
+							a comment and a group of bellboys that of
+							blue color it is to edit, that of green color is to acceder at the following level and that
+							of red color is to delete, so that these objects
+							are shown it should it places the cursor on the rectangle that is indicated in the example,
+							to continue he/she makes click in the button of green
+							that he/she says "Acceder".</h3>
+						<p class="container">
+
+						</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_academic/add topic/Captura de pantalla (78).png"
+								alt="" style="width: 80%;">
+						</div>
+					</article>
+
+					<br>
+					<article class="row">
+						<h3 class="container">Step 4: To create an unit he/she makes click in the button of green color
+							that is locked in a rectangle of red color in
+							our example.</h3>
+						<p class="container">
+
+						</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_academic/add topic/Captura de pantalla (79).png"
+								alt="" style="width: 80%;">
+						</div>
+					</article>
+
+					<br>
+					<article class="row">
+						<h3 class="container">Step 4.1: An emergent sale will open up with a form, where he/she has to
+							fill some fields which are required, such and like
+							it is indicated in the example, make click in "Save" to conclude.</h3>
+						<p class="container">
+
+						</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_academic/add topic/Captura de pantalla (80).png"
+								alt="" style="width: 80%;">
+						</div>
+					</article>
+
+					<br>
+					<article class="row">
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_academic/add topic/Captura de pantalla (81).png"
+								alt="" style="width: 80%;">
+						</div>
+					</article>
+
+					<br>
+					<article class="row">
+						<h3 class="container">Step 4.2: A rectangle will be shown that contains the name of the unit, a
+							comment and a group of bellboys that of blue color it is to edit,
+							that of green color is to acceder at the following level and that of red color is to erase,
+							so that these objects are shown it should it places the cursor on
+							the rectangle that is indicated in the example, to continue he/she makes click in the button
+							of green color that he/she says "Acceder".</h3>
+						<p class="container">
+
+						</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_academic/add topic/Captura de pantalla (82).png"
+								alt="" style="width: 80%;">
+						</div>
+					</article>
+
+					<br>
+					<article class="row">
+						<h3 class="container">Step 5: To create a course he/she makes click in the button of green color
+							that is locked in a rectangle of color orange in our
+							example.</h3>
+						<p class="container">
+
+						</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_academic/add topic/Captura de pantalla (83).png"
+								alt="" style="width: 80%;">
+						</div>
+					</article>
+
+					<br>
+					<article class="row">
+						<h3 class="container">Step 5.1: An emergent sale will open up with a form, where he/she has to
+							fill some fields which are required, such and like it is indicated in the example,
+							make click in "Save" to conclude.</h3>
+						<p class="container">
+
+						</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_academic/add topic/Captura de pantalla (84).png"
+								alt="" style="width: 80%;">
+						</div>
+					</article>
+
+					<br>
+					<article class="row">
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_academic/add topic/Captura de pantalla (85).png"
+								alt="" style="width: 80%;">
+						</div>
+					</article>
+
+					<br>
+					<article class="row">
+						<h3 class="container">Step 5.2: A rectangle will be shown that contains the name of the course,
+							a comment and a group of bellboys that of blue color it is to edit,
+							that of green color is to acceder at the following level and that of red color is to delete,
+							so that these objects are shown it should it places the cursor on
+							the rectangle that is indicated in the example, to continue he/she makes click in the button
+							of green color that he/she says "Acceder".</h3>
+						<p class="container">
+
+						</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_academic/add topic/Captura de pantalla (86).png"
+								alt="" style="width: 80%;">
+						</div>
+					</article>
+
+					<br>
+					<article class="row">
+						<h3 class="container">Step 6: Once executed the previous action their screen should see similar
+							to that of our example, in the superior part the name of the course,
+							a search bar for topics, and a button of green color that has the icon of the sign of the
+							appears but "+" to add a new topic, make click in this button to continue. </h3>
+						<p class="container">
+
+						</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_academic/add topic/Captura de pantalla (87).png"
+								alt="" style="width: 80%;">
+						</div>
+					</article>
+
+					<br>
+					<article class="row">
+						<h3 class="container">Step 6.1: An emergent sale will open up with a form, where he/she has to
+							fill some fields which are required, such and like it is indicated in the example,
+							make click in "Save" to conclude.</h3>
+						<p class="container">
+
+						</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_academic/add topic/Captura de pantalla (88).png"
+								alt="" style="width: 80%;">
+						</div>
+					</article>
+
+					<br>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_academic/add topic/Captura de pantalla (89).png"
+								alt="" style="width: 80%;">
+						</div>
+					</article>
+
+					<br>
+
+					<article class="row">
+						<h3 class="container">Step 6.2: A new container will be shown with the name of the topic a group
+							of bellboys which are indicated in the example locked in
+							a rectangle of color orange, that of green color it is to choose an activity, that of blue
+							color is to publish, and that of red color is to eliminate a topic,
+							make click in button of green color to continue.</h3>
+						<p class="container">
+
+						</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_academic/add topic/Captura de pantalla (90).png"
+								alt="" style="width: 80%;">
+						</div>
+					</article>
+
+					<br>
+				</div>
+
+				<!--create activity topic-->
+
+				<div class="container-fluid border-warning border-bottom">
+					<section class="row mt-4">
+						<h2 class="container">Manual of Academic</h2>
+					</section>
+
+					<article class="row">
+						<h3 class="container" id="d6">Create an Activity</h3>
+						<p class="container">
+							To create an activity it should before creating a topic if I already carry out this step, a
+							container will be
+							shown with the title of the topic and a group of bellboys makes click in the button of green
+							color that has the
+							icon of the sum sign "+".</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_academic/create activity/Captura de pantalla (90).png"
+								alt="" style="width: 80%;">
+						</div>
+					</article>
+
+					<br>
+
+					<article class="row">
+						<p class="container">A pop-up will open with a form, containing 4 buttons lesson, homework,
+							forum, test, as indicated in the example, click on the icon that is
+							enclosed in the red rectangle to create a lesson.
+						</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_academic/create activity/Captura de pantalla (92).png"
+								alt="" style="width: 80%;">
+						</div>
+					</article>
+					<br>
+
+					<article class="row">
+						<p class="container">? </p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_academic/create activity/Captura de pantalla (94).png"
+								alt="" style="width: 80%;">
+						</div>
+					</article>
+					<br>
+
+				</div>
+
+				<div class="container-fluid border-warning border-bottom">
+					<section class="row mt-4">
+						<h2 class="container">Manual of Academic>
+					</section>
+
+					<article class="row">
+						<h3 class="container" id="d7">Create an Homework</h3>
+						<p class="container">
+							To create an activity it should before creating a topic if I already carry out this step, a
+							container will be
+							shown with the title of the topic and a group of bellboys makes click in the button of green
+							color that has the
+							icon of the sum sign "+".</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_academic/create activity/Captura de pantalla (90).png"
+								alt="" style="width: 80%;">
+						</div>
+					</article>
+
+					<br>
+
+					<article class="row">
+
+						<p class="container">A pop-up will open with a form, containing 4 buttons lesson, homework,
+							forum, test, as indicated in the example, click on the icon that is
+							enclosed in the red rectangle to create a lesson.
+						</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_academic/create activity/Captura de pantalla (92).png"
+								alt="" style="width: 80%;">
+						</div>
+					</article>
+					<br>
+				</div>
+
+				<div class="container-fluid border-warning border-bottom">
+					<section class="row mt-4">
+						<h2 class="container">Manual of Academic</h2>
+					</section>
+
+					<article class="row">
+						<h3 class="container" id="d8">Create an Forum</h3>
+						<p class="container">
+							To create an activity it should before creating a topic if I already carry out this step, a
+							container will be
+							shown with the title of the topic and a group of bellboys makes click in the button of green
+							color that has the
+							icon of the sum sign "+".</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_academic/create activity/Captura de pantalla (90).png"
+								alt="" style="width: 80%;">
+						</div>
+					</article>
+
+					<br>
+
+					<article class="row">
+						<h3 class="container">Create an lesson</h3>
+						<p class="container">A pop-up will open with a form, containing 4 buttons lesson, homework,
+							forum, test, as indicated in the example, click on the icon that is
+							enclosed in the red rectangle to create a lesson.
+						</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_academic/create activity/Captura de pantalla (92).png"
+								alt="" style="width: 80%;">
+						</div>
+					</article>
+					<br>
+				</div>
+
+				<div class="container-fluid border-warning border-bottom">
+					<section class="row mt-4">
+						<h2 class="container">Manual of Academic</h2>
+					</section>
+
+					<article class="row">
+						<h3 class="container" id="d9">Create an Test</h3>
+						<p class="container">
+							To create an activity it should before creating a topic if I already carry out this step, a
+							container will be
+							shown with the title of the topic and a group of bellboys makes click in the button of green
+							color that has the
+							icon of the sum sign "+".</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_academic/create activity/Captura de pantalla (90).png"
+								alt="" style="width: 80%;">
+						</div>
+					</article>
+
+					<br>
+
+					<article class="row">
+						<h3 class="container">Create an lesson</h3>
+						<p class="container">A pop-up will open with a form, containing 4 buttons lesson, homework,
+							forum, test, as indicated in the example, click on the icon that is
+							enclosed in the red rectangle to create a lesson.
+						</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_academic/create activity/Captura de pantalla (92).png"
+								alt="" style="width: 80%;">
+						</div>
+					</article>
+					<br>
+				</div>
+
+
+				<!--close -->
+
+				<div class="container-fluid border-warning border-bottom">
+					<section class="row mt-4">
+						<h2 class="container">Manual of Security</h2>
+					</section>
+
+					<article class="row">
+						<h3 class="container" >Create an Activity</h3>
+						<p class="container">
+							To create an activity it should before creating a topic if I already carry out this step, a
+							container will be
+							shown with the title of the topic and a group of bellboys makes click in the button of green
+							color that has the
+							icon of the sum sign "+".</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_academic/create activity/Captura de pantalla (90).png"
+								alt="" style="width: 80%;">
+						</div>
+					</article>
+
+
+
+				</div>
+
+
+				<div class="container-fluid border-warning border-bottom">
+					<section class="row mt-4">
+						<h2 class="container">Manual of Security</h2>
+					</section>
+
+					<article class="row">
+						<h3 class="container" >Create an Activity</h3>
+						<p class="container">
+							To create an activity it should before creating a topic if I already carry out this step, a
+							container will be
+							shown with the title of the topic and a group of bellboys makes click in the button of green
+							color that has the
+							icon of the sum sign "+".</p>
+					</article>
+
+					<article class="row">
+						<div class="container text-center">
+							<img src="/static/help-style/hepl_Imag/img_academic/create activity/Captura de pantalla (90).png"
+								alt="" style="width: 80%;">
+						</div>
+					</article>
+
+
+
+				</div>
+
+
+
+			</div>
+
 
 		</div>
-       
+		<br><br>
+
+
+
+
+
 
 	</div>
+</div>
 
-	{% include 'includes/scripts.html' %}
 
-    <!-- Specific Page JS goes HERE  -->
+{% endblock content %}
 
-	<script>
-	  window.scrollReveal = new scrollReveal();
 
-          
-	  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+
+
+
+{% block javascripts %}
+
+<script>
+	window.scrollReveal = new scrollReveal();
+
+
+	document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 		anchor.addEventListener('click', function (e) {
-		  e.preventDefault();
-  
-		  document.querySelector(this.getAttribute('href')).scrollIntoView({
-			behavior: 'smooth'
-		  });
+			e.preventDefault();
+
+			document.querySelector(this.getAttribute('href')).scrollIntoView({
+				behavior: 'smooth'
+			});
 		});
-	  });
-	  </script>
-	  
-    {% block javascripts %}{% endblock javascripts %}
+	});
+</script>
+{% endblock javascripts %}
 
 </body>
+
 </html>
