@@ -95,6 +95,8 @@ def questionask(request,id):
      form = PreguntasFrecuentes.objects.filter(fk_tipo_pregunta_frecuente_id=id).all 
      print(form)
      return render(request,'help/showanswers.html',{'form': form}) 
+
+     
 @login_required(login_url="/login/")   
 def landingshow (request): 
      

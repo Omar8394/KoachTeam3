@@ -18,7 +18,7 @@ urlpatterns = [
     #path('showAnswers/<int:id>',questionask,name="showanswers"),
     #path('helpSecurity/', views.helpSecurity, name="helpSecurity"),   
     #path('myHelp/', views.myHelp, name="myHelp"),   
-
+    
     path('Save/', save_Q , name="Savequestions"),
     path('ver/', showhelps , name="Showhelps"),
     path('edithelp/<int:id>',helpsedit, name="edithelp"),
