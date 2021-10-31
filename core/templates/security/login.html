@@ -6,14 +6,11 @@
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
 
-{% block content %}
-   
-    <div class="col-md-12">
-        <img src="/static/assets/img/JC-Energy-Logo-Full.png" class="navbar-brand mt-5">
-    </div>
-    
-    <div class="col-md-12 d-flex justify-content-center">     
-        <div class="card" style="width: 30rem;">
+{% block content %}   
+    <div class="d-flex justify-content-center">       
+        <div class="row col-md-6 d-flex justify-content-center">
+            <img src="/static/assets/img/JC-Energy-Logo-Full.png" style="width: 20rem;" class="navbar-brand mt-5">
+            <div class="card" style="width: 30rem;">
                 <div class="card-header bg-dark2">
                     <div class="card-title">
                         {% if msg %}
@@ -86,6 +83,7 @@
                         </div>
                     </form>
                 </div>
+            </div>
         </div>
     </div>
    
