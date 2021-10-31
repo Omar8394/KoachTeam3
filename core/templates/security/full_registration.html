@@ -45,4 +45,22 @@
                         </div>
                     </div>
                 </div>
+    <span class="h3 text-dark tex">Select User Role</span>
+                <div class="form-row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="cb_tipo_rol">User Rol</label>
+                            <select id="cb_tipo_rol" name="cb_tipo_rol" class="form-control">
+                                 {% if tipoRol is not None %}
+                                     {% for tipo in tipoRol %}
+                                        <option value="{{ tipo.valor_elemento }}">{{ tipo.desc_elemento }}</option>
+                                     {% endfor %}
+
+                                {% endif %}
+
+                            </select>
+                        </div>
+                    </div>
+                </div>
 {% endblock %}
+

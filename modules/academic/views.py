@@ -1363,20 +1363,32 @@ def getContentProgramas(request):
                         delete=False
                         if data["query"] == "" or data["query"] == None:
                             for categoria in categorias:
-                                lista[categoria.desc_elemento] = cursos.filter(fk_estructura_programa__fk_categoria=categoria)
+                                programas = cursos.filter(fk_estructura_programa__fk_categoria=categoria)
+                                lista[categoria.desc_elemento] = []
+                                for programa in programas:
+                                    lista[categoria.desc_elemento].append(programa.fk_estructura_programa)
                         else:
                             for categoria in categorias:
-                                lista[categoria.desc_elemento] = cursos.filter(fk_estructura_programa__fk_categoria=categoria, fk_estructura_programa__descripcion__icontains=data["query"])
+                                programas = cursos.filter(fk_estructura_programa__fk_categoria=categoria, fk_estructura_programa__descripcion__icontains=data["query"])
+                                lista[categoria.desc_elemento] = []
+                                for programa in programas:
+                                    lista[categoria.desc_elemento].append(programa.fk_estructura_programa)
                 elif rol == "Student":
                     estatus = TablasConfiguracion.obtenerHijos("EstMatricula").get(valor_elemento="EstatusAprovado")
-                    cursos = MatriculaAlumnos.objects.filter(fk_publico=publico, fk_tipo_matricula=estatus)
+                    cursos = MatriculaAlumnos.objects.filter(fk_publico=publico, fk_status_matricula=estatus)
                     if cursos.exists():
                         if data["query"] == "" or data["query"] == None:
                             for categoria in categorias:
-                                lista[categoria.desc_elemento] = cursos.filter(fk_estructura_programa__fk_categoria=categoria)
+                                programas = list(cursos.filter(fk_estruc_programa__fk_categoria=categoria))
+                                lista[categoria.desc_elemento] = []
+                                for programa in programas:
+                                    lista[categoria.desc_elemento].append(programa.fk_estruc_programa)
                         else:
                             for categoria in categorias:
-                                lista[categoria.desc_elemento] = cursos.filter(fk_estructura_programa__fk_categoria=categoria, fk_estructura_programa__descripcion__icontains=data["query"])
+                                programas = list(cursos.filter(fk_estruc_programa__fk_categoria=categoria, fk_estruc_programa__descripcion__icontains=data["query"]))
+                                lista[categoria.desc_elemento] = []
+                                for programa in programas:
+                                    lista[categoria.desc_elemento].append(programa.fk_estruc_programa)
                 else:
                     return HttpResponseForbidden()
                 context = {"data" : lista, "edit": edit, "delete":delete, "query":data["query"], "rol":rol}

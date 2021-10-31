@@ -378,16 +378,16 @@ def full_registration(request):
     success = False
     full_registration_form = FullRegistration(request.POST or None)
     tipo_telefono = None
+    tipo_rol = None
     if request.method == "POST":
-        print("form lanpage:", full_registration_form)
         if full_registration_form.is_valid():
+            rol = request.POST.get("cb_tipo_rol")
             publico = full_registration_form.save()
-            cuenta = create_default_ctausuario("status_verification", "rol_student")
+            cuenta = create_default_ctausuario("status_verification", rol)
             ext_user = ExtensionUsuario.objects.create(CtaUsuario=cuenta, user=None, Publico=publico)
             email = json.loads(publico.correos)['emailPrincipal']
             # send verification email
             success = True
-
             code = str(Methods.getVerificationLink(ext_user, email, 2))
             if code:
                 enlace = request.get_raw_uri().split("//")[0] + "//" + \
@@ -408,14 +408,15 @@ def full_registration(request):
 
         else:
             tipo_telefono = TablasConfiguracion.obtenerHijos("tipo_telefono")
+            tipo_rol = TablasConfiguracion.obtenerHijos("Roles")
             msg = 'Error validating the form'
 
     else:
         tipo_telefono = TablasConfiguracion.obtenerHijos("tipo_telefono")
-        full_registration_form = LandingPage()
-        form_registration = SignUpForm()
+        tipo_rol = TablasConfiguracion.obtenerHijos("Roles")
     return render(request, "security/full_registration.html",
-                  {"msg": msg, "reason": False, 'success': success, "tipoTelefono": tipo_telefono})
+                  {"msg": msg, "reason": False, 'success': success, "tipoTelefono": tipo_telefono,
+                   "tipoRol": tipo_rol})
 
 
 def verificationaccount(request, activation_key):
