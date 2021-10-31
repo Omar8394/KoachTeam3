@@ -311,8 +311,8 @@ discount=document.getElementById(nombre).value=nuevoPrecio;
 }
 
 function saveDiscount(id){
-
-if(  !Number.isNaN(  document.getElementById(id).value ) ){
+console.log(document.getElementById(id).value)
+if(  Number.isNaN(document.getElementById(id).value )){
     alertaMensajitos(5,'Invalid Value', 'You must enter a valid number');
     return;
 }
@@ -357,8 +357,9 @@ let url="{% url 'saveDiscount'%}";
 
     function savePrice(id){
       
+        console.log(document.getElementById(id).value)
 
-        if(  !Number.isNaN(  document.getElementById(id).value ) ){
+        if(  Number.isNaN(  document.getElementById(id).value ) ){
     alertaMensajitos(5,'Invalid Value', 'You must enter a valid number');
     return;
 }

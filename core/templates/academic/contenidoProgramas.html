@@ -49,6 +49,10 @@ resultados para "{{query}}"
                {%endif%}
                {% if programa.valor_elemento == 'Program'%}
                <a href="{% url 'programa' programa=programa.url%}" class="button btn btn-success"><strong>Open</strong></a>
+               {% elif programa.valor_elemento == 'Process'%}
+               <a href="{% url 'proceso' programa=programa.fk_estructura_padre.url proceso=programa.url%}" class="button btn btn-success"><strong>Open</strong></a>
+               {% elif programa.valor_elemento == 'Unit'%}
+               <a href="{% url 'unidad' programa=programa.fk_estructura_padre.fk_estructura_padre.url proceso=programa.fk_estructura_padre.url unidad=programa.url%}" class="button btn btn-success"><strong>Open</strong></a>
                {% elif programa.valor_elemento == 'Course'%}
                <a href="{% url 'curso' programa=programa.fk_estructura_padre.fk_estructura_padre.fk_estructura_padre.url proceso=programa.fk_estructura_padre.fk_estructura_padre.url unidad=programa.fk_estructura_padre.url curso=programa.url%}" class="button btn btn-success"><strong>Open</strong></a>
                {% endif %}
