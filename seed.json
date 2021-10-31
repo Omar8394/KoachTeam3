@@ -1501,7 +1501,7 @@
   "model": "app.tablasconfiguracion",
   "pk": 213,
   "fields": {
-    "desc_elemento": "assistant",
+    "desc_elemento": "Assistant",
     "fk_tabla_padre": 2,
     "tipo_elemento": "0",
     "permite_cambios": 1,
@@ -1525,7 +1525,7 @@
   "model": "app.tablasconfiguracion",
   "pk": 215,
   "fields": {
-    "desc_elemento": "treasury",
+    "desc_elemento": "Treasury",
     "fk_tabla_padre": 2,
     "tipo_elemento": "0",
     "permite_cambios": 1,
