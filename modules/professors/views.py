@@ -17,7 +17,7 @@ import json
 from django.db.models import F
 
 from ..app.models import Aplicaciones, TablasConfiguracion, Estructuraprograma, Publico,  PublicoRelacion
-
+from ..security.models import CtaUsuario, ExtensionUsuario
 # Create your views here.
 
 @login_required(login_url="/login/")
@@ -39,19 +39,19 @@ def getContentProf(request):
                 edit=True
                 delete=True
                 lista=""
-                sql="SELECT tab_conf.desc_elemento, app_p.* FROM app_tablasconfiguracion AS tab_conf JOIN app_publicorelacion AS app_pr ON tab_conf.id_tabla=app_pr.fk_relacion_id JOIN app_publico AS app_p ON app_pr.fk_publico_id=app_p.idpublico"
+                sql="SELECT tab_conf.desc_elemento, app_p.* FROM app_tablasconfiguracion AS tab_conf JOIN security_ctausuario AS sec_ctau ON tab_conf.id_tabla=sec_ctau.fk_rol_usuario_id JOIN security_extensionusuario AS sec_ext ON sec_ctau.idcta_usuario=sec_ext.ctausuario_id JOIN app_publico AS app_p ON sec_ext.publico_id=app_p.idpublico"
                 item=data["id_Course"]
             
                 if data["query"] == "" or data["query"] == None:
                     
                     if item:
-                        lista=Publico.objects.raw(sql+" "+"WHERE tab_conf.valor_elemento='prof' AND app_p.idpublico NOT IN (SELECT fk_publico_id FROM academic_programaprofesores AS acd_pro WHERE fk_estructura_programa_id=%s)", [item])
+                        lista=Publico.objects.raw(sql+" "+"WHERE tab_conf.valor_elemento='rol_teacher' AND app_p.idpublico NOT IN (SELECT fk_publico_id FROM academic_programaprofesores AS acd_pro WHERE fk_estructura_programa_id=%s)", [item])
                     else:
                         lista={}
                 else:   
                     if item:
                         item1=data["query"]
-                        lista=Publico.objects.raw(sql+" "+"WHERE tab_conf.valor_elemento='prof' AND app_p.idpublico NOT IN (SELECT fk_publico_id FROM academic_programaprofesores AS acd_pro WHERE fk_estructura_programa_id=%s) AND app_p.nombre LIKE '%s%%%%'" %(item, item1))
+                        lista=Publico.objects.raw(sql+" "+"WHERE tab_conf.valor_elemento='rol_teacher' AND app_p.idpublico NOT IN (SELECT fk_publico_id FROM academic_programaprofesores AS acd_pro WHERE fk_estructura_programa_id=%s) AND app_p.nombre LIKE '%s%%%%'" %(item, item1))
                         print(lista)
                     else:
                         lista={}
