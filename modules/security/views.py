@@ -468,11 +468,18 @@ def emailrecovery(request, activation_key):
 
 
 def editProfile(request):
+    
+    nuevo = ExtensionUsuario.objects.get(user=request.user)
+    if not nuevo.Publico:
+        publicoNew = Publico.objects.create()
+        nuevo.Publico = publicoNew
+        nuevo.save()
+
     profile = Publico.objects.get(idpublico=ExtensionUsuario.objects.get(user=request.user).Publico.idpublico)
     telefono = profile.telefonos
     correo = profile.correos
     img = CtaUsuario.objects.get(idcta_usuario=ExtensionUsuario.objects.get(user=request.user).CtaUsuario.idcta_usuario).url_imagen
-
+    
     if request.method == "POST":
 
         form = editProfiles(request.POST, instance=profile)
@@ -483,11 +490,11 @@ def editProfile(request):
 
             if obj.telefonos:
 
-                telefonoAlt = json.loads(telefono)
+                telefonoAlt = {} if not telefono else json.loads(telefono)
                 telefonoAlt['telefonoAlternativo'] = obj.telefonos
                 obj.telefonos = json.dumps(telefonoAlt)
 
-            elif 'telefonoAlternativo' in json.loads(telefono):
+            elif telefono and 'telefonoAlternativo' in json.loads(telefono):
 
                 telefonoAlt = json.loads(telefono)
                 telefonoAlt.pop('telefonoAlternativo')
@@ -499,11 +506,11 @@ def editProfile(request):
 
             if obj.correos:
 
-                correoAlt = json.loads(correo)
+                correoAlt = {} if not correo else json.loads(correo)
                 correoAlt['emailAlternativo'] = obj.correos
                 obj.correos = json.dumps(correoAlt)
 
-            elif 'emailAlternativo' in json.loads(correo):
+            elif correo and 'emailAlternativo' in json.loads(correo):
 
                 correoAlt = json.loads(correo)
                 correoAlt.pop('emailAlternativo')
@@ -517,16 +524,15 @@ def editProfile(request):
 
             messages.info(request, 'Changes applied successfully')
 
-            return render(request, "security/profilePage.html", {'form': form,  'telefono': json.loads(telefono)['telefonoPrincipal'] if 'telefonoPrincipal' in json.loads(telefono) else None, 'img':img if img and img != "" else None})
+            return render(request, "security/profilePage.html", {'form': form, 'telefono': None if not telefono else json.loads(telefono)['telefonoPrincipal'] if 'telefonoPrincipal' in json.loads(telefono) else None, 'img':img if img and img != "" else None})
 
         else:
 
             messages.warning(request, 'An error has occurred!')
             return render(request, "security/profilePage.html", {'form': form,  'telefono': json.loads(telefono)['telefonoPrincipal'] if 'telefonoPrincipal' in json.loads(telefono) else None, 'img':img if img and img != "" else None})
 
-    form = editProfiles(instance=profile, initial={'telefonos': json.loads(telefono)['telefonoAlternativo'] if 'telefonoAlternativo' in json.loads(telefono) else None, 'correos': json.loads(correo)['emailAlternativo'] if 'emailAlternativo' in json.loads(correo) else None})
-    return render(request, "security/profilePage.html", {'form': form, 'telefono': json.loads(telefono)['telefonoPrincipal'] if 'telefonoPrincipal' in json.loads(telefono) else None, 'img':img if img and img != "" else None})
-
+    form = editProfiles(instance=profile, initial={'telefonos': None if not telefono else json.loads(telefono)['telefonoAlternativo'] if 'telefonoAlternativo' in json.loads(telefono) else None, 'correos': None if not correo else json.loads(correo)['emailAlternativo'] if 'emailAlternativo' in json.loads(correo) else None})
+    return render(request, "security/profilePage.html", {'form': form, 'telefono': None if not telefono else json.loads(telefono)['telefonoPrincipal'] if 'telefonoPrincipal' in json.loads(telefono) else None, 'img':img if img and img != "" else None})
 
 def images(request):
 
