@@ -173,6 +173,7 @@
 
     function modalCall(id) {
         idEdit = id
+        setLoading()
         $.ajax({
             type: "POST",
             url: "{% url 'modalForm' %}",
@@ -188,11 +189,13 @@
                 document.getElementById('modalBody').innerHTML = response.formulario
                 nameEdit = response.nombre
                 $('#myModal').modal('show')
+                stopLoading()
             
                 
             },
             failure: function () {
                 swal("failure");
+                stopLoading()
             }
         });
 
@@ -248,6 +251,7 @@
             }
 
         }else{
+            setLoading()
             $.ajax({
                 type: "POST",
                 url: "{% url 'createCompetence' %}",
@@ -260,10 +264,12 @@
                         $('#myModal').modal('hide')
 
                     }
+                    stopLoading()
                     
                 },
                 failure: function () {
                     swal("failure");
+                    stopLoading()
                 }
             });
         }
@@ -276,8 +282,9 @@
     var time;    
     function tiempo()
     {
-        if(!nameEdit || nameEdit !== $('#id_desc_competencia').val())
+        if(!nameEdit || nameEdit !== $('#id_desc_competencia').val()){
 
+            setLoading()
             $.ajax({
                 data: $('#formulario').serialize()+"&id={{ id }}",
                 url: "{% url 'validate_competence' %}",
@@ -296,12 +303,15 @@
                         $("#error1").remove()
 
                     }
+                    stopLoading()
 
                 },
                 error: function (response) {
                     console.log(response.responseJSON.errors)
+                    stopLoading()
                 }
             });
+        }
             
     }
 
@@ -335,7 +345,8 @@
 
             if(willDelete){
 
-                    $.ajax({
+                setLoading()
+                $.ajax({
                     type: "POST",
                     url: "{% url urlRemove %}",
                     data: {
@@ -345,10 +356,12 @@
                     dataType: "json",
                     success: function (data) {
                         $('#paginas').find('.active').find('.page-link').trigger('click')
+                        stopLoading()
                         
                     },
                     failure: function () {
                         swal("failure");
+                        stopLoading()
                     }
                 });
 
@@ -360,6 +373,7 @@
     $('#paginas').on('click', ".page-link", function(e){
         e.preventDefault();
         var page = $(this).attr('href').replace ( /[^\d.]/g, '' );
+        setLoading()
         $.ajax({
                 type: "POST",
                 url: "{% url 'paginar' %}", 
@@ -376,9 +390,12 @@
                 document.getElementById('paginas').innerHTML = response.paginas;
                 document.getElementById('tablaContenido').innerHTML = response.contenido;
                 // console.log(response.contenido)
+                stopLoading()
 
             },
-            error: function () {}
+            error: function () {
+                stopLoading()
+            }
         });
 
     }); 
@@ -389,23 +406,27 @@
     function myCallback()
     {
         var txt = $('#search_box').val();
-            $.ajax({
-                    type: "POST",
-                    url: "{% url 'paginar' %}", 
-                    data : {    
-                    filtro : txt, 
-                    tipo: "competencia",
-                    csrfmiddlewaretoken: '{{ csrf_token }}',
-                },
-                success: function (response) {
+        setLoading()
+        $.ajax({
+                type: "POST",
+                url: "{% url 'paginar' %}", 
+                data : {    
+                filtro : txt, 
+                tipo: "competencia",
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+            },
+            success: function (response) {
 
-                    document.getElementById('paginas').innerHTML = response.paginas;
-                    document.getElementById('tablaContenido').innerHTML = response.contenido;
-                    // // console.log(response.contenido)
+                document.getElementById('paginas').innerHTML = response.paginas;
+                document.getElementById('tablaContenido').innerHTML = response.contenido;
+                // // console.log(response.contenido)
+                stopLoading()
 
-                },
-                error: function () {}
-            });
+            },
+            error: function () {
+                stopLoading()
+            }
+        });
     }
 
     $(document).ready(function () {
@@ -462,6 +483,7 @@
             $('#tablaContenido').addClass('descendiente');
         }
         orden = $(this).attr("id")
+        setLoading()
         $.ajax({
                 type: "POST",
                 url: "{% url 'paginar' %}", 
@@ -477,9 +499,12 @@
                 document.getElementById('paginas').innerHTML = response.paginas;
                 document.getElementById('tablaContenido').innerHTML = response.contenido;
                 // console.log(response.contenido)
+                stopLoading()
 
             },
-            error: function () {}
+            error: function () {
+                stopLoading()
+            }
         });
 
     });
@@ -496,6 +521,7 @@
             console.log($(this).prev().attr('name'))
             const d = $(this)
             
+            setLoading()
             $.ajax({
                     type: "POST",
                     url: "{% url 'renderListasCombos' %}", 
@@ -511,9 +537,12 @@
                     // // console.log(response.contenido)
                     d.before(response.lista)
                     $("#myBrowser").focus()
+                    stopLoading()
 
                 },
-                error: function () {}
+                error: function () {
+                    stopLoading()
+                }
             });
 
         }

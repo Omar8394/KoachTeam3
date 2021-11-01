@@ -229,8 +229,11 @@ def renderListasPublic(request):
             structuras=structuras.exclude(idestructuraprogrmas=tipoHijo)
             actividad = Estructuraprograma.objects.get(idestructuraprogrmas=tipoHijo)
             requisitos=cursos_prerequisitos.objects.filter(fk_estructura_programa=actividad)
+            prerequisitos=cursos_prerequisitos.objects.filter(fk_estructura_programa_pre=actividad)
             for x in requisitos:
                 structuras=structuras.exclude(idestructuraprogrmas=x.fk_estructura_programa_pre.idestructuraprogrmas)
+            for x in prerequisitos:
+                structuras=structuras.exclude(idestructuraprogrmas=x.fk_estructura_programa.idestructuraprogrmas)
 
             if(structuras.first()): print(structuras.first().valor_elemento)
             html = render_to_string('planning/lista.html', {'lista': structuras, 'tipo': 'Estructuraprograma'})

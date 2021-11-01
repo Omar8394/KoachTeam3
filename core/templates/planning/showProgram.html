@@ -109,26 +109,30 @@
     $('#paginas').on('click', ".page-link", function(e){
         e.preventDefault();
         var page = $(this).attr('href').replace ( /[^\d.]/g, '' );
-            $.ajax({
-                    type: "POST",
-                    url: "{% url 'paginar' %}", 
-                    data : {    
-                    page : page, 
-                    filtro : $('#search_box').val(), 
-                    tipo: "Schedule",
-                    orden: orden,
-                    tipoOrden: $("#tablaContenido").hasClass("descendiente")?"-":"",
-                    csrfmiddlewaretoken: '{{ csrf_token }}',
-                },
-                success: function (response) {
+        setLoading()
+        $.ajax({
+                type: "POST",
+                url: "{% url 'paginar' %}", 
+                data : {    
+                page : page, 
+                filtro : $('#search_box').val(), 
+                tipo: "Schedule",
+                orden: orden,
+                tipoOrden: $("#tablaContenido").hasClass("descendiente")?"-":"",
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+            },
+            success: function (response) {
 
-                    document.getElementById('paginas').innerHTML = response.paginas;
-                    document.getElementById('tablaContenido').innerHTML = response.contenido;
-                    // console.log(response.contenido)
+                document.getElementById('paginas').innerHTML = response.paginas;
+                document.getElementById('tablaContenido').innerHTML = response.contenido;
+                // console.log(response.contenido)
+                stopLoading()
 
-                },
-                error: function () {}
-            });
+            },
+            error: function () {
+                stopLoading()
+            }
+        });
 
     }); 
 
@@ -137,23 +141,27 @@
         function myCallback()
         {
             var txt = $('#search_box').val();
-                $.ajax({
-                        type: "POST",
-                        url: "{% url 'paginar' %}", 
-                        data : {    
-                        filtro : txt, 
-                        tipo: "Schedule",
-                        csrfmiddlewaretoken: '{{ csrf_token }}',
-                    },
-                    success: function (response) {
+            setLoading()
+            $.ajax({
+                    type: "POST",
+                    url: "{% url 'paginar' %}", 
+                    data : {    
+                    filtro : txt, 
+                    tipo: "Schedule",
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                },
+                success: function (response) {
 
-                        document.getElementById('paginas').innerHTML = response.paginas;
-                        document.getElementById('tablaContenido').innerHTML = response.contenido;
-                        // // console.log(response.contenido)
+                    document.getElementById('paginas').innerHTML = response.paginas;
+                    document.getElementById('tablaContenido').innerHTML = response.contenido;
+                    // // console.log(response.contenido)
+                    stopLoading()
 
-                    },
-                    error: function () {}
-                });
+                },
+                error: function () {
+                    stopLoading()
+                }
+            });
         }
 
     $(document).ready(function () {
@@ -210,6 +218,7 @@
             $('#tablaContenido').addClass('descendiente');
         }
         orden = $(this).attr("id")
+        setLoading()
         $.ajax({
                 type: "POST",
                 url: "{% url 'paginar' %}", 
@@ -225,9 +234,12 @@
                 document.getElementById('paginas').innerHTML = response.paginas;
                 document.getElementById('tablaContenido').innerHTML = response.contenido;
                 // console.log(response.contenido)
+                stopLoading()
 
             },
-            error: function () {}
+            error: function () {
+                stopLoading()
+            }
         });
 
     });
@@ -237,6 +249,7 @@
 
         e.preventDefault();
         
+        setLoading()
         $.ajax({
             type: "POST",
             data: {
@@ -250,10 +263,12 @@
 
                 document.getElementById('tablaContenidoModal').innerHTML = response.contenido;
                 $("#myModal").modal('show');
+                stopLoading()
 
             },
             error: function (response) {
                 console.log(response.responseJSON.errors)
+                stopLoading()
             }
         });
 
