@@ -114,14 +114,14 @@ class competenciaAdqForm(forms.ModelForm):
     fk_competencia = forms.ModelChoiceField(queryset=CompetenciasReq.objects.all(), empty_label="Select a competence",label='Competence:',
         widget=forms.Select(
             attrs={                
-                "class": "form-control form-control",
+                "class": "form-control",
             }
         ))
 
     fk_nivel = forms.ModelChoiceField(queryset=TablasConfiguracion.obtenerHijos("NivelComp"), empty_label="Skill level",label='Skill level:',
         widget=forms.Select(
             attrs={        
-                "class": "form-control form-control",
+                "class": "form-control",
             }
         ))
 
@@ -157,7 +157,7 @@ class competenciaAdqForm(forms.ModelForm):
     fk_publico = forms.ModelChoiceField(queryset=Publico.objects.all(), empty_label="Which public it belongs?",label='Public:',
         widget=forms.Select(
             attrs={                
-                "class": "form-control form-control",
+                "class": "form-control",
                 'autofocus': True,
             }
         ))

@@ -177,9 +177,11 @@
             formProceso.addEventListener("submit", (e) => {
                e.preventDefault()
                if(!$("#formProceso").valid())return
+               setLoading()
                clickSave(formProceso, "{% url 'modalAddProceso' %}")
                   .then(() => {
                      $("#addNewModal").modal("hide")
+                     stopLoading()
                      renderContent()
                   })
             })
@@ -220,9 +222,11 @@
             formProceso.addEventListener("submit", (e) => {
                e.preventDefault()
                if(!$("#formProceso").valid())return
+               setLoading()
                clickSave(formProceso, "{% url 'modalAddProceso' %}")
                   .then(() => {
                      $("#addNewModal").modal("hide")
+                     stopLoading()
                      renderContent()
                   })
             })

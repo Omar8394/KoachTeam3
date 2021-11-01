@@ -30,7 +30,7 @@ results for "{{query}}"
                <p><span class="subtitle">Type</span> {{course.valor_elemento}}</p>
                {% with teachers=course.programaprofesores_set.all|dictsortreversed:'idprograma_profesores'%}
                {% with myteacher=teachers|first %}
-               <p><span class="subtitle">Teacher</span>{{myteacher.fk_publico.nombre}} {{myteacher.fk_publico.apellido}}</p>
+               <p><span class="subtitle">Teacher</span> {{myteacher.fk_publico.nombre}} {{myteacher.fk_publico.apellido}}</p>
                {% endwith %}
                {% endwith %}
             </div>

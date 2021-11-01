@@ -223,6 +223,7 @@
 	//cargo la lista con los perfiles disponibles
     $(document).ready(function () {
 
+        setLoading()
         $.ajax({
             type: "POST",
             data: {
@@ -235,10 +236,12 @@
             success: function (response) {
 
                 document.getElementById('selectPerfil').innerHTML = response.competence
+                stopLoading()
 
             },
             error: function (response) {
                 console.log(response.responseJSON.errors)
+                stopLoading()
             }
         });
             
@@ -249,6 +252,7 @@
 
         if($(this).val()){
             
+            setLoading()
             $.ajax({
                 type: "POST",
                 data: {
@@ -262,10 +266,12 @@
 
                     document.getElementById('opcionesProgram').innerHTML = response.competence
                     document.getElementById('tituloCompetencia').innerHTML = response.titulo
+                    stopLoading()
 
                 },
                 error: function (response) {
                     console.log(response.responseJSON.errors)
+                    stopLoading()
                 }
             });
 
@@ -285,6 +291,7 @@
             });
         }else{
 
+            setLoading()
             $.ajax({
                 type: "POST",
                 data: {
@@ -296,10 +303,12 @@
                 success: function (response) {
 
                     document.getElementById('estatusLesson').innerHTML = response.competence
+                    stopLoading()
 
                 },
                 error: function (response) {
                     console.log(response.responseJSON.errors)
+                    stopLoading()
                 }
             });
 
@@ -313,6 +322,7 @@
 
         let idSelect = $(this).attr('id')
         if($(this).val() && idSelect !== 'estatusCourse'){
+            setLoading()
             $.ajax({
                 type: "POST",
                 data: {
@@ -335,9 +345,12 @@
 
                         document.getElementById('estatusCourse').innerHTML = null
 
+                    stopLoading()
+
                 },
                 error: function (response) {
                     console.log(response.responseJSON.errors)
+                    stopLoading()
                 }
             });
         }else if(idSelect !== 'estatusCourse')
@@ -389,6 +402,7 @@
 
         }else{
             
+            setLoading()
             $.ajax({
                 type: "POST",
                 data: {
@@ -403,10 +417,12 @@
                 success: function (response) {
 
                     window.location.href = "{% url 'showProgram' %}"
+                    stopLoading()
 
                 },
                 error: function (response) {
                     console.log(response.responseJSON.errors)
+                    stopLoading()
                 }
 
             });

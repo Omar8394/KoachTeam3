@@ -177,7 +177,7 @@
 							  <br>
 								{%if pregunta.fk_estructura_programa.fk_categoria.valor_elemento != 'activityExpert' %}	
 								<div class="center" style="text-align: center;">
-										{% if examen.0.PuntuacionFinal <= pregunta.calificacion_aprobar%}
+										{% if examen.0.PuntuacionFinal < pregunta.calificacion_aprobar%}
 											<h1 style='color:red'> Repproved! </h2>
 											
 											{%else%}
@@ -387,17 +387,19 @@
 //	console.log(preguntas)
   
   const takeTest = () => {
-        
+        setLoading()
             createTest().then(async () => {
 			await renderContent();
-			
+			stopLoading()
             })
         }    
 
 		const retake= () => {
+		setLoading()
         
 		retakeTest().then(async () => {
 		await renderContent();
+		stopLoading()
 		timerOn=true;
 
 		})
@@ -418,6 +420,9 @@
 		   })
 		   })
 		   .then(async (res) => {
+			idTest= JSON.parse(await res.text());
+			examenId=idTest.id;
+			time=idTest.inicio;
 			
 			
 		   }).then(()=>{
@@ -427,15 +432,16 @@
 
 	  async function ContinueTest (){
         
-            
+            setLoading()
 		await	 renderContent();
+		stopLoading()
 
            
         }    	
 
 		async function ReviewTest () {
         
-            
+            setLoading()
 			fetch("{% url 'reviewExamen' %}", {
             ...fetchObject,
             body: JSON.stringify({
@@ -449,6 +455,7 @@
             }),
         }).then(async (res) => {
                 document.getElementById("Contenido").innerHTML= await res.text()
+				stopLoading()
 
             
             })
@@ -521,7 +528,7 @@
 
 
 	       async function clickSave ()  {
-
+          setLoading()
 			   await reviewRespuestas();
 			   let guardar=true;
 			   if(hayVacias== true && autoSave==false){
@@ -560,6 +567,7 @@
                
             })
             .then(async (res) => {
+				stopLoading()
                 let result = JSON.parse(await res.text())
                 if (result.message === "Error") {
                    alerta(5)
@@ -881,6 +889,7 @@ alertaMensajitos(7,'Timer Alert','You have a little time left')
     clearInterval(x);
     document.getElementById("timer").innerHTML = "EXPIRED";
 	autoSave=true
+	setLoading()
 	clickSave () ;
   }
   counterT=counterT+1000
@@ -936,10 +945,11 @@ window.location.href="{% url 'MyEnrollments'%}";
 
 	
 	async function openSeeResults  (id)  {
-		   
+		   setLoading()
 				renderModalResults(id).then(()=>{
 				
 				   $("#ModalResults").modal("show");
+				   stopLoading()
 				})
 			}    
 	

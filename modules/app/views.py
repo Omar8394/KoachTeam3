@@ -39,6 +39,14 @@ def indexSettings(request):
     html_template = loader.get_template( 'app/settings/indexSettings.html' )
     return HttpResponse(html_template.render(context, request))
 
+
+@login_required(login_url="/login/")
+def securitySettings(request):
+    context = {}
+    context['segment'] = 'security'
+    html_template = loader.get_template('security/SecuritySettings.html')
+    return HttpResponse(html_template.render(context, request))
+
 def componentLista(request):
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         context = {}

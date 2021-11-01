@@ -254,8 +254,10 @@ def contenidoExamen(request):
                     bloque.titulo_bloque=data['tituloBloque']
                     bloque.save()
                 if data["method"] == "Retake":
-                    
+                    print('ssssssssss')
                     Examen=ExamenActividad.objects.get(pk=data['idExamen'])
+                    actividad=Examen.fk_Actividad
+                    print('ss')
 
                     
                     Examen.estadoExamen=2
@@ -267,9 +269,15 @@ def contenidoExamen(request):
                     opciones=ExamenRespuestas.objects.filter(fk_Examen=Examen)
                     resultados.delete()
                     opciones.delete()
-                
                     Examen.save()
-                    return JsonResponse({"id": Examen.pk})  
+                    logUserBackEnd(Examen.usuario.pk, Examen.fk_Actividad.fk_estructura_programa.pk, False, True)
+                    time=None
+                    if actividad.duracion != None:
+                       
+                            time=Examen.fechaInicio+ datetime.timedelta(0,(actividad.duracion*60))
+                            time=time.strftime("%b %d %Y %H:%M:%S")
+
+                    return JsonResponse({"id": Examen.pk, 'inicio':time})  
 
 
 
@@ -291,6 +299,8 @@ def contenidoExamen(request):
 
 
                     Examen.save()
+                    logUserBackEnd(Examen.usuario.pk, Examen.fk_Actividad.fk_estructura_programa.pk, False, False)
+
                     return JsonResponse({"id": Examen.pk, 'inicio':time})     
 
 
@@ -364,6 +374,15 @@ def contenidoExamen(request):
                    examen.fechaTermino=datetime.datetime.now() 
                   # examen.nro_repeticiones=examen.nro_repeticiones+1
                    examen.save()
+                   estado=False
+                   print('aquitoy')
+                   if examen.fk_Actividad.fk_estructura_programa.fk_categoria.valor_elemento!='activityExpert':
+                    if examen.PuntuacionFinal>=examen.fk_Actividad.calificacion_aprobar:
+                       estado=True
+                   else:
+                       estado=True
+                   logUserBackEnd(examen.usuario.pk, examen.fk_Actividad.fk_estructura_programa.pk, estado, True)
+
 
 
 
@@ -452,21 +471,22 @@ def takeExam(request):
     manejaTiempo=0
     time=None
     
-
-    if pregunta.duracion != None:
-        manejaTiempo=1
-        if examen.count()> 0:
-         time=examen[0].fechaInicio+ datetime.timedelta(0,(pregunta.duracion*60))
-         if time.replace(tzinfo=None)  <= datetime.datetime.now():
-             print('aqui')
-             test=ExamenActividad.objects.get(pk=examen[0].pk)
-             test.fechaTermino=time
-             test.estadoExamen=4
-             test.save()
+    if examen.estadoExamen==2:
+  
+        if pregunta.duracion != None:
+            manejaTiempo=1
+            if examen.count()> 0:
+             time=examen[0].fechaInicio+ datetime.timedelta(0,(pregunta.duracion*60))
+            if time.replace(tzinfo=None)  <= datetime.datetime.now():
+                print('aqui')
+                test=ExamenActividad.objects.get(pk=examen[0].pk)
+                test.fechaTermino=time
+                test.estadoExamen=4
+                test.save()
+                
              
-             
-         else:
-          time=time.strftime("%b %d %Y %H:%M:%S")
+            else:
+             time=time.strftime("%b %d %Y %H:%M:%S")
 
     
     context = {
@@ -506,9 +526,9 @@ def SeeTest(request):
     pregunta=ActividadEvaluaciones.objects.get(pk=examen.fk_Actividad.pk)
     escalas = EscalaEvaluacion.objects.all()
     user=ExtensionUsuario.objects.get(user=request.user)
-    if cta== 'rol_student':
-      if examen.fk_publico !=user:
-          return HttpResponseForbidden()
+   # if cta== 'rol_student':
+    #  if examen.usuario !=user:
+     #     return HttpResponseForbidden()
 
 
     print(examen)
@@ -536,17 +556,17 @@ def SeeTest(request):
      bloque=EvaluacionesBloques.objects.get(fk_actividad_evaluaciones=pregunta.idactividad_evaluaciones)
      listaPreguntas=EvaluacionesPreguntas.objects.filter(fk_evaluaciones_bloque=bloque).order_by('orden')
 
-
-    if pregunta.duracion != None:
-        
-       # if examen.count()> 0:
-         time=examen.fechaInicio+ datetime.timedelta(0,(pregunta.duracion*60))
-         if time.replace(tzinfo=None)  <= datetime.datetime.now():
-             print('aqui')
-             test=ExamenActividad.objects.get(pk=examen.pk)
-             test.fechaTermino=time
-             test.estadoExamen=4
-             test.save()
+    if examen.estadoExamen==2:
+        if pregunta.duracion != None:
+            
+        # if examen.count()> 0:
+            time=examen.fechaInicio+ datetime.timedelta(0,(pregunta.duracion*60))
+            if time.replace(tzinfo=None)  <= datetime.datetime.now():
+                print('aqui')
+                test=ExamenActividad.objects.get(pk=examen.pk)
+                test.fechaTermino=time
+                test.estadoExamen=4
+                test.save()
      
 
     
@@ -594,7 +614,7 @@ def SeeTest(request):
 @login_required(login_url="/login/")
 def TestList(request):
     cta=ExtensionUsuario.objects.get(user=request.user).CtaUsuario.fk_rol_usuario.valor_elemento 
-    if cta== 'rol_student':
+    if cta!= 'rol_admin':
       return HttpResponseForbidden()
 
     examenes=ExamenActividad.objects.annotate(tipoTest=F('fk_Actividad__fk_estructura_programa__fk_categoria__valor_elemento')).all()
@@ -786,30 +806,51 @@ def setTimeOuts(request):
     if cta!= 'rol_admin':
       return HttpResponseForbidden()
 
-    examenes=ExamenActividad.objects.annotate(tipoTest=F('fk_Actividad__fk_estructura_programa__fk_categoria__valor_elemento'), actividad=F('fk_Actividad__fk_estructura_programa')).all()
+    examenes=ExamenActividad.objects.annotate(tipoTest=F('fk_Actividad__fk_estructura_programa__fk_categoria__valor_elemento'), actividad=F('fk_Actividad__fk_estructura_programa__fk_estructura_padre__fk_estructura_padre')).all()
+    if cta== 'rol_teacher':
+     user=ExtensionUsuario.objects.get(user=request.user).Publico
+     programasProfes=ProgramaProfesores.objects.filter(fk_publico=user)
+     if programasProfes.count()<1:
+        print('examenes')
+
+        examenes=examenes.filter(pk=-1)
+     else:
+      for item in programasProfes: 
+        examenes=examenes.filter(actividad=item.fk_estructura_programa.idestructuraprogrmas)
+
     for item in examenes:
         actividad=item.fk_Actividad
-        if actividad.duracion != None:
-         time=item.fechaInicio+ datetime.timedelta(0,(actividad.duracion*60))
-         if time >= datetime.datetime.now():
-             item.fechaTermino=time
-             item.estadoExamen=4
-             item.save()
+        if item.estadoExamen==2:
+            if actividad.duracion != None:
+             time=item.fechaInicio+ datetime.timedelta(0,(actividad.duracion*60))
+            if time >= datetime.datetime.now():
+                item.fechaTermino=time
+                item.estadoExamen=4
+                item.save()
+                logUserBackEnd(item.usuario.pk, item.fk_Actividad.fk_estructura_programa.pk, False, True)
+
 
     return HttpResponse('OK')
 
 @login_required(login_url="/login/")
 def TeacherTests(request):
+    cta=ExtensionUsuario.objects.get(user=request.user).CtaUsuario.fk_rol_usuario.valor_elemento 
+    if cta!= 'rol_teacher':
+      return HttpResponseForbidden()
+
     examenes=ExamenActividad.objects.annotate(tipoTest=F('fk_Actividad__fk_estructura_programa__fk_categoria__valor_elemento'), actividad=F('fk_Actividad__fk_estructura_programa__fk_estructura_padre__fk_estructura_padre')).all()
     user=ExtensionUsuario.objects.get(user=request.user).Publico
     programasProfes=ProgramaProfesores.objects.filter(fk_publico=user)
 
-    for item in examenes: 
-        print (item.actividad.valor_elemento)
+    if programasProfes.count()<1:
+        print('examenes')
 
-    for item in programasProfes:
+        examenes=examenes.filter(pk=-1)
+    else:
+     for item in programasProfes: 
+        examenes=examenes.filter(actividad=item.fk_estructura_programa.idestructuraprogrmas)
 
-     examenes.filter()
+   
 
 
 
@@ -1888,11 +1929,11 @@ def getModalActividad(request):
                     elif data["method"] == "Create":
                         actividad = Estructuraprograma()
                         actividad.valor_elemento = "Activity"
+                        actividad.orden_presentacion = len(Estructuraprograma.objects.filter(fk_estructura_padre=data["padreActivity"]))
                     actividad.fk_estructura_padre_id=data["padreActivity"]
                     actividad.descripcion = data["data"]["descriptionActivity"]
                     actividad.resumen = data["data"]["resumenActivity"]
                     actividad.url = data["data"]["urlActivity"]
-                    actividad.orden_presentacion = len(Estructuraprograma.objects.filter(fk_estructura_padre=data["padreActivity"]))
                     actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").filter(desc_elemento=data["tipoActividad"])[0].pk
                     actividad.peso_creditos = None
                     actividad.save()
@@ -2174,12 +2215,13 @@ def getModalAddBlock(request):
             
                 context = {}
                 data = json.load(request)["data"]
-
+                
                 if "delete" in data:
+                    print('sss')
                     bloque=EvaluacionesBloques.objects.get(pk=data["id"])
                     actividad = bloque.fk_actividad_evaluaciones
 
-                    actividad.pointUse=actividad.pointUse-actividad.fk_escala_bloque.puntos_maximo
+                    actividad.pointUse=actividad.pointUse-actividad.fk_escala_bloque.maxima_puntuacion
                     actividad.save()
 
                     bloque.delete()
@@ -2196,7 +2238,7 @@ def getModalAddBlock(request):
                             print(bloque)
                             bloque.orden= item["order"]
                             bloque.save()
-                if "idFind" in data:
+                if data["method"] == "get":
                     
                     bloque=EvaluacionesBloques.objects.filter(pk=data["idFind"])
                     findBloque = list(bloque.values())
@@ -2328,28 +2370,30 @@ def getModalNewTest(request):
                             actividad.valor_elemento = "Activity"
                             actividad.pointUsed = 0
                             actividad.fk_estructura_padre_id=data["padreActivity"]
+                            actividad.orden_presentacion = len(Estructuraprograma.objects.filter(fk_estructura_padre=data["padreActivity"]))
                         actividad.descripcion = data["data"]["descriptionActivity"]
                         actividad.resumen = data["data"]["resumenActivity"]
                         actividad.url = data["data"]["urlActivity"]
                         actividad.peso_creditos = None
-                        actividad.orden_presentacion = len(Estructuraprograma.objects.filter(fk_estructura_padre=data["padreActivity"]))
-                        actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").get(desc_elemento="Test").pk
+                        actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").get(valor_elemento="activityTest").pk
                         if "checkExpertCB" in data["data"]:
-                            actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").get(desc_elemento="Expert test").pk
+                            actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").get(valor_elemento="activityExpert test").pk
                             scale=EscalaEvaluacion.objects.get(pk=int(data["data"]["Blockqualification"]))
                             test.fk_escala_bloque = scale
                         else:   
                             test.nro_repeticiones = data["data"]["repeats"]
                             test.calificacion_aprobar = data["data"]["minApp"]
+                            test.fk_tipo_duracion_id=TablasConfiguracion.objects.get(valor_elemento='duracionMinutes').pk
 
                         if "durationActivity" in data["data"]:
                             test.duracion = data["data"]["durationActivity"]
+
                         else:
                             test.duracion = None
-                        if "timeActivity" in data["data"]:
-                            test.fk_tipo_duracion_id = data["data"]["timeActivity"]
-                        else:
-                            test.fk_tipo_duracion_id = None
+                   #     if "timeActivity" in data["data"]:
+                    #        test.fk_tipo_duracion_id = data["data"]["timeActivity"]
+                     #   else:
+                      #      test.fk_tipo_duracion_id = None
                     
                         test.fk_escala_evaluacion_id = data["data"]["qualification"]
                         actividad.save()
@@ -2401,12 +2445,12 @@ def getModalNewLesson(request):
                         lesson = ActividadLeccion()
                         actividad.valor_elemento = "Activity"
                         actividad.fk_estructura_padre_id=data["padreActivity"]
+                        actividad.orden_presentacion = len(Estructuraprograma.objects.filter(fk_estructura_padre=data["padreActivity"]))
                     actividad.descripcion = data["data"]["descriptionActivity"]
                     actividad.resumen = data["data"]["resumenActivity"]
                     actividad.url = data["data"]["urlActivity"]
                     actividad.peso_creditos = None
-                    actividad.orden_presentacion = len(Estructuraprograma.objects.filter(fk_estructura_padre=data["padreActivity"]))
-                    actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").get(desc_elemento="Lesson").pk
+                    actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").get(valor_elemento="activityLesson").pk
                     lesson.disponible_desde = data["data"]["disponibleLesson"]
                     lesson.estatus_id = data["data"]["estatusLesson"]
                     actividad.save()
@@ -2446,14 +2490,14 @@ def getModalNewHomework(request):
                         actividad = Estructuraprograma()
                         homework = ActividadTarea()
                         actividad.valor_elemento = "Activity"
-                        actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").get(desc_elemento="Homework").pk
+                        actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").get(valor_elemento="activityHome").pk
                         actividad.fk_estructura_padre_id=data["padreActivity"]
+                        actividad.orden_presentacion = len(Estructuraprograma.objects.filter(fk_estructura_padre=data["padreActivity"]))
                         pagina = Paginas()
                         pagina.titulo = ""
                         pagina.contenido = ""
                         pagina.ordenamiento = None
                     actividad.descripcion = data["data"]["descriptionActivity"]
-                    actividad.orden_presentacion = len(Estructuraprograma.objects.filter(fk_estructura_padre=data["padreActivity"]))
                     actividad.resumen = data["data"]["resumenActivity"]
                     actividad.url = data["data"]["urlActivity"]
                     actividad.peso_creditos = None
@@ -2508,10 +2552,10 @@ def getModalNewForum(request):
                         actividad = Estructuraprograma()
                         forum = ActividadConferencia()
                         actividad.valor_elemento = "Activity"
-                        actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").get(desc_elemento="Forum").pk
+                        actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").get(valor_elemento="activityForum").pk
                         actividad.fk_estructura_padre_id=data["padreActivity"]
+                        actividad.orden_presentacion = len(Estructuraprograma.objects.filter(fk_estructura_padre=data["padreActivity"]))
                     actividad.descripcion = data["data"]["descriptionActivity"]
-                    actividad.orden_presentacion = len(Estructuraprograma.objects.filter(fk_estructura_padre=data["padreActivity"]))
                     actividad.resumen = data["data"]["resumenActivity"]
                     actividad.url = data["data"]["urlActivity"]
                     actividad.peso_creditos = None
@@ -3441,6 +3485,36 @@ def logUser(request):
                         historia.save()     
             except:
                 return JsonResponse({"message":"error"}, status=500)
+
+def logUserBackEnd(usuario, activity, estado, esUpdate):
+            
+            
+            user = ExtensionUsuario.objects.get(user=usuario).Publico
+            log=HistoricoUser.objects.filter(fk_publico=user, fk_estructura_programa=activity)
+            
+            if log.exists():
+                if esUpdate ==True:
+                    new=HistoricoUser.objects.get(pk=log[0].pk)
+                    new.fecha = datetime.datetime.now()
+                    new.estado = estado
+                    new.save()
+                else:
+                        log.delete()
+                        historia = HistoricoUser()
+                        historia.fecha = datetime.datetime.now()
+                        historia.estado = estado
+                        historia.fk_estructura_programa_id = activity
+                        historia.fk_publico = user
+                        historia.save()    
+            else:
+                        historia = HistoricoUser()
+                        historia.fecha = datetime.datetime.now()
+                        historia.estado = estado
+                        historia.fk_estructura_programa_id = activity
+                        historia.fk_publico = user
+                        historia.save()     
+
+            
 
 @login_required(login_url="/login/")
 def getComboContent(request):

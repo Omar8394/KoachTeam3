@@ -8,7 +8,9 @@
 {% block content %}
 
 	<div class="content">
-		<div class="page-inner">
+     
+		<div class="page-inner" >
+           
 			<div class="page-header">
 				<h4 class="page-title">Enrollment Applications</h4>
 				<ul class="breadcrumbs">
@@ -31,6 +33,8 @@
 					</li>
 				</ul>
 			</div>
+           
+           
 			<div class="page-category">
                 <div class="animated fadeInRight">
                     <div class="ibox float-e-margins">
@@ -38,6 +42,7 @@
                             <div class="card">
                                 <div class="card-header">
                                     <div class="dropdown" id="panelBuscar">
+                                        
                                         <button   class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                             <i class="glyphicon glyphicon-search"></i> Filter
                                         
@@ -99,9 +104,11 @@
                                                                 <td></td>
                                                                 <td></td>
                                                                 <td>
-                                                                    <input type="submit" class="btn btn-primary" value="Filter" >
-                                                                    &nbsp;
-                                                                    <input type="button" onclick="reload()" class="btn btn-default" value="Clean">
+                                                                    <div class="btn-group" role="group">
+                                                                        <input type="submit" class="btn btn-primary" value="Filter" >
+                                                                        &nbsp;
+                                                                        <input type="button" onclick="reload()" class="btn btn-default ml-1" value="Clean">
+                                                                    </div>
                                                                 </td>
                                                             </tr>
                                                         </table>
@@ -112,45 +119,47 @@
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    <table class="table table-hover table-component table-borderless text-center">
-                                        <thead>
-                                            <tr>
-                                                <th style="width: 65px;"></th>
-                                                <th>Names</th>
-                                                <th>Id Number</th>
-                                                <th>Date of Registration</th>
-                                                <th></th>
-                                                <th></th>             
-                                            </tr>
-                                        </thead>
-                                        <tbody class="data-cargando">
-                                            {% for person in publicoObject %}
-                        
-                                            <tr style="cursor:pointer;"  >
-                                                <td ></td>
-                                               <td>{{person}}</td>
-                                               <td>{{person.docto_identidad}}</td>
-                                               <td>{{person.fecha_registro}}</td>
-                                               <td> 
-                                                    <a href="javascript:void(0);"  id="{{person.idpublico}}"  onclick="showModal(id)" > <button class="btn btn-success btn-sm"><i class="fa fa-plus mr-1"></i> Add Enrollment </button></a>
-                                                </td>
-                                               <td>  
-                                                    <form id="PersonaForm" name="PersonaForm" action="{% url 'EnrollmentList'%}" onsubmit=" return ManagePersonas('{{person.idpublico}}')" method="POST">
-                                                        {% csrf_token %}
-                                                        <input type="hidden" value="{{person.pk}}" id="PersonId"
-                                                        name="PersonId">
-                                                    
-            
-                                                        <a  href="javascript:void(0);" onclick="sendForm('{{person.idpublico}}')" id="{{person.idpublico}}" > <button class="btn btn-primary btn-sm"> <i class="fas fa-edit mr-1"></i> Manage Enrollments</button></a>
-            
-                                                    </form>
-                                                </td>
-                                              
-                                            </tr>
-            
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover table-component table-borderless text-center">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width: 65px;"></th>
+                                                    <th>Names</th>
+                                                    <th>Id Number</th>
+                                                    <th>Date of Registration</th>
+                                                    <th></th>
+                                                    <th></th>             
+                                                </tr>
+                                            </thead>
+                                            <tbody class="data-cargando">
+                                                {% for person in publicoObject %}
+                            
+                                                <tr style="cursor:pointer;"  >
+                                                    <td ></td>
+                                                   <td>{{person}}</td>
+                                                   <td>{{person.docto_identidad}}</td>
+                                                   <td>{{person.fecha_registro}}</td>
+                                                   <td> 
+                                                        <a href="javascript:void(0);"  id="{{person.idpublico}}"  onclick="showModal(id)" > <button class="btn btn-success btn-sm"><i class="fa fa-plus mr-1"></i> Add Enrollment </button></a>
+                                                    </td>
+                                                   <td>  
+                                                        <form id="PersonaForm" name="PersonaForm" action="{% url 'EnrollmentList'%}" onsubmit=" return ManagePersonas('{{person.idpublico}}')" method="POST">
+                                                            {% csrf_token %}
+                                                            <input type="hidden" value="{{person.pk}}" id="PersonId"
+                                                            name="PersonId">
+                                                        
+                
+                                                            <a  href="javascript:void(0);" onclick="sendForm('{{person.idpublico}}')" id="{{person.idpublico}}" > <button class="btn btn-primary btn-sm"> <i class="fas fa-edit mr-1"></i> Manage Enrollments</button></a>
+                
+                                                        </form>
+                                                    </td>
+                                                  
+                                                </tr>
+                
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                                 <div class="card-footer">
                                     
@@ -237,9 +246,10 @@ function sendForm(id){
 
 }
 
-$('#PersonaForm').submit(function(eventObj) {
+//$('#PersonaForm').submit(function(eventObj) {
   
-});
+//});
+
 function ManagePersonas(id){
     Persona=id;
     
@@ -249,9 +259,11 @@ function ManagePersonas(id){
 }
 
 
-function showModal(id){
+async function showModal(id){
+    console.log('ss');
+  
 Persona=id;
-    
+setLoading();
 
 let url='MatriculacionAddModal/';
 fetch(url,{
@@ -263,27 +275,33 @@ return result.text();
 }).then(function(result){
 	
 	let unit=document.getElementById("modalContent").innerHTML=result;
+    $("#AdministrarMatricula").modal("show");
+    stopLoading()
+      program.value=-1;
+        type.value=-1;
 
 });
-    $("#AdministrarMatricula").modal("show");
     
   
 }
 
 
 function enviar(){
-
+setLoading()
 var xhr = new XMLHttpRequest();
 xhr.open("POST", "save/"); 
 xhr.onload = function(event){ 
 
     console.log(event.target.response);
 	if(event.target.response==2){
+        stopLoading()
 		alertaMensajitos(5,'There was a error with you application','You already have a application including this structure');
 		return
+        
 	}
 
 //alert("Success, server responded with: " + event.target.response); // raw response
+stopLoading()
  alerta(1); // raw response
 location.reload()
 $("#AdministrarMatricula").modal('toggle');
@@ -310,8 +328,8 @@ xhr.send(formData);
 
     window.addEventListener("load", function(event) {
         console.log("'Todos los recursos terminaron de cargar!");
-        program.value=-1;
-        type.value=-1;
+     //   program.value=-1;
+       // type.value=-1;
       });
      
     function programChange(){

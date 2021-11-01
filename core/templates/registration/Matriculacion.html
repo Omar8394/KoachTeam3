@@ -116,10 +116,16 @@ let  dictPrograma=new Object();
 
 {% for mat in structurasAll %}
 
-dictPrograma[ {{mat.pk}} ]='{{mat.precio}}';
+
+if('{{mat.descuento}}'!=null && '{{mat.descuento}}'!='None'){
+	dictPrograma[ {{mat.pk}} ]='{{mat.precio}}'-'{{mat.precio}}'*0.01*'{{mat.descuento}}';
+
+}else{
+
+	dictPrograma[ {{mat.pk}} ]='{{mat.precio}}'
+}
 {% endfor %}
 
-//console.log(dictPrograma);
 
 
 window.addEventListener("load", function(event) {
@@ -237,12 +243,14 @@ function courseChange(combo){
 
 
 function enviar(){
-
+setLoading()
 	var xhr = new XMLHttpRequest();
 xhr.open("POST", "save/"); 
 xhr.onload = function(event){ 
-
+//stopLoading()
 //	console.log(event.target.response);
+stopLoading()
+
 	if(event.target.response==2){
 		alertaMensajitos(5,'There was a error with you application','You already have a application including this structure');
 		return

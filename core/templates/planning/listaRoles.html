@@ -1,0 +1,6 @@
+{% for p in lista %}  
+    
+    <option  value={{ p.id_tabla }} {% if p.desc_elemento == activo %}selected{% endif %}>{{ p.desc_elemento }}</option>
+
+{% endfor %} 
+

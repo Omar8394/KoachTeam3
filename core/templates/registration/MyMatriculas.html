@@ -178,7 +178,7 @@
                                                    <td>{{mat.fecha_matricula}}</td>
                                                    <td>{{mat.fk_estruc_programa}}</td>
                                                    {% if mat.fk_status_matricula.valor_elemento == 'EstatusEspera'%}
-                                                   <td onclick="showModalPago('{{mat.fk_estruc_programa.idestructuraprogrmas}}' )">
+                                                   <td onclick="showModalPago('{{mat.fk_estruc_programa.pk}}',{{mat.pk}})">
                                                        <span> <i class="fas fa-credit-card mr-1"></i>  Payment </span>
                                                    </td>
                                                    {% else %}
@@ -416,7 +416,7 @@ function reload(){
                 
                                     <center>
                                      <input type="hidden" id="dato" value= "{{ precio }}"/>
-                                        <p><strong> Amount to Pay: <span id="precioPaypal">  </span></strong></p>
+                                        <p><strong> Amount to Pay: <span id="precioPaypal">  </span>$</strong></p>
                                     </center>
                                     <div class="clearfix"></div>
                                     </div>
@@ -489,7 +489,7 @@ function reload(){
          <div class="form-row">
             <div class="form-group col-12">
                <label for="titleCourse" class="col-form-label">Amount to pay:</label>
-               <span id="Amount" name="Amount" > </span>
+               <span id="Amount" name="Amount" > </span>$
                  
             </div>
              </div>
@@ -574,7 +574,7 @@ function reload(){
 
          
     <div class="modal-footer">
-        <button type="submit" class="btn btn-primary">Save<i class="fas fa-save ml-2"></i></button>
+        <button type="submit"  class="btn btn-primary">Save<i class="fas fa-save ml-2"></i></button>
       
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
     </div>
@@ -612,7 +612,8 @@ function copy() {
     var PrecioMatricula=0;
     var matricula=0;
     var HashCode="";
-    function showModalPago(id){
+function showModalPago(price,id){
+        setLoading()
         matricula=id;
     
     
@@ -629,12 +630,11 @@ function copy() {
         let unit=document.getElementById("modalContent").innerHTML=result;
     
     });
-        $("#PayMatricula").modal("show");
         
         matricula=id;
     
     
-    let url2='GetPrice/?matricula='+id;
+    let url2='GetPrice/?matricula='+price;
     fetch(url2,{
         mode: 'no-cors',
       method: 'get'
@@ -648,6 +648,8 @@ function copy() {
         PrecioMatricula=unit2;
 
         precio(unit2);
+        $("#PayMatricula").modal("show");
+        stopLoading()
     
     });
         
@@ -658,12 +660,14 @@ function copy() {
     }
     
     function showModalPaypal(id){
-        matricula=id;
+        setLoading()
+        //matricula=id;
     
     
         if(id==1){
        $("#PayMatriculaPaypal").modal("show");
        document.getElementById('precioPaypal').innerHTML=PrecioMatricula;
+       stopLoading()
 
       
     }
@@ -687,6 +691,8 @@ function copy() {
         HashCode=result
        document.getElementById('Amount').innerHTML=PrecioMatricula;
         idHash = result;
+       stopLoading()
+
      
     });
    
@@ -704,6 +710,7 @@ function copy() {
     
     
     function enviardt(a){
+        setLoading()
      //function enviar(a){
         un.value=g1;
      cant.value=g2; 
@@ -731,10 +738,11 @@ function copy() {
 
 
     function enviarST(){
-    
+    setLoading()
     var xhr = new XMLHttpRequest();
     xhr.open("POST", "updateEnrollment/"); 
     xhr.onload = function(event){ 
+        stopLoading()
     alert("Success, server responded with: " + event.target.response); // raw response
     location.href = "" ;
     }; 
@@ -852,10 +860,11 @@ function copy() {
 function cgPayTr(){
 
 
-
+setLoading()
 var xhr = new XMLHttpRequest();
 xhr.open("POST", "InsertPayTr/"); 
 xhr.onload = function(event){ 
+    stopLoading()
 //alert("Success, server responded with: " + event.target.response); // raw response
 alerta(1);
 reload();

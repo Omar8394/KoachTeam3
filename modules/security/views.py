@@ -4,11 +4,12 @@ Copyright (c) 2019 - present AppSeed.us
 """
 from datetime import datetime
 
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.http.response import JsonResponse
 # Create your views here.
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.models import User
 from django.forms.utils import ErrorList
 from django.http import HttpResponse
@@ -32,6 +33,7 @@ import imghdr
 from django.contrib import messages
 from ..app.models import Publico
 import json
+from django.contrib.auth.hashers import check_password
 
 
 def login_view(request):
@@ -39,7 +41,7 @@ def login_view(request):
         return redirect("/")
     else:
         form = LoginForm(request.POST or None)
-        msg =None
+        msg = None
         if request.session.get("mensaje"):
             msg = request.session.get("mensaje")
             request.session.flush()
@@ -194,8 +196,9 @@ def register_user_new(request, activation_key, registertype, id):
                         id_land = form.cleaned_data.get("id_request")
                         land_page = LandPage.objects.get(pk=id_land)
                         publico_aux = Publico.objects.create(nombre=land_page.nombre,
-                                                             apellido=land_page.apellido,direccion=land_page.direccion,
-                                                             docto_identidad="No found", correos=land_page.correos, telefonos="No Found",
+                                                             apellido=land_page.apellido, direccion=land_page.direccion,
+                                                             docto_identidad="No found", correos=land_page.correos,
+                                                             telefonos="No Found",
                                                              fecha_registro=datetime.today())
                         ExtensionUsuario.objects.create(CtaUsuario=cuenta, Publico=publico_aux, user=user)
                         enlace.delete()
@@ -452,7 +455,7 @@ def emailrecovery(request, activation_key):
                     form = RecoveryMethodEmail(request.POST or None)
                     if form.is_valid():
                         print("form is valid and key link is valid")
-                        Methods.change_password(enlace, form.cleaned_data['password1'])
+                        Methods.change_password_link(enlace, form.cleaned_data['password1'])
                         return redirect("/login/", kwargs={'msg':
                                                                'Your credentials have been changed correctly, '
                                                                'try to login'})
@@ -468,8 +471,70 @@ def emailrecovery(request, activation_key):
     return render(request, "security/emailrecovery.html", context)
 
 
+@login_required(login_url="/login/")
+def changePassword(request):
+    if request.method == 'POST':
+        actual_password = request.POST.get('password')
+        new_password = request.POST.get('password1')
+        # verificar encriptacion
+        if actual_password != new_password:
+            if check_password(actual_password, request.user.password):
+                Methods.change_password(request, new_password)
+                response = {
+                    'mensaje': 'Your password has been changed correctly',
+                    'tipo': 4,
+                    'titulo': 'Password changed successfully',
+                    'code': 'changed'
+                }
+            else:
+                response = {
+                    'mensaje': 'the current password entered is incorrect, please verify your password and try again to change your password',
+                    'tipo': 5,
+                    'titulo': 'Incorrect Password'
+                }
+        else:
+            response = {
+                'mensaje': 'the password you want to change cannot be the same as the current password', 'tipo': 5,
+                'titulo': 'Same password'
+            }
+        return JsonResponse(response)
+    elif request.method == 'GET':
+        return render(request, "security/cambiarclave.html")
+
+
+@login_required(login_url="/login/")
+def changeSecretQuestion(request):
+    usuario = ExtensionUsuario.objects.get(user=request.user)
+    if request.method == 'POST':
+        respuesta = request.POST.get('respuesta')
+        id_pregunta = request.POST.get('cb_tipo_pregunta')
+        actual_password = request.POST.get('password')
+        # verificar encriptacion
+        if check_password(actual_password, request.user.password):
+           usuario.CtaUsuario.fk_pregunta_secreta_id = id_pregunta
+           usuario.CtaUsuario.respuesta_secreta = respuesta
+           usuario.CtaUsuario.save()
+           response = {
+                'mensaje': 'Your secret question has been changed correctly',
+                'tipo': 4,
+                'titulo': 'Password changed successfully',
+                'code': 'changed'
+            }
+        else:
+            response = {
+                'mensaje': 'the current password entered is incorrect, please verify your password and try again to change your secret question',
+                'tipo': 5,
+                'titulo': 'Incorrect Password'
+            }
+
+        return JsonResponse(response)
+    elif request.method == 'GET':
+        tipo_pregunta = TablasConfiguracion.obtenerHijos("pregSecreta")
+        context = {'preguntas': tipo_pregunta, 'pregunta_id': usuario.CtaUsuario.fk_pregunta_secreta_id, 'respuesta':usuario.CtaUsuario.respuesta_secreta}
+        return render(request, "security/cambiarpregunta.html", context)
+
+
 def editProfile(request):
-    
     nuevo = ExtensionUsuario.objects.get(user=request.user)
     if not nuevo.Publico:
         publicoNew = Publico.objects.create()
@@ -479,8 +544,9 @@ def editProfile(request):
     profile = Publico.objects.get(idpublico=ExtensionUsuario.objects.get(user=request.user).Publico.idpublico)
     telefono = profile.telefonos
     correo = profile.correos
-    img = CtaUsuario.objects.get(idcta_usuario=ExtensionUsuario.objects.get(user=request.user).CtaUsuario.idcta_usuario).url_imagen
-    
+    img = CtaUsuario.objects.get(
+        idcta_usuario=ExtensionUsuario.objects.get(user=request.user).CtaUsuario.idcta_usuario).url_imagen
+
     if request.method == "POST":
 
         form = editProfiles(request.POST, instance=profile)
@@ -525,23 +591,33 @@ def editProfile(request):
 
             messages.info(request, 'Changes applied successfully')
 
-            return render(request, "security/profilePage.html", {'form': form, 'telefono': None if not telefono else json.loads(telefono)['telefonoPrincipal'] if 'telefonoPrincipal' in json.loads(telefono) else None, 'img':img if img and img != "" else None})
+            return render(request, "security/profilePage.html", {'form': form, 'telefono': None if not telefono else
+            json.loads(telefono)['telefonoPrincipal'] if 'telefonoPrincipal' in json.loads(telefono) else None,
+                                                                 'img': img if img and img != "" else None})
 
         else:
 
             messages.warning(request, 'An error has occurred!')
-            return render(request, "security/profilePage.html", {'form': form,  'telefono': json.loads(telefono)['telefonoPrincipal'] if 'telefonoPrincipal' in json.loads(telefono) else None, 'img':img if img and img != "" else None})
+            return render(request, "security/profilePage.html", {'form': form, 'telefono': json.loads(telefono)[
+                'telefonoPrincipal'] if 'telefonoPrincipal' in json.loads(telefono) else None,
+                                                                 'img': img if img and img != "" else None})
 
-    form = editProfiles(instance=profile, initial={'telefonos': None if not telefono else json.loads(telefono)['telefonoAlternativo'] if 'telefonoAlternativo' in json.loads(telefono) else None, 'correos': None if not correo else json.loads(correo)['emailAlternativo'] if 'emailAlternativo' in json.loads(correo) else None})
-    return render(request, "security/profilePage.html", {'form': form, 'telefono': None if not telefono else json.loads(telefono)['telefonoPrincipal'] if 'telefonoPrincipal' in json.loads(telefono) else None, 'img':img if img and img != "" else None})
+    form = editProfiles(instance=profile, initial={'telefonos': None if not telefono else json.loads(telefono)[
+        'telefonoAlternativo'] if 'telefonoAlternativo' in json.loads(telefono) else None,
+                                                   'correos': None if not correo else json.loads(correo)[
+                                                       'emailAlternativo'] if 'emailAlternativo' in json.loads(
+                                                       correo) else None})
+    return render(request, "security/profilePage.html", {'form': form,
+                                                         'telefono': None if not telefono else json.loads(telefono)[
+                                                             'telefonoPrincipal'] if 'telefonoPrincipal' in json.loads(
+                                                             telefono) else None,
+                                                         'img': img if img and img != "" else None})
+
 
 def images(request):
-
     if request.method == "POST":
 
-
         myfile = request.FILES['file-input']
-
 
         fs = FileSystemStorage(location=settings.UPLOAD_ROOT)
         nombreImagen = str(request.user.id) + ".png"
@@ -562,11 +638,9 @@ def images(request):
             idcta_usuario=ExtensionUsuario.objects.get(user=request.user).CtaUsuario.idcta_usuario)
 
         if ctauser:
-
             ctauser.update(url_imagen=nombreImagen)
 
         return JsonResponse({'mensaje': 'Changes applied successfully', 'ruta': (RutaUrl + '/' + nombreImagen)})
-
 
 
 def rootImages(request):
@@ -575,7 +649,7 @@ def rootImages(request):
         ctauser = CtaUsuario.objects.get(
             idcta_usuario=ExtensionUsuario.objects.get(user=request.user).CtaUsuario.idcta_usuario)
 
-        if(ctauser.url_imagen):
+        if (ctauser.url_imagen):
 
             Ruta = settings.UPLOAD_URL + 'user/' + ctauser.url_imagen if ctauser else None
             root = settings.UPLOAD_ROOT + '/user/' + ctauser.url_imagen if ctauser else None
@@ -587,8 +661,6 @@ def rootImages(request):
 
             Ruta = None
             root = None
-
-
 
     response = {
         'ruta': Ruta
@@ -618,13 +690,12 @@ def configadmin(request):
 
 
 def borrarImages(request):
-
     if request.method == "POST":
 
         ctauser = CtaUsuario.objects.filter(
             idcta_usuario=ExtensionUsuario.objects.get(user=request.user).CtaUsuario.idcta_usuario)
 
-        if ctauser[0].url_imagen and ctauser[0].url_imagen!='':
+        if ctauser[0].url_imagen and ctauser[0].url_imagen != '':
 
             fs = FileSystemStorage(location=settings.UPLOAD_ROOT)
             nombreImagen = ctauser[0].url_imagen
@@ -633,7 +704,6 @@ def borrarImages(request):
             fs.delete(Ruta + '/' + nombreImagen)
 
             if ctauser:
-
                 ctauser.update(url_imagen=None)
 
             return JsonResponse({'mensaje': 'Image deleted'})

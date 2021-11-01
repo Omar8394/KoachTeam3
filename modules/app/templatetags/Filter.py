@@ -1,11 +1,60 @@
 from django import template
 from modules.academic.models import EvaluacionesPreguntas, ExamenActividad,ExamenRespuestas,EscalaCalificacion, ProgramaProfesores
+from modules.app.models import Estructuraprograma, HistoricoUser, TablasConfiguracion
+from modules.planning.models import cursos_prerequisitos
+from modules.registration.models import MatriculaAlumnos
+from modules.security.models import ExtensionUsuario, CtaUsuario
+
 import random
 from django.utils import timezone
 import json
 from django.core import serializers
 
 register = template.Library()
+
+@register.filter(name='locked')
+def editableCourse(activity, user):
+    isRequired = False
+    user = user.extensionusuario
+    rol = user.CtaUsuario.fk_rol_usuario.valor_elemento
+    publico = user.Publico
+    if rol == 'rol_student':
+        requisitos = cursos_prerequisitos.objects.filter(fk_estructura_programa=activity)
+        if requisitos.exists():
+            for requisito in requisitos:
+                visto = HistoricoUser.objects.filter(fk_publico = publico, fk_estructura_programa=requisito.fk_estructura_programa_pre, estado=True)
+                if not visto.exists():
+                    isRequired=True
+                    break
+    return isRequired
+
+@register.filter(name='getLibrary')
+def editableCourse(user):
+    response = None
+    user = user.extensionusuario
+    rol = user.CtaUsuario.fk_rol_usuario.valor_elemento
+    publico = user.Publico
+    if rol == "rol_admin":
+        response = Estructuraprograma.objects.filter(valor_elemento="program")
+    if rol == "rol_teacher":
+        response = []
+        today = timezone.now().date()
+        programas = ProgramaProfesores.objects.filter(fk_publico=publico, fecha_retiro__gt=today)
+        if programas.exists():
+            for programa in programas:
+                response.append(programa.fk_estructura_programa)
+        else:
+            response = None
+    if rol == "rol_student":
+        response = []
+        estatus = TablasConfiguracion.obtenerHijos("EstMatricula").get(valor_elemento="EstatusAprovado")
+        programas = MatriculaAlumnos.objects.filter(fk_publico=publico, fk_status_matricula=estatus)
+        if programas.exists():
+            for programa in programas:
+                response.append(programa.fk_estruc_programa)
+        else:
+            response = None
+    return response
 
 @register.filter(name='editableCourse')
 def editableCourse(curso, teacher):
@@ -203,3 +252,10 @@ def TipoExamen(id):
   
    else:
 	   return"error"
+
+@register.filter(name='Sidebar')
+def Sidebar(usuario):
+   rol=ExtensionUsuario.objects.get(user=usuario).CtaUsuario.fk_rol_usuario.valor_elemento
+  
+   
+   return rol

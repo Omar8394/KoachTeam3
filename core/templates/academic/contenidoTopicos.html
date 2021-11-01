@@ -1,3 +1,4 @@
+{% load Filter%}
 {% if query%}
 results for "{{query}}"
 {% endif %}
@@ -25,6 +26,9 @@ results for "{{query}}"
       {% for topic in data%}
       {%if topic.valor_elemento == 'Topic'%}
       <li class="card-list-item">
+         <!-- <div class="card-list-item-locked">
+            <i class="fas fa-lock"></i>
+         </div> -->
          <div class="card-list-item-inner">
             <div class="card-list-item-title" onclick="showContent('{{topic.pk}}')">{{topic.descripcion}}</div>
             <div class="card-list-item-actions">
@@ -80,6 +84,11 @@ results for "{{query}}"
             {% if activity.fk_categoria.valor_elemento == 'activityLesson'%} deg-info{% endif %}
             {% if activity.fk_categoria.valor_elemento == 'activityForum'%} deg-danger{% endif %}
             ">
+               {% if activity|locked:request.user %}
+               <div class="card-list-item-locked">
+                  <i class="fas fa-lock"></i>
+               </div>
+               {% endif %}
                <div class="card-list-item-icon">
                   {% if activity.fk_categoria.valor_elemento == 'activityExpert'%}
                   <i class="fas fa-file-contract"></i>
@@ -115,10 +124,12 @@ results for "{{query}}"
                      {% endif %}
                      {% endif %}
                      {% if go %}
+                     {% if activity.fk_categoria.valor_elemento == 'activityExpert' or activity.fk_categoria.valor_elemento == 'activityTest' or activity.fk_categoria.valor_elemento == 'activityLesson' or activity.fk_categoria.valor_elemento == 'activityHome'%}
                      <button type="button" class="btn btn-icon btn-sm btn-success ml-1" data-toggle="tooltip" data-placement="top" title="Go"
                         onclick="openGoActivity('{{activity.pk}}','{{activity.fk_categoria.desc_elemento}}')">
                         <i class="fas fa-door-open"></i>
                      </button>
+                     {% endif %}
                      {% endif %}
                      {% if see %}
                      <button type="button" class="btn btn-icon btn-sm btn-warning ml-1" data-toggle="tooltip" data-placement="top" title="See"

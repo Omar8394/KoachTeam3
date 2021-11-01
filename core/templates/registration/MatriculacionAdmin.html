@@ -147,7 +147,7 @@
                                                             <div class="btn-group" role="group">
                                                                 <input type="submit" class="btn btn-primary" value="Filter" >
                                                                 &nbsp;
-                                                                <input type="button" onclick="reload()" class="btn btn-default" value="Clean">
+                                                                <input type="button" onclick="reload()" class="btn btn-default ml-1" value="Clean">
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -336,7 +336,7 @@ PersonId.value=id;
 }
 function goToPage(page){
     
-
+setLoading()
    
     let url='ModalPublico/'+"?page="+page.toString();
     fetch(url,{
@@ -349,14 +349,15 @@ function goToPage(page){
     }).then(function(result){
         
         let unit=document.getElementById("modalContentPersona").innerHTML=result;
+        $("#BuscarPersonaModal").modal("show");
+stopLoading()
     
     });
-        $("#BuscarPersonaModal").modal("show");
         
       
     }
 function BuscarPersonaPost(){
-	
+	setLoading()
 
     let url='ModalPublico/';
     let formData = new FormData(); 
@@ -379,9 +380,10 @@ function BuscarPersonaPost(){
     }).then(function(result){
         
         let unit=document.getElementById("modalContentPersona").innerHTML=result;
+        $("#BuscarPersonaModal").modal("show");
+        stopLoading()
     
     });
-        $("#BuscarPersonaModal").modal("show");
         
       
     }
@@ -396,7 +398,7 @@ function BuscarPersonaPost(){
 
 var matricula=0;
 function modalBuscarPersona(){
-    
+    setLoading()
 
 
 let url='ModalPublico/';
@@ -410,15 +412,17 @@ return result.text();
 }).then(function(result){
 	
 	let unit=document.getElementById("modalContentPersona").innerHTML=result;
+    $("#BuscarPersonaModal").modal("show");
+stopLoading()
 
 });
-    $("#BuscarPersonaModal").modal("show");
     
   
 }
 
 
 function showModal(id){
+    setLoading()
     matricula=id;
 
 
@@ -437,9 +441,10 @@ return result.text();
 }).then(function(result){
 	
 	let unit=document.getElementById("modalContent").innerHTML=result;
+    $("#AdministrarMatricula").modal("show");
+stopLoading()
 
 });
-    $("#AdministrarMatricula").modal("show");
     
   
 }

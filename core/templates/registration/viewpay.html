@@ -128,7 +128,7 @@
                                                             <div class="btn-group" role="group">
                                                                 <input type="submit" class="btn btn-primary" value="Filter" >
                                                                 &nbsp;
-                                                                <input type="button" onclick="reload()" class="btn btn-default" value="Clean">
+                                                                <input type="button" onclick="reload()" class="btn btn-default ml-1" value="Clean">
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -300,7 +300,7 @@ userPagoId.value=id;
 }
 
 function BuscarPersonaPost(){
-	
+	setLoading()
 
     let url='ModalPublico/';
     let formData = new FormData(); 
@@ -323,16 +323,17 @@ function BuscarPersonaPost(){
     }).then(function(result){
         
         let unit=document.getElementById("modalContentPersona").innerHTML=result;
+        $("#BuscarPersonaModal").modal("show");
+        stopLoading()
     
     });
-        $("#BuscarPersonaModal").modal("show");
         
       
     }
 
 
 function goToPage(page){
-    
+    setLoading()
 
     paginaActual=paginaActual+1;
     let url='ModalPublico/'+"?page="+page.toString();
@@ -346,9 +347,11 @@ function goToPage(page){
     }).then(function(result){
         
         let unit=document.getElementById("modalContentPersona").innerHTML=result;
+        $("#BuscarPersonaModal").modal("show");
+        stopLoading()
+
     
     });
-        $("#BuscarPersonaModal").modal("show");
         
       
     }
@@ -364,7 +367,7 @@ function goToPage(page){
 
 function modalBuscarPersona(){
     
-
+setLoading()
 
     let url='ModalPublico/';
     fetch(url,{
@@ -377,9 +380,10 @@ function modalBuscarPersona(){
     }).then(function(result){
         
         let unit=document.getElementById("modalContentPersona").innerHTML=result;
+        $("#BuscarPersonaModal").modal("show");
+stopLoading()
     
     });
-        $("#BuscarPersonaModal").modal("show");
         
       
     }
@@ -393,6 +397,7 @@ var idPago=0;
 var origin=0;
 
 function Review (id,origen){
+    setLoading()
  idPago=id;
  origin=origen;
 
@@ -406,13 +411,14 @@ return result.text();
 }).then(function(result){
 	
 	let unit=document.getElementById("modalContentEdit").innerHTML=result;
+    $("#ModalEd").modal("show");
+    stopLoading()
 
 });
  
     
   
 
-$("#ModalEd").modal("show");
 
 }
 
@@ -420,10 +426,12 @@ $("#ModalEd").modal("show");
 
 
 function uptdatePay(){
+    setLoading()
 
 var xhr = new XMLHttpRequest();
 xhr.open("POST", "updatePayStatus/"); 
 xhr.onload = function(event){ 
+    stopLoading()
 //alert("Success, server responded with: " + event.target.response); // raw response
 //location.href = "" ;
  alerta(1);

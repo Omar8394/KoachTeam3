@@ -297,8 +297,13 @@
 
 
 <script>
-
 var matricula=0;
+
+window.addEventListener("load", function(event) {
+  
+        console.log("'Todos los recursos terminaron de cargar!");
+    
+      });
 
 function calcularDescuento(id, prices){
 var nombre="D"+id;
@@ -323,7 +328,7 @@ if(document.getElementById(id).value<=0 || document.getElementById(id).value>=10
     return;
 }
 
-
+setLoading()
 let url="{% url 'saveDiscount'%}";
     let formData = new FormData(); 
     formData.append("porcentaje", document.getElementById(id).value );
@@ -341,6 +346,7 @@ let url="{% url 'saveDiscount'%}";
 					method: 'POST',
                     body:formData
     }).then(function(result){
+        stopLoading()
         alerta(1);
     reload();
     return result.text();
@@ -372,7 +378,7 @@ return;
 }
 
 
-
+setLoading()
 
 let url="{% url 'savePrices'%}";
     let formData = new FormData(); 
@@ -391,10 +397,11 @@ let url="{% url 'savePrices'%}";
 					method: 'POST',
                     body:formData
     }).then(function(result){
+        stopLoading()
         alerta(1);
         reload();
     
-    return result.text();
+         return result.text();
     
     }).then(function(result){
         

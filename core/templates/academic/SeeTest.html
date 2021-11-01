@@ -99,7 +99,7 @@
 							  <br>
 								{%if pregunta.fk_estructura_programa.fk_categoria.valor_elemento != 'activityExpert' %}	
 								<div class="center" style="text-align: center;">
-                             		   {% if examen.PuntuacionFinal <= pregunta.calificacion_aprobar%}
+                             		   {% if examen.PuntuacionFinal < pregunta.calificacion_aprobar%}
    									<h1 style='color:red'> Repproved! </h2>
 									   
 											   {%else%}
@@ -304,7 +304,7 @@
 
 		async function ReviewTest () {
         
-            
+            setLoading()
 			fetch("{% url 'reviewExamen' %}", {
             ...fetchObject,
             body: JSON.stringify({
@@ -318,6 +318,7 @@
             }),
         }).then(async (res) => {
                 document.getElementById("Contenido").innerHTML= await res.text()
+				stopLoading()
 
             
             })
@@ -433,7 +434,6 @@
    }
 
    async function reviewRespuestas(){
-
 
   preguntas.forEach(function(item, index, object) {
 
@@ -678,10 +678,12 @@ window.location.href="{% url 'MyEnrollments'%}";
       
     }
 	async function openSeeResults  (id)  {
+			setLoading()
 		   
 				renderModalResults(id).then(()=>{
 				
 				   $("#ModalResults").modal("show");
+				   stopLoading()
 				})
 			}    
 	

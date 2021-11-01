@@ -251,6 +251,7 @@ renderSortedContent()
 })
 
 const renderSortedContent = () => {
+    setLoading()
       updateOrder()
       
      // document.querySelector("main.card-body").classList.add("is-loading")
@@ -265,6 +266,7 @@ const renderSortedContent = () => {
          })
       })
       .then(async (res) => {
+          stopLoading()
           alertaMensajitos(1,'Done!', 'Changes Saved')
           reload()
         // renderContent()
@@ -322,6 +324,7 @@ const renderSortedContent = () => {
                 alertaMensajitos(5,'This Test can not be modified', 'This test has been already been taken by users')
                 return;
             }
+            setLoading()
             
            $("#chooseTypeQuestion").modal("hide")
            await renderModalQuestions()
@@ -351,20 +354,26 @@ const renderSortedContent = () => {
 
            }
            await renderModalNewQuestion(url)
+           stopLoading()
         }
 
         const openAddModalQuestion = () => {
+            setLoading()
             limpiarModalOpciones()
             renderModalTypeQuestion().then(()=>{
                editmode = false
                $("#chooseTypeQuestion").modal("show")
+               stopLoading()
             })
         }    
 
        // Guardar
    
         async function clickSave (url)  {
+            setLoading()
             if(numExamenes>0){
+                stopLoading()
+
                 alertaMensajitos(5,'This Test can not be modified', 'This test has been already been taken by users')
                 return;
             }
@@ -377,16 +386,22 @@ const renderSortedContent = () => {
             
 
             if(isEmpty(questionPoints.value) || isEmpty(questionText.value) || isEmpty(questionTittle.value)){
+                stopLoading()
+
                 alertaMensajitos(5,'There are empty filds', 'You can not save a questions with empty filds')
                 return;
             }
 
             if(tablaPreguntas.length<=0){
+                stopLoading()
+
                 alertaMensajitos(5,'There are no any options', 'You can not save a questions with no options')
                 return;
             }
 
             if(questionPoints.value<=0){
+                stopLoading()
+
                 alertaMensajitos(5,'Invalid value', 'The questions points can not be negative or 0')
                 return;
             }
@@ -397,6 +412,8 @@ const renderSortedContent = () => {
             
                 if(editmode==false){
                     if(MaxPoint-PointinUse<questionPoints.value){
+                stopLoading()
+
                 alertaMensajitos(5,'Invalid value', 'The questions points exceed the total points available');
                 return;
                     }
@@ -411,6 +428,8 @@ const renderSortedContent = () => {
 
 
                 if(todal<questionPoints.value){
+                stopLoading()
+
                 alertaMensajitos(5,'Invalid value', 'The questions points exceed the total points available');
                 return;
                     }
@@ -421,6 +440,8 @@ const renderSortedContent = () => {
 
             error= await verificaOpciones();  
                if(error)   {
+                stopLoading()
+
                    return;
                }     
 
@@ -471,19 +492,22 @@ const renderSortedContent = () => {
             }),
         })
             .then(async (res) => {
+                stopLoading()
+
                 let result = JSON.parse(await res.text())
                 if (result.message === "Error") {
                     alerta(5)
                 }
                 alerta(2)
+                form=null
+               tablaPreguntas=[]
+                $("#addNewQuestion").modal("hide");
                 reload()
 
             })
             .then(() => {
                // renderTable()
-               form=null
-               tablaPreguntas=[]
-                $("#addNewQuestion").modal("hide");
+              
             })
     }
         const createQuestion = (form,url) => {
@@ -494,6 +518,8 @@ const renderSortedContent = () => {
                 }),
             })
             .then(async (res) => {
+                stopLoading()
+
                 let result = JSON.parse(await res.text())
                 if (result.message === "Error") {
                    alerta(5)
@@ -511,15 +537,18 @@ const renderSortedContent = () => {
         //Instrucciones
 
         const openAddInstructions = () => {
-  
-  renderModalAddInstructions().then(()=>{
+    setLoading()
+    renderModalAddInstructions().then(()=>{
   
      $("#addInstrucciones").modal("show")
+     stopLoading()
+
   })
 }    
 
         
       async function clickSaveInstructions  (url)  {
+          setLoading()
 
                 const texto_instrucciones= document.getElementById("instruccionesText")
                 const metodo='Add'
@@ -537,6 +566,7 @@ const renderSortedContent = () => {
                         }),
                     })
                     .then(async (res) => {
+                        stopLoading()
                         let result = JSON.parse(await res.text())
                         if (result.message === "Error") {
                             alerta(5);
@@ -554,7 +584,7 @@ const renderSortedContent = () => {
                 }
 
   async function deleteInstructions  ()  {
-
+setLoading()
                 const elimino = await alerta(3)
 
                 if (!elimino) {
@@ -577,6 +607,8 @@ const renderSortedContent = () => {
                 }),
                 })
                 .then(async (res) => {
+                stopLoading()
+
                 let result = JSON.parse(await res.text())
                 if (result.message === "Error") {
                     alerta(5);
@@ -594,6 +626,7 @@ const renderSortedContent = () => {
                 }
         
     const renderModalAddInstructions = () => {
+        
             let idTest=ActivityId
            return fetch("{% url 'getModalAddInstructions' %}", {
                ...fetchObject,
@@ -607,6 +640,7 @@ const renderSortedContent = () => {
            })
            .then(async (res) => {
                document.getElementById("addInstruccionesContent").innerHTML = await res.text()
+
            }).then(()=>{
                const formIns = document.getElementById("formInstructions")
                formIns.addEventListener("submit", (e) => {
@@ -652,6 +686,7 @@ const renderSortedContent = () => {
         const elimino = await alerta(3)
       //  console.log(type)
         if (elimino) {
+            setLoading()
 
             let urlDelete=''
           if (type == 1 ){
@@ -680,10 +715,14 @@ const renderSortedContent = () => {
            }
             const res = await matarPregunta(id, urlDelete)
             if (res) {
+                stopLoading()
+
                 alerta(4)
                 reload()
             }
             else {
+                stopLoading()
+
                 alerta(5)
             }
         }
@@ -718,6 +757,7 @@ const renderSortedContent = () => {
         // Actualizar
 
         const openEditModal = (id, type) => {
+            setLoading()
         selectedId = id
         let url
            if (type == 1 ){
@@ -931,6 +971,8 @@ const renderSortedContent = () => {
                 
 
                 editmode = true
+                stopLoading()
+                
             })
             .then(() => {
                 //$("#addNewScaleGe").modal("show")

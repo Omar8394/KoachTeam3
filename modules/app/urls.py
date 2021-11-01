@@ -16,6 +16,9 @@ urlpatterns = [
     #Calendar & index settings
     path('settings/', views.indexSettings, name='indexSettings'),
 
+    #Security Settings
+    path('security/', views.securitySettings, name='securitySettings'),
+
     # Scales
     path('settings/scales', views.scales, name='scales'),
     path('settings/scales/scalesGeAddModal/', views.scalesGeAddModal, name='modalScaleGeAdd'),

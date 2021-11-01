@@ -5,8 +5,8 @@ Copyright (c) 2019 - present AppSeed.us
 
 from django.urls import path
 from .views import login_view, register_user, register_user_new, forgot_password, lang_page, full_registration,\
-    recovery_method, emailrecovery, recovery_method_question,verificationaccount, editProfile, images, rootImages,\
-    configadmin, borrarImages
+    recovery_method, emailrecovery, recovery_method_question, verificationaccount, editProfile, images, rootImages,\
+    configadmin, borrarImages, changePassword, changeSecretQuestion
 from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
@@ -26,5 +26,7 @@ urlpatterns = [
     path("rootImages/", rootImages, name='rootImages'),
     path("configadmin/", configadmin, name='configadmin'),
     path("borrarImages/", borrarImages, name='borrarImages'),
+    path('changepassword/', changePassword, name="changePassword"),
+    path('changesecretquestion/', changeSecretQuestion, name="changeSecretQuestion"),
 
 ]

@@ -26,7 +26,7 @@ TITULOCOMPETENCIA = {'idcompetenciasreq': '#', 'desc_competencia': 'Name', 'fk_p
 TITULOCOMPETENCIAADQ = {'idcompetencias_adq': '#', 'fk_publico': 'Public', 'periodo': 'Period', 'experiencia': 'Experience', 'fk_tipo_duracion': 'Duration', 'fk_competencia': 'Competence', 'fk_nivel': 'Level'}
 TITULOPLAN = {'idpublico':'#', 'nombre': 'Name', 'apellido': 'Last Name'}
 TITULOPLANES = {'idmatricula_alumnos': '#', 'fk_estruc_programa': 'Program', 'fecha_matricula': 'Date', 'fk_status_matricula': 'Status'}
-TITULOPUBLIC = {'idpublico':'#', 'nombre': 'Name', 'apellido': 'Last Name', 'fk_rol_usuario': 'Role', 'telefonos': 'Primary Phone', 'correos': 'Primary Email:', 'fk_status_cuenta': 'Status'}
+TITULOPUBLIC = {'idpublico':'#', 'username': 'Username', 'nombre': 'Name', 'apellido': 'Last Name', 'fk_rol_usuario': 'Role', 'telefonos': 'Primary Phone', 'correos': 'Primary Email:', 'fk_status_cuenta': 'Status'}
 
 @register.filter
 def get_attr(dictionary, key):
@@ -64,8 +64,7 @@ def tostringJson(value, key):
 
 def show(request): 
 
-
-    if(request.user.is_staff):
+    if request.user.extensionusuario.CtaUsuario.fk_rol_usuario.desc_elemento == 'Admin':
         
         search_query = request.GET.get('search_box', "")
         plan = Perfil.objects.all()
@@ -78,12 +77,12 @@ def show(request):
     
     else:
         
-        return redirect('/') 
+        return HttpResponseForbidden()
 
 
 def showCompetences(request): 
 
-    if(request.user.is_staff):
+    if request.user.extensionusuario.CtaUsuario.fk_rol_usuario.desc_elemento == 'Admin':
 
         search_query = request.GET.get('search_box', "")
         competencia = CompetenciasReq.objects.all()  
@@ -96,18 +95,18 @@ def showCompetences(request):
     
     else:
 
-        return redirect('/') 
+        return HttpResponseForbidden()
 
 def showCompetencesAdq(request):  
 
     search_query = request.GET.get('search_box', "")
     competencia = CompetenciasAdq.objects.all()
     # print(request.user)
-    if not request.user.is_staff:
+    if request.user.extensionusuario.CtaUsuario.fk_rol_usuario.desc_elemento != 'Admin':
 
         competencia = competencia.filter(fk_publico = ExtensionUsuario.objects.get(user = request.user).Publico)
 
-    if(search_query and request.user.is_staff):
+    if(search_query and request.user.extensionusuario.CtaUsuario.fk_rol_usuario.desc_elemento == 'Admin'):
 
         competencia = competencia.filter(fk_publico__nombre__icontains=search_query) 
 
@@ -117,6 +116,11 @@ def showProgram(request):
      
     search_query = request.GET.get('search_box', "")
     program = Publico.objects.all()
+
+    if request.user.extensionusuario.CtaUsuario.fk_rol_usuario.desc_elemento != 'Admin':
+
+        program = program.filter(idpublico = ExtensionUsuario.objects.get(user = request.user).Publico.idpublico)
+    
     return render(request,"planning/showProgram.html",{'plan': paginas(request, program), 'keys' : TITULOPLAN, 'urlEdit': 'editProgram', 'urlRemove': 'destroyProgram', 'search':search_query, 'tipo':'Schedule', 'segment':'planning'}) 
 
 def editProgram(request, id):  
@@ -124,7 +128,7 @@ def editProgram(request, id):
     
 def destroy(request):  
 
-    if(request.user.is_staff):
+    if request.user.extensionusuario.CtaUsuario.fk_rol_usuario.desc_elemento == 'Admin':
 
         if request.method == "POST":  
 
@@ -135,11 +139,11 @@ def destroy(request):
             
     else:
 
-        return redirect('/') 
+        return HttpResponseForbidden()
 
 def destroyCompetence(request):  
 
-    if(request.user.is_staff):
+    if request.user.extensionusuario.CtaUsuario.fk_rol_usuario.desc_elemento == 'Admin':
 
         if request.method == "POST":  
 
@@ -150,7 +154,7 @@ def destroyCompetence(request):
 
     else:
 
-        return redirect('/') 
+        return HttpResponseForbidden()
 
 def destroyCompetenceAdq(request):  
 
@@ -225,8 +229,11 @@ def renderListasPublic(request):
             structuras=structuras.exclude(idestructuraprogrmas=tipoHijo)
             actividad = Estructuraprograma.objects.get(idestructuraprogrmas=tipoHijo)
             requisitos=cursos_prerequisitos.objects.filter(fk_estructura_programa=actividad)
+            prerequisitos=cursos_prerequisitos.objects.filter(fk_estructura_programa_pre=actividad)
             for x in requisitos:
                 structuras=structuras.exclude(idestructuraprogrmas=x.fk_estructura_programa_pre.idestructuraprogrmas)
+            for x in prerequisitos:
+                structuras=structuras.exclude(idestructuraprogrmas=x.fk_estructura_programa.idestructuraprogrmas)
 
             if(structuras.first()): print(structuras.first().valor_elemento)
             html = render_to_string('planning/lista.html', {'lista': structuras, 'tipo': 'Estructuraprograma'})
@@ -354,13 +361,17 @@ def paginar(request):
 
         plan = CompetenciasAdq.objects.all()
 
-        if not request.user.is_staff:
+        if request.user.extensionusuario.CtaUsuario.fk_rol_usuario.desc_elemento != 'Admin':
             
             plan = plan.filter(fk_publico = ExtensionUsuario.objects.get(user = request.user).Publico)
 
     elif tipo and tipo == 'Schedule':
 
         plan = Publico.objects.all()
+        
+        if request.user.extensionusuario.CtaUsuario.fk_rol_usuario.desc_elemento != 'Admin':
+            
+            plan = plan.filter(idpublico = ExtensionUsuario.objects.get(user = request.user).Publico.idpublico)
 
     elif tipo and tipo == 'tablaSchedule':
         
@@ -543,14 +554,18 @@ def lockPublic(request):
         try:
 
             id=request.POST.get('id')
-
             ctauser = CtaUsuario.objects.filter(idcta_usuario=ExtensionUsuario.objects.get(Publico=Publico.objects.get(idpublico=id)).CtaUsuario.idcta_usuario)
+            
+            if str(request.user.extensionusuario.CtaUsuario.idcta_usuario) != str(id) and ctauser[0].fk_status_cuenta.valor_elemento != 'status_verification':
 
+                ctauser.update(fk_status_cuenta= TablasConfiguracion.objects.get(valor_elemento='status_locked').id_tabla)
+                # messages.info(request, 'Public Locked Successfully')
+                return JsonResponse({"mensaje" : "exito"})
 
-            ctauser.update(fk_status_cuenta= TablasConfiguracion.objects.get(valor_elemento='status_locked').id_tabla)
+            else:
 
-            messages.info(request, 'Public Locked Successfully')
-            return JsonResponse({"mensaje" : "exito"})
+                return JsonResponse({"mensaje" : "self" if ctauser[0].fk_status_cuenta.valor_elemento != 'status_verification' else 'verification'})
+
 
         except:
 
@@ -559,7 +574,7 @@ def lockPublic(request):
     
 def unlockPublic(request):
 
-    code = str(Methods.getVerificationLink(request.user.email, 1))
+    # code = str(Methods.getVerificationLink(request.user.email, 1))
 
     if request.method == "POST":  
 
@@ -572,7 +587,7 @@ def unlockPublic(request):
 
             ctauser.update(fk_status_cuenta= TablasConfiguracion.objects.get(valor_elemento='status_active').id_tabla)
 
-            messages.info(request, 'Public Unlocked Successfully')
+            # messages.info(request, 'Public Unlocked Successfully')
             return JsonResponse({"mensaje" : "exito"})
 
         except:
@@ -603,7 +618,7 @@ def modalForm(request):
         form = competenciaAdqForm(instance=profilage)
         competencias = CompetenciasReq.objects.all()
         publicos = Publico.objects.all()
-        publicos = publicos.filter(idpublico=ExtensionUsuario.objects.get(user = request.user).Publico.idpublico) if not request.user.is_staff else publicos.filter(idpublico=ExtensionUsuario.objects.get(Publico = CompetenciasAdq.objects.get(idcompetencias_adq=id).fk_publico).Publico.idpublico) if id else publicos
+        publicos = publicos.filter(idpublico=ExtensionUsuario.objects.get(user = request.user).Publico.idpublico) if request.user.extensionusuario.CtaUsuario.fk_rol_usuario.desc_elemento != 'Admin' else publicos.filter(idpublico=ExtensionUsuario.objects.get(Publico = CompetenciasAdq.objects.get(idcompetencias_adq=id).fk_publico).Publico.idpublico) if id else publicos
         
         if(publicos and len(publicos)==1):
 
@@ -727,3 +742,31 @@ def requirements(request):
         return JsonResponse({'mensaje': 'succes'})
 
     return JsonResponse({}) 
+
+def listaRol(request):
+    
+    if request.method == "POST":  
+
+        id = request.POST.get('id', None)
+        if str(request.user.extensionusuario.Publico.idpublico) != str(id):
+            publico = Publico.objects.get(idpublico=id)
+            extension = ExtensionUsuario.objects.get(Publico=publico)
+            roles = TablasConfiguracion.obtenerHijos('Roles')
+
+
+            html = render_to_string('planning/listaRoles.html', {'lista': roles, 'activo': extension.CtaUsuario.fk_rol_usuario.desc_elemento})
+            return JsonResponse({'html': html}) 
+        else:
+            return JsonResponse({'html': 'self'}) 
+
+def setRole(request):
+    
+    if request.method == "POST":  
+
+        id = request.POST.get('id', None)
+        rol = request.POST.get('rol', None)
+        publico = Publico.objects.get(idpublico=id)
+        cuenta = ExtensionUsuario.objects.get(Publico=publico).CtaUsuario
+        cuenta.fk_rol_usuario = TablasConfiguracion.objects.get(id_tabla=rol)
+        cuenta.save()
+        return JsonResponse({'html': 'self'}) 

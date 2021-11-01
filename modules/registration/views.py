@@ -18,7 +18,7 @@ from django.core.paginator import Paginator
 from django.utils.dateparse import parse_datetime
 from modules.registration.models import PreciosFormacion
 from django.db.models import Q
-from django.db.models import F
+from django.db.models import F, FloatField
 from django.db.models import Count
 from django.db.models import Max
 import random
@@ -35,8 +35,8 @@ from time import gmtime, strftime
 import hashlib
 # Create your views here.
 
-
-
+def precioFinal(precio, descuento):
+  return 1.22
 @login_required(login_url="/login/")
 def enrollment(request):
     cta=ExtensionUsuario.objects.get(user=request.user).CtaUsuario
@@ -126,7 +126,7 @@ def PublicoAdmin(request):
     if cta.fk_rol_usuario.valor_elemento != 'rol_admin':
       return HttpResponseForbidden()
   
-    publicoObject=Publico.objects.all()
+    publicoObject=Publico.objects.annotate(rol=F('extensionusuario__CtaUsuario__fk_rol_usuario__valor_elemento')).filter(rol='rol_student')
 
     fechaFinalPersona=None
     fechaInicialPersona=None
@@ -1229,7 +1229,7 @@ def ModalPublico(request):
 
     
     msg = None
-    publicoObject=Publico.objects.all()
+    publicoObject=Publico.objects.annotate(rol=F('extensionusuario__CtaUsuario__fk_rol_usuario__valor_elemento')).filter(rol='rol_student')
      
 
 
@@ -1817,11 +1817,11 @@ def GetPrice(request):
    listaPrecio=PreciosFormacion.objects.filter(fk_estruc_programa=estructura)
    listaPrecio=listaPrecio.last()
 
-
+   precio=None
    if listaPrecio.PorcentajeDescuento==None or listaPrecio.PorcentajeDescuento==0 :
        precio=listaPrecio.precio
    else:
-       precio=listaPrecio.precio*(listaPrecio.PorcentajeDescuento*0.01)
+       precio=float(listaPrecio.precio)-(float(listaPrecio.precio)*float(listaPrecio.PorcentajeDescuento)*0.01)
 
       
 
@@ -1938,8 +1938,8 @@ def InsertPayTr(request):
             codigo_hash   = hash,
             url_imagen  = id4  )
           Pago.save()
-
-          matriculadb.fk_status_matricula=TablasConfiguracion.objects.get('EstatusPay')
+          statusWait=TablasConfiguracion.objects.get(valor_elemento='EstatusPay')
+          matriculadb.fk_status_matricula=statusWait
           matriculadb.save()
 
           return HttpResponse("Changes saved con valor")   
@@ -1962,7 +1962,9 @@ def InsertPayTr(request):
             codigo_hash   = None,
             url_imagen  = None  )
           Pago.save()
-          matriculadb.fk_status_matricula=TablasConfiguracion.objects.get('EstatusAprovado')
+          statusGood=TablasConfiguracion.objects.get(valor_elemento='EstatusAprovado')
+          print(statusGood)
+          matriculadb.fk_status_matricula=statusGood
           matriculadb.save()
 
               

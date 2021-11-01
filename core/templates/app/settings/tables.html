@@ -23,7 +23,7 @@
                <i class="flaticon-right-arrow"></i>
             </li>
             <li class="nav-item">
-               <span>Settings</span>
+               <a href="{% url 'indexSettings' %}">Settings</a>
             </li>
             <li class="separator">
                <i class="flaticon-right-arrow"></i>
@@ -160,7 +160,8 @@
 
          })
    }
-   const clickSave = () => {
+   const clickSave = async() => {
+      setLoading()
       const checkChangesCB = document.getElementById("checkChangesCB")
       const checkShowCB = document.getElementById("checkShowCB")
       const checkListsCB = document.getElementById("checkListsCB")
@@ -177,14 +178,15 @@
          tipoElemento: padreConfig.value == 1 ? 1 : 0,
       }
       if (editmode) {
-         updateConfig(form, selectedId)
+         await updateConfig(form, selectedId)
       }
       else {
-         createConfig(form)
+         await createConfig(form)
       }
+      stopLoading()
    }
    const createConfig = (form) => {
-      fetch("{% url 'system_tables' %}", {
+      return fetch("{% url 'system_tables' %}", {
          ...fetchObject,
          body: JSON.stringify({
             data: form
@@ -204,7 +206,7 @@
          })
    }
    const updateConfig = (form, idViejo) => {
-      fetch("{% url 'system_tables' %}", {
+      return fetch("{% url 'system_tables' %}", {
          ...fetchObject,
          body: JSON.stringify({
             data: {

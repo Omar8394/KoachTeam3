@@ -44,7 +44,7 @@
                                         
                                         </button>
                                         {% if isAdmin == True %}
-                                        <button   class="btn btn-default btn-info" type="button" id="SetTime" onclick="SetTimeOuts()">
+                                        <button   class="btn btn-default btn-info ml-1" type="button" id="SetTime" onclick="SetTimeOuts()">
                                             <i class="fa fa-clock mr-1"></i> Update TimeOuts
                                         
                                         </button>
@@ -143,7 +143,7 @@
                                                     <th>Take Date</th>
                                                     <th>Type</th>
                                                     <th>Status</th>
-                                                    <th>Tota Score</th>
+                                                    <th>Total Score</th>
 
                                                     <th>Scale Result</th>
 
@@ -303,6 +303,7 @@ function ManagePersonas(id){
 
 
 function showModal(id){
+    setLoading()
     Persona=id;
     
 
@@ -316,9 +317,10 @@ return result.text();
 }).then(function(result){
 	
 	let unit=document.getElementById("modalContent").innerHTML=result;
+    $("#AdministrarMatricula").modal("show");
+    stopLoading()
 
 });
-    $("#AdministrarMatricula").modal("show");
     
   
 }
@@ -356,7 +358,7 @@ xhr.send(formData);
 function modalBuscarPersona(){
     
 
-
+setLoading()
     let url="{% url 'ModalPublico'%}";
     fetch(url,{
         mode: 'no-cors',
@@ -368,10 +370,11 @@ function modalBuscarPersona(){
     }).then(function(result){
         
         let unit=document.getElementById("modalContentPersona").innerHTML=result;
+        $("#BuscarPersonaModal").modal("show");
+        stopLoading()
 
     
     });
-        $("#BuscarPersonaModal").modal("show");
         
       
     }
@@ -379,7 +382,7 @@ function modalBuscarPersona(){
 
     function BuscarPersonaPost(){
 	
-
+        setLoading()
     let url="{% url 'ModalPublico'%}";
     let formData = new FormData(); 
     formData.append("nombreBuscar", nombreBuscar.value);
@@ -401,10 +404,11 @@ function modalBuscarPersona(){
     }).then(function(result){
         
         let unit=document.getElementById("modalContentPersona").innerHTML=result;
+        $("#BuscarPersonaModal").modal("show");
+        stopLoading()
      
     
     });
-        $("#BuscarPersonaModal").modal("show");
         
       
     }
@@ -421,7 +425,7 @@ PersonIdExamen.value=id;
 
 }
 function goToPage(page){
-    
+    setLoading()
 
     paginaActual=paginaActual+1;
     let url='ModalPublico/'+"?page="+page.toString();
@@ -435,9 +439,10 @@ function goToPage(page){
     }).then(function(result){
         
         let unit=document.getElementById("modalContentPersona").innerHTML=result;
+        $("#BuscarPersonaModal").modal("show");
+        stopLoading()
     
     });
-        $("#BuscarPersonaModal").modal("show");
         
       
     }
@@ -450,10 +455,12 @@ var variablesTitulos=[];
 var titulos=[];
 
 async function openSeeResults  (id)  {
+    setLoading()
        
             renderModalResults(id).then(()=>{
             
                $("#ModalResults").modal("show");
+               stopLoading()
             })
         }    
 
@@ -480,6 +487,7 @@ async function renderModalResults(id){
 }
 
 async function SetTimeOuts(id){
+    setLoading()
     return fetch("{% url 'setTimeOuts' %}", {
                 ...fetchObject,
                 body: JSON.stringify({
@@ -487,8 +495,9 @@ async function SetTimeOuts(id){
             })
             })
             .then(async (res) => {
+                stopLoading()
                 alertaMensajitos(1,'Done', 'Registers Updated')
-                window.location.href="{% url 'TestList' %}"
+                location.reload()
 
             }).then(()=>{
              
@@ -580,7 +589,7 @@ async function getGrafica(id){
 function matricular(id){
 
 
-
+setLoading()
 
 let url="{% url 'saveMatricula'%}";
     let formData = new FormData(); 
@@ -598,6 +607,7 @@ let url="{% url 'saveMatricula'%}";
 					method: 'POST',
                     body:formData
     }).then(async function(result){
+        stopLoading()
 		let resultado=await result.text()
 	
 		if(resultado==2){

@@ -754,9 +754,11 @@
                   $(`#summernote`).html($(`#summernote`).summernote('code'))
                }
                if (!$("#formActividad").valid()) return
+               setLoading()
                clickSave(formActividad, url)
                   .then(() => {
                      $("#addNewModal").modal("hide")
+                     stopLoading()
                      renderContent()
                   })
             })
@@ -819,9 +821,11 @@
                if (url === "{% url 'modalNewHomework' %}") {
                   $(`#summernote`).html($(`#summernote`).summernote('code'))
                }
+               setLoading()
                clickSave(formActividad, url)
                   .then(() => {
                      $("#addNewModal").modal("hide")
+                     stopLoading()
                      renderContent()
                   })
             })
@@ -834,7 +838,9 @@
       for (var [key, value] of formData.entries()) {
          data[key] = value
       }
-      data["recursos"] = comprobarRecursosArray()
+      if (url === "{% url 'modalNewHomework' %}") {
+         data["recursos"] = comprobarRecursosArray()
+      }
       if (editmode) {
          return updateModel(url, "Update", data, idSeleted)
             .then(async (res) => {
@@ -968,9 +974,11 @@
             formTopico.addEventListener("submit", (e) => {
                e.preventDefault()
                if (!$("#formTopico").valid()) return
+               setLoading()
                clickSave(formTopico, "{% url 'modalAddTopico' %}")
                   .then(() => {
                      $("#addNewModal").modal("hide")
+                     stopLoading()
                      renderContent()
                   })
             })
@@ -1015,9 +1023,11 @@
             formTopico.addEventListener("submit", (e) => {
                e.preventDefault()
                if (!$("#formTopico").valid()) return
+               setLoading()
                clickSave(formTopico, "{% url 'modalAddTopico' %}")
                   .then(() => {
                      $("#addNewModal").modal("hide")
+                     stopLoading()
                      renderContent()
                   })
             })
@@ -1047,13 +1057,13 @@
       }
    }
    const toggleTime = () => {
-      const time = document.getElementById("timeActivity")
+     // const time = document.getElementById("timeActivity")
       const duration = document.getElementById("durationActivity")
-      if (!time.disabled) {
-         time.value = null
+      if (!duration.disabled) {
+       //  time.value = null
          duration.value = null
       }
-      time.disabled = !time.disabled
+    //  time.disabled = !time.disabled
       duration.disabled = !duration.disabled
 
    }

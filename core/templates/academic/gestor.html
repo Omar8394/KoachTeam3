@@ -176,9 +176,11 @@
             formPrograma.addEventListener("submit", (e) => {
                e.preventDefault()
                if ($("#formPrograma").valid()){
+                  setLoading()
                   clickSave(formPrograma, "{% url 'modalAddPrograma' %}")
                      .then(() => {
                         $("#addNewModal").modal("hide")
+                        stopLoading()
                         renderContent()
                      })
                }
@@ -220,9 +222,11 @@
             formPrograma.addEventListener("submit", (e) => {
                e.preventDefault()
                if($("#formPrograma").valid()){
+                  setLoading()
                   clickSave(formPrograma, "{% url 'modalAddPrograma' %}")
                      .then(() => {
                         $("#addNewModal").modal("hide")
+                        stopLoading()
                         renderContent()
                      })
 
@@ -251,9 +255,11 @@
             formCategoria.addEventListener("submit", (e) => {
                e.preventDefault()
                if($("#formCategoria").valid()){
+                  setLoading()
                   clickSave(formCategoria, "{% url 'modalAddCategoria'%}")
                      .then(() => {
                         $("#addNewModal").modal("hide")
+                        stopLoading()
                         renderContent()
                      })
                }

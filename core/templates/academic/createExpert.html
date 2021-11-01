@@ -488,6 +488,7 @@ function actualizarListaSugerencia() {
 
 
         const updateOrderActivity = (id) =>{
+            setLoading()
       let actividades = document.getElementById(`childsBlock${id}`).children
       ordenamientoArrayPreguntas = []
       actividades.forEach((pagina, index) => {
@@ -509,6 +510,7 @@ function actualizarListaSugerencia() {
          })
       })
       .then(async (res) => {
+          stopLoading()
          let resultado = JSON.parse(await res.text())
          if(resultado.message === "Perfect"){
             alertaMensajitos(1,'Done!', 'Changes Saved')
@@ -569,6 +571,7 @@ function actualizarListaSugerencia() {
    })
 
    const renderSortedContent = () => {
+       setLoading()
       updateOrder()
      // document.querySelector("main.card-body").classList.add("is-loading")
       fetch("{% url 'getModalAddBlock'%}", {
@@ -582,6 +585,7 @@ function actualizarListaSugerencia() {
          })
       })
       .then(async (res) => {
+          stopLoading()
           alertaMensajitos(1,'Done!', 'Changes Saved')
           reload()
         // renderContent()
@@ -662,10 +666,11 @@ function actualizarListaSugerencia() {
                 alertaMensajitos(5,'Invalid Command', 'Your Block total points can surpass the total test points')
                 return;
             }
-            
+            setLoading()
             renderModalAddBlock().then(()=>{
             
                $("#addBlockModal").modal("show")
+               stopLoading()
             })
         }    
 
@@ -675,27 +680,32 @@ function actualizarListaSugerencia() {
                 return;
             }
             BlockId=id
+            setLoading()
             renderModalQuestions().then(()=>{
             
                $("#addNewQuestion").modal("show")
+               stopLoading()
             })
         }    
 
         const addRespuesta= (id) => {
            
             BlockId=id
+            setLoading()
             renderModalRespuesta(BlockId).then(()=>{
             
                $("#addNewRespuesta").modal("show")
+               stopLoading()
             })
         }    
 
 
         const openAddInstructions = () => {
-  
+            setLoading()
             renderModalAddInstructions().then(()=>{
             
                $("#addInstrucciones").modal("show")
+               stopLoading()
             })
         }    
 
@@ -704,7 +714,9 @@ function actualizarListaSugerencia() {
        // Guardar
    
         async function  clickSave ()  {
+            setLoading()
             if(numExamenes>0){
+                stopLoading()
                 alertaMensajitos(5,'This Test can not be modified', 'This test has been already been taken by users')
                 return;
             }
@@ -719,16 +731,22 @@ function actualizarListaSugerencia() {
             
            
             if(isEmpty(questionPoints.value) || isEmpty(questionText.value) || isEmpty(questionTittle.value)){
+                stopLoading()
+
                 alertaMensajitos(5,'There are empty filds', 'You can not save a questions with empty filds')
                 return;
             }
 
             if(tablaPreguntas.length<=0){
+                stopLoading()
+
                 alertaMensajitos(5,'There are no any options', 'You can not save a questions with no options')
                 return;
             }
 
             if(questionPoints.value<=0){
+                stopLoading()
+
                 alertaMensajitos(5,'Invalid value', 'The questions max points can not be negative or 0')
                 return;
             }
@@ -739,6 +757,8 @@ function actualizarListaSugerencia() {
             
                 if(editmode==false){
                     if(Number(MaxPointBlock)-Number( dict[BlockId] )<questionPoints.value){
+                stopLoading()
+
                 alertaMensajitos(5,'Invalid value', 'The questions points exceed the total points available');
                 return;
                     }
@@ -759,6 +779,8 @@ function actualizarListaSugerencia() {
 
 
                 if(todal<questionPoints.value){
+                stopLoading()
+
                 alertaMensajitos(5,'Invalid value', 'The questions points exceed the total points available');
                 return;
                     }
@@ -769,6 +791,8 @@ function actualizarListaSugerencia() {
 
             error= await verificaOpciones();  
                if(error)   {
+                stopLoading()
+
                    return;
                }     
            
@@ -806,7 +830,7 @@ function actualizarListaSugerencia() {
         
         async function  clickSaveSuggestion (id)  {
            
-              
+              setLoading()
             form = {
            
                idBlock:id,
@@ -834,6 +858,8 @@ function actualizarListaSugerencia() {
             }),
         })
             .then(async (res) => {
+                stopLoading()
+
                 let result = JSON.parse(await res.text())
                 if (result.message === "Error") {
                     alerta(5)
@@ -852,6 +878,7 @@ function actualizarListaSugerencia() {
 
 
         const openEditPregunta = (id, idBlock) => {
+            setLoading()
         selectedId = id
         BlockId=idBlock
         
@@ -912,6 +939,8 @@ function actualizarListaSugerencia() {
                 
 
                 editmode = true
+                stopLoading()
+
             })
             .then(() => {
          
@@ -924,7 +953,7 @@ function actualizarListaSugerencia() {
                 alertaMensajitos(5,'This Test can not be modified', 'This test has been already been taken by users')
                 return;
             }
-       
+       setLoading()
        const bloqueText= document.getElementById("blockText")
        const bloqueTittle= document.getElementById("blockTitle")
 
@@ -961,15 +990,18 @@ function actualizarListaSugerencia() {
             }),
         })
             .then(async (res) => {
+                stopLoading()
+
                 let result = JSON.parse(await res.text())
                 if (result.message === "Error") {
                     alerta(5)
                 }
                 alerta(2)
+                $("#addNewQuestion").modal("hide");
+                reload()
             })
             .then(() => {
                // renderTable()
-                $("#addNewQuestion").modal("hide");
             })
     }
 
@@ -985,16 +1017,19 @@ function actualizarListaSugerencia() {
             }),
         })
             .then(async (res) => {
+                stopLoading()
+
                 let result = JSON.parse(await res.text())
                 if (result.message === "Error") {
                     alerta(5)
                 }
                 alerta(2)
+                $("#addBlockModal").modal("hide")
+                reload()
             })
             .then(() => {
                // renderTable()
-                $("#addBlockModal").modal("hide")
-                reload
+               
             })
     }
         const createQuestion = (form) => {
@@ -1009,6 +1044,8 @@ function actualizarListaSugerencia() {
                
             })
             .then(async (res) => {
+                stopLoading()
+
                 let result = JSON.parse(await res.text())
                 if (result.message === "Error") {
                    alerta(5)
@@ -1031,6 +1068,8 @@ function actualizarListaSugerencia() {
                 }),
             })
             .then(async (res) => {
+                stopLoading()
+
                 let result = JSON.parse(await res.text())
                 if (result.message === "Error") {
                    alerta(5)
@@ -1047,6 +1086,7 @@ function actualizarListaSugerencia() {
 
     
         async function clickSaveInstructions  (url)  {
+            setLoading()
 
        const texto_instrucciones= document.getElementById("instruccionesText")
        const metodo='Add'
@@ -1064,6 +1104,8 @@ function actualizarListaSugerencia() {
                 }),
             })
             .then(async (res) => {
+                stopLoading()
+
                 let result = JSON.parse(await res.text())
                 if (result.message === "Error") {
                    alerta(5);
@@ -1089,7 +1131,7 @@ function actualizarListaSugerencia() {
             return;
         }
 
-
+setLoading()
 const metodo='delete'
 form = {
 
@@ -1104,6 +1146,8 @@ fetch("{% url 'getModalAddInstructions' %}", {
          }),
      })
      .then(async (res) => {
+        stopLoading()
+
          let result = JSON.parse(await res.text())
          if (result.message === "Error") {
             alerta(5);
@@ -1355,15 +1399,18 @@ fetch("{% url 'getModalAddInstructions' %}", {
         const elimino = await alerta(3)
      
         if (elimino) {
-
+            setLoading()
         
             const res = await matarPregunta(id, "{% url 'getModalNewExpert' %}")
             if (res) {
+                stopLoading()
                 alerta(4)
                 reload()
 
             }
             else {
+                stopLoading()
+
                 alerta(5)
                
             }
@@ -1376,17 +1423,21 @@ fetch("{% url 'getModalAddInstructions' %}", {
                 return;
             }
         const elimino = await alerta(3)
-     
+     setLoading()
         if (elimino) {
 
         
             const res = await matarPregunta(id, "{% url 'getModalAddBlock' %}")
             if (res) {
+                stopLoading()
+
                 alerta(4)
                 reload()
 
             }
             else {
+                stopLoading()
+
                 alerta(5)
                
             }
@@ -1421,6 +1472,7 @@ fetch("{% url 'getModalAddInstructions' %}", {
         // Actualizar
 
         const openEditModal = (id, type) => {
+            setLoading()
         selectedId = id
         let url
            if (type == 1 ){
@@ -1632,6 +1684,8 @@ fetch("{% url 'getModalAddInstructions' %}", {
                 
 
                 editmode = true
+                stopLoading()
+
             })
             .then(() => {
                 //$("#addNewScaleGe").modal("show")
@@ -1649,13 +1703,15 @@ fetch("{% url 'getModalAddInstructions' %}", {
 
 
     const openEditModalBlock = (id) => {
+        setLoading()
         selectedId = id
       
         fetch("{% url 'getModalAddBlock' %}", {
             ...fetchObject,
             body: JSON.stringify({
                 data: {
-                    idFind: id
+                    idFind: id,
+                    method:'get'
                 }
             }),
         })
@@ -1674,6 +1730,8 @@ fetch("{% url 'getModalAddInstructions' %}", {
             })
             .then(() => {
                 $("#addBlockModal").modal("show")
+                stopLoading()
+
           
             })
     }
