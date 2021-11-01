@@ -1,5 +1,7 @@
 from django import template
 from modules.academic.models import EvaluacionesPreguntas, ExamenActividad,ExamenRespuestas,EscalaCalificacion, ProgramaProfesores
+from modules.app.models import Estructuraprograma, TablasConfiguracion
+from modules.registration.models import MatriculaAlumnos
 from modules.security.models import ExtensionUsuario, CtaUsuario
 
 import random
@@ -8,6 +10,34 @@ import json
 from django.core import serializers
 
 register = template.Library()
+
+@register.filter(name='getLibrary')
+def editableCourse(user):
+    response = None
+    user = user.extensionusuario
+    rol = user.CtaUsuario.fk_rol_usuario.valor_elemento
+    publico = user.Publico
+    if rol == "rol_admin":
+        response = Estructuraprograma.objects.filter(valor_elemento="program")
+    if rol == "rol_teacher":
+        response = []
+        today = timezone.now().date()
+        programas = ProgramaProfesores.objects.filter(fk_publico=publico, fecha_retiro__gt=today)
+        if programas.exists():
+            for programa in programas:
+                response.append(programa.fk_estructura_programa)
+        else:
+            response = None
+    if rol == "rol_student":
+        response = []
+        estatus = TablasConfiguracion.obtenerHijos("EstMatricula").get(valor_elemento="EstatusAprovado")
+        programas = MatriculaAlumnos.objects.filter(fk_publico=publico, fk_status_matricula=estatus)
+        if programas.exists():
+            for programa in programas:
+                response.append(programa.fk_estruc_programa)
+        else:
+            response = None
+    return response
 
 @register.filter(name='editableCourse')
 def editableCourse(curso, teacher):

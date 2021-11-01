@@ -569,8 +569,10 @@
       formPagina.addEventListener("submit", (e) => {
          e.preventDefault()
          $(`#summernote${id}`).html($(`#summernote${id}`).summernote('code'))
+         setLoading()
          clickSave(formPagina, "{% url 'modalAddPagina' %}")
             .then(() => {
+               stopLoading()
                renderContent()
             })
       })

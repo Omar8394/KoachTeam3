@@ -754,9 +754,11 @@
                   $(`#summernote`).html($(`#summernote`).summernote('code'))
                }
                if (!$("#formActividad").valid()) return
+               setLoading()
                clickSave(formActividad, url)
                   .then(() => {
                      $("#addNewModal").modal("hide")
+                     stopLoading()
                      renderContent()
                   })
             })
@@ -819,9 +821,11 @@
                if (url === "{% url 'modalNewHomework' %}") {
                   $(`#summernote`).html($(`#summernote`).summernote('code'))
                }
+               setLoading()
                clickSave(formActividad, url)
                   .then(() => {
                      $("#addNewModal").modal("hide")
+                     stopLoading()
                      renderContent()
                   })
             })
@@ -970,9 +974,11 @@
             formTopico.addEventListener("submit", (e) => {
                e.preventDefault()
                if (!$("#formTopico").valid()) return
+               setLoading()
                clickSave(formTopico, "{% url 'modalAddTopico' %}")
                   .then(() => {
                      $("#addNewModal").modal("hide")
+                     stopLoading()
                      renderContent()
                   })
             })
@@ -1017,9 +1023,11 @@
             formTopico.addEventListener("submit", (e) => {
                e.preventDefault()
                if (!$("#formTopico").valid()) return
+               setLoading()
                clickSave(formTopico, "{% url 'modalAddTopico' %}")
                   .then(() => {
                      $("#addNewModal").modal("hide")
+                     stopLoading()
                      renderContent()
                   })
             })

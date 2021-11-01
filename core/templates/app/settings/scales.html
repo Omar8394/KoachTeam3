@@ -350,7 +350,8 @@
         })
     }
 
-    const clickSave = () => {
+    const clickSave = async() => {
+        setLoading()
         var SavemaxScore=parseFloat($("#max_score").val())
 
         if(SavemaxScore<=0){
@@ -411,16 +412,16 @@
 
         }
         if (editmode) {
-            updateScaleGe(form, selectedId)
+            await updateScaleGe(form, selectedId)
         }
         else {
-            createScaleGe(form)
+            await createScaleGe(form)
         }
-
+        stopLoading()
     }
 
     const createScaleGe = (form) => {
-        fetch("{% url 'scales' %}", {
+        return fetch("{% url 'scales' %}", {
             ...fetchObject,
             body: JSON.stringify({
                 data: form
@@ -486,7 +487,7 @@
     }
 
     const updateScaleGe = (form, idViejo) => {
-        fetch("{% url 'scales' %}", {
+        return fetch("{% url 'scales' %}", {
             ...fetchObject,
             body: JSON.stringify({
                 data: {
