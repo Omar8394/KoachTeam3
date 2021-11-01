@@ -120,6 +120,7 @@
 				</li>
 
 				<!--Registration-->
+				{% if rol != 'rol_teacher'%}
 				<li class="nav-item {% if 'registration' in segment %} active {% endif %}">
 					<a data-toggle="collapse" href="#submenuRegistration">
 						<i class="fas fa-address-card"></i>
@@ -184,6 +185,7 @@
 						</ul>
 					</div>
 				</li>
+							{%endif%}
 
 				<!--Planning-->
 				<li class="nav-item {% if 'planning' in segment %} active {% endif %}">
