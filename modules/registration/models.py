@@ -1,5 +1,6 @@
 from django.db import models
-from django.db.models.fields import DateField
+
+from django.db.models.fields import DateField, FloatField
 from ..app.models import Estructuraprograma, TablasConfiguracion, Publico
 import datetime
 
@@ -13,6 +14,12 @@ class PreciosFormacion(models.Model):
 
     fk_tipo_moneda = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE,  default=None, null=True)
     fecha_habilitado = models.DateField(default=None, null=True)
+    
+    def   PrecioDescuento(self):
+        if self.PorcentajeDescuento!=None:
+         return 1
+        else: 
+            return 0
     def LastStructura(id):
         
         try:

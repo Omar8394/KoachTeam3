@@ -256,6 +256,7 @@ def contenidoExamen(request):
                 if data["method"] == "Retake":
                     
                     Examen=ExamenActividad.objects.get(pk=data['idExamen'])
+                    actividad=Examen.fk_actividad
 
                     
                     Examen.estadoExamen=2
@@ -267,9 +268,15 @@ def contenidoExamen(request):
                     opciones=ExamenRespuestas.objects.filter(fk_Examen=Examen)
                     resultados.delete()
                     opciones.delete()
-                
                     Examen.save()
-                    return JsonResponse({"id": Examen.pk})  
+                    logUserBackEnd(Examen.usuario.pk, Examen.fk_Actividad.fk_estructura_programa.pk, False, True)
+                    time=None
+                    if actividad.duracion != None:
+                       
+                            time=Examen.fechaInicio+ datetime.timedelta(0,(actividad.duracion*60))
+                            time=time.strftime("%b %d %Y %H:%M:%S")
+
+                    return JsonResponse({"id": Examen.pk, 'inicio':time})  
 
 
 
@@ -291,6 +298,8 @@ def contenidoExamen(request):
 
 
                     Examen.save()
+                    logUserBackEnd(Examen.usuario.pk, Examen.fk_Actividad.fk_estructura_programa.pk, False, False)
+
                     return JsonResponse({"id": Examen.pk, 'inicio':time})     
 
 
@@ -364,6 +373,15 @@ def contenidoExamen(request):
                    examen.fechaTermino=datetime.datetime.now() 
                   # examen.nro_repeticiones=examen.nro_repeticiones+1
                    examen.save()
+                   estado=False
+                   print('aquitoy')
+                   if examen.fk_Actividad.fk_estructura_programa.fk_categoria.valor_elemento!='activityExpert':
+                    if examen.PuntuacionFinal>=examen.fk_Actividad.calificacion_aprobar:
+                       estado=True
+                   else:
+                       estado=True
+                   logUserBackEnd(examen.usuario.pk, examen.fk_Actividad.fk_estructura_programa.pk, estado, True)
+
 
 
 
@@ -3441,6 +3459,36 @@ def logUser(request):
                         historia.save()     
             except:
                 return JsonResponse({"message":"error"}, status=500)
+
+def logUserBackEnd(usuario, activity, estado, esUpdate):
+            
+            
+            user = ExtensionUsuario.objects.get(user=usuario).Publico
+            log=HistoricoUser.objects.filter(fk_publico=user, fk_estructura_programa=activity)
+            
+            if log.exists():
+                if esUpdate ==True:
+                    new=HistoricoUser.objects.get(pk=log[0].pk)
+                    new.fecha = datetime.datetime.now()
+                    new.estado = estado
+                    new.save()
+                else:
+                        log.delete()
+                        historia = HistoricoUser()
+                        historia.fecha = datetime.datetime.now()
+                        historia.estado = estado
+                        historia.fk_estructura_programa_id = activity
+                        historia.fk_publico = user
+                        historia.save()    
+            else:
+                        historia = HistoricoUser()
+                        historia.fecha = datetime.datetime.now()
+                        historia.estado = estado
+                        historia.fk_estructura_programa_id = activity
+                        historia.fk_publico = user
+                        historia.save()     
+
+            
 
 @login_required(login_url="/login/")
 def getComboContent(request):

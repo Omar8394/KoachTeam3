@@ -18,7 +18,7 @@ from django.core.paginator import Paginator
 from django.utils.dateparse import parse_datetime
 from modules.registration.models import PreciosFormacion
 from django.db.models import Q
-from django.db.models import F
+from django.db.models import F, FloatField
 from django.db.models import Count
 from django.db.models import Max
 import random
@@ -35,8 +35,8 @@ from time import gmtime, strftime
 import hashlib
 # Create your views here.
 
-
-
+def precioFinal(precio, descuento):
+  return 1.22
 @login_required(login_url="/login/")
 def enrollment(request):
     cta=ExtensionUsuario.objects.get(user=request.user).CtaUsuario
@@ -126,7 +126,7 @@ def PublicoAdmin(request):
     if cta.fk_rol_usuario.valor_elemento != 'rol_admin':
       return HttpResponseForbidden()
   
-    publicoObject=Publico.objects.all()
+    publicoObject=Publico.objects.annotate(rol=F('extensionusuario__CtaUsuario__fk_rol_usuario__valor_elemento')).filter(rol='rol_student')
 
     fechaFinalPersona=None
     fechaInicialPersona=None
@@ -1229,7 +1229,7 @@ def ModalPublico(request):
 
     
     msg = None
-    publicoObject=Publico.objects.all()
+    publicoObject=Publico.objects.annotate(rol=F('extensionusuario__CtaUsuario__fk_rol_usuario__valor_elemento')).filter(rol='rol_student')
      
 
 

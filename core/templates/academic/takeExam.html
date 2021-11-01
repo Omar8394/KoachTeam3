@@ -418,6 +418,9 @@
 		   })
 		   })
 		   .then(async (res) => {
+			idTest= JSON.parse(await res.text());
+			examenId=idTest.id;
+			time=idTest.inicio;
 			
 			
 		   }).then(()=>{
