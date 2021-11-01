@@ -177,7 +177,7 @@
 							  <br>
 								{%if pregunta.fk_estructura_programa.fk_categoria.valor_elemento != 'activityExpert' %}	
 								<div class="center" style="text-align: center;">
-										{% if examen.0.PuntuacionFinal <= pregunta.calificacion_aprobar%}
+										{% if examen.0.PuntuacionFinal < pregunta.calificacion_aprobar%}
 											<h1 style='color:red'> Repproved! </h2>
 											
 											{%else%}

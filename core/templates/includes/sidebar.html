@@ -35,16 +35,27 @@
 									<span class="sub-item">Dashboard</span>
 								</a>
 							</li>
+							{% if rol == 'rol_admin'%}
 							<li>
 								<a href="{% url 'TestList' %}">
-									<span class="sub-item">Review Activitys</span>
+									<span class="sub-item">Review Tests</span>
 								</a>
 							</li>
+							{%endif%}
+							{% if rol == 'rol_student'%}
 							<li>
 								<a href="{% url 'MyTest' %}">
-									<span class="sub-item">My Activitys</span>
+									<span class="sub-item">My Tests</span>
 								</a>
 							</li>
+							{%endif%}
+								{% if rol == 'rol_teacher'%}
+							<li>
+								<a href="{% url 'TeacherTests' %}">
+									<span class="sub-item">Review Tests</span>
+								</a>
+							</li>
+							{%endif%}
 							{% if rol == 'rol_admin'%}
 							<li>
 								<a href="{% url 'professors' %}">
@@ -112,40 +123,50 @@
 					</a>
 					<div class="collapse" id="submenuRegistration">
 						<ul class="nav nav-collapse">
+						{% if rol == 'rol_admin'%}
 							<li>
 								<a href="{% url 'ManagePersons' %}">
 									<span class="sub-item">Manage Persons</span>
 								</a>
 							</li>
-
+							{%endif%}
+							{% if rol == 'rol_student'%}
 							<li>
 								<a href="{% url 'enrollment' %}">
 									<span class="sub-item">Enrollment Aplication</span>
 								</a>
 							</li>
-
+							{%endif%}
+							{% if rol == 'rol_admin'%}
 							<li>
 								<a href="{% url 'EnrollmentList' %}">
 									<span class="sub-item">Enrollment List</span>
 								</a>
 							</li>
+							{%endif%}
 
-
+						{% if rol == 'rol_student'%}
 							<li>
 								<a href="{% url 'MyEnrollments' %}">
 									<span class="sub-item">My Enrollments</span>
 								</a>
 							</li>
+							{%endif%}
+							{% if rol == 'rol_admin'%}
 							<li>
 								<a href="{% url 'ManagePrices' %}">
 									<span class="sub-item">Manage Structures Prices</span>
 								</a>
 							</li>
+							{%endif%}
+							{% if rol == 'rol_admin'%}
 							<li>
 								<a href="{% url 'ViewPayments' %}">
 									<span class="sub-item">Review Payments</span>
 								</a>
 							</li>
+							{%endif%}
+							{% if rol == 'rol_admin'%}
 
                              <li>
 								<a href="{% url 'landingshow' %}">
@@ -153,6 +174,7 @@
 									<span class="sub-item">Manage Landingpage</span>
 								</a>
 						  </li> 
+						  {%endif%}
 
 						</ul>
 					</div>

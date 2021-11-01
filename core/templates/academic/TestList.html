@@ -497,7 +497,7 @@ async function SetTimeOuts(id){
             .then(async (res) => {
                 stopLoading()
                 alertaMensajitos(1,'Done', 'Registers Updated')
-                window.location.href="{% url 'TestList' %}"
+                location.reload()
 
             }).then(()=>{
              

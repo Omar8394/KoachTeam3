@@ -254,9 +254,10 @@ def contenidoExamen(request):
                     bloque.titulo_bloque=data['tituloBloque']
                     bloque.save()
                 if data["method"] == "Retake":
-                    
+                    print('ssssssssss')
                     Examen=ExamenActividad.objects.get(pk=data['idExamen'])
-                    actividad=Examen.fk_actividad
+                    actividad=Examen.fk_Actividad
+                    print('ss')
 
                     
                     Examen.estadoExamen=2
@@ -524,9 +525,9 @@ def SeeTest(request):
     pregunta=ActividadEvaluaciones.objects.get(pk=examen.fk_Actividad.pk)
     escalas = EscalaEvaluacion.objects.all()
     user=ExtensionUsuario.objects.get(user=request.user)
-    if cta== 'rol_student':
-      if examen.fk_publico !=user:
-          return HttpResponseForbidden()
+   # if cta== 'rol_student':
+    #  if examen.usuario !=user:
+     #     return HttpResponseForbidden()
 
 
     print(examen)
@@ -824,6 +825,8 @@ def setTimeOuts(request):
              item.fechaTermino=time
              item.estadoExamen=4
              item.save()
+             logUserBackEnd(item.usuario.pk, item.fk_Actividad.fk_estructura_programa.pk, False, True)
+
 
     return HttpResponse('OK')
 
