@@ -122,7 +122,8 @@
             }).then((willDelete) => {
 
                     if(willDelete){
-                            $.ajax({
+                        setLoading()
+                        $.ajax({
                             type: "POST",
                             url: "{% url urlRemove %}",
                             data: {
@@ -137,12 +138,17 @@
                                             title: "Alert?",
                                             text: data.mensaje === 'self'?"You can't look your account?":"This account needs to be verified",
                                             icon: "warning",})
+
                                 else
+
                                     $('#paginas').find('.active').find('.page-link').trigger('click')
+
+                                stopLoading()
                                 
                             },
                             failure: function () {
                                 swal("failure");
+                                stopLoading()
                             }
                         });
 
@@ -161,7 +167,8 @@
             }).then((willDelete) => {
 
                     if(willDelete){
-                            $.ajax({
+                        setLoading()
+                        $.ajax({
                             type: "POST",
                             url: "{% url urlEdit %}",
                             data: {
@@ -171,10 +178,12 @@
                             dataType: "json",
                             success: function (data) {
                                 $('#paginas').find('.active').find('.page-link').trigger('click')
+                                stopLoading()
                                 
                             },
                             failure: function () {
                                 swal("failure");
+                                stopLoading()
                             }
                         });
 
@@ -184,6 +193,7 @@
 
         const modalRol = (id) => {
         
+            setLoading()
             $.ajax({
                 type: "POST",
                 data: {
@@ -207,10 +217,12 @@
                         $("#myModal input").val(id);
 
                     }
+                    stopLoading()
 
                 },
                 error: function (response) {
                     console.log(response.responseJSON.errors)
+                    stopLoading()
                 }
             });
 
@@ -220,26 +232,30 @@
     $('#paginas').on('click', ".page-link", function(e){
         e.preventDefault();
         let page = $(this).attr('href').replace ( /[^\d.]/g, '' );
-            $.ajax({
-                    type: "POST",
-                    url: "{% url 'paginar' %}", 
-                    data : {    
-                    page : page, 
-                    filtro : $('#search_box').val(), 
-                    tipo: "Public",
-                    orden: orden,
-                    tipoOrden: $("#tablaContenido").hasClass("descendiente")?"-":"",
-                    csrfmiddlewaretoken: '{{ csrf_token }}',
-                },
-                success: function (response) {
+        setLoading()
+        $.ajax({
+            type: "POST",
+            url: "{% url 'paginar' %}", 
+            data : {    
+                page : page, 
+                filtro : $('#search_box').val(), 
+                tipo: "Public",
+                orden: orden,
+                tipoOrden: $("#tablaContenido").hasClass("descendiente")?"-":"",
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+            },
+            success: function (response) {
 
-                    document.getElementById('paginas').innerHTML = response.paginas;
-                    document.getElementById('tablaContenido').innerHTML = response.contenido;
-                    // console.log(response.contenido)
+                document.getElementById('paginas').innerHTML = response.paginas;
+                document.getElementById('tablaContenido').innerHTML = response.contenido;
+                // console.log(response.contenido)
+                stopLoading()
 
-                },
-                error: function () {}
-            });
+            },
+            error: function () {
+                stopLoading()
+            }
+        });
 
     }); 
 
@@ -248,23 +264,27 @@
         function myCallback()
         {
             let txt = $('#search_box').val();
-                $.ajax({
-                        type: "POST",
-                        url: "{% url 'paginar' %}", 
-                        data : {    
-                        filtro : txt, 
-                        tipo: "Public",
-                        csrfmiddlewaretoken: '{{ csrf_token }}',
-                    },
-                    success: function (response) {
+            setLoading()
+            $.ajax({
+                type: "POST",
+                url: "{% url 'paginar' %}", 
+                data : {    
+                    filtro : txt, 
+                    tipo: "Public",
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                },
+                success: function (response) {
 
-                        document.getElementById('paginas').innerHTML = response.paginas;
-                        document.getElementById('tablaContenido').innerHTML = response.contenido;
-                        // // console.log(response.contenido)
+                    document.getElementById('paginas').innerHTML = response.paginas;
+                    document.getElementById('tablaContenido').innerHTML = response.contenido;
+                    // // console.log(response.contenido)
+                    stopLoading()
 
-                    },
-                    error: function () {}
-                });
+                },
+                error: function () {
+                    stopLoading()
+                }
+            });
         }
 
     $(document).ready(function () {
@@ -326,10 +346,11 @@
         if(orden === 'fk_rol_usuario' || orden === 'fk_status_cuenta') orden = 'CtaUsuario__'+orden+'__desc_elemento'
         if(orden === 'username') orden = 'user__'+orden
         // let page = $('#paginas .page-item.active').children('a').attr('href').replace ( /[^\d.]/g, '' );
+        setLoading()
         $.ajax({
-                type: "POST",
-                url: "{% url 'paginar' %}", 
-                data : {    
+            type: "POST",
+            url: "{% url 'paginar' %}", 
+            data : {    
                 orden: orden,
                 // page: page,
                 tipoOrden: ord,
@@ -342,9 +363,12 @@
                 document.getElementById('paginas').innerHTML = response.paginas;
                 document.getElementById('tablaContenido').innerHTML = response.contenido;
                 // console.log(response.contenido)
+                stopLoading()
 
             },
-            error: function () {}
+            error: function () {
+                stopLoading()
+            }
         });
 
     });
@@ -355,6 +379,7 @@
     $('#myModal').on('click', '#botonGuardar', function (e) {
         let rolSlected = $('#myModal select option:selected').val()
         let id = $('#myModal input').val()
+        setLoading()
         $.ajax({
             type: "POST",
             url: "{% url 'setRole' %}",
@@ -371,10 +396,12 @@
                     $('#myModal').modal('hide')
 
                 }
+                stopLoading()
                 
             },
             failure: function () {
                 swal("failure");
+                stopLoading()
             }
         });
     })

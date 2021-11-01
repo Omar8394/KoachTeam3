@@ -62,6 +62,11 @@
 									<span class="sub-item">Teacher's assignments</span>
 								</a>
 							</li>
+							<li>
+								<a href="{% url 'preRequirements' %}">
+									<span class="sub-item">Pre Requirements</span>
+								</a>
+							</li>
 							{% endif %}
 							<ul class="nav nav-collapse">
 								<li class="submenu">
@@ -133,7 +138,7 @@
 							{% if rol == 'rol_student'%}
 							<li>
 								<a href="{% url 'enrollment' %}">
-									<span class="sub-item">Enrollment Aplication</span>
+									<span class="sub-item">Enrollment Application</span>
 								</a>
 							</li>
 							{%endif%}

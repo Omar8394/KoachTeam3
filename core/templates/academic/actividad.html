@@ -118,7 +118,10 @@
       })
    }
    updateLog(0)
-   if(hijos === 1){
+   if(hijos == 1){
+      updateLog(1)
+   }
+   if("{{actividad.fk_categoria.valor_elemento}}" == "activityHome"){
       updateLog(1)
    }
    const revisarPag = (event)=>{

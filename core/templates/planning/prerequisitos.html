@@ -69,26 +69,11 @@
 
                         <div class="row">
                             <div class="card col-5">
-                                <div class="card-header" style="background-color: #1a2035 !important; color: white;" title="This is the list of available activities. You may choose some by selecting them in the box below and then double clicking it.">
+                                <div class="card-header" style="background-color: #1a2035 !important; color: white;" title="This is the list of available activities. You may choose some by selecting them in the box below and then double clicking them.">
                                     <h2>Activities</h2>
-                                    <!-- <p id="id_permissions_filter" class="selector-filter">
-                                        <label for="id_permissions_input">
-                                            <span class="help-tooltip search-label-icon" title="Type into this box to filter down the list of available permissions."></span>
-                                        </label> 
-                                        <input type="text" placeholder="Filter" id="id_permissions_input">
-                                    </p> -->
                                 </div>
                                 <div class="card-body m-0 p-0">
                                     <select name="permissions_old" id="idRequirement" multiple="" class="form-control multiple" style="overflow-y: auto;">
-                                        <!-- <option value="40" title="security | land page | Can view land page">security | land page | Can view land page</option>
-                                        <option value="29" title="security | log seguridad | Can add log seguridad">security | log seguridad | Can add log seguridad</option>
-                                        <option value="30" title="security | log seguridad | Can change log seguridad">security | log seguridad | Can change log seguridad</option>
-                                        <option value="31" title="security | log seguridad | Can delete log seguridad">security | log seguridad | Can delete log seguridad</option>
-                                        <option value="32" title="security | log seguridad | Can view log seguridad">security | log seguridad | Can view log seguridad</option>
-                                        <option value="21" title="sessions | session | Can add session">sessions | session | Can add session</option>
-                                        <option value="22" title="sessions | session | Can change session">sessions | session | Can change session</option>
-                                        <option value="23" title="sessions | session | Can delete session">sessions | session | Can delete session</option>
-                                        <option value="24" title="sessions | session | Can view session">sessions | session | Can view session</option> -->
                                     </select>
                                 </div>
                                 <!-- <a title="Click to choose all permissions at once." href="#" id="id_permissions_add_all_link" class="selector-chooseall active">Choose all</a> -->
@@ -100,7 +85,7 @@
 
                             <div class="card col-5">
                                 
-                                <div class="card-header" style="background-color: #1a2035 !important; color: white;" title="This is the list of chosen activities. You may remove some by selecting them in the box below and then double clicking it.">
+                                <div class="card-header" style="background-color: #1a2035 !important; color: white;" title="This is the list of chosen activities. You may remove some by selecting them in the box below and then double clicking them.">
                                     <h2>Requirements</h2>
                                 </div>
                                 <div class="card-body m-0 p-0">
@@ -129,6 +114,7 @@
     //cargo los programas
     $(document).ready(function () {
 
+        setLoading()
         $.ajax({
             type: "POST",
             data: {
@@ -140,10 +126,12 @@
             success: function (response) {
 
                 document.getElementById('estatusLesson').innerHTML = response.competence
+                stopLoading()
 
             },
             error: function (response) {
                 console.log(response.responseJSON.errors)
+                stopLoading()
             }
         });
         
@@ -155,6 +143,7 @@
         let idSelect = $(this).attr('id')
         if($(this).val() && idSelect !== 'estatusActivity'){
             
+            setLoading()
             $.ajax({
                 type: "POST",
                 data: {
@@ -192,10 +181,12 @@
 
                     document.getElementById('idRequirement').innerHTML = null
                     document.getElementById('idRequirementTo').innerHTML = null
+                    stopLoading()
 
                 },
                 error: function (response) {
                     console.log(response.responseJSON.errors)
+                    stopLoading()
                 }
             });
 
@@ -234,8 +225,9 @@
             document.getElementById('idRequirement').innerHTML = null
             document.getElementById('idRequirementTo').innerHTML = null
                 
-            }else if($(this).val() && idSelect==='estatusActivity')
+            }else if($(this).val() && idSelect==='estatusActivity'){
 
+                setLoading()
                 $.ajax({
                     type: "POST",
                     data: {
@@ -250,14 +242,16 @@
 
                         document.getElementById('idRequirement').innerHTML = response.competence
                         document.getElementById('idRequirementTo').innerHTML = response.requirements
+                        stopLoading()
 
                     },
                     error: function (response) {
                         console.log(response.responseJSON.errors)
+                        stopLoading()
                     }
                 });
 
-            else{
+            }else{
                 document.getElementById('idRequirement').innerHTML = null
                 document.getElementById('idRequirementTo').innerHTML = null
 
@@ -270,6 +264,7 @@
 
         var parent = $(this).parent().attr('id')==='idRequirement'?'idRequirementTo':'idRequirement'
         var child = $(this)
+        setLoading()
         $.ajax({
             type: "POST",
             data: {
@@ -284,10 +279,12 @@
 
                 var element = child.detach();
                 $('#'+parent).append(element);
+                stopLoading()
 
             },
             error: function (response) {
                 console.log(response.responseJSON.errors)
+                stopLoading()
             }
         });
 
