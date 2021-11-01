@@ -5,7 +5,7 @@
 		<div class="sidebar-content">
 
 			{% if request.user.is_authenticated %}
-{% with user=request.user.pk|Sidebar %} 
+{% with rol=request.user.pk|Sidebar %} 
 			<ul class="nav nav-primary">
 				<li class="nav-item {% if 'index' in segment %} active {% endif %}">
 					<a href="{% url 'home' %}" aria-expanded="false">
@@ -45,36 +45,55 @@
 									<span class="sub-item">My Activitys</span>
 								</a>
 							</li>
-
+							{% if rol == 'rol_admin'%}
 							<li>
 								<a href="{% url 'professors' %}">
-									<span class="sub-item">Teacher</span>
+									<span class="sub-item">Teacher's assignments</span>
 								</a>
 							</li>
-
+							{% endif %}
 							<ul class="nav nav-collapse">
 								<li class="submenu">
 									<a data-toggle="collapse" href="#subnav1">
+										{% if rol == 'rol_admin'%}
 										<span class="sub-item">Programs</span>
+										{% endif %}
+										{% if rol == 'rol_teacher'%}
+										<span class="sub-item">Courses</span>
+										{% endif %}
+										{% if rol == 'rol_student'%}
+										<span class="sub-item">Library</span>
+										{% endif %}
 										<span class="caret"></span>
 									</a>
 									<div class="collapse" id="subnav1">
 										<ul class="nav nav-collapse subnav">
+											{%if request.user|getLibrary%}
+											{% for item in request.user|getLibrary %}
 											<li>
-												<a href="{% url 'programa' programa='system_eng' %}">
-													<span class="sub-item">System engineer</span>
+												{%if item.valor_elemento == 'Program' %}
+												<a href="{% url 'programa' programa=item.url %}">
+													<span class="sub-item">{{item.descripcion}}</span>
 												</a>
-											</li>
-											<li>
-												<a href="{% url 'programa' programa='indust_eng' %}">
-													<span class="sub-item">Industrial engineer</span>
+												{%endif%}
+												{%if item.valor_elemento == 'Process' %}
+												<a href="{% url 'proceso' programa=item.fk_estructura_padre.url proceso=item.url%}">
+													<span class="sub-item">{{item.descripcion}}</span>
 												</a>
-											</li>
-											<li>
-												<a href="{% url 'programa' programa='agro_eng' %}">
-													<span class="sub-item">Agronomic engineer</span>
+												{%endif%}
+												{%if item.valor_elemento == 'Unit' %}
+												<a href="{% url 'unidad' programa=item.fk_estructura_padre.fk_estructura_padre.url proceso=item.fk_estructura_padre.url unidad=item.url%}">
+													<span class="sub-item">{{item.descripcion}}</span>
 												</a>
+												{%endif%}
+												{%if item.valor_elemento == 'Course' %}
+												<a href="{% url 'curso' programa=item.fk_estructura_padre.fk_estructura_padre.fk_estructura_padre.url proceso=item.fk_estructura_padre.fk_estructura_padre.url unidad=item.fk_estructura_padre.url curso=item.url%}">
+													<span class="sub-item">{{item.descripcion}}</span>
+												</a>
+												{%endif%}
 											</li>
+											{%endfor%}
+											{%endif%}
 										</ul>
 									</div>
 								</li>

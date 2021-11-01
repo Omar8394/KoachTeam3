@@ -25,9 +25,9 @@ results for "{{query}}"
       {% for topic in data%}
       {%if topic.valor_elemento == 'Topic'%}
       <li class="card-list-item">
-         <div class="card-list-item-locked">
-                     <i class="fas fa-lock"></i>
-                  </div>
+         <!-- <div class="card-list-item-locked">
+            <i class="fas fa-lock"></i>
+         </div> -->
          <div class="card-list-item-inner">
             <div class="card-list-item-title" onclick="showContent('{{topic.pk}}')">{{topic.descripcion}}</div>
             <div class="card-list-item-actions">

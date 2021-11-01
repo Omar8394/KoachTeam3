@@ -214,9 +214,11 @@
             formUnidad.addEventListener("submit", (e) => {
                e.preventDefault()
                if(!$("#formUnidad").valid()) return
+               setLoading()
                clickSave(formUnidad, "{% url 'modalAddUnidad' %}")
                   .then(() => {
                      $("#addNewModal").modal("hide")
+                     stopLoading()
                      renderContent()
                   })
             })
@@ -260,9 +262,11 @@
             formUnidad.addEventListener("submit", (e) => {
                e.preventDefault()
                if (!$("#formUnidad").valid()) return
+               setLoading()
                clickSave(formUnidad, "{% url 'modalAddUnidad' %}")
                   .then(() => {
                      $("#addNewModal").modal("hide")
+                     stopLoading()
                      renderContent()
                   })
             })

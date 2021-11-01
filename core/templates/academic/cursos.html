@@ -209,9 +209,11 @@
             formCurso.addEventListener("submit", (e) => {
                e.preventDefault()
                if (!$("#formCurso").valid()) return
+               setLoading()
                clickSave(formCurso, "{% url 'modalAddCurso' %}")
                   .then(() => {
                      $("#addNewModal").modal("hide")
+                     stopLoading()
                      renderContent()
                   })
             })
@@ -256,9 +258,11 @@
             formCurso.addEventListener("submit", (e) => {
                e.preventDefault()
                if (!$("#formCurso").valid()) return
+               setLoading()
                clickSave(formCurso, "{% url 'modalAddCurso' %}")
                   .then(() => {
                      $("#addNewModal").modal("hide")
+                     stopLoading()
                      renderContent()
                   })
             })
