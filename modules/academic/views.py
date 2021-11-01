@@ -1888,11 +1888,11 @@ def getModalActividad(request):
                     elif data["method"] == "Create":
                         actividad = Estructuraprograma()
                         actividad.valor_elemento = "Activity"
+                        actividad.orden_presentacion = len(Estructuraprograma.objects.filter(fk_estructura_padre=data["padreActivity"]))
                     actividad.fk_estructura_padre_id=data["padreActivity"]
                     actividad.descripcion = data["data"]["descriptionActivity"]
                     actividad.resumen = data["data"]["resumenActivity"]
                     actividad.url = data["data"]["urlActivity"]
-                    actividad.orden_presentacion = len(Estructuraprograma.objects.filter(fk_estructura_padre=data["padreActivity"]))
                     actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").filter(desc_elemento=data["tipoActividad"])[0].pk
                     actividad.peso_creditos = None
                     actividad.save()
@@ -2328,14 +2328,14 @@ def getModalNewTest(request):
                             actividad.valor_elemento = "Activity"
                             actividad.pointUsed = 0
                             actividad.fk_estructura_padre_id=data["padreActivity"]
+                            actividad.orden_presentacion = len(Estructuraprograma.objects.filter(fk_estructura_padre=data["padreActivity"]))
                         actividad.descripcion = data["data"]["descriptionActivity"]
                         actividad.resumen = data["data"]["resumenActivity"]
                         actividad.url = data["data"]["urlActivity"]
                         actividad.peso_creditos = None
-                        actividad.orden_presentacion = len(Estructuraprograma.objects.filter(fk_estructura_padre=data["padreActivity"]))
-                        actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").get(desc_elemento="Test").pk
+                        actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").get(valor_elemento="activityTest").pk
                         if "checkExpertCB" in data["data"]:
-                            actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").get(desc_elemento="Expert test").pk
+                            actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").get(valor_elemento="activityExpert test").pk
                             scale=EscalaEvaluacion.objects.get(pk=int(data["data"]["Blockqualification"]))
                             test.fk_escala_bloque = scale
                         else:   
@@ -2376,45 +2376,45 @@ def getModalNewLesson(request):
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             context = {}
             modelo = {}
-            try:
-                if request.body:
-                    data = json.load(request)
-                    status = TablasConfiguracion.obtenerHijos(valor="EstLeccion")
-                    if data["method"] == "Show":
-                        context = {"status":status}
-                        html_template = (loader.get_template('components/modalAddLesson.html'))
-                        return HttpResponse(html_template.render(context, request))
-                    elif data["method"] == "Find":
-                        modelo = ActividadLeccion.objects.get(fk_estructura_programa=data["id"])
-                        context = {"modelo": modelo, "status":status}
-                        html_template = (loader.get_template('components/modalAddLesson.html'))
-                        return HttpResponse(html_template.render(context, request))
-                    elif data["method"] == "Delete":
-                        actividad = Estructuraprograma.objects.get(pk=data["id"])
-                        actividad.delete()
-                        return JsonResponse({"message":"Deleted"})
-                    elif data["method"] == "Update":
-                        actividad = Estructuraprograma.objects.get(pk=data["id"])
-                        lesson = ActividadLeccion.objects.get(fk_estructura_programa=data["id"])
-                    elif data["method"] == "Create":
-                        actividad = Estructuraprograma()
-                        lesson = ActividadLeccion()
-                        actividad.valor_elemento = "Activity"
-                        actividad.fk_estructura_padre_id=data["padreActivity"]
-                    actividad.descripcion = data["data"]["descriptionActivity"]
-                    actividad.resumen = data["data"]["resumenActivity"]
-                    actividad.url = data["data"]["urlActivity"]
-                    actividad.peso_creditos = None
+            # try:
+            if request.body:
+                data = json.load(request)
+                status = TablasConfiguracion.obtenerHijos(valor="EstLeccion")
+                if data["method"] == "Show":
+                    context = {"status":status}
+                    html_template = (loader.get_template('components/modalAddLesson.html'))
+                    return HttpResponse(html_template.render(context, request))
+                elif data["method"] == "Find":
+                    modelo = ActividadLeccion.objects.get(fk_estructura_programa=data["id"])
+                    context = {"modelo": modelo, "status":status}
+                    html_template = (loader.get_template('components/modalAddLesson.html'))
+                    return HttpResponse(html_template.render(context, request))
+                elif data["method"] == "Delete":
+                    actividad = Estructuraprograma.objects.get(pk=data["id"])
+                    actividad.delete()
+                    return JsonResponse({"message":"Deleted"})
+                elif data["method"] == "Update":
+                    actividad = Estructuraprograma.objects.get(pk=data["id"])
+                    lesson = ActividadLeccion.objects.get(fk_estructura_programa=data["id"])
+                elif data["method"] == "Create":
+                    actividad = Estructuraprograma()
+                    lesson = ActividadLeccion()
+                    actividad.valor_elemento = "Activity"
+                    actividad.fk_estructura_padre_id=data["padreActivity"]
                     actividad.orden_presentacion = len(Estructuraprograma.objects.filter(fk_estructura_padre=data["padreActivity"]))
-                    actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").get(desc_elemento="Lesson").pk
-                    lesson.disponible_desde = data["data"]["disponibleLesson"]
-                    lesson.estatus_id = data["data"]["estatusLesson"]
-                    actividad.save()
-                    lesson.fk_estructura_programa = actividad
-                    lesson.save()
-                    return JsonResponse({"message":"Perfect"})
-            except:
-                return JsonResponse({"message":"error"}, status=500)
+                actividad.descripcion = data["data"]["descriptionActivity"]
+                actividad.resumen = data["data"]["resumenActivity"]
+                actividad.url = data["data"]["urlActivity"]
+                actividad.peso_creditos = None
+                actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").get(valor_elemento="activityLesson").pk
+                lesson.disponible_desde = data["data"]["disponibleLesson"]
+                lesson.estatus_id = data["data"]["estatusLesson"]
+                actividad.save()
+                lesson.fk_estructura_programa = actividad
+                lesson.save()
+                return JsonResponse({"message":"Perfect"})
+            # except:
+            #     return JsonResponse({"message":"error"}, status=500)
 
 @login_required(login_url="/login/")
 def getModalNewHomework(request):
@@ -2446,14 +2446,14 @@ def getModalNewHomework(request):
                         actividad = Estructuraprograma()
                         homework = ActividadTarea()
                         actividad.valor_elemento = "Activity"
-                        actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").get(desc_elemento="Homework").pk
+                        actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").get(valor_elemento="activityHome").pk
                         actividad.fk_estructura_padre_id=data["padreActivity"]
+                        actividad.orden_presentacion = len(Estructuraprograma.objects.filter(fk_estructura_padre=data["padreActivity"]))
                         pagina = Paginas()
                         pagina.titulo = ""
                         pagina.contenido = ""
                         pagina.ordenamiento = None
                     actividad.descripcion = data["data"]["descriptionActivity"]
-                    actividad.orden_presentacion = len(Estructuraprograma.objects.filter(fk_estructura_padre=data["padreActivity"]))
                     actividad.resumen = data["data"]["resumenActivity"]
                     actividad.url = data["data"]["urlActivity"]
                     actividad.peso_creditos = None
@@ -2508,10 +2508,10 @@ def getModalNewForum(request):
                         actividad = Estructuraprograma()
                         forum = ActividadConferencia()
                         actividad.valor_elemento = "Activity"
-                        actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").get(desc_elemento="Forum").pk
+                        actividad.fk_categoria_id = TablasConfiguracion.obtenerHijos(valor="Tipo Actividad").get(valor_elemento="activityForum").pk
                         actividad.fk_estructura_padre_id=data["padreActivity"]
+                        actividad.orden_presentacion = len(Estructuraprograma.objects.filter(fk_estructura_padre=data["padreActivity"]))
                     actividad.descripcion = data["data"]["descriptionActivity"]
-                    actividad.orden_presentacion = len(Estructuraprograma.objects.filter(fk_estructura_padre=data["padreActivity"]))
                     actividad.resumen = data["data"]["resumenActivity"]
                     actividad.url = data["data"]["urlActivity"]
                     actividad.peso_creditos = None
