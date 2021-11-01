@@ -40,18 +40,18 @@
                             {% if not tipo  %}
 
                                 <td>  
-                                    <button onclick="modalCall('{{  p|get_attr:key }}')" class="btn btn-icon btn-sm btn-info"><i class="fas fa-edit"></i></button>  
-                                    <button onclick="eliminar('{{  p|get_attr:key }}')" class="btn btn-icon btn-sm btn-danger ml-1" ><i class="fas fa-trash-alt"></i></button>
+                                    <button onclick="modalCall('{{  p|get_attr:key }}')" class="btn btn-icon btn-sm btn-info" title="Edit"><i class="fas fa-edit"></i></button>  
+                                    <button onclick="eliminar('{{  p|get_attr:key }}')" class="btn btn-icon btn-sm btn-danger ml-1" title="Remove"><i class="fas fa-trash-alt"></i></button>
                                 </td>  
 
                             {% elif tipo == 'Schedule' %}
 
                                 <td>  
-                                    <a href="{% url urlEdit p|get_attr:key %}" class="btn btn-icon btn-sm btn-success"><i class="fas fa-plus align-middle mt-1"></i></a>
+                                    <a href="{% url urlEdit p|get_attr:key %}" class="btn btn-icon btn-sm btn-success" title="Add"><i class="fas fa-plus align-middle mt-1"></i></a>
 
                                     {% if p|get_attr:key|hasPrograms %}
                                 
-                                        <a href="#" class="btn btn-icon btn-sm btn-warning" id="{{p|get_attr:key}}"><i class="fas fa-clipboard align-middle mt-1"></i></a>
+                                        <a href="#" class="btn btn-icon btn-sm btn-warning" id="{{p|get_attr:key}}" title="Show"><i class="fas fa-clipboard align-middle mt-1"></i></a>
 
                                     {% endif %}
 

@@ -147,6 +147,7 @@
 					</a>
 					<div class="collapse" id="submenuPlanning">
 						<ul class="nav nav-collapse">
+							{% if request.user.extensionusuario.CtaUsuario.fk_rol_usuario.desc_elemento == 'Admin' %}
 							<li>
 								<a href="{% url 'showProfilage' %}">
 									<span class="sub-item">Profiles</span>
@@ -157,6 +158,7 @@
 									<span class="sub-item">Competences</span>
 								</a>
 							</li>
+							{% endif %}
 							<li>
 								<a href="{% url 'showCompetenceAdq' %}">
 									<span class="sub-item">My Competences</span>

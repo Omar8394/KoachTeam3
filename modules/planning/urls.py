@@ -8,7 +8,8 @@ from django.urls import path, re_path
 from django.urls import path  
 from .views import show, showCompetences, destroy, destroyCompetence, showCompetencesAdq, destroyCompetenceAdq, \
 showProgram, editProgram, validate_username, validate_competence, renderListasPublic, paginar, renderListasCombos, renderCompetencesPublic, \
-saveProgram, managePublic, lockPublic, unlockPublic, modalForm, createProfile, createCompetence, createCompetenceAdq, preRequirements, requirements
+saveProgram, managePublic, lockPublic, unlockPublic, modalForm, createProfile, createCompetence, createCompetenceAdq, preRequirements, requirements,\
+listaRol, setRole
 # from .views import edit
 # from modules.planning import views
 
@@ -42,5 +43,7 @@ urlpatterns = [
     path('lockPublic', lockPublic, name='lockPublic'),
     path('unlockPublic', unlockPublic, name='unlockPublic'),
     path('modalForm', modalForm, name='modalForm'),
+    path('listaRol', listaRol, name='listaRol'),
+    path('setRole', setRole, name='setRole'),
     
 ]

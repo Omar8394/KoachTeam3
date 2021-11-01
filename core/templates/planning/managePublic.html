@@ -69,6 +69,36 @@
     {% include 'planning/mensajes.html' %}
 
 
+    <div class="modal fade" tabindex="-1" id="myModal" role="dialog" aria-hidden="true">
+        <div id="addNewModalContent" class="modal-dialog modal-dialog-centered" role="document">
+
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Set role</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    
+                    <select class="form-control" id="roles">
+
+                    </select>
+                    <input type="hidden">
+
+                </div>
+
+                <div class="modal-footer mt-3">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-arrow-left mr-2"></i>Close</button>
+                    <button type="button" class="btn btn-primary" id="botonGuardar"><i class="fas fa-save mr-2"></i>Save</button>
+                </div>
+
+            </div>
+            
+        </div>
+    </div>
 
 {% endblock content %}
 	
@@ -101,7 +131,14 @@
                             },
                             dataType: "json",
                             success: function (data) {
-                                window.location = "{% url 'managePublic' %}"
+                                if(data.mensaje && data.mensaje === 'self' || data.mensaje === 'verification')
+                                    
+                                    swal({
+                                            title: "Alert?",
+                                            text: data.mensaje === 'self'?"You can't look your account?":"This account needs to be verified",
+                                            icon: "warning",})
+                                else
+                                    $('#paginas').find('.active').find('.page-link').trigger('click')
                                 
                             },
                             failure: function () {
@@ -133,7 +170,7 @@
                             },
                             dataType: "json",
                             success: function (data) {
-                                window.location = "{% url 'managePublic' %}"
+                                $('#paginas').find('.active').find('.page-link').trigger('click')
                                 
                             },
                             failure: function () {
@@ -144,6 +181,40 @@
                     }
                 });
             } 
+
+        const modalRol = (id) => {
+        
+            $.ajax({
+                type: "POST",
+                data: {
+                    id: id,
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+
+                },
+                url: "{% url 'listaRol' %}",
+                success: function (response) {
+
+                    if(response.html && response.html === 'self')
+                                    
+                        swal({
+                            title: "Alert?",
+                            text: "You can't set your role?",
+                            icon: "warning",})
+                    else{
+                        
+                        document.getElementById('roles').innerHTML = response.html;
+                        $("#myModal").modal('show');
+                        $("#myModal input").val(id);
+
+                    }
+
+                },
+                error: function (response) {
+                    console.log(response.responseJSON.errors)
+                }
+            });
+
+        } 
             
     //paginaciones
     $('#paginas').on('click', ".page-link", function(e){
@@ -252,7 +323,8 @@
 
         orden = $(this).attr("id")
         if(orden === 'telefonos' || orden === 'idpublico' || orden === 'nombre' || orden === 'apellido' || orden === 'correos') orden = 'Publico__'+orden
-        if(orden === 'fk_rol_usuario' || orden === 'fk_status_cuenta') orden = 'CtaUsuario__'+orden
+        if(orden === 'fk_rol_usuario' || orden === 'fk_status_cuenta') orden = 'CtaUsuario__'+orden+'__desc_elemento'
+        if(orden === 'username') orden = 'user__'+orden
         // let page = $('#paginas .page-item.active').children('a').attr('href').replace ( /[^\d.]/g, '' );
         $.ajax({
                 type: "POST",
@@ -276,6 +348,36 @@
         });
 
     });
+
+
+
+    //metodo guardar y validar 
+    $('#myModal').on('click', '#botonGuardar', function (e) {
+        let rolSlected = $('#myModal select option:selected').val()
+        let id = $('#myModal input').val()
+        $.ajax({
+            type: "POST",
+            url: "{% url 'setRole' %}",
+            data : {
+                id: id,
+                rol: rolSlected,
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+            },
+            dataType: "json",
+            success: function (response) {
+
+                if(!response.mensaje){
+                    $('#paginas').find('.active').find('.page-link').trigger('click')
+                    $('#myModal').modal('hide')
+
+                }
+                
+            },
+            failure: function () {
+                swal("failure");
+            }
+        });
+    })
 
 
     
