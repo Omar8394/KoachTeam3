@@ -1,5 +1,7 @@
 from django import template
 from modules.academic.models import EvaluacionesPreguntas, ExamenActividad,ExamenRespuestas,EscalaCalificacion, ProgramaProfesores
+from modules.security.models import ExtensionUsuario, CtaUsuario
+
 import random
 from django.utils import timezone
 import json
@@ -203,3 +205,10 @@ def TipoExamen(id):
   
    else:
 	   return"error"
+
+@register.filter(name='Sidebar')
+def Sidebar(usuario):
+   rol=ExtensionUsuario.objects.get(user=usuario).CtaUsuario.fk_rol_usuario.valor_elemento
+  
+   
+   return rol

@@ -1,10 +1,11 @@
 <!-- Sidebar -->
+{% load Filter%}
 <div class="sidebar sidebar-style-2" data-background-color="dark">
 	<div class="sidebar-wrapper scrollbar scrollbar-inner">
 		<div class="sidebar-content">
 
 			{% if request.user.is_authenticated %}
-
+{% with user=request.user.pk|Sidebar %} 
 			<ul class="nav nav-primary">
 				<li class="nav-item {% if 'index' in segment %} active {% endif %}">
 					<a href="{% url 'home' %}" aria-expanded="false">
@@ -16,7 +17,7 @@
 					<span class="sidebar-mini-icon">
 						<i class="fa fa-ellipsis-h"></i>
 					</span>
-					<h4 class="text-section">Modules</h4>
+					<h4 class="text-section">Modules </h4>
 				</li>
 
 				<!--Academic-->
@@ -505,6 +506,8 @@
 				</li>
 
 			</ul>
+			{% endwith %}
+
 			{% else %}
 			{% endif %}
 		</div>

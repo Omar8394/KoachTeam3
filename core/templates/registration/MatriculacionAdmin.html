@@ -356,7 +356,7 @@ function goToPage(page){
       
     }
 function BuscarPersonaPost(){
-	
+	setLoading()
 
     let url='ModalPublico/';
     let formData = new FormData(); 
@@ -379,9 +379,10 @@ function BuscarPersonaPost(){
     }).then(function(result){
         
         let unit=document.getElementById("modalContentPersona").innerHTML=result;
+        $("#BuscarPersonaModal").modal("show");
+        stopLoading()
     
     });
-        $("#BuscarPersonaModal").modal("show");
         
       
     }
@@ -396,7 +397,7 @@ function BuscarPersonaPost(){
 
 var matricula=0;
 function modalBuscarPersona(){
-    
+    setLoading()
 
 
 let url='ModalPublico/';
@@ -410,15 +411,17 @@ return result.text();
 }).then(function(result){
 	
 	let unit=document.getElementById("modalContentPersona").innerHTML=result;
+    $("#BuscarPersonaModal").modal("show");
+stopLoading()
 
 });
-    $("#BuscarPersonaModal").modal("show");
     
   
 }
 
 
 function showModal(id){
+    setLoading()
     matricula=id;
 
 
@@ -437,9 +440,10 @@ return result.text();
 }).then(function(result){
 	
 	let unit=document.getElementById("modalContent").innerHTML=result;
+    $("#AdministrarMatricula").modal("show");
+stopLoading()
 
 });
-    $("#AdministrarMatricula").modal("show");
     
   
 }

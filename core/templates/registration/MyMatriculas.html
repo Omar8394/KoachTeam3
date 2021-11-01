@@ -613,6 +613,7 @@ function copy() {
     var matricula=0;
     var HashCode="";
     function showModalPago(id){
+        setLoading()
         matricula=id;
     
     
@@ -629,7 +630,6 @@ function copy() {
         let unit=document.getElementById("modalContent").innerHTML=result;
     
     });
-        $("#PayMatricula").modal("show");
         
         matricula=id;
     
@@ -648,6 +648,8 @@ function copy() {
         PrecioMatricula=unit2;
 
         precio(unit2);
+        $("#PayMatricula").modal("show");
+        stopLoading()
     
     });
         
