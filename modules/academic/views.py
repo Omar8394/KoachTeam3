@@ -254,9 +254,10 @@ def contenidoExamen(request):
                     bloque.titulo_bloque=data['tituloBloque']
                     bloque.save()
                 if data["method"] == "Retake":
-                    
+                    print('ssssssssss')
                     Examen=ExamenActividad.objects.get(pk=data['idExamen'])
-                    actividad=Examen.fk_actividad
+                    actividad=Examen.fk_Actividad
+                    print('ss')
 
                     
                     Examen.estadoExamen=2
@@ -470,21 +471,22 @@ def takeExam(request):
     manejaTiempo=0
     time=None
     
-
-    if pregunta.duracion != None:
-        manejaTiempo=1
-        if examen.count()> 0:
-         time=examen[0].fechaInicio+ datetime.timedelta(0,(pregunta.duracion*60))
-         if time.replace(tzinfo=None)  <= datetime.datetime.now():
-             print('aqui')
-             test=ExamenActividad.objects.get(pk=examen[0].pk)
-             test.fechaTermino=time
-             test.estadoExamen=4
-             test.save()
+    if examen.estadoExamen==2:
+  
+        if pregunta.duracion != None:
+            manejaTiempo=1
+            if examen.count()> 0:
+             time=examen[0].fechaInicio+ datetime.timedelta(0,(pregunta.duracion*60))
+            if time.replace(tzinfo=None)  <= datetime.datetime.now():
+                print('aqui')
+                test=ExamenActividad.objects.get(pk=examen[0].pk)
+                test.fechaTermino=time
+                test.estadoExamen=4
+                test.save()
+                
              
-             
-         else:
-          time=time.strftime("%b %d %Y %H:%M:%S")
+            else:
+             time=time.strftime("%b %d %Y %H:%M:%S")
 
     
     context = {
@@ -524,9 +526,9 @@ def SeeTest(request):
     pregunta=ActividadEvaluaciones.objects.get(pk=examen.fk_Actividad.pk)
     escalas = EscalaEvaluacion.objects.all()
     user=ExtensionUsuario.objects.get(user=request.user)
-    if cta== 'rol_student':
-      if examen.fk_publico !=user:
-          return HttpResponseForbidden()
+   # if cta== 'rol_student':
+    #  if examen.usuario !=user:
+     #     return HttpResponseForbidden()
 
 
     print(examen)
@@ -554,17 +556,17 @@ def SeeTest(request):
      bloque=EvaluacionesBloques.objects.get(fk_actividad_evaluaciones=pregunta.idactividad_evaluaciones)
      listaPreguntas=EvaluacionesPreguntas.objects.filter(fk_evaluaciones_bloque=bloque).order_by('orden')
 
-
-    if pregunta.duracion != None:
-        
-       # if examen.count()> 0:
-         time=examen.fechaInicio+ datetime.timedelta(0,(pregunta.duracion*60))
-         if time.replace(tzinfo=None)  <= datetime.datetime.now():
-             print('aqui')
-             test=ExamenActividad.objects.get(pk=examen.pk)
-             test.fechaTermino=time
-             test.estadoExamen=4
-             test.save()
+    if examen.estadoExamen==2:
+        if pregunta.duracion != None:
+            
+        # if examen.count()> 0:
+            time=examen.fechaInicio+ datetime.timedelta(0,(pregunta.duracion*60))
+            if time.replace(tzinfo=None)  <= datetime.datetime.now():
+                print('aqui')
+                test=ExamenActividad.objects.get(pk=examen.pk)
+                test.fechaTermino=time
+                test.estadoExamen=4
+                test.save()
      
 
     
@@ -818,12 +820,15 @@ def setTimeOuts(request):
 
     for item in examenes:
         actividad=item.fk_Actividad
-        if actividad.duracion != None:
-         time=item.fechaInicio+ datetime.timedelta(0,(actividad.duracion*60))
-         if time >= datetime.datetime.now():
-             item.fechaTermino=time
-             item.estadoExamen=4
-             item.save()
+        if item.estadoExamen==2:
+            if actividad.duracion != None:
+             time=item.fechaInicio+ datetime.timedelta(0,(actividad.duracion*60))
+            if time >= datetime.datetime.now():
+                item.fechaTermino=time
+                item.estadoExamen=4
+                item.save()
+                logUserBackEnd(item.usuario.pk, item.fk_Actividad.fk_estructura_programa.pk, False, True)
+
 
     return HttpResponse('OK')
 

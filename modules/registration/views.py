@@ -1938,8 +1938,8 @@ def InsertPayTr(request):
             codigo_hash   = hash,
             url_imagen  = id4  )
           Pago.save()
-
-          matriculadb.fk_status_matricula=TablasConfiguracion.objects.get('EstatusPay')
+          statusWait=TablasConfiguracion.objects.get(valor_elemento='EstatusPay')
+          matriculadb.fk_status_matricula=statusWait
           matriculadb.save()
 
           return HttpResponse("Changes saved con valor")   
@@ -1962,7 +1962,9 @@ def InsertPayTr(request):
             codigo_hash   = None,
             url_imagen  = None  )
           Pago.save()
-          matriculadb.fk_status_matricula=TablasConfiguracion.objects.get('EstatusAprovado')
+          statusGood=TablasConfiguracion.objects.get(valor_elemento='EstatusAprovado')
+          print(statusGood)
+          matriculadb.fk_status_matricula=statusGood
           matriculadb.save()
 
               
