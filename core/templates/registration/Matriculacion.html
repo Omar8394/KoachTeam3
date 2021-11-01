@@ -249,6 +249,8 @@ xhr.open("POST", "save/");
 xhr.onload = function(event){ 
 //stopLoading()
 //	console.log(event.target.response);
+stopLoading()
+
 	if(event.target.response==2){
 		alertaMensajitos(5,'There was a error with you application','You already have a application including this structure');
 		return

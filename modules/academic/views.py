@@ -612,7 +612,7 @@ def SeeTest(request):
 @login_required(login_url="/login/")
 def TestList(request):
     cta=ExtensionUsuario.objects.get(user=request.user).CtaUsuario.fk_rol_usuario.valor_elemento 
-    if cta== 'rol_student':
+    if cta!= 'rol_admin':
       return HttpResponseForbidden()
 
     examenes=ExamenActividad.objects.annotate(tipoTest=F('fk_Actividad__fk_estructura_programa__fk_categoria__valor_elemento')).all()
@@ -804,7 +804,18 @@ def setTimeOuts(request):
     if cta!= 'rol_admin':
       return HttpResponseForbidden()
 
-    examenes=ExamenActividad.objects.annotate(tipoTest=F('fk_Actividad__fk_estructura_programa__fk_categoria__valor_elemento'), actividad=F('fk_Actividad__fk_estructura_programa')).all()
+    examenes=ExamenActividad.objects.annotate(tipoTest=F('fk_Actividad__fk_estructura_programa__fk_categoria__valor_elemento'), actividad=F('fk_Actividad__fk_estructura_programa__fk_estructura_padre__fk_estructura_padre')).all()
+    if cta== 'rol_teacher':
+     user=ExtensionUsuario.objects.get(user=request.user).Publico
+     programasProfes=ProgramaProfesores.objects.filter(fk_publico=user)
+     if programasProfes.count()<1:
+        print('examenes')
+
+        examenes=examenes.filter(pk=-1)
+     else:
+      for item in programasProfes: 
+        examenes=examenes.filter(actividad=item.fk_estructura_programa.idestructuraprogrmas)
+
     for item in examenes:
         actividad=item.fk_Actividad
         if actividad.duracion != None:
@@ -818,16 +829,23 @@ def setTimeOuts(request):
 
 @login_required(login_url="/login/")
 def TeacherTests(request):
+    cta=ExtensionUsuario.objects.get(user=request.user).CtaUsuario.fk_rol_usuario.valor_elemento 
+    if cta!= 'rol_teacher':
+      return HttpResponseForbidden()
+
     examenes=ExamenActividad.objects.annotate(tipoTest=F('fk_Actividad__fk_estructura_programa__fk_categoria__valor_elemento'), actividad=F('fk_Actividad__fk_estructura_programa__fk_estructura_padre__fk_estructura_padre')).all()
     user=ExtensionUsuario.objects.get(user=request.user).Publico
     programasProfes=ProgramaProfesores.objects.filter(fk_publico=user)
 
-    for item in examenes: 
-        print (item.actividad.valor_elemento)
+    if programasProfes.count()<1:
+        print('examenes')
 
-    for item in programasProfes:
+        examenes=examenes.filter(pk=-1)
+    else:
+     for item in programasProfes: 
+        examenes=examenes.filter(actividad=item.fk_estructura_programa.idestructuraprogrmas)
 
-     examenes.filter()
+   
 
 
 
@@ -2192,12 +2210,13 @@ def getModalAddBlock(request):
             
                 context = {}
                 data = json.load(request)["data"]
-
+                
                 if "delete" in data:
+                    print('sss')
                     bloque=EvaluacionesBloques.objects.get(pk=data["id"])
                     actividad = bloque.fk_actividad_evaluaciones
 
-                    actividad.pointUse=actividad.pointUse-actividad.fk_escala_bloque.puntos_maximo
+                    actividad.pointUse=actividad.pointUse-actividad.fk_escala_bloque.maxima_puntuacion
                     actividad.save()
 
                     bloque.delete()
@@ -2214,7 +2233,7 @@ def getModalAddBlock(request):
                             print(bloque)
                             bloque.orden= item["order"]
                             bloque.save()
-                if "idFind" in data:
+                if data["method"] == "get":
                     
                     bloque=EvaluacionesBloques.objects.filter(pk=data["idFind"])
                     findBloque = list(bloque.values())
@@ -2359,15 +2378,17 @@ def getModalNewTest(request):
                         else:   
                             test.nro_repeticiones = data["data"]["repeats"]
                             test.calificacion_aprobar = data["data"]["minApp"]
+                            test.fk_tipo_duracion_id=TablasConfiguracion.objects.get(valor_elemento='duracionMinutes').pk
 
                         if "durationActivity" in data["data"]:
                             test.duracion = data["data"]["durationActivity"]
+
                         else:
                             test.duracion = None
-                        if "timeActivity" in data["data"]:
-                            test.fk_tipo_duracion_id = data["data"]["timeActivity"]
-                        else:
-                            test.fk_tipo_duracion_id = None
+                   #     if "timeActivity" in data["data"]:
+                    #        test.fk_tipo_duracion_id = data["data"]["timeActivity"]
+                     #   else:
+                      #      test.fk_tipo_duracion_id = None
                     
                         test.fk_escala_evaluacion_id = data["data"]["qualification"]
                         actividad.save()

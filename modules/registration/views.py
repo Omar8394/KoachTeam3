@@ -1817,11 +1817,11 @@ def GetPrice(request):
    listaPrecio=PreciosFormacion.objects.filter(fk_estruc_programa=estructura)
    listaPrecio=listaPrecio.last()
 
-
+   precio=None
    if listaPrecio.PorcentajeDescuento==None or listaPrecio.PorcentajeDescuento==0 :
        precio=listaPrecio.precio
    else:
-       precio=listaPrecio.precio*(listaPrecio.PorcentajeDescuento*0.01)
+       precio=float(listaPrecio.precio)-(float(listaPrecio.precio)*float(listaPrecio.PorcentajeDescuento)*0.01)
 
       
 

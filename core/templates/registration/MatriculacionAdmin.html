@@ -336,7 +336,7 @@ PersonId.value=id;
 }
 function goToPage(page){
     
-
+setLoading()
    
     let url='ModalPublico/'+"?page="+page.toString();
     fetch(url,{
@@ -349,9 +349,10 @@ function goToPage(page){
     }).then(function(result){
         
         let unit=document.getElementById("modalContentPersona").innerHTML=result;
+        $("#BuscarPersonaModal").modal("show");
+stopLoading()
     
     });
-        $("#BuscarPersonaModal").modal("show");
         
       
     }

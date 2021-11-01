@@ -53,9 +53,11 @@
 </div>
 <div class="form-row">
    <div class="form-group col-md-6">
-      <label for="durationActivity" class="col-form-label">Duration</label>
+      <label for="durationActivity" class="col-form-label">Duration in Minutes</label>
       <input type="number" class="form-control" name="durationActivity" id="durationActivity" placeholder="0" required {% if modelo %} {% if modelo.duracion %} value="{{ modelo.duracion}}" {%else%} disabled {% endif %}{% else %} disabled {% endif %}>
+     
    </div>
+   {%comment%}
    <div class="form-group col-md-6">
       <label for="timeActivity" class="col-form-label">Time</label>
       <select class="form-control" name="timeActivity" id="timeActivity" {% if modelo %}{% if not modelo.fk_tipo_duracion%}disabled{% endif %}{% else %}disabled{% endif %}>
@@ -65,4 +67,5 @@
          {% endfor%}
       </select>
    </div>
+   {%endcomment%}
 </div>

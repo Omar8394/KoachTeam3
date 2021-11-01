@@ -416,7 +416,7 @@ function reload(){
                 
                                     <center>
                                      <input type="hidden" id="dato" value= "{{ precio }}"/>
-                                        <p><strong> Amount to Pay: <span id="precioPaypal">  </span></strong></p>
+                                        <p><strong> Amount to Pay: <span id="precioPaypal">  </span>$</strong></p>
                                     </center>
                                     <div class="clearfix"></div>
                                     </div>
@@ -660,12 +660,14 @@ function copy() {
     }
     
     function showModalPaypal(id){
+        setLoading()
         matricula=id;
     
     
         if(id==1){
        $("#PayMatriculaPaypal").modal("show");
        document.getElementById('precioPaypal').innerHTML=PrecioMatricula;
+       stopLoading()
 
       
     }
@@ -689,6 +691,8 @@ function copy() {
         HashCode=result
        document.getElementById('Amount').innerHTML=PrecioMatricula;
         idHash = result;
+       stopLoading()
+
      
     });
    
@@ -706,6 +710,7 @@ function copy() {
     
     
     function enviardt(a){
+        setLoading()
      //function enviar(a){
         un.value=g1;
      cant.value=g2; 
@@ -733,10 +738,11 @@ function copy() {
 
 
     function enviarST(){
-    
+    setLoading()
     var xhr = new XMLHttpRequest();
     xhr.open("POST", "updateEnrollment/"); 
     xhr.onload = function(event){ 
+        stopLoading()
     alert("Success, server responded with: " + event.target.response); // raw response
     location.href = "" ;
     }; 
