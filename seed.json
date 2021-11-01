@@ -3,7 +3,7 @@
     "model": "app.TablasConfiguracion",
     "pk": 1,
     "fields": {
-      "desc_elemento": "Registro padre",
+      "desc_elemento": "First register",
       "fk_tabla_padre_id": 1,
       "tipo_elemento": 1,
       "permite_cambios":1,
@@ -18,7 +18,7 @@
     "model": "app.TablasConfiguracion",
     "pk": 2,
     "fields": {
-      "desc_elemento": "Rol sistema",
+      "desc_elemento": "System's role",
       "fk_tabla_padre_id": 1,
       "tipo_elemento": 1,
       "permite_cambios":1,
@@ -32,7 +32,7 @@
     "model": "app.TablasConfiguracion",
     "pk": 3,
     "fields": {
-      "desc_elemento": "Situacion cuenta usuario",
+      "desc_elemento": "Status user's account",
       "fk_tabla_padre_id": 1,
       "tipo_elemento": 1,
       "permite_cambios":0,
@@ -47,7 +47,7 @@
     "model": "app.TablasConfiguracion",
     "pk": 4,
     "fields": {
-      "desc_elemento": "Preguntas Secretas",
+      "desc_elemento": "Secret answers",
       "fk_tabla_padre_id": 1,
       "tipo_elemento": 1,
       "permite_cambios":1,
@@ -61,7 +61,7 @@
     "model": "app.TablasConfiguracion",
     "pk": 5,
     "fields": {
-      "desc_elemento": "Relaciones publico",
+      "desc_elemento": "Public relationship",
       "fk_tabla_padre_id": 1,
       "tipo_elemento": 1,
       "permite_cambios":1,
@@ -76,7 +76,7 @@
     "model": "app.TablasConfiguracion",
     "pk": 6,
     "fields": {
-      "desc_elemento": "Tipo matricula",
+      "desc_elemento": "Enrollment type",
       "fk_tabla_padre_id": 1,
       "tipo_elemento": 1,
       "permite_cambios":1,
@@ -90,7 +90,7 @@
     "model": "app.TablasConfiguracion",
     "pk": 7,
     "fields": {
-      "desc_elemento": "Situacion Matricula",
+      "desc_elemento": "Enrollment status",
       "fk_tabla_padre_id": 1,
       "tipo_elemento": 1,
       "permite_cambios":1,
@@ -104,7 +104,7 @@
     "model": "app.TablasConfiguracion",
     "pk": 8,
     "fields": {
-      "desc_elemento": "Tipo Competencia",
+      "desc_elemento": "Competence types",
       "fk_tabla_padre_id": 1,
       "tipo_elemento": 1,
       "permite_cambios":1,
@@ -119,7 +119,7 @@
     "model": "app.TablasConfiguracion",
     "pk": 9,
     "fields": {
-      "desc_elemento": "Tipo Actividad",
+      "desc_elemento": "Activity types",
       "fk_tabla_padre_id": 1,
       "tipo_elemento": 1,
       "permite_cambios":1,
@@ -133,7 +133,7 @@
     "model": "app.TablasConfiguracion",
     "pk": 10,
     "fields": {
-      "desc_elemento": "Tipo Recurso",
+      "desc_elemento": "Resource types",
       "fk_tabla_padre_id": 1,
       "tipo_elemento": 1,
       "permite_cambios":1,
@@ -147,7 +147,7 @@
     "model": "app.TablasConfiguracion",
     "pk": 11,
     "fields": {
-      "desc_elemento": "Tipo pregunta",
+      "desc_elemento": "Question types",
       "fk_tabla_padre_id": 1,
       "tipo_elemento": 1,
       "permite_cambios":1,
@@ -162,7 +162,7 @@
     "model": "app.TablasConfiguracion",
     "pk": 12,
     "fields": {
-      "desc_elemento": "Tipo de adiestramiento",
+      "desc_elemento": "Training types",
       "fk_tabla_padre_id": 1,
       "tipo_elemento": 1,
       "permite_cambios":1,
@@ -176,7 +176,7 @@
     "model": "app.TablasConfiguracion",
     "pk": 13,
     "fields": {
-      "desc_elemento": "Tipo duracion",
+      "desc_elemento": "Duration types",
       "fk_tabla_padre_id": 1,
       "tipo_elemento": 1,
       "permite_cambios":1,
@@ -190,7 +190,7 @@
     "model": "app.TablasConfiguracion",
     "pk": 14,
     "fields": {
-      "desc_elemento": "Situacion Plan",
+      "desc_elemento": "Plan status",
       "fk_tabla_padre_id": 1,
       "tipo_elemento": 1,
       "permite_cambios":1,
@@ -204,7 +204,7 @@
     "model": "app.TablasConfiguracion",
     "pk": 15,
     "fields": {
-      "desc_elemento": "Ramas",
+      "desc_elemento": "Branch",
       "fk_tabla_padre_id": 1,
       "tipo_elemento": 1,
       "permite_cambios":1,
@@ -218,7 +218,7 @@
     "model": "app.TablasConfiguracion",
     "pk": 16,
     "fields": {
-      "desc_elemento": "Prioridad",
+      "desc_elemento": "Priority",
       "fk_tabla_padre_id": 1,
       "tipo_elemento": 1,
       "permite_cambios":1,
@@ -233,7 +233,7 @@
     "model": "app.TablasConfiguracion",
     "pk": 17,
     "fields": {
-      "desc_elemento": "Nivel Competencia",
+      "desc_elemento": "Competence level",
       "fk_tabla_padre_id": 1,
       "tipo_elemento": 1,
       "permite_cambios":1,
@@ -247,7 +247,7 @@
     "model": "app.TablasConfiguracion",
     "pk": 18,
     "fields": {
-      "desc_elemento": "Calificaciones escala",
+      "desc_elemento": "Qualification scales",
       "fk_tabla_padre_id": 1,
       "tipo_elemento": 1,
       "permite_cambios":1,
@@ -261,7 +261,7 @@
     "model": "app.TablasConfiguracion",
     "pk": 19,
     "fields": {
-      "desc_elemento": "Tipos de moneda",
+      "desc_elemento": "Coin types",
       "fk_tabla_padre_id": 1,
       "tipo_elemento": 1,
       "permite_cambios":1,
@@ -275,7 +275,7 @@
     "model": "app.TablasConfiguracion",
     "pk": 20,
     "fields": {
-      "desc_elemento": "Tipos de pregunta frecuente",
+      "desc_elemento": "Frequent answer types",
       "fk_tabla_padre_id": 1,
       "tipo_elemento": 1,
       "permite_cambios":1,
@@ -289,7 +289,7 @@
     "model": "app.TablasConfiguracion",
     "pk": 21,
     "fields": {
-      "desc_elemento": "Estatus matrícula",
+      "desc_elemento": "Enrollment status",
       "fk_tabla_padre_id": 1,
       "tipo_elemento": 1,
       "permite_cambios":1,
@@ -303,7 +303,7 @@
     "model": "app.TablasConfiguracion",
     "pk": 31,
     "fields": {
-      "desc_elemento": "Revision",
+      "desc_elemento": "Review",
       "fk_tabla_padre_id": 21,
       "tipo_elemento": 1,
       "permite_cambios":1,
@@ -373,7 +373,7 @@
     "model": "app.TablasConfiguracion",
     "pk": 22,
     "fields": {
-      "desc_elemento": "Estatus curso",
+      "desc_elemento": "Course status",
       "fk_tabla_padre_id": 1,
       "tipo_elemento": 1,
       "permite_cambios":1,
@@ -387,7 +387,7 @@
     "model": "app.TablasConfiguracion",
     "pk": 23,
     "fields": {
-      "desc_elemento": "Categorias",
+      "desc_elemento": "Category",
       "fk_tabla_padre_id": 1,
       "tipo_elemento": 1,
       "permite_cambios":1,
@@ -698,7 +698,7 @@
     "model": "app.TablasConfiguracion",
     "pk":73,
     "fields": {
-      "desc_elemento": "Estatus lecciones",
+      "desc_elemento": "Lesson status",
       "fk_tabla_padre_id": 1,
       "tipo_elemento": 0,
       "permite_cambios":1,
