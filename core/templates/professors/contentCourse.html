@@ -1,5 +1,6 @@
+{%load Filter%}
 {% if query%}
-resultados para "{{query}}"
+results for "{{query}}"
 {% else %}
 <section>
     <div class="section-header">
@@ -47,8 +48,8 @@ resultados para "{{query}}"
                     <tr>  
                         <td>{{ p.Nombre }}</td>  
                         <td>{{ p.Apellido }}</td>
-                        <td>{{ p.telefonos }}</td>  
-                        <td>{{ p.correos }}</td>   
+                        <td>{{ p.telefonos|jsonTlf }}</td>  
+                        <td>{{ p.correos|jsonEmail }}</td>   
                         <td>{{ p.descripcion }}</td>  
                         <td>{{ p.valor_elemento }}</td>   
                          
