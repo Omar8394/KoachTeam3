@@ -3,6 +3,8 @@ from datetime import datetime
 from datetime import timedelta
 import random
 
+from django.contrib.auth import update_session_auth_hash
+
 from modules.app.models import TablasConfiguracion
 from modules.communication.Methods import send_mail, create_mail
 from modules.security.models import CtaUsuario, ExtensionUsuario, EnlaceVerificacion
@@ -21,11 +23,21 @@ def create_default_ctausuario(status_user, rol):
     return cuenta
 
 
-def change_password(enlace, password):
+def change_password_link(enlace, password):
     enlace.usuario.user.set_password(password)
     enlace.save()
     # validar las claves anteriores
     restabler_cuenta(enlace)
+
+
+def change_password(request, password):
+    usuario = ExtensionUsuario.objects.get(user=request.user)
+    request.user.set_password(password)
+    update_session_auth_hash(request, request.user)
+    request.user.save(update_fields=['password'])
+    usuario.CtaUsuario.fecha_ult_cambio = datetime.today()
+    usuario.CtaUsuario.intentos_fallidos = 0
+    usuario.CtaUsuario.save()
 
 
 def restabler_cuenta(enlace):

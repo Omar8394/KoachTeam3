@@ -1429,7 +1429,7 @@
   "model": "app.tablasconfiguracion",
   "pk": 207,
   "fields": {
-    "desc_elemento": "what is your favorite color?",
+    "desc_elemento": "What is your favorite color?",
     "fk_tabla_padre": 4,
     "tipo_elemento": "0",
     "permite_cambios": 1,
