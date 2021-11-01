@@ -834,7 +834,9 @@
       for (var [key, value] of formData.entries()) {
          data[key] = value
       }
-      data["recursos"] = comprobarRecursosArray()
+      if (url === "{% url 'modalNewHomework' %}") {
+         data["recursos"] = comprobarRecursosArray()
+      }
       if (editmode) {
          return updateModel(url, "Update", data, idSeleted)
             .then(async (res) => {
