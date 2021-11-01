@@ -190,6 +190,8 @@
 								</a>
 							</li>
 							{% if subsegment == 'help' %}
+
+
 							<li class="nav-item {% if 'Security' in segment %} active {% endif %}">
 								<a data-toggle="collapse" href="#submenuSecurityhelp">
 									<i class="fa fa-unlock-alt" aria-hidden="true"></i>
@@ -222,10 +224,11 @@
 								</div>
 
 
-							
+							</li>
+
 							<!--Dashboard-->
 
-							<li class="nav-item {% if 'Security' in segment %} active {% endif %}">
+							<li class="nav-item {% if 'Dashboard' in segment %} active {% endif %}">
 								<a data-toggle="collapse" href="#submenuSecurityhelp">
 									<i class="fa fa-unlock-alt" aria-hidden="true"></i>
 									<p>Dashboard</p>
@@ -233,31 +236,49 @@
 								</a>
 								<div class="collapse" id="submenuSecurityhelp">
 									<ul class="nav nav-collapse">
-										<li>
-											<a href="#">
-												<span class="sub-item"></span>
-											</a>
-										</li>
-										<li>
-											<a href="#">
-												<span class="sub-item"></span>
-											</a>
-										</li>
-										<li>
-											<a href="#">
-												<span class="sub-item"></span>
-											</a>
-										</li>
-										<li>
-											<a href="#a4">
-												<span class="sub-item">Recover Password</span>
-											</a>
-										</li>
+
+										<ul class="nav">
+											<li class="submenu">
+												<a data-toggle="collapse" href="#subnavSett">
+													<span class="sub-item">Setting</span>
+													<span class="caret"></span>
+												</a>
+												<div class="collapse" id="subnavSett">
+													<ul class="nav nav-collapse subnav">
+
+														<li>
+															<a href="#f6">
+																<span class="sub-item">Acceder to Settings</span>
+															</a>
+														</li>
+
+														<li>
+															<a href="#f1">
+																<span class="sub-item">Public</span>
+															</a>
+														</li>
+														<li>
+															<a href="#f2">
+																<span class="sub-item">Personal Register</span>
+															</a>
+														</li>
+														<li>
+															<a href="#f3">
+																<span class="sub-item">System Tables</span>
+															</a>
+														</li>
+
+													</ul>
+												</div>
+											</li>
+										</ul>
 									</ul>
 								</div>
 
 
 							</li>
+
+
 							<!-- Modulo de Registration -->
 							<li class="nav-item {% if 'Registration' in segment %} active {% endif %}">
 								<a data-toggle="collapse" href="#submenuRegishelp">
@@ -286,7 +307,26 @@
 											</a>
 										</li>
 
-										
+										<li>
+											<a href="#b4">
+												<span class="sub-item">Enrollment Aplication</span>
+											</a>
+										</li>
+										<li>
+											<a href="#b5">
+												<span class="sub-item">Manage Structures Prices</span>
+											</a>
+										</li>
+                                        <li>
+											<a href="#b6">
+												<span class="sub-item">Review Payments</span>
+											</a>
+										</li>
+										 <li>
+											<a href="#b7">
+												<span class="sub-item">Manage Landingpage</span>
+											</a>
+										</li>
 
 
 									</ul>
