@@ -28,7 +28,7 @@ def create_default_public(email):
     correo['emailAlternativo'] = ""
     publico = Publico.objects.create(nombre="",
                            apellido="", direccion="",
-                           docto_identidad="", correos=json.dumps(email),
+                           docto_identidad="", correos=json.dumps(correo),
                            telefonos="{}",
                            fecha_registro=datetime.today())
     return publico

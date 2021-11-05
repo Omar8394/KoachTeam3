@@ -448,7 +448,8 @@ def full_registration(request):
         tipo_rol = TablasConfiguracion.obtenerHijos("Roles")
     return render(request, "security/full_registration.html",
                   {"msg": msg, "reason": False, 'success': success, "tipoTelefono": tipo_telefono,
-                   "tipoRol": tipo_rol})
+                   "tipoRol": tipo_rol, "empresa": settings.EMPRESA_NOMBRE,
+                   "urlimage": settings.EMPRESA_URL_LOGO, "imagelocal": settings.EMPRESA_SRC_LOGO})
 
 
 def verificationaccount(request, activation_key):
