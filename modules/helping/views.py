@@ -4,6 +4,8 @@ from django.template.loader import get_template
 from ..app.models import TablasConfiguracion,PreguntasFrecuentes
 from .forms import preguntasfrecuentes
 from django.contrib.auth.decorators import login_required
+
+from ..security import Methods
 from ..security.models import LandPage
 from django.db.models import Q
 from ..communication.Methods import create_mail, send_mail
@@ -13,6 +15,7 @@ from ..security.forms import SignUpForm
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 import json
+from core import settings
 # Create your views here.
 
 
@@ -146,17 +149,19 @@ def sending(request):
 
                     elif data["data"]:
                       email = data["data"]["email"]
-                      
-                      loginlink = request.get_raw_uri().split("//")[0] + "//" + \
-                                 request.get_host() + "/register/"
-                      information = {"mensaje": "your request has been approved, now you can register" ,
-                                     "titulo": "Your request has been approved",
-                                     "enlace": loginlink, "enlaceTexto": "click here!"}
-                      send_mail(  
-                      create_mail(email, "Account Verification", "help/landing_mail.html",
-                      information)) 
+                      landpage = LandPage.objects.get(pk=data["id"])
+                      code = str(Methods.getVerificationLink(None, email, 2))
+                      enlace = request.get_raw_uri().split("//")[0] + "//" + \
+                               request.get_host() + "/register_new/" + code + "/" + "landpage/" \
+                               + str(landpage.id_solicitud) + "/"
+                      context = {"titulo": "Account Registration Link",
+                                 "user": landpage.nombre + " " + landpage.apellido,
+                                 "content": "Thank you for joining the energy solar team, follow the link below to register  your account:",
+                                 "enlace": enlace, "enlaceTexto": "click here!", "empresa": settings.EMPRESA_NOMBRE,"urlimage":settings.EMPRESA_URL_LOGO}
+                      send_mail(
+                          create_mail(email, "Account Registration Link", "security/base_email_template_pro.html",
+                                      context))
 
-                      
                       return JsonResponse({"message":"Perfect"})
                      
                     else:

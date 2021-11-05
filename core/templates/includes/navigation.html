@@ -5,7 +5,11 @@
 			<div class="logo-header" data-background-color="dark">
 				
 				<a href="{% url 'home' %}" class="logo" width="100px">
-					<img src="/static/assets/img/JC-Energy.png" alt="navbar brand" class="navbar-brand">
+                         {% if urlimage %}
+                             <img src="{{ urlimage }}" alt="navbar brand" class="navbar-brand">
+                         {% else %}
+                              <img src="{{ imagelocal }}" alt="navbar brand" class="navbar-brand">
+                         {% endif %}
 				</a>
 				<button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse" data-target="collapse" aria-expanded="false" aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon">

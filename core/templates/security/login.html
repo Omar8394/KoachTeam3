@@ -9,7 +9,11 @@
 {% block content %}   
     <div class="d-flex justify-content-center">       
         <div class="row col-md-6 d-flex justify-content-center">
-            <img src="/static/assets/img/JC-Energy-Logo-Full.png" style="width: 20rem;" class="navbar-brand mt-5">
+            {% if urlimage %}
+            <img src="{{ urlimage }}" style="width: 20rem;" class="navbar-brand mt-5">
+        {% else %}
+            <img src="{{ imageLocal }}" style="width: 20rem;" class="navbar-brand mt-5">
+        {% endif %}
             <div class="card" style="width: 30rem;">
                 <div class="card-header bg-dark2">
                     <div class="card-title">

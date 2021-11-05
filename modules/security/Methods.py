@@ -1,11 +1,12 @@
 import hashlib
+import json
 from datetime import datetime
 from datetime import timedelta
 import random
 
 from django.contrib.auth import update_session_auth_hash
 
-from modules.app.models import TablasConfiguracion
+from modules.app.models import TablasConfiguracion, Publico
 from modules.communication.Methods import send_mail, create_mail
 from modules.security.models import CtaUsuario, ExtensionUsuario, EnlaceVerificacion
 from django.contrib.auth.models import User
@@ -21,7 +22,16 @@ def create_default_ctausuario(status_user, rol):
         fk_rol_usuario=fk_rol, dias_cambio=90,
         fk_pregunta_secreta=fk_pregunta, fecha_ult_cambio=datetime.today().strftime("%Y-%m-%d"))
     return cuenta
-
+def create_default_public(email):
+    correo = {}
+    correo['emailPrincipal'] = email
+    correo['emailAlternativo'] = ""
+    publico = Publico.objects.create(nombre="",
+                           apellido="", direccion="",
+                           docto_identidad="", correos=json.dumps(email),
+                           telefonos="{}",
+                           fecha_registro=datetime.today())
+    return publico
 
 def change_password_link(enlace, password):
     enlace.usuario.user.set_password(password)

@@ -19,6 +19,9 @@ def index(request):
     context['segment'] = 'index'
     context['url'] = settings.UPLOAD_URL + 'user/'
     context['rol'] = rol
+    context['empresa'] = settings.EMPRESA_NOMBRE
+    context['urlimage'] = settings.EMPRESA_URL_HEADER
+    context['imagelocal'] = settings.EMPRESA_SRC_HEADER
 
 
 

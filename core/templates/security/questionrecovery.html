@@ -9,7 +9,11 @@
 
 {% block content %}
     <div class="col-md-12">
-        <img src="/static/assets/img/JC-Energy-Logo-Full.png" class="navbar-brand mt-5">
+         {% if urlimage %}
+            <img src="{{ urlimage }}" class="navbar-brand mt-5">
+   {% else %}
+            <img src="{{ imagelocal }}" class="navbar-brand mt-5">
+   {% endif %}
     </div>
 
     <div class="col-md-12 d-flex justify-content-center text-center">

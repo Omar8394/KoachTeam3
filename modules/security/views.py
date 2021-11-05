@@ -64,13 +64,13 @@ def login_view(request):
                         if request.user.is_superuser:
                             rol = "rol_admin"
                             respuesta = "koach"
+                        publico_aux = Methods.create_default_public(user.email)
                         cuenta = Methods.create_default_ctausuario("status_active", rol)
                         status_cuenta = "active"
                         cuenta.respuesta_secreta = respuesta
                         cuenta.save()
-                        cuenta = ExtensionUsuario.objects.create(CtaUsuario=cuenta, user=user)
+                        cuenta = ExtensionUsuario.objects.create(CtaUsuario=cuenta, user=user, Publico=publico_aux)
                         # primera vez configurar la cuenta de usuario por defecto
-                    print(status_cuenta)
                     if status_cuenta == 'suspended':
                         msg = 'Your account has been suspended for more information contact support.'
                         logout(request)
@@ -138,7 +138,9 @@ def login_view(request):
                         msg = 'the username or password combination is incorrect'
             else:
                 msg = 'Error validating the form'
-        return render(request, "security/login.html", {"form": form, "msg": msg})
+        return render(request, "security/login.html", {"form": form, "msg": msg, "empresa": settings.EMPRESA_NOMBRE,
+                                                       "urlimage": settings.EMPRESA_URL_LOGO,
+                                                       "imagelocal": settings.EMPRESA_SRC_LOGO})
 
 
 def register_user(request):
@@ -151,19 +153,33 @@ def register_user(request):
     if request.method == "POST":
         form = SignUpForm(request.POST)
         if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get("username")
-            raw_password = form.cleaned_data.get("password1")
-            user = authenticate(username=username, password=raw_password)
-            msg = 'User created - please <a href="/login">login</a>.'
-            success = True
-            return redirect("/login/")
+            user = form.save()
+            cuenta = Methods.create_default_ctausuario("status_verification", "rol_student")
+            publico = Methods.create_default_public(user.email)
+            user_ext = ExtensionUsuario.objects.create(CtaUsuario=cuenta, user=user, Publico=publico)
+            code = str(Methods.getVerificationLink(user_ext, form.email, 2))
+            enlace = request.get_raw_uri().split("//")[0] + "//" + \
+                     request.get_host() + "/verificationaccount/" + code + "/"
+            context = {"titulo": "Account Verification", "user": form.username,
+                       "content": "Thank you for joining the " + str(
+                           settings.EMPRESA_NOMBRE) + " team, to verify your account click on the following link: ",
+                       "enlace": enlace, "enlaceTexto": "click here!", "empresa": settings.EMPRESA_NOMBRE,
+                       "urlimage": settings.EMPRESA_URL_LOGO}
+            send_mail(
+                create_mail(form.email, "Account Verification Request", "security/base_email_template_pro.html",
+                            context))
+            information = {"mensaje": "We have sent you an account verification link to the email provided. Remember to check the spam folder",
+                           "titulo": "Registration link has been send", "urlimage": settings.EMPRESA_URL_LOGO,
+                           "imagelocal": settings.EMPRESA_SRC_LOGO}
+            return render(request, "security/information_view.html", information)
         else:
             msg = 'Form is not valid'
     else:
         form = SignUpForm()
 
-    return render(request, "security/register.html", {"form": form, "msg": msg, "success": success})
+    return render(request, "security/register.html",
+                  {"form": form, "msg": msg, "success": success, "empresa": settings.EMPRESA_NOMBRE,
+                   "urlimage": settings.EMPRESA_URL_LOGO, "imagelocal": settings.EMPRESA_SRC_LOGO})
 
 
 def register_user_new(request, activation_key, registertype, id):
@@ -198,7 +214,7 @@ def register_user_new(request, activation_key, registertype, id):
                         publico_aux = Publico.objects.create(nombre=land_page.nombre,
                                                              apellido=land_page.apellido, direccion=land_page.direccion,
                                                              docto_identidad="No found", correos=land_page.correos,
-                                                             telefonos="No Found",
+                                                             telefonos="{}",
                                                              fecha_registro=datetime.today())
                         ExtensionUsuario.objects.create(CtaUsuario=cuenta, Publico=publico_aux, user=user)
                         enlace.delete()
@@ -219,7 +235,9 @@ def register_user_new(request, activation_key, registertype, id):
         raise Http404("This verification link is invalid or has expired")
 
     return render(request, "security/register_new.html", {"form": form, "msg": msg, "id_request": id,
-                                                          "registertype": registertype, "email": email})
+                                                          "registertype": registertype, "email": email
+        , "empresa": settings.EMPRESA_NOMBRE, "urlimage": settings.EMPRESA_URL_LOGO,
+                                                          "imagelocal": settings.EMPRESA_SRC_LOGO})
 
 
 def forgot_password(request):
@@ -250,7 +268,9 @@ def forgot_password(request):
                 success = False
         else:
             form = ResetPasswordForm()
-        return render(request, "security/passwordReset.html", {"form": form, "msg": msg, "success": success})
+        return render(request, "security/passwordReset.html",
+                      {"form": form, "msg": msg, "success": success, "empresa": settings.EMPRESA_NOMBRE,
+                       "urlimage": settings.EMPRESA_URL_LOGO, "imagelocal": settings.EMPRESA_SRC_LOGO})
 
 
 def recovery_method(request):
@@ -277,13 +297,15 @@ def recovery_method(request):
                                  request.get_host() + "/emailrecovery/" + code + "/"
                         context = {"titulo": "Account Recovery Request", "user": user_email,
                                    "content": "We have received an account recovery request, to restore your account click on the following link: ",
-                                   "enlace": enlace, "enlaceTexto": "click here!"}
+                                   "enlace": enlace, "enlaceTexto": "click here!", "empresa": settings.EMPRESA_NOMBRE,
+                                   "urlimage": settings.EMPRESA_URL_LOGO}
                         send_mail(
                             create_mail(user_email, "Account Recovery Request", "security/base_email_template_pro.html",
                                         context))
                         request.session.flush()
                         information = {"mensaje": "We have sent an email with a recovery link to your account.",
-                                       "titulo": "Verification email sending"}
+                                       "titulo": "Verification email sending", "urlimage": settings.EMPRESA_URL_LOGO,
+                                       "imagelocal": settings.EMPRESA_SRC_LOGO}
                         return render(request, "security/information_view.html", information)
                     else:
                         print("codigo nulo")
@@ -313,7 +335,8 @@ def recovery_method_question(request):
                     raise Http404("This account is suspended, please contact support")
                 elif ext_user.CtaUsuario.respuesta_secreta is None:
                     information = {"mensaje": "This recovery method has not been established in the account.",
-                                   "titulo": "Method not configured"}
+                                   "titulo": "Method not configured", "urlimage": settings.EMPRESA_URL_LOGO,
+                                   "imagelocal": settings.EMPRESA_SRC_LOGO}
                     return render(request, "security/information_view.html", information)
                 else:
                     msg = None
@@ -333,7 +356,9 @@ def recovery_method_question(request):
                                 msg = "The secret answer is wrong please try again"
                         else:
                             msg = "form invalid please fill all fields"
-                    context = {"question": ext_user.CtaUsuario.fk_pregunta_secreta.desc_elemento, "msg": msg}
+                    context = {"question": ext_user.CtaUsuario.fk_pregunta_secreta.desc_elemento, "msg": msg,
+                               "empresa": settings.EMPRESA_NOMBRE, "urlimage": settings.EMPRESA_URL_LOGO,
+                               "imagelocal": settings.EMPRESA_SRC_LOGO}
                     return render(request, "security/questionrecovery.html", context)
 
             except User.DoesNotExist:
@@ -369,7 +394,8 @@ def lang_page(request):
     return render(request, "security/landPage.html",
                   {"form": form, "reason": True, "emailposition": True, "mensajeland": True, "msg": msg,
                    'success': success,
-                   "tipoTelefono": tipo_telefono})
+                   "tipoTelefono": tipo_telefono, "empresa": settings.EMPRESA_NOMBRE,
+                   "urlimage": settings.EMPRESA_URL_LOGO, "imagelocal": settings.EMPRESA_SRC_LOGO})
 
 
 def full_registration(request):
@@ -397,14 +423,17 @@ def full_registration(request):
                          request.get_host() + "/register_new/" + code + "/" + "adminregister/" \
                          + str(publico.idpublico) + "/"
                 context = {"titulo": "Account Registration Link", "user": publico.nombre + " " + publico.apellido,
-                           "content": "Thank you for joining the energy solar team, follow the link below to register  your account:",
-                           "enlace": enlace, "enlaceTexto": "click here!"}
+                           "content": "Thank you for joining the " + str(
+                               settings.EMPRESA_NOMBRE) + " team, follow the link below to register  your account:",
+                           "enlace": enlace, "enlaceTexto": "click here!", "empresa": settings.EMPRESA_NOMBRE,
+                           "urlimage": settings.EMPRESA_URL_LOGO}
                 send_mail(
                     create_mail(email, "Account Registration Link", "security/base_email_template_pro.html",
                                 context))
                 msg = "Registration has been completed successfully."
                 information = {"mensaje": "We have sent the account registration link successfully",
-                               "titulo": "Registration link has been send"}
+                               "titulo": "Registration link has been send", "urlimage": settings.EMPRESA_URL_LOGO,
+                               "imagelocal": settings.EMPRESA_SRC_LOGO}
                 return render(request, "security/information_view.html", information)
             else:
                 msg = "Error to generate code link verification"
@@ -434,7 +463,8 @@ def verificationaccount(request, activation_key):
                     loginlink = request.get_raw_uri().split("//")[0] + "//" + \
                                 request.get_host() + "/login/"
                     information = {"mensaje": "Thanks for verifying your account, now you can login" + loginlink,
-                                   "titulo": "Your account has been verified"}
+                                   "titulo": "Your account has been verified", "urlimage": settings.EMPRESA_URL_LOGO,
+                                   "imagelocal": settings.EMPRESA_SRC_LOGO}
                     return render(request, "security/information_view.html", context)
             else:
                 raise Http404("This link has expired please request another link")
@@ -450,7 +480,8 @@ def emailrecovery(request, activation_key):
         if enlace.usuario.CtaUsuario.fk_status_cuenta != "suspend":
             if Methods.verificarenlace(enlace.key_expires):
                 print("enlace valido", activation_key)
-                context = {"user": enlace.usuario.user.username}
+                context = {"user": enlace.usuario.user.username, "urlimage": settings.EMPRESA_URL_LOGO,
+                           "imagelocal": settings.EMPRESA_SRC_LOGO}
                 if request.method == "POST":
                     form = RecoveryMethodEmail(request.POST or None)
                     if form.is_valid():
@@ -511,10 +542,10 @@ def changeSecretQuestion(request):
         actual_password = request.POST.get('password')
         # verificar encriptacion
         if check_password(actual_password, request.user.password):
-           usuario.CtaUsuario.fk_pregunta_secreta_id = id_pregunta
-           usuario.CtaUsuario.respuesta_secreta = respuesta
-           usuario.CtaUsuario.save()
-           response = {
+            usuario.CtaUsuario.fk_pregunta_secreta_id = id_pregunta
+            usuario.CtaUsuario.respuesta_secreta = respuesta
+            usuario.CtaUsuario.save()
+            response = {
                 'mensaje': 'Your secret question has been changed correctly',
                 'tipo': 4,
                 'titulo': 'Password changed successfully',
@@ -530,7 +561,8 @@ def changeSecretQuestion(request):
         return JsonResponse(response)
     elif request.method == 'GET':
         tipo_pregunta = TablasConfiguracion.obtenerHijos("pregSecreta")
-        context = {'preguntas': tipo_pregunta, 'pregunta_id': usuario.CtaUsuario.fk_pregunta_secreta_id, 'respuesta':usuario.CtaUsuario.respuesta_secreta}
+        context = {'preguntas': tipo_pregunta, 'pregunta_id': usuario.CtaUsuario.fk_pregunta_secreta_id,
+                   'respuesta': usuario.CtaUsuario.respuesta_secreta}
         return render(request, "security/cambiarpregunta.html", context)
 
 
@@ -667,26 +699,6 @@ def rootImages(request):
     }
 
     return JsonResponse(response)
-
-
-def configadmin(request):
-    if request.user.is_authenticated:
-        if request.user.is_superuser:
-            try:
-                user_admin = User.objects.get(is_superuser=1)
-                user_count = 0
-                for user in user_admin:
-                    user_count += 1
-                    cuenta = Methods.create_default_ctausuario("status_active", "rol_admin")
-                    cuenta.respuesta_secreta = "koach"
-                    ExtensionUsuario.objects.create(user, cuenta, None)
-                return HttpResponse("configurados " + str(user_count) + " ususarios administradores")
-            except User.DoesNotExist:
-                return HttpResponse("No hay ningun usuario administrador configurado en el sistema")
-        else:
-            return HttpResponse("Solo los superusuarios puede ejecutar esta configuracion")
-    else:
-        return HttpResponse("Necesitas estar logueado para ejecutar esta configuracion")
 
 
 def borrarImages(request):
