@@ -46,7 +46,7 @@ class ActividadEvaluaciones(models.Model):
 
 class Cursos(models.Model):
     idcurso = models.SmallAutoField(primary_key=True)
-    abrev_curso = models.CharField(max_length=7, db_collation='utf8mb3_swedish_ci')
+    abrev_curso = models.CharField(max_length=15, db_collation='utf8mb3_swedish_ci')
     codigo_curso = models.CharField(max_length=15, db_collation='utf8mb3_swedish_ci')
     disponible_desde = models.DateField(null=True)
     duracion = models.DecimalField(max_digits=5, decimal_places=2, null=True)
