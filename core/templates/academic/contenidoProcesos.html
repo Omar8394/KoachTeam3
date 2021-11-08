@@ -7,6 +7,7 @@ results for "{{query}}"
       <h3 class="section-title">Processes</h3>
    </div>
    <div class="cards-container">
+      {% if request.user|isAdmin %}
       {% if not query %}
       <div class="card-new">
          <div class="card-new-content">
@@ -19,10 +20,11 @@ results for "{{query}}"
          </div>
       </div>
       {% endif%}
+      {% endif%}
       {% for process in data%}
       {%if process.valor_elemento == 'Process'%}
       <div class="card-academic">
-         {%if process|isEnrolled:request.user %}
+         {%if process|isEnrolled:request.user and process.fk_estructura_padre|isEnrolled:request.user  %}
          <div class="card-academic-locked">
             <i class="fas fa-lock"></i>
          </div>

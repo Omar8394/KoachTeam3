@@ -1,6 +1,6 @@
 {% load Filter %}
-{% if rol == "Admin" %}
-{% if query%}
+{% if request.user|isAdmin %}
+{% if query %}
 results for "{{query}}"
 {% else %}
 <section>
@@ -23,7 +23,7 @@ results for "{{query}}"
       </div>
    </div>
 </section>
-{% endif%}
+{% endif %}
 {% endif %}
 {% for key, value in data.items%}
 {% if value%}

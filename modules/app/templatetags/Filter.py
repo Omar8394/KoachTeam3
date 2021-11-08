@@ -12,6 +12,15 @@ from django.core import serializers
 
 register = template.Library()
 
+@register.filter(name='isAdmin')
+def isAdmin(user):
+    _isAdmin = False
+    user = user.extensionusuario
+    rol = user.CtaUsuario.fk_rol_usuario.valor_elemento
+    if rol == 'rol_admin':
+        _isAdmin = True
+    return _isAdmin
+
 @register.filter(name='isEnrolled')
 def isLocked(estructura, user):
     locked = False
@@ -19,11 +28,12 @@ def isLocked(estructura, user):
     rol = user.CtaUsuario.fk_rol_usuario.valor_elemento
     publico = user.Publico
     if rol == 'rol_student':
-        estatus = TablasConfiguracion.obtenerHijos(valor='EstMatricula').filter(valor_elemento='EstatusVencido')
-        if estatus.exists():
-            matriculas = MatriculaAlumnos.objects.filter(fk_estructura_programa=estructura, fk_publico=publico)
-            if matriculas.exists():
-                locked=True
+        estatus = TablasConfiguracion.obtenerHijos(valor='EstMatricula').get(valor_elemento='EstatusAprovado')
+        matriculas = MatriculaAlumnos.objects.filter(fk_estruc_programa=estructura, fk_publico=publico, fk_status_matricula=estatus)
+        if matriculas.exists():
+            locked=False
+        else:
+            locked=True
     return locked
 
 @register.filter(name='locked')

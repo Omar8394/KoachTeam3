@@ -7,6 +7,7 @@ results for "{{query}}"
       <h3 class="section-title">Units</h3>
    </div>
    <div class="cards-container">
+      {% if request.user|isAdmin %}
       {% if not query %}
       <div class="card-new">
          <div class="card-new-content">
@@ -19,10 +20,11 @@ results for "{{query}}"
          </div>
       </div>
       {% endif%}
+      {% endif%}
       {% for unit in data%}
       {%if unit.valor_elemento == 'Unit'%}
       <div class="card-academic">
-         {%if unit|isEnrolled:request.user %}
+         {%if unit|isEnrolled:request.user and unit.fk_estructura_padre|isEnrolled:request.user and unit.fk_estructura_padre.fk_estructura_padre|isEnrolled:request.user%}
          <div class="card-academic-locked">
             <i class="fas fa-lock"></i>
          </div>
