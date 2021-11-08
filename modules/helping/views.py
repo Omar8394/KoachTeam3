@@ -99,7 +99,7 @@ def questionask(request,id):
      
 @login_required(login_url="/login/")   
 def landingshow (request): 
-     
+ if(request.user.is_superuser):  
     queryset=request.GET.get("buscar")
     form =LandPage.objects.all()
     if queryset:
@@ -116,6 +116,9 @@ def landingshow (request):
           
     else:
         return render(request,"help/landpageaprobar.html")
+ else:
+        
+        return redirect('/') 
  
 def sending(request):
      if request.method == "POST":
