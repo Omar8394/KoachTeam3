@@ -12,8 +12,22 @@ from django.core import serializers
 
 register = template.Library()
 
+@register.filter(name='isEnrolled')
+def isLocked(estructura, user):
+    locked = False
+    user = user.extensionusuario
+    rol = user.CtaUsuario.fk_rol_usuario.valor_elemento
+    publico = user.Publico
+    if rol == 'rol_student':
+        estatus = TablasConfiguracion.obtenerHijos(valor='EstMatricula').filter(valor_elemento='EstatusVencido')
+        if estatus.exists():
+            matriculas = MatriculaAlumnos.objects.filter(fk_estructura_programa=estructura, fk_publico=publico)
+            if matriculas.exists():
+                locked=True
+    return locked
+
 @register.filter(name='locked')
-def editableCourse(activity, user):
+def isNeeded(activity, user):
     isRequired = False
     user = user.extensionusuario
     rol = user.CtaUsuario.fk_rol_usuario.valor_elemento
@@ -29,7 +43,7 @@ def editableCourse(activity, user):
     return isRequired
 
 @register.filter(name='getLibrary')
-def editableCourse(user):
+def getLibrary(user):
     response = None
     user = user.extensionusuario
     rol = user.CtaUsuario.fk_rol_usuario.valor_elemento

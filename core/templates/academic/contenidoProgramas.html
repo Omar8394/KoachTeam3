@@ -1,3 +1,4 @@
+{% load Filter %}
 {% if rol == "Admin" %}
 {% if query%}
 results for "{{query}}"
@@ -33,9 +34,11 @@ results for "{{query}}"
    <div class="cards-container">
       {% for programa in value %}
       <div class="card-academic">
-         <!-- <div class="card-academic-locked">
+         {%if programa|isEnrolled:request.user %}
+         <div class="card-academic-locked">
             <i class="fas fa-lock"></i>
-         </div> -->
+         </div>
+         {% endif %}
          <div class="over-title">
             <p><span class="subtitle">Type</span> {{programa.valor_elemento}}</p>
             <p><span class="subtitle">Credits</span> {{programa.peso_creditos}}</p>

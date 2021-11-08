@@ -1,3 +1,4 @@
+{% load Filter %}
 {% if query%}
 results for "{{query}}"
 {% endif %}
@@ -21,13 +22,15 @@ results for "{{query}}"
       {% for process in data%}
       {%if process.valor_elemento == 'Process'%}
       <div class="card-academic">
-         <!-- <div class="card-academic-locked">
-                     <i class="fas fa-lock"></i>
-                  </div> -->
-                  <div class="over-title">
-                     <p><span class="subtitle">Type</span> {{process.valor_elemento}}</p>
-                     <p><span class="subtitle">Credits</span> {{process.peso_creditos}}</p>
-                  </div>
+         {%if process|isEnrolled:request.user %}
+         <div class="card-academic-locked">
+            <i class="fas fa-lock"></i>
+         </div>
+         {% endif %}
+         <div class="over-title">
+            <p><span class="subtitle">Type</span> {{process.valor_elemento}}</p>
+            <p><span class="subtitle">Credits</span> {{process.peso_creditos}}</p>
+         </div>
          <div class="card-academic-content">
             <h2 class="card-academic-title">{{process.descripcion}}</h2>
             <p class="card-academic-body">{{process.resumen}}</p>

@@ -22,9 +22,11 @@ results for "{{query}}"
       {% for course in data%}
       {%if course.valor_elemento == 'Course'%}
       <div class="card-academic">
-         <!-- <div class="card-academic-locked">
-                     <i class="fas fa-lock"></i>
-                  </div> -->
+         {%if course|isEnrolled:request.user %}
+         <div class="card-academic-locked">
+            <i class="fas fa-lock"></i>
+         </div>
+         {% endif %}
          <div class="over-title">
             <p><span class="subtitle">Type</span> {{course.valor_elemento}}</p>
             {% with teachers=course.programaprofesores_set.all|dictsortreversed:'idprograma_profesores'%}
