@@ -51,7 +51,7 @@
 									<li>
 										<div class="dropdown-divider"></div>
 										<a class="dropdown-item" href="{% url 'editProfile' %}"><i class="fas fa-user-circle mr-1"></i> My profile</a>
-										{% if request.user.extensionusuario.CtaUsuario.fk_rol_usuario.desc_elemento == 'Admin' %}
+										{% if request.session.user_rol == 'Admin' %}
 										<div class="dropdown-divider"></div>
 										<a class="dropdown-item" href="{% url 'indexSettings' %}"><i class="fas fa-cog mr-1"></i> Settings</a>
 										{% endif %}
