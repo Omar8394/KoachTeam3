@@ -21,6 +21,18 @@ def isAdmin(user):
         _isAdmin = True
     return _isAdmin
 
+@register.filter(name='isClosed')
+def isClosed(estructura,user):
+    _isClosed = False
+    user = user.extensionusuario
+    publico = user.Publico
+    estatus = TablasConfiguracion.obtenerHijos(valor='EstMatricula').get(valor_elemento='EstatusVencido')
+    if estatus:
+        matriculas = MatriculaAlumnos.objects.filter(fk_estruc_programa=estructura, fk_publico=publico, fk_status_matricula=estatus)
+        if matriculas.exists():
+            _isClosed=True
+    return _isClosed
+
 @register.filter(name='isEnrolled')
 def isLocked(estructura, user):
     locked = False

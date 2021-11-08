@@ -27,6 +27,9 @@ results for "{{query}}"
          {%if unit|isEnrolled:request.user and unit.fk_estructura_padre|isEnrolled:request.user and unit.fk_estructura_padre.fk_estructura_padre|isEnrolled:request.user%}
          <div class="card-academic-locked">
             <i class="fas fa-lock"></i>
+            {%if unit|isClosed:request.user %}
+            <p>This enrollment has ended</p>
+            {%endif%}
          </div>
          {% endif %}
          <div class="over-title">
