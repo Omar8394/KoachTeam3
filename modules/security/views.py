@@ -205,8 +205,8 @@ def register_user_new(request, activation_key, registertype, id):
                 form = SignUpForm(request.POST or None, initial={'email': email})
                 if form.is_valid():
                     user = form.save()
-                    cuenta = create_default_ctausuario("status_active", "rol_student")
                     if registertype == "landpage":
+                        cuenta = create_default_ctausuario("status_active", "rol_student")
                         id_land = form.cleaned_data.get("id_request")
                         land_page = LandPage.objects.get(pk=id_land)
                         publico_aux = Publico.objects.create(nombre=land_page.nombre,
