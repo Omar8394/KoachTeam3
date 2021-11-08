@@ -194,18 +194,16 @@ def register_user_new(request, activation_key, registertype, id):
             raise Http404("This account is locked, please contact support")
         elif Methods.verificarenlace(enlace.key_expires):
             print("enlace valido", activation_key)
+            if registertype == "landpage":
+                lang_page_user = LandPage.objects.get(pk=id)
+                email = json.loads(lang_page_user.correos)['emailPrincipal']
+            elif registertype == "adminregister":
+                email = json.loads(enlace.usuario.Publico.correos)['emailPrincipal']
             if request.method == "GET":
-                if registertype == "landpage":
-                    lang_page_user = LandPage.objects.get(pk=id)
-                    email = json.loads(lang_page_user.correos)['emailPrincipal']
-                elif registertype == "adminregister":
-                    publico_email = Publico.objects.get(pk=id)
-                    email = json.loads(publico_email.correos)['emailPrincipal']
                 form = SignUpForm(initial={'email': email})
             elif request.method == "POST":
                 form = SignUpForm(request.POST or None, initial={'email': email})
                 if form.is_valid():
-                    registertype = form.cleaned_data.get("registertype")
                     user = form.save()
                     cuenta = create_default_ctausuario("status_active", "rol_student")
                     if registertype == "landpage":
@@ -219,9 +217,8 @@ def register_user_new(request, activation_key, registertype, id):
                         ExtensionUsuario.objects.create(CtaUsuario=cuenta, Publico=publico_aux, user=user)
                         enlace.delete()
                     elif registertype == "adminregister":
-                        id_publico = form.cleaned_data.get("id_request")
-                        publico = Publico.objects.get(pk=id_publico)
-                        ExtensionUsuario.objects.create(CtaUsuario=cuenta, Publico=publico, user=user)
+                        enlace.usuario.user = user
+                        enlace.usuario.save()
                         enlace.delete()
                     request.session['mensaje'] = "You has been register successfully, Now try login in!"
                     return redirect("/login/")
@@ -412,7 +409,7 @@ def full_registration(request):
         if full_registration_form.is_valid():
             rol = request.POST.get("cb_tipo_rol")
             publico = full_registration_form.save()
-            cuenta = create_default_ctausuario("status_verification", rol)
+            cuenta = create_default_ctausuario("status_active", rol)
             ext_user = ExtensionUsuario.objects.create(CtaUsuario=cuenta, user=None, Publico=publico)
             email = json.loads(publico.correos)['emailPrincipal']
             # send verification email
@@ -421,7 +418,7 @@ def full_registration(request):
             if code:
                 enlace = request.get_raw_uri().split("//")[0] + "//" + \
                          request.get_host() + "/register_new/" + code + "/" + "adminregister/" \
-                         + str(publico.idpublico) + "/"
+                         + str(ext_user.id) + "/"
                 context = {"titulo": "Account Registration Link", "user": publico.nombre + " " + publico.apellido,
                            "content": "Thank you for joining the " + str(
                                settings.EMPRESA_NOMBRE) + " team, follow the link below to register  your account:",
