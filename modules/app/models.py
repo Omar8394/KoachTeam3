@@ -101,7 +101,7 @@ class Estructuraprograma(models.Model):
     peso_creditos = models.DecimalField(max_digits=7, decimal_places=2, blank=True, null=True)
     orden_presentacion = models.SmallIntegerField(null=True)
     fk_categoria = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE, default=None, null=True)
-    fk_estructura_padre = models.ForeignKey('self', on_delete=models.CASCADE, default=None, null=True)
+    fk_estructura_padre = models.ForeignKey('self',on_delete=models.DO_NOTHING, default=None, null=True)
     def __str__(self):
         return self.descripcion
 
@@ -126,6 +126,12 @@ class PreguntasFrecuentes(models.Model):
     texto_pregunta = models.TextField(null=True)
     texto_respuesta = models.TextField(null=True)
     fk_tipo_pregunta_frecuente = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE, default=None, null=True)
+
+class MensajesPredefinidos(models.Model):
+    id_mensaje = models.AutoField(primary_key=True)
+    fk_tipo_mensaje = models.ForeignKey(Publico, on_delete=models.CASCADE, default=None, null=True)
+    descripcion = models.TextField(null=True)
+    enlace = models.TextField(null=True)
 
 class HistoricoUser(models.Model):
     id_historico_user = models.AutoField(primary_key=True)
