@@ -100,74 +100,141 @@ def questionask(request,id):
      return render(request,'help/showanswers.html',{'form': form})
 
 
-@login_required(login_url="/login/")
-def landingshow(request):
-    if request.user.is_superuser:
-        queryset = request.GET.get("buscar")
-        form = LandPage.objects.all()
-        if queryset:
-            form = LandPage.objects.filter(
-                Q(nombre__icontains=queryset) |
-                Q(apellido__icontains=queryset) |
-                Q(correos__icontains=queryset)
-            ).distinct()
-            print(form)
+#@login_required(login_url="/login/")
+#def landingshow(request):
+#    if request.user.is_superuser:
+#        queryset = request.GET.get("buscar")
+#        form = LandPage.objects.all()
+#        if queryset:
+#            form = LandPage.objects.filter(
+ #               Q(nombre__icontains=queryset) |
+ #               Q(apellido__icontains=queryset) |
+  #              Q(correos__icontains=queryset)
+   #         ).distinct()
+    #        print(form)
 
-            return render(request, "help/landpageaprobar.html", {'form': form})
-
-
-        else:
-            return render(request, "help/landpageaprobar.html")
-    else:
-
-        return redirect('/')
+     #       return render(request, "help/landpageaprobar.html", {'form': form})
 
 
+      #  else:
+       #     return render(request, "help/landpageaprobar.html")
+   # else:
+
+    #    return redirect('/')
+
+@login_required(login_url="/login/")   
+def landingshow (request): 
+  if(request.user.is_superuser):  
+   form =LandPage.objects.filter(status_solicitud=0).order_by('-fecha_solicitud')
+     
+   return render(request,"help/landpageaprobar.html",{'form':form})
+   
+  else:
+        
+    return redirect('/') 
+
+# def sending(request):
+#     if request.method == "POST":
+#         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+#             modelo = {}
+#             context = {}
+#             if request.body:
+#                 context = {}
+#                 data = json.load(request)
+
+#                 if data["id"]:
+#                     form = LandPage.objects.filter(id_solicitud=data["id"])
+#                     helps = LandPage.objects.filter(id_solicitud=data["id"])
+#                     for obj in helps:
+#                         obj.status_solicitud = 1
+#                         obj.save()
+#                     print(helps)
+
+#                     context = {"form": form}
+
+#                     html_template = (loader.get_template('help/modalmail.html'))
+
+#                     return HttpResponse(html_template.render(context, request))
+
+
+#                 elif data["data"]:
+#                     email = data["data"]["email"]
+#                     landpage = LandPage.objects.get(pk=data["id"])
+#                     code = str(Methods.getVerificationLink(None, email, 2))
+#                     enlace = request.get_raw_uri().split("//")[0] + "//" + \
+#                              request.get_host() + "/register_new/" + code + "/" + "landpage/" \
+#                              + str(landpage.id_solicitud) + "/"
+#                     context = {"titulo": "Account Registration Link",
+#                                "user": landpage.nombre + " " + landpage.apellido,
+#                                "content": "Thank you for joining the energy solar team, follow the link below to register  your account:",
+#                                "enlace": enlace, "enlaceTexto": "click here!", "empresa": settings.EMPRESA_NOMBRE,
+#                                "urlimage": settings.EMPRESA_URL_LOGO}
+#                     send_mail(
+#                         create_mail(email, "Account Registration Link", "security/base_email_template_pro.html",
+#                                     context))
+
+#                     return JsonResponse({"message": "Perfect"})
+
+#                 else:
+
+#                     context = {}
+#                     html_template = (loader.get_template('help/modalmail.html'))
+
+#                     return HttpResponse(html_template.render(context, request))
+
+ 
 def sending(request):
-    if request.method == "POST":
-        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            modelo = {}
-            context = {}
-            if request.body:
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                modelo = {}
                 context = {}
-                data = json.load(request)
+                if request.body:
+                    context={}
+                    data = json.load(request)
+                    
+                    
+                   
+                    if data["correo"] == "find":
+                     form =LandPage.objects.filter(id_solicitud=data["id"])
+                     for obj in form:
+                      mail= obj.correos
+                      
 
-                if data["id"]:
-                    form = LandPage.objects.filter(id_solicitud=data["id"])
-                    helps = LandPage.objects.filter(id_solicitud=data["id"])
-                    for obj in helps:
-                        obj.status_solicitud = 1
-                        obj.save()
-                    print(helps)
+                      context={"form":form,'correos': json.loads(mail)['emailPrincipal'] if 'emailPrincipal' in json.loads(mail) else None}
+                      print(context)
+                      html_template = (loader.get_template('help/modalmail.html')) 
+        
+                      return HttpResponse(html_template.render(context, request))
+                    
 
-                    context = {"form": form}
-
-                    html_template = (loader.get_template('help/modalmail.html'))
-
-                    return HttpResponse(html_template.render(context, request))
-
-
-                elif data["data"]:
-                    email = data["data"]["email"]
-                    landpage = LandPage.objects.get(pk=data["id"])
-                    code = str(Methods.getVerificationLink(None, email, 2))
-                    enlace = request.get_raw_uri().split("//")[0] + "//" + \
-                             request.get_host() + "/register_new/" + code + "/" + "landpage/" \
-                             + str(landpage.id_solicitud) + "/"
-                    context = {"titulo": "Account Registration Link",
-                               "user": landpage.nombre + " " + landpage.apellido,
-                               "content": "Thank you for joining the energy solar team, follow the link below to register  your account:",
-                               "enlace": enlace, "enlaceTexto": "click here!", "empresa": settings.EMPRESA_NOMBRE,
-                               "urlimage": settings.EMPRESA_URL_LOGO}
-                    send_mail(
-                        create_mail(email, "Account Registration Link", "security/base_email_template_pro.html",
+                    elif data["correo"] == "send":
+                      email = data["data"]["email"]
+                     
+                      print(email)
+                     
+                      landpage = LandPage.objects.get(pk=data["id"])
+                      code = str(Methods.getVerificationLink(None,email, 2))
+                     
+                      print(code)
+                      enlace = request.get_raw_uri().split("//")[0] + "//" + \
+                               request.get_host() + "/register_new/" + code + "/" + "landpage/" \
+                               + str(landpage.id_solicitud) + "/"
+                      context = {"titulo": "Account Registration Link",
+                                 "user": landpage.nombre + " " + landpage.apellido,
+                                 "content": "Thank you for joining the energy solar team, follow the link below to register  your account:",
+                                 "enlace": enlace, "enlaceTexto": "click here!", "empresa": settings.EMPRESA_NOMBRE,"urlimage":settings.EMPRESA_URL_LOGO}
+                      print(context)
+                      send_mail(
+                      create_mail(email, "Account Registration Link", "security/base_email_template_pro.html",
                                     context))
-
-                    return JsonResponse({"message": "Perfect"})
-
-                else:
-
-                    context = {}
-                    html_template = (loader.get_template('help/modalmail.html'))
-
-                    return HttpResponse(html_template.render(context, request))
+                      helps=LandPage.objects.filter(id_solicitud=data["id"])
+                      for obj in helps:
+                          obj.status_solicitud = 1
+                          obj.save()
+                          print(helps)
+                          return JsonResponse({"message":"Perfect"})
+                        
+                    else:
+                        context={}
+                        html_template = (loader.get_template('help/modalmail.html')) 
+        
+                        return HttpResponse(html_template.render(context, request))
