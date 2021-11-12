@@ -12,11 +12,11 @@ class CtaUsuario(models.Model):
                                        related_name='rol_usuario')  # Field name made lowercase.
     # fk_publico = models.ForeignKey(Publico, on_delete=models.CASCADE)
     # user = models.OneToOneField(User, on_delete=models.CASCADE, default=None, null=True)
-    fk_pregunta_secreta = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE, related_name='pregunta')
+    fk_pregunta_secreta = models.ForeignKey(TablasConfiguracion, on_delete=models.DO_NOTHING, related_name='pregunta')
     intentos_fallidos = models.IntegerField()  # Field name made lowercase.
     fecha_ult_cambio = models.DateField(blank=True, null=True)
     respuesta_secreta = models.TextField(blank=True, null=True)
-    fk_status_cuenta = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE, related_name='estado_cuenta')
+    fk_status_cuenta = models.ForeignKey(TablasConfiguracion, on_delete=models.DO_NOTHING, related_name='estado_cuenta')
     dias_cambio = models.IntegerField()
     url_imagen = models.CharField(max_length=100, default=None, blank=True, null=True)
 

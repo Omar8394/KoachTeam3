@@ -7,7 +7,7 @@ from django.forms.utils import to_current_timezone
 class TablasConfiguracion(models.Model):
     id_tabla = models.SmallAutoField(primary_key=True)
     desc_elemento = models.CharField(max_length=70, blank=True, null=True)
-    fk_tabla_padre = models.ForeignKey('self', on_delete=models.CASCADE, default=None, null=True)
+    fk_tabla_padre = models.ForeignKey('self', on_delete=models.DO_NOTHING, default=None, null=True)
     tipo_elemento = models.CharField(max_length=1, blank=True, null=True)
     permite_cambios = models.IntegerField()
     valor_elemento = models.TextField(blank=True, null=True)
@@ -56,13 +56,13 @@ class Publico(models.Model):
     procedencia = models.CharField(max_length=1)
     docto_identidad = models.TextField()
     fk_ciudad = models.SmallIntegerField(null=True)
-    fk_contratante = models.ForeignKey(Contratantes, on_delete=models.CASCADE, default=None, null=True)
+    fk_contratante = models.ForeignKey(Contratantes, on_delete=models.DO_NOTHING, default=None, null=True)
     correos = models.TextField()
     telefonos = models.TextField()
     cuenta_telegram = models.CharField(max_length=45, null=True) #telegram id or null
     cuenta_whatsapp = models.CharField(max_length=20, null=True)# whatsapp number or null
     fecha_registro = models.DateField(auto_now_add=True, null=True)
-    #user = models.OneToOneField(User, on_delete=models.CASCADE, default=None, null=True)
+    #user = models.OneToOneField(User, on_delete=models.DO_NOTHING, default=None, null=True)
 
       
     def __str__(self):
@@ -78,8 +78,8 @@ class Partners(models.Model):
 
 class PublicoRelacion(models.Model):
     idpublico_rol = models.SmallAutoField(primary_key=True)
-    fk_publico = models.ForeignKey(Publico, on_delete=models.CASCADE, default=None, null=True)
-    fk_relacion = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE, default=None, null=True)
+    fk_publico = models.ForeignKey(Publico, on_delete=models.DO_NOTHING, default=None, null=True)
+    fk_relacion = models.ForeignKey(TablasConfiguracion, on_delete=models.DO_NOTHING, default=None, null=True)
 
 class Aplicaciones(models.Model):
     idaplicaciones = models.SmallAutoField(primary_key=True)  # Field name made lowercase.
@@ -100,7 +100,7 @@ class Estructuraprograma(models.Model):
     url = models.TextField(blank=True, null=True)
     peso_creditos = models.DecimalField(max_digits=7, decimal_places=2, blank=True, null=True)
     orden_presentacion = models.SmallIntegerField(null=True)
-    fk_categoria = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE, default=None, null=True)
+    fk_categoria = models.ForeignKey(TablasConfiguracion, on_delete=models.DO_NOTHING, default=None, null=True)
     fk_estructura_padre = models.ForeignKey('self',on_delete=models.DO_NOTHING, default=None, null=True)
     def __str__(self):
         return self.descripcion
@@ -125,17 +125,17 @@ class PreguntasFrecuentes(models.Model):
     idpregunta_frecuente = models.AutoField(primary_key=True)
     texto_pregunta = models.TextField(null=True)
     texto_respuesta = models.TextField(null=True)
-    fk_tipo_pregunta_frecuente = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE, default=None, null=True)
+    fk_tipo_pregunta_frecuente = models.ForeignKey(TablasConfiguracion, on_delete=models.DO_NOTHING, default=None, null=True)
 
 class MensajesPredefinidos(models.Model):
     id_mensaje = models.AutoField(primary_key=True)
-    fk_tipo_mensaje = models.ForeignKey(Publico, on_delete=models.CASCADE, default=None, null=True)
+    fk_tipo_mensaje = models.ForeignKey(Publico, on_delete=models.DO_NOTHING, default=None, null=True)
     descripcion = models.TextField(null=True)
     enlace = models.TextField(null=True)
 
 class HistoricoUser(models.Model):
     id_historico_user = models.AutoField(primary_key=True)
-    fk_publico = models.ForeignKey(Publico, on_delete=models.CASCADE, default=None, null=True)
-    fk_estructura_programa = models.ForeignKey(Estructuraprograma, on_delete=models.CASCADE, default=None, null=True)
+    fk_publico = models.ForeignKey(Publico, on_delete=models.DO_NOTHING, default=None, null=True)
+    fk_estructura_programa = models.ForeignKey(Estructuraprograma, on_delete=models.DO_NOTHING, default=None, null=True)
     fecha = models.DateTimeField(null=True)
     estado = models.BooleanField(null=True)

@@ -36,9 +36,9 @@ class ActividadEvaluaciones(models.Model):
     duracion = models.IntegerField( null=True)
 
     fk_estructura_programa = models.OneToOneField(Estructuraprograma,on_delete=models.CASCADE,  default=None, null=True)
-    fk_tipo_duracion = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE, default=None, null=True, related_name="actividad_tipo_duracion")
-    fk_escala_evaluacion = models.ForeignKey(EscalaEvaluacion, on_delete=models.CASCADE,  default=None, null=True, related_name='escalaEvaluacion')
-    fk_escala_bloque = models.ForeignKey(EscalaEvaluacion, on_delete=models.CASCADE, default=None, null=True, related_name='escalaBloque')
+    fk_tipo_duracion = models.ForeignKey(TablasConfiguracion, on_delete=models.DO_NOTHING, default=None, null=True, related_name="actividad_tipo_duracion")
+    fk_escala_evaluacion = models.ForeignKey(EscalaEvaluacion, on_delete=models.DO_NOTHING,  default=None, null=True, related_name='escalaEvaluacion')
+    fk_escala_bloque = models.ForeignKey(EscalaEvaluacion, on_delete=models.DO_NOTHING, default=None, null=True, related_name='escalaBloque')
 
     calificacion_aprobar = models.IntegerField(blank=True, null=True)
 
@@ -52,8 +52,8 @@ class Cursos(models.Model):
     duracion = models.DecimalField(max_digits=5, decimal_places=2, null=True)
     tipo_evaluacion = models.BooleanField(null=True)
     fk_estruc_programa = models.OneToOneField(Estructuraprograma, on_delete=models.CASCADE, default=None, null=True)
-    fk_estatus_curso = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE, default=None, null=True, related_name="estatus_curso")
-    fk_tipo_duracion = models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE, default=None, null=True, related_name="tipo_duracion")
+    fk_estatus_curso = models.ForeignKey(TablasConfiguracion, on_delete=models.DO_NOTHING, default=None, null=True, related_name="estatus_curso")
+    fk_tipo_duracion = models.ForeignKey(TablasConfiguracion, on_delete=models.DO_NOTHING, default=None, null=True, related_name="tipo_duracion")
 
     def __str__(self):
         return self.desc_curso
@@ -66,7 +66,7 @@ class ProgramaProfesores(models.Model):
     comentarios = models.TextField(null=True)
     fk_publico = models.ForeignKey(Publico, on_delete=models.CASCADE, default=None, null=True)
     fk_estructura_programa = models.ForeignKey(Estructuraprograma, on_delete=models.CASCADE, default=None, null=True)
-    fk_situacion= models.ForeignKey(TablasConfiguracion, on_delete=models.CASCADE, default=None, null=True)
+    fk_situacion= models.ForeignKey(TablasConfiguracion, on_delete=models.DO_NOTHING, default=None, null=True)
 
 class CursosPrerequisitos(models.Model):
     idcurso_prerequisitos = models.SmallAutoField(primary_key=True)
@@ -76,7 +76,7 @@ class CursosPrerequisitos(models.Model):
 class EvaluacionInstrucciones(models.Model):
     idevaluacion_instrucciones=models.AutoField(primary_key=True)
     texto_instrucciones = models.TextField(null=True)
-    fk_actividad_evaluaciones = models.ForeignKey(ActividadEvaluaciones, on_delete=models.CASCADE, default=None, null=True)
+    fk_actividad_evaluaciones = models.ForeignKey(ActividadEvaluaciones, on_delete=models.DO_NOTHING, default=None, null=True)
 
 class EvaluacionesBloques(models.Model):
     orden=models.IntegerField(null=True)
@@ -94,9 +94,9 @@ class SugerenciasBloques(models.Model):
     id=models.AutoField(primary_key=True)
     fk_estructura_programa = models.ForeignKey(Estructuraprograma,on_delete=models.CASCADE,  default=None, null=True, related_name='estructura_sugerencia')
 
-    escalaOpcion= models.ForeignKey(EscalaCalificacion, on_delete=models.CASCADE, default=None, null=True, related_name='sugerencia_escala')
+    escalaOpcion= models.ForeignKey(EscalaCalificacion, on_delete=models.DO_NOTHING, default=None, null=True, related_name='sugerencia_escala')
     comentario = models.TextField(null=True)
-    fk_bloque = models.ForeignKey(EvaluacionesBloques, on_delete=models.CASCADE, default=None, null=True, related_name='bloque_sugerencia')
+    fk_bloque = models.ForeignKey(EvaluacionesBloques, on_delete=models.DO_NOTHING, default=None, null=True, related_name='bloque_sugerencia')
 
     
 
@@ -130,8 +130,8 @@ class Recurso(models.Model):
     path = models.TextField(null=True)
     tipo_path = models.BooleanField(default=False)
     compartido = models.BooleanField(default=False)
-    fk_tipo_recurso = models.ForeignKey(TablasConfiguracion,on_delete=models.CASCADE,  default=None, null=True)
-    fk_publico_autor = models.ForeignKey(Publico, on_delete=models.CASCADE,  default=None, null=True)
+    fk_tipo_recurso = models.ForeignKey(TablasConfiguracion,on_delete=models.DO_NOTHING,  default=None, null=True)
+    fk_publico_autor = models.ForeignKey(Publico, on_delete=models.DO_NOTHING,  default=None, null=True)
 
 class Tag(models.Model):
     id_tag = models.SmallAutoField(primary_key=True)
@@ -158,7 +158,7 @@ class Paginas(models.Model):
     titulo = models.TextField(null=True)
     contenido = models.TextField(null=True)
     ordenamiento = models.SmallIntegerField(null=True)
-    fk_estructura_programa = models.ForeignKey(Estructuraprograma,on_delete=models.CASCADE,  default=None, null=True)
+    fk_estructura_programa = models.ForeignKey(Estructuraprograma,on_delete=models.DO_NOTHING,  default=None, null=True)
 
 class RecursoPaginas(models.Model):
     id_recurso_pagina = models.AutoField(primary_key=True)
@@ -195,10 +195,10 @@ class ExamenRespuestas(models.Model):
     respuetaCorrecta = models.BooleanField(default=False, null=True)
     bloque = models.IntegerField(blank=True, null=True)
 
-    fk_pregunta=models.ForeignKey(EvaluacionesPreguntas,on_delete=models.CASCADE,  default=None, null=True, related_name='OpcionPregunta')
-    fk_Examen= models.ForeignKey(ExamenActividad,on_delete=models.CASCADE,  default=None, null=True, related_name='OpcionExamen')
-    fk_Opcion= models.ForeignKey(PreguntasOpciones,on_delete=models.CASCADE,  default=None, null=True, related_name='respuestaExamen')
-    fk_OpcionRelacionada= models.ForeignKey(PreguntasOpciones,on_delete=models.CASCADE,  default=None, null=True, related_name='respuestaExamenRelacionada')
+    fk_pregunta=models.ForeignKey(EvaluacionesPreguntas,on_delete=models.DO_NOTHING,  default=None, null=True, related_name='OpcionPregunta')
+    fk_Examen= models.ForeignKey(ExamenActividad,on_delete=models.DO_NOTHING,  default=None, null=True, related_name='OpcionExamen')
+    fk_Opcion= models.ForeignKey(PreguntasOpciones,on_delete=models.DO_NOTHING,  default=None, null=True, related_name='respuestaExamen')
+    fk_OpcionRelacionada= models.ForeignKey(PreguntasOpciones,on_delete=models.DO_NOTHING,  default=None, null=True, related_name='respuestaExamenRelacionada')
 
 
 
@@ -208,7 +208,7 @@ class ExamenResultados(models.Model):
     
     puntuacionBloques= models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)
 
-    bloque= models.ForeignKey(EvaluacionesBloques, on_delete=models.CASCADE,  default=None, null=True, related_name='bloque_respuesta')
+    bloque= models.ForeignKey(EvaluacionesBloques, on_delete=models.DO_NOTHING,  default=None, null=True, related_name='bloque_respuesta')
     
-    fk_Examen= models.ForeignKey(ExamenActividad,on_delete=models.CASCADE,  default=None, null=True, related_name='ResultadoExamen')
+    fk_Examen= models.ForeignKey(ExamenActividad,on_delete=models.DO_NOTHING,  default=None, null=True, related_name='ResultadoExamen')
 

@@ -834,6 +834,91 @@
 
     }
   },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk":83,
+    "fields": {
+      "desc_elemento": "Action type",
+      "fk_tabla_padre_id": 1,
+      "tipo_elemento": 1,
+      "permite_cambios":0,
+      "valor_elemento":"tipoAccion",
+      "mostrar_en_combos":1,
+      "maneja_lista":1
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk":84,
+    "fields": {
+      "desc_elemento": "Delete",
+      "fk_tabla_padre_id": 83,
+      "tipo_elemento": 0,
+      "permite_cambios":1,
+      "valor_elemento":"accionEliminar",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk":85,
+    "fields": {
+      "desc_elemento": "Edit",
+      "fk_tabla_padre_id": 83,
+      "tipo_elemento": 0,
+      "permite_cambios":1,
+      "valor_elemento":"accionEditar",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk":86,
+    "fields": {
+      "desc_elemento": "Create",
+      "fk_tabla_padre_id": 83,
+      "tipo_elemento": 0,
+      "permite_cambios":1,
+      "valor_elemento":"accionCrear",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk":87,
+    "fields": {
+      "desc_elemento": "Block",
+      "fk_tabla_padre_id": 83,
+      "tipo_elemento": 0,
+      "permite_cambios":1,
+      "valor_elemento":"accionBloquear",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk":88,
+    "fields": {
+      "desc_elemento": "Open",
+      "fk_tabla_padre_id": 83,
+      "tipo_elemento": 0,
+      "permite_cambios":1,
+      "valor_elemento":"accionAbrir",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
+  
   
   {
     "model": "app.Contratantes",
