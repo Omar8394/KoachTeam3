@@ -460,6 +460,21 @@
             ],
             buttons: {
                resource: HelloButton
+            },
+            callbacks: {
+               onPaste: function (e) {
+                  e.preventDefault()
+                  let items = (e.clipboardData || e.originalEvent.clipboardData).items;
+                  for (let index in items) {
+                     var item = items[index];
+                     console.log(item)
+                     if (item.kind === 'file') {
+                     }
+                  }
+               },
+               // onImageUpload:function(e){
+               //    e.preventDefault()
+               // }
             }
          });
       });
