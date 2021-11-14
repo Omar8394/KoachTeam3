@@ -1,0 +1,188 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Dashboard {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<div class="content">
+    <div class="page-inner animated fadeInRight">
+        <div class="page-header">
+            <h4 class="page-title">System Logs</h4>
+            <ul class="breadcrumbs">
+                <li class="nav-home">
+                    <a href="{% url 'home' %}">
+                        <i class="flaticon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <span>System Logs</span>
+                </li>             
+            </ul>
+        </div>
+        <div class="page-category">
+           <div class="col-md-12 d-flex justify-content-center text-center">
+        <div class="card">
+            <div class="card-header bg-dark2">
+                <div class="card-title">
+
+                    {% if msg %}
+                        <span class="text-danger">{{ msg | safe }}</span>
+                    {% else %}
+                    <span style="color: white">
+                        {% block titulo %}System Logs{% endblock %}
+                    </span>
+                    {% endif %}
+
+                </div>
+            </div>
+        <div class="card-body">
+                    <form method="post" id="logs_filter">
+                {% csrf_token %}
+                    <div class="form-row align-items-center">
+   <div class="col-sm-2 my-1">
+       <label class="col-form-label" for="fecha_inicial"><strong>Initial Date</strong></label>
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <div class="input-group-text">
+              <i class="icon-calendar"></i>
+          </div>
+        </div>
+        <input type="date" class="form-control" id="fecha_inicial" name="fecha_inicial">
+      </div>
+    </div>
+     <div class="col-sm-2 my-1">
+       <label class="col-form-label" for="fecha_final"><strong>Final Date</strong></label>
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <div class="input-group-text">
+              <i class="icon-calendar"></i>
+          </div>
+        </div>
+        <input type="date" class="form-control" id="fecha_final" name="fecha_final">
+      </div>
+    </div>
+                        <div class="col-sm-3 my-1">
+      <label class="col-form-label" for="username"><strong>Username</strong></label>
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <div class="input-group-text"><i class="icon-user"></i></div>
+        </div>
+        <input type="text" class="form-control" id="username" name="username">
+      </div>
+    </div>
+                        <div class="col-sm-2 my-1">
+      <label class="col-form-label" for="operation"><strong>Operation</strong></label>
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <div class="input-group-text"><i class="icon-settings"></i></div>
+        </div>
+        <input type="text" class="form-control" id="operation" name="operation">
+      </div>
+    </div>
+                           <div class="col-sm-2 my-1">
+      <label class="col-form-label" for="module"><strong>Module</strong></label>
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <div class="input-group-text"><i class="flaticon-settings"></i></div>
+        </div>
+        <input type="text" class="form-control" id="module" name="module">
+      </div>
+    </div>
+
+
+    <div class="col-auto my-1">
+      <button type="submit" class="btn btn-success">Search</button>
+    </div>
+  </div>
+                    </form>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                             <table class="table table-striped table-dark table-bordered-bd-primary table-hover">
+                              <thead>
+                                <tr>
+                                  <th scope="col">#ID</th>
+                                  <th scope="col">Date</th>
+                                  <th scope="col">Account</th>
+                                  <th scope="col">Operation</th>
+                                    <th scope="col">Description</th>
+                                    <th scope="col">Module</th>
+                                    <th scope="col">Options</th>
+                                </tr>
+                              </thead>
+                              <tbody id="cuerpo_tabla">
+
+
+                              </tbody>
+                            </table>
+                                </div>
+                            </div>
+                        </div>
+        </div>
+    </div>
+
+        </div>
+    </div>
+</div>
+
+
+{% include 'planning/mensajes.html' %}  
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+<script language="JavaScript">
+$(document).ready(function () {
+    let formdata = new FormData();
+     formdata.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+    $.ajax({
+                    type: "POST",
+                    url: "{% url 'systemlogData' %}",
+                    data : formdata,
+                    processData:false,
+                    contentType:false,
+                success: function (response) {
+                        //alertaMensajitos(response.tipo,response.titulo,response.mensaje)
+                       document.getElementById("cuerpo_tabla").innerHTML = response.logs;
+                    console.log(response)
+
+                },
+                error: function (e) {
+                    alertaMensajitos(5,"An error has occurred","error when loading records")
+                }
+            });
+});
+$('#logs_filter').on('submit',function () {
+    let formdata = new FormData(this);
+
+$.ajax({
+                    type: "POST",
+                    url: "{% url 'systemlogData' %}",
+                    data : formdata,
+                    processData:false,
+                    contentType:false,
+                success: function (response) {
+                console.log("filters",response);
+                if(response.result==0){
+                    alertaMensajitos(7,"without results","the search has not obtained results");
+                }
+                document.getElementById("cuerpo_tabla").innerHTML = response.logs;
+
+                },
+                error: function (e) {
+                    alertaMensajitos(5,"An error has occurred","error when loading filter"+e)
+                }
+            });
+
+            return false;
+})
+
+</script>
+{% endblock javascripts %}

@@ -1,0 +1,21 @@
+{% for log in logs %}
+  <tr>
+    <td>{{ log.idlog_seguridad }}</td>
+      <td>{{ log.fecha_transaccion}}</td>
+    <td>{{ log.fk_cta_usuario.username }}</td>
+    <td>{{ log.fk_tipo_operacion.desc_elemento }}</td>
+    <td>{% if log.valor_dato %}{{ log.valor_dato }}{% else %}{{ 'Nothing' }}{% endif %}</td>
+    <td>{{ log.modulo }}</td>
+    <td>
+      <button type="button"
+              class="btn btn-warning btn-sm js-update-log"
+              data-url="">
+        <span class="glyphicon glyphicon-pencil"></span> View
+      </button>
+    </td>
+  </tr>
+{% empty %}
+  <tr>
+    <td colspan="8" class="text-center bg-warning">No logs</td>
+  </tr>
+{% endfor %}

@@ -1721,6 +1721,97 @@
      "maneja_lista": 0
  }
 
+}, {
+ "model": "app.tablasconfiguracion",
+ "pk": 235,
+ "fields": {
+     "desc_elemento": "Logs",
+     "fk_tabla_padre": 1,
+     "tipo_elemento": "1",
+     "permite_cambios": 1,
+     "valor_elemento": "system_logs",
+     "mostrar_en_combos": 1,
+     "maneja_lista": 1
+ }
+
+}, {
+ "model": "app.tablasconfiguracion",
+ "pk": 236,
+ "fields": {
+     "desc_elemento": "Change Secret Question",
+     "fk_tabla_padre": 235,
+     "tipo_elemento": "2",
+     "permite_cambios": 1,
+     "valor_elemento": "change_secret_question",
+     "mostrar_en_combos": 1,
+     "maneja_lista": 0
+ }
+
+}, {
+ "model": "app.tablasconfiguracion",
+ "pk": 237,
+ "fields": {
+     "desc_elemento": "Change Password",
+     "fk_tabla_padre": 235,
+     "tipo_elemento": "2",
+     "permite_cambios": 1,
+     "valor_elemento": "change_passsword",
+     "mostrar_en_combos": 1,
+     "maneja_lista": 0
+ }
+
+}, {
+ "model": "app.tablasconfiguracion",
+ "pk": 238,
+ "fields": {
+     "desc_elemento": "Account Recovery from email",
+     "fk_tabla_padre": 235,
+     "tipo_elemento": "2",
+     "permite_cambios": 1,
+     "valor_elemento": "recovery_account_email",
+     "mostrar_en_combos": 1,
+     "maneja_lista": 0
+ }
+
+}, {
+ "model": "app.tablasconfiguracion",
+ "pk": 239,
+ "fields": {
+     "desc_elemento": "Modules",
+     "fk_tabla_padre": 1,
+     "tipo_elemento": "1",
+     "permite_cambios": 1,
+     "valor_elemento": "modules",
+     "mostrar_en_combos": 1,
+     "maneja_lista": 1
+ }
+
+}, {
+ "model": "app.tablasconfiguracion",
+ "pk": 240,
+ "fields": {
+     "desc_elemento": "Security",
+     "fk_tabla_padre": 239,
+     "tipo_elemento": "2",
+     "permite_cambios": 1,
+     "valor_elemento": "module_security",
+     "mostrar_en_combos": 1,
+     "maneja_lista": 0
+ }
+
+}, {
+ "model": "app.tablasconfiguracion",
+ "pk": 241,
+ "fields": {
+     "desc_elemento": "Academic",
+     "fk_tabla_padre": 239,
+     "tipo_elemento": "2",
+     "permite_cambios": 1,
+     "valor_elemento": "module_academic",
+     "mostrar_en_combos": 1,
+     "maneja_lista": 0
+ }
+
 }
 
 ]

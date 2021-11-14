@@ -4,9 +4,9 @@ Copyright (c) 2019 - present AppSeed.us
 """
 
 from django.urls import path
-from .views import login_view, register_user, register_user_new, forgot_password, lang_page, full_registration,\
-    recovery_method, emailrecovery, recovery_method_question, verificationaccount, editProfile, images, rootImages,\
-     borrarImages, changePassword, changeSecretQuestion
+from .views import login_view, register_user, register_user_new, forgot_password, lang_page, full_registration, \
+    recovery_method, emailrecovery, recovery_method_question, verificationaccount, editProfile, images, rootImages, \
+    borrarImages, changePassword, changeSecretQuestion, systemLogView, systemLogData
 from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
@@ -27,5 +27,7 @@ urlpatterns = [
     path("borrarImages/", borrarImages, name='borrarImages'),
     path('changepassword/', changePassword, name="changePassword"),
     path('changesecretquestion/', changeSecretQuestion, name="changeSecretQuestion"),
+    path('systemlogview/', systemLogView, name="systemlogview"),
+    path('systemlogData/', systemLogData, name="systemlogData"),
 
 ]

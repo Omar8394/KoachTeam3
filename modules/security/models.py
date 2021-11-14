@@ -42,10 +42,11 @@ class LandPage(models.Model):
 
 class LogSeguridad(models.Model):
     idlog_seguridad = models.AutoField(primary_key=True)
-    fk_cta_usuario = models.SmallIntegerField()
-    fecha_transaccion = models.DateField()  # Field name made lowercase.
-    fk_tipo_operacion = models.SmallIntegerField()
+    fk_cta_usuario = models.OneToOneField(User, on_delete=models.CASCADE)
+    fecha_transaccion = models.DateField()
+    fk_tipo_operacion = models.ForeignKey(TablasConfiguracion, on_delete=models.DO_NOTHING, related_name='log_cuenta')
     valor_dato = models.TextField(blank=True, null=True)
+    modulo = models.ForeignKey(TablasConfiguracion, on_delete=models.DO_NOTHING, related_name='modulos',blank=True, null=True)
 
 
 class ExtensionUsuario(models.Model):
