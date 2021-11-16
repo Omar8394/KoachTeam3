@@ -29,7 +29,7 @@ from ..app.models import HistoricoUser, TablasConfiguracion, Estructuraprograma,
 
 
 from ..security.models import ExtensionUsuario
-from modules.registration.models import MatriculaAlumnos
+from modules.registration.models import MatriculaAlumnos, PreciosFormacion
 from .models import ActividadEvaluaciones, Cursos, ActividadConferencia, ActividadLeccion, ActividadTarea, EscalaCalificacion, EscalaEvaluacion, EvaluacionesPreguntas, EvaluacionesBloques, Paginas, PreguntasOpciones, ExamenActividad,ExamenRespuestas,ExamenResultados, ProgramaProfesores, Recurso, RecursoPaginas, Tag, TagRecurso,EvaluacionInstrucciones,SugerenciasBloques
 from modules.app import models
 
@@ -1689,6 +1689,10 @@ def getModalProgramas(request):
                     programa.fk_categoria_id = data["data"]["categoryProgram"]
                     programa.peso_creditos = data["data"]["creditos"]
                     programa.save()
+                    precios = PreciosFormacion.objects.filter(fk_estruc_programa=programa)
+                    if not precios.exists():
+                        precio = PreciosFormacion(fecha_registro=timezone.now(),fk_estruc_programa=programa)
+                        precio.save()
                     return JsonResponse({"message":"Perfect"})
                 else:
                     categorias = TablasConfiguracion.obtenerHijos(valor="CatPrograma")
@@ -1729,6 +1733,10 @@ def getModalProcesos(request):
                     proceso.fk_categoria_id = Estructuraprograma.objects.get(pk=data["data"]["padreProcess"]).fk_categoria_id
                     proceso.peso_creditos = data["data"]["creditos"]
                     proceso.save()
+                    precios = PreciosFormacion.objects.filter(fk_estruc_programa=proceso)
+                    if not precios.exists():
+                        precio = PreciosFormacion(fecha_registro=timezone.now(),fk_estruc_programa=proceso)
+                        precio.save()
                     return JsonResponse({"message":"Perfect"})
                 else:
                     programs = Estructuraprograma.objects.filter(valor_elemento="Program")
@@ -1771,6 +1779,10 @@ def getModalUnidades(request):
                     unidad.fk_categoria_id = Estructuraprograma.objects.get(pk=data["data"]["padreUnit"]).fk_categoria_id
                     unidad.peso_creditos = data["data"]["creditos"]
                     unidad.save()
+                    precios = PreciosFormacion.objects.filter(fk_estruc_programa=unidad)
+                    if not precios.exists():
+                        precio = PreciosFormacion(fecha_registro=timezone.now(),fk_estruc_programa=unidad)
+                        precio.save()
                     return JsonResponse({"message":"Perfect"})
                 else:
                     programs = Estructuraprograma.objects.filter(valor_elemento="Program")
@@ -1844,6 +1856,10 @@ def getModalCursos(request):
                     curso.save()
                     curso_char.fk_estruc_programa = curso
                     curso_char.save()
+                    precios = PreciosFormacion.objects.filter(fk_estruc_programa=curso)
+                    if not precios.exists():
+                        precio = PreciosFormacion(fecha_registro=timezone.now(),fk_estruc_programa=curso)
+                        precio.save()
                     return JsonResponse({"message":"Perfect"})
             except:
                 return JsonResponse({"message":"error"}, status=500)

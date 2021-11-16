@@ -176,6 +176,21 @@
             }
          }
          if (bankPage === 4) {
+            commonValidator = $("#formYoutube").validate({
+               highlight: function (element) {
+                  $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+               },
+               success: function (element) {
+                  $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+               },
+            });
+            if ($("#tagResource4").val().trim() == "") {
+               
+            }
+            if (!$("#formYoutube").valid()) {
+               $("#insertBankBtn").removeAttr("disabled")
+               return
+            }
             let HTMLstring = comprobarYoutube(inputYT.value.trim())
             if (!HTMLstring.includes("Invalid Youtube video") && $("#tagResource4").val().trim() != "") {
                dataObj = {
