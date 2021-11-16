@@ -13,11 +13,12 @@ from django.contrib.auth import authenticate, login, logout, update_session_auth
 from django.contrib.auth.models import User
 from django.forms.utils import ErrorList
 from django.http import HttpResponse
+from django.template.loader import render_to_string
 from django.urls import reverse
 
 from .forms import LoginForm, SignUpForm, ResetPasswordForm, LandingPage, FullRegistration, editProfiles
 from modules.app.models import TablasConfiguracion
-from modules.security.models import CtaUsuario, EnlaceVerificacion, LandPage
+from modules.security.models import CtaUsuario, EnlaceVerificacion, LandPage, LogSeguridad
 from modules.security import Methods
 from ..communication.Methods import create_mail, send_mail
 from modules.security.Methods import create_default_ctausuario
@@ -168,9 +169,10 @@ def register_user(request):
             send_mail(
                 create_mail(form.email, "Account Verification Request", "security/base_email_template_pro.html",
                             context))
-            information = {"mensaje": "We have sent you an account verification link to the email provided. Remember to check the spam folder",
-                           "titulo": "Registration link has been send", "urlimage": settings.EMPRESA_URL_LOGO,
-                           "imagelocal": settings.EMPRESA_SRC_LOGO}
+            information = {
+                "mensaje": "We have sent you an account verification link to the email provided. Remember to check the spam folder",
+                "titulo": "Registration link has been send", "urlimage": settings.EMPRESA_URL_LOGO,
+                "imagelocal": settings.EMPRESA_SRC_LOGO}
             return render(request, "security/information_view.html", information)
         else:
             msg = 'Form is not valid'
@@ -546,9 +548,14 @@ def changeSecretQuestion(request):
             response = {
                 'mensaje': 'Your secret question has been changed correctly',
                 'tipo': 4,
-                'titulo': 'Password changed successfully',
+                'titulo': 'Secret question changed successfully',
                 'code': 'changed'
             }
+            operacion = TablasConfiguracion.objects.get(valor_elemento='change_secret_question')
+            modulo = TablasConfiguracion.objects.get(valor_elemento='module_security')
+            descripcion = "Not Adiccional data!!!"
+            LogSeguridad.objects.create(fecha_transaccion=datetime.today(), fk_cta_usuario=request.user,
+                                        fk_tipo_operacion=operacion, modulo=modulo, valor_dato=descripcion)
         else:
             response = {
                 'mensaje': 'the current password entered is incorrect, please verify your password and try again to change your secret question',
@@ -721,3 +728,35 @@ def borrarImages(request):
         else:
 
             return JsonResponse({'mensaje': 'There is no image to remove'})
+
+
+@login_required(login_url="/login/")
+def systemLogView(request):
+    datos = {}
+    if request.session.get('user_rol') == 'Admin':
+        if request.method == 'GET':
+            data = LogSeguridad.objects.all().order_by("fecha_transaccion")[:10]
+            datos['logs'] = render_to_string('security/renderlog.html', {'logs': data})
+    else:
+        return redirect("/")
+    return render(request, 'security/systemlogtemplate.html', datos)
+
+
+@login_required(login_url="/login/")
+def systemLogData(request):
+    datos = {}
+    data =None
+    if request.session.get('user_rol') == 'Admin':
+        if request.method == 'POST':
+            data = LogSeguridad.objects.all().order_by("fecha_transaccion")[:10]
+            if request.POST.get("fecha_inicial") and request.POST.get("fecha_final"):
+                data = data.filter(fecha_transaccion__range=[request.POST.get("fecha_inicial"), request.POST.get("fecha_final")])
+            if request.POST.get("username"):
+                data = data.filter(fk_cta_usuario__username=request.POST.get("username"))
+            datos['logs'] = render_to_string('security/renderlog.html', {'logs': data})
+            datos['result'] = data.count()
+            return JsonResponse(datos)
+        elif request.method == 'GET':
+            return JsonResponse(datos)
+    else:
+        return redirect("/")
