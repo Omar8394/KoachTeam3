@@ -918,6 +918,20 @@
 
     }
   },
+  {
+    "model": "app.TablasConfiguracion",
+    "pk":89,
+    "fields": {
+      "desc_elemento": "Vimeo",
+      "fk_tabla_padre_id": 10,
+      "tipo_elemento": 0,
+      "permite_cambios":0,
+      "valor_elemento":"Recurso_vimeo",
+      "mostrar_en_combos":1,
+      "maneja_lista":0
+
+    }
+  },
   
   
   {

@@ -115,6 +115,7 @@
 {% endblock content %}
 
 {% block javascripts %}
+<script src="https://player.vimeo.com/api/player.js"></script>
 <script>
    let editmode = false
    let sortable = false
@@ -200,6 +201,10 @@
          if (inputYT.value.trim()) {
             let youtubeFrame = comprobarYoutube(inputYT.value.trim())
             frameYT.innerHTML = youtubeFrame
+            if(youtubeFrame.includes("vimeo.com/")){
+               let iframe = frameYT.children[0]
+               let player = new Vimeo.Player(iframe);
+            }
          }
          else {
             frameYT.innerHTML = ""
@@ -231,13 +236,17 @@
                },
             });
             let HTMLstring = comprobarYoutube(inputYT.value.trim())
-            if (!HTMLstring.includes("Invalid Youtube video") && $("#tagResource4").val().trim() != "") {
+            if (!HTMLstring.includes("Invalid Youtube or Vimeo video") && $("#tagResource4").val().trim() != "") {
+               let tipo_recurso = "Recurso_video"
+               if (HTMLstring.includes("vimeo.com/")){
+                  tipo_recurso = "Recurso_vimeo"
+               }
                dataObj = {
                   titulo: document.getElementById("titleResource4").value,
                   path: extractCode(document.getElementById("urlResource").value),
                   tipo_path: 1,
                   compartido: document.getElementById("checkSharedCB4").checked,
-                  tipo_recurso: "Recurso_video",
+                  tipo_recurso,
                   tags: $("#tagResource4").val().toLowerCase()
                }
                const response = await updateModel("{% url 'modalResourcesBank'%}", "Create", dataObj, null)
@@ -388,6 +397,11 @@
       if (linkEntry.includes("youtube.com/")) {
          codeIndex = linkEntry.indexOf("&v=") + linkEntry.indexOf("?v=") + 4
       }
+      if(linkEntry.includes("vimeo.com/")){
+         codeIndex = linkEntry.split("/")
+         let code = codeIndex.at(-1)
+         return code
+      }
       let code = linkEntry.slice(codeIndex, codeIndex + 11)
       return code
    }
@@ -396,8 +410,12 @@
          let code = extractCode(linkEntry)
          return `<iframe width="560" height="315" src="https://www.youtube.com/embed/${code}" title="YouTube video player" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
       }
+      else if(linkEntry.match(/(?:http|https)?:?\/?\/?(?:www\.)?(?:player\.)?vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/(?:[^\/]*)\/videos\/|video\/|)(\d+)(?:|\/\?)/g)){
+         let code = extractCode(linkEntry)
+         return `<iframe src="https://player.vimeo.com/video/${code}" width="560" height="315" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>`
+      }
       else {
-         return `<div>Invalid Youtube video</div>`
+         return `<div>Invalid Youtube or Vimeo video</div>`
       }
    }
 
@@ -420,6 +438,9 @@
          }
          if (type === "Recurso_video") {
             recursoHTML = `<iframe width="560" height="315" src="https://www.youtube.com/embed/${path}" title="YouTube video player" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
+         }
+         if (type === "Recurso_vimeo") {
+            recursoHTML = `<iframe src="https://player.vimeo.com/video/${path}" width="560" height="315" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>`
          }
          HTMLstring += recursoHTML
       })
