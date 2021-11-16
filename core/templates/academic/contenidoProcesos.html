@@ -1,3 +1,4 @@
+{% load Filter %}
 {% if query%}
 results for "{{query}}"
 {% endif %}
@@ -6,6 +7,7 @@ results for "{{query}}"
       <h3 class="section-title">Processes</h3>
    </div>
    <div class="cards-container">
+      {% if request.user|isAdmin %}
       {% if not query %}
       <div class="card-new">
          <div class="card-new-content">
@@ -18,17 +20,23 @@ results for "{{query}}"
          </div>
       </div>
       {% endif%}
+      {% endif%}
       {% for process in data%}
       {%if process.valor_elemento == 'Process'%}
       <div class="card-academic">
-         <!-- <div class="card-academic-locked">
-                     <i class="fas fa-lock"></i>
-                  </div> -->
+         {%if process|isEnrolled:request.user and process.fk_estructura_padre|isEnrolled:request.user  %}
+         <div class="card-academic-locked">
+            <i class="fas fa-lock"></i>
+            {%if process|isClosed:request.user %}
+            <p>This enrollment has ended</p>
+            {%endif%}
+         </div>
+         {% endif %}
+         <div class="over-title">
+            <p><span class="subtitle">Type</span> {{process.valor_elemento}}</p>
+            <p><span class="subtitle">Credits</span> {{process.peso_creditos}}</p>
+         </div>
          <div class="card-academic-content">
-            <div class="over-title">
-               <p><span class="subtitle">Type</span> {{process.valor_elemento}}</p>
-               <p><span class="subtitle">Credits</span> {{process.peso_creditos}}</p>
-            </div>
             <h2 class="card-academic-title">{{process.descripcion}}</h2>
             <p class="card-academic-body">{{process.resumen}}</p>
             <div class="btn-group" role="group">

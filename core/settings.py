@@ -152,5 +152,12 @@ EMAIL_PORT = 587
 
 LAND_PAGE_MODE = "ON"
 
+## configuracion empresa
+EMPRESA_NOMBRE = "Productivity Science"
+EMPRESA_SRC_LOGO = "/static/assets/img/JC-Energy-Logo-Full.png" #local logo image resolucion
+EMPRESA_URL_LOGO = "https://i.postimg.cc/hj3DfCKw/JC-Energy-Logo-Full.png"
+EMPRESA_SRC_HEADER = "/static/assets/img/JC-Energy.png"
+EMPRESA_URL_HEADER = "https://i.postimg.cc/hGPwmhFH/JC-Energy.png"
+
 #############################################################
 #############################################################

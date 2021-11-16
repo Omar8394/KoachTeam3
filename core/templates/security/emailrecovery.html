@@ -5,11 +5,15 @@
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
-{% block javascripts %}<script src="/static/assets/js/modules/security/validations.js"></script>{% endblock javascripts %}
+{% block javascripts %}<script src="https://static.campusproductivity.com/assets/js/modules/security/validations.js"></script>{% endblock javascripts %}
 
 {% block content %}
     <div class="col-md-12">
-        <img src="/static/assets/img/JC-Energy-Logo-Full.png" class="navbar-brand mt-5">
+        {% if urlimage %}
+            <img src="{{ urlimage }}" class="navbar-brand mt-5">
+        {% else %}
+            <img src="{{ imageLocal }}" class="navbar-brand mt-5">
+        {% endif %}
     </div>
 
     <div class="col-md-12 d-flex justify-content-center text-center">

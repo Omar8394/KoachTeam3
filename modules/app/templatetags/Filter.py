@@ -12,8 +12,44 @@ from django.core import serializers
 
 register = template.Library()
 
+@register.filter(name='isAdmin')
+def isAdmin(user):
+    _isAdmin = False
+    user = user.extensionusuario
+    rol = user.CtaUsuario.fk_rol_usuario.valor_elemento
+    if rol == 'rol_admin':
+        _isAdmin = True
+    return _isAdmin
+
+@register.filter(name='isClosed')
+def isClosed(estructura,user):
+    _isClosed = False
+    user = user.extensionusuario
+    publico = user.Publico
+    estatus = TablasConfiguracion.obtenerHijos(valor='EstMatricula').get(valor_elemento='EstatusVencido')
+    if estatus:
+        matriculas = MatriculaAlumnos.objects.filter(fk_estruc_programa=estructura, fk_publico=publico, fk_status_matricula=estatus)
+        if matriculas.exists():
+            _isClosed=True
+    return _isClosed
+
+@register.filter(name='isEnrolled')
+def isLocked(estructura, user):
+    locked = False
+    user = user.extensionusuario
+    rol = user.CtaUsuario.fk_rol_usuario.valor_elemento
+    publico = user.Publico
+    if rol == 'rol_student':
+        estatus = TablasConfiguracion.obtenerHijos(valor='EstMatricula').get(valor_elemento='EstatusAprovado')
+        matriculas = MatriculaAlumnos.objects.filter(fk_estruc_programa=estructura, fk_publico=publico, fk_status_matricula=estatus)
+        if matriculas.exists():
+            locked=False
+        else:
+            locked=True
+    return locked
+
 @register.filter(name='locked')
-def editableCourse(activity, user):
+def isNeeded(activity, user):
     isRequired = False
     user = user.extensionusuario
     rol = user.CtaUsuario.fk_rol_usuario.valor_elemento
@@ -29,7 +65,7 @@ def editableCourse(activity, user):
     return isRequired
 
 @register.filter(name='getLibrary')
-def editableCourse(user):
+def getLibrary(user):
     response = None
     user = user.extensionusuario
     rol = user.CtaUsuario.fk_rol_usuario.valor_elemento

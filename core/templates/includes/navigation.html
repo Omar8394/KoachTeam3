@@ -5,7 +5,7 @@
 			<div class="logo-header" data-background-color="dark">
 				
 				<a href="{% url 'home' %}" class="logo" width="100px">
-					<img src="/static/assets/img/JC-Energy.png" alt="navbar brand" class="navbar-brand">
+                             <img src="https://i.postimg.cc/hGPwmhFH/JC-Energy.png" alt="navbar brand" class="navbar-brand">
 				</a>
 				<button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse" data-target="collapse" aria-expanded="false" aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon">
@@ -51,7 +51,7 @@
 									<li>
 										<div class="dropdown-divider"></div>
 										<a class="dropdown-item" href="{% url 'editProfile' %}"><i class="fas fa-user-circle mr-1"></i> My profile</a>
-										{% if request.user.extensionusuario.CtaUsuario.fk_rol_usuario.desc_elemento == 'Admin' %}
+										{% if request.session.user_rol == 'Admin' %}
 										<div class="dropdown-divider"></div>
 										<a class="dropdown-item" href="{% url 'indexSettings' %}"><i class="fas fa-cog mr-1"></i> Settings</a>
 										{% endif %}

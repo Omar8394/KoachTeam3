@@ -7,8 +7,8 @@
 {% block stylesheets %}{% endblock stylesheets %}
 <!-- Specific JS goes HERE -->
 {% block javascripts %}
-    <script src="/static/assets/js/modules/security/validations.js"></script>
-    <script src="/static/assets/js/plugin/sweetalert/sweetalert.min.js"></script>
+    <script src="https://static.campusproductivity.com/assets/js/modules/security/validations.js"></script>
+    <script src="https://static.campusproductivity.com/assets/js/plugin/sweetalert/sweetalert.min.js"></script>
     <script language="JavaScript" >
         {% if mensajeland %}
         swal("Important Statement", "The landpage mode is activated therefore registration is only enabled" +
@@ -16,7 +16,7 @@
             " if you are not yet part of the team and want to participate fill in the following request form .", "info");
         {% endif %}
         {% if msg %}
-            swal("Error", '{{ msg }}', "error");
+            swal("Request Sent!",{{ msg }},"success")
         {% endif %}
     </script>
 {% endblock javascripts %}
@@ -24,7 +24,11 @@
 {% block content %}
 
     <div class="d-flex justify-content-center">
-        <img src="/static/assets/img/JC-Energy-Logo-Full.png" style="width: 20rem;" class="navbar-brand">
+     {% if urlimage %}
+            <img src="{{ urlimage }}" style="width: 20rem;" class="navbar-brand mt-5">
+        {% else %}
+            <img src="{{ imageLocal }}" style="width: 20rem;" class="navbar-brand mt-5">
+        {% endif %}
     </div>
 
     <div class="card text-white border border-dark">
@@ -112,7 +116,7 @@
         </form>
     </div>
     <div class="card-footer bg-dark2">
-        <div class="h5">© Copyright 2021 | JC Energy | All rights reserved</div>
+        <div class="h5">© Copyright 2021 | {{ empresa }} | All rights reserved</div>
     </div>
 </div>
 

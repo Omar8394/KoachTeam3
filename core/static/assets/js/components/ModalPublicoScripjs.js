@@ -1,4 +1,0 @@
-function pedro(){
-
-    alert("hola");
-}
