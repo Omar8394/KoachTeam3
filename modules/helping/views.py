@@ -14,6 +14,7 @@ from django.template import loader
 from ..security.forms import SignUpForm
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
+from core import settings
 import json
 
 # Create your views here.
