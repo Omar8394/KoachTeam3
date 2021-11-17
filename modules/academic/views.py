@@ -2879,7 +2879,7 @@ def getModalNewMultiple(request):
                 
                
                 if "idFind" in data:
-                    print(data)
+                  #  print(data)
                     pregunta=EvaluacionesPreguntas.objects.filter(pk=data["idFind"])
                     findpregunta = list(pregunta.values())
                     childs = PreguntasOpciones.objects.filter(fk_evaluacion_pregunta=data["idFind"])
