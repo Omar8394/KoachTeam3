@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpRequest,JsonResponse
 from django.template.loader import get_template
-from ..app.models import TablasConfiguracion,PreguntasFrecuentes
-from .forms import preguntasfrecuentes
+from ..app.models import TablasConfiguracion,PreguntasFrecuentes,MensajesPredefinidos
+from .forms import  mensajes, preguntasfrecuentes
 from django.contrib.auth.decorators import login_required
 
 from ..security import Methods
@@ -259,3 +259,76 @@ def sending(request):
                         html_template = (loader.get_template('help/modalmail.html')) 
         
                         return HttpResponse(html_template.render(context, request))
+@login_required(login_url="/login/")
+def save_Q2 (request): 
+ if(request.user.is_staff):
+     if request.method == "POST":  
+        form = mensajes(request.POST)
+        print(form)
+        if form.is_valid():  
+            try: 
+                 
+                form.save()
+                 
+                form=mensajes()
+            
+                return render(request,'help/savemessage.html',{'form':form}) 
+            except:  
+                pass 
+         
+            
+     else:  
+        form = mensajes()  
+     return render(request,'help/savemessage.html',{'form':form})
+           
+ else:      
+     return redirect('/')   
+def showmessageso(request):
+     
+        form = MensajesPredefinidos.objects.select_related("fk_tipo_mensaje").filter(fk_tipo_mensaje_id__fk_tabla_padre_id= 80)
+        forma=TablasConfiguracion.obtenerHijos("tipoMensajes")
+
+        context={"form":form,"forma":forma}
+                     
+        html_template = (loader.get_template('help/content_message.html')) 
+        
+        return HttpResponse(html_template.render(context, request))
+     
+        
+def editmessage(request):
+     if request.method == "POST":
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                modelo = {}
+                context = {}
+                if request.body:
+                    context={}
+                    data = json.load(request)
+                    if data["correo"] == "find":
+                      form =MensajesPredefinidos.objects.filter(id_mensaje=data["id"])
+                      forma=TablasConfiguracion.obtenerHijos("tipoMensajes")
+                      print(data)
+
+                      context={"form":form,"forma":forma}
+                     
+                      html_template = (loader.get_template('help/modaleditmessage.html')) 
+        
+                      return HttpResponse(html_template.render(context, request))
+                    elif data["correo"] == "edit":
+                       email = data["data"]["desc"]
+                       enl = data["data"]["enl"]
+                       type=data["data"]["categoryProgram"]
+                       print(data)
+                       helps=MensajesPredefinidos.objects.filter(id_mensaje=data["id"])
+                       for obj in helps:
+                           obj.descripcion = email
+                           obj.enlace = enl
+                           obj.fk_tipo_mensaje_id=type
+                           obj.save()
+                           return JsonResponse({"message":"Perfect"})
+                     
+                    else:
+    
+                     context={}
+                     html_template = (loader.get_template('help/modaleditmessage.html')) 
+        
+                     return HttpResponse(html_template.render(context, request))                    

@@ -1,0 +1,57 @@
+<div class="modal-content">
+    <div class="modal-header">
+       <h5 class="modal-title">Edit Messages</h5>
+       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+       </button>
+    </div>
+    <form id="formSave" class="form">
+
+      <div class="modal-body">
+            {% for p in form %}
+         <div class="form-row">
+         
+            <div class="form-group col-12">
+               <label for="descriptionProgram" class="col-form-label">Description</label>
+              
+               <input type="text" class="form-control"  value="{{ p.descripcion }}" id="desc" name="desc">
+              
+            </div>
+   
+         </div>
+           <div class="form-row">
+
+            <div class="form-group col-12">
+               <label for="descriptionProgram" class="col-form-label" >Enlace</label>
+               <input type="text" class="form-control" value="{{ p.enlace }}" id="enl" name="enl">
+            </div>
+
+        </div>
+          <div class="form-row">
+             <div class="form-group col-12">
+               <label for="categoryProgram" class="col-form-label">Type Message</label>
+               <select class="form-control" name="categoryProgram" id="combo" >
+                  <option value="null">Select a option</option>
+
+                  {% for c in forma %}
+                  <option value="{{c.id_tabla}}"{% if c %}{% if p.fk_tipo_mensaje_id == c.id_tabla %}selected{% endif %}{% endif %} >{{ c.desc_elemento }}</option>
+                  
+                  {% endfor %} 
+               </select>
+               </div>
+         </div>
+        {% endfor %}
+
+      </div>
+
+         
+
+      <div class="modal-footer">
+          <button type="button" class="btn btn-danger mr-auto" data-dismiss="modal"><i
+                class="fas fa-arrow-left mr-2"></i>Back</button>
+          <button type="submit" class="btn btn-primary">Submit<i class="fas fa-save ml-2"></i></button>
+      </div>
+
+
+    </form>
+ </div>
