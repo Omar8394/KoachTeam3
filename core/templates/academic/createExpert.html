@@ -681,6 +681,10 @@ function actualizarListaSugerencia() {
             }
             BlockId=id
             setLoading()
+            var el = document.getElementById('addNewQuestion'),
+            elClone = el.cloneNode(true);
+
+             el.parentNode.replaceChild(elClone, el);
             renderModalQuestions().then(()=>{
             
                $("#addNewQuestion").modal("show")
@@ -692,6 +696,10 @@ function actualizarListaSugerencia() {
            
             BlockId=id
             setLoading()
+            var el = document.getElementById('addNewRespuesta'),
+            elClone = el.cloneNode(true);
+
+             el.parentNode.replaceChild(elClone, el);
             renderModalRespuesta(BlockId).then(()=>{
             
                $("#addNewRespuesta").modal("show")
@@ -1473,6 +1481,10 @@ fetch("{% url 'getModalAddInstructions' %}", {
 
         const openEditModal = (id, type) => {
             setLoading()
+            var el = document.getElementById('addNewQuestion'),
+            elClone = el.cloneNode(true);
+
+             el.parentNode.replaceChild(elClone, el);
         selectedId = id
         let url
            if (type == 1 ){
@@ -1775,6 +1787,8 @@ fetch("{% url 'getModalAddInstructions' %}", {
              indiceRespuesta= null
              indicePalabra=null
              editmode = false
+             tablaPreguntas.splice(0,tablaPreguntas.length)
+
 
         }
 
@@ -2057,7 +2071,7 @@ function isEmptyOrSpaces(str){
 
                         <td>
                             <div class="btn-group" role="group">
-                                <input type='number'  value='${dato.value}' onchange="actualizarValue(${index},this)"   >
+                                <input type='number' step='any'  value='${dato.value}' onchange="actualizarValue(${index},this)"   >
                             </div>
                         </td>
                         
@@ -2168,7 +2182,7 @@ function isEmptyOrSpaces(str){
                         
                         <td>
                             <div class="btn-group" role="group">
-                                <input type='number'  value='${dato.value}' onchange="actualizarValue(${index},this)"   >
+                                <input type='number' step='any'  value='${dato.value}' onchange="actualizarValue(${index},this)"   >
                             </div>
                         </td>
                         <td>
@@ -2227,7 +2241,7 @@ function isEmptyOrSpaces(str){
                         
                         <td>
                             <div class="btn-group" role="group">
-                                <input type='number'  value='${dato.value}' onchange="actualizarValue(${index},this)"   >
+                                <input type='number' step='any' value='${dato.value}' onchange="actualizarValue(${index},this)"   >
                             </div>
                         </td>
                         <td>

@@ -359,6 +359,10 @@ const renderSortedContent = () => {
 
         const openAddModalQuestion = () => {
             setLoading()
+            var el = document.getElementById('addNewQuestion'),
+            elClone = el.cloneNode(true);
+
+             el.parentNode.replaceChild(elClone, el);
             limpiarModalOpciones()
             renderModalTypeQuestion().then(()=>{
                editmode = false
@@ -472,6 +476,9 @@ const renderSortedContent = () => {
             
             }
             if (editmode) {
+                console.log(form)
+                console.log('form')
+
                 updateQuestion(form, selectedId, url)
             }
             else {
@@ -758,6 +765,11 @@ setLoading()
 
         const openEditModal = (id, type) => {
             setLoading()
+            var el = document.getElementById('addNewQuestion'),
+            elClone = el.cloneNode(true);
+
+             el.parentNode.replaceChild(elClone, el);
+             
         selectedId = id
         let url
            if (type == 1 ){
@@ -796,8 +808,16 @@ setLoading()
                 await renderModalQuestions()
                 await renderModalNewQuestion (url) 
 
+                tablaPreguntas.splice(0,tablaPreguntas.length)
 
-               limpiarModalOpciones()
+                tablaPreguntas=[]
+             respuesta=null
+             indicePalabra=null
+             indiceRespuesta= null
+             indicePalabra=null
+             //editmode = false
+             console.log('clean')
+
                 let PreguntaDatos = JSON.parse(await res.text())
                 
                 document.getElementById("questionText").value=PreguntaDatos.data.texto_pregunta
@@ -1004,11 +1024,15 @@ setLoading()
         })
         .then(() => {
            //  const formActividad = document.getElementById("formQuestion")
-             const formQuestion = document.getElementById("addNewQuestion")
-                formQuestion.addEventListener("submit", (e) => {
+         
+             var formQuestion = document.getElementById("addNewQuestion")
+           
+                var z=(e) => {
                     e.preventDefault()
                     clickSave(url)
-                })   
+                }
+                formQuestion.removeEventListener("submit", z);
+                formQuestion.addEventListener("submit",z )   
                  
                 const questionText = document.getElementById("questionText")
                //    console.log(questionText)
@@ -1027,6 +1051,9 @@ setLoading()
              indiceRespuesta= null
              indicePalabra=null
              editmode = false
+             tablaPreguntas.splice(0,tablaPreguntas.length)
+             console.log('clean')
+
 
         }
 
@@ -1537,7 +1564,7 @@ function isEmptyOrSpaces(str){
 
                         <td>
                             <div class="btn-group" role="group">
-                                <input type='number'  value='${dato.value}' onchange="actualizarValue(${index},this)"   >
+                                <input type='number'  value='${dato.value}' step='any' onchange="actualizarValue(${index},this)"   >
                             </div>
                         </td>
                         
@@ -1648,7 +1675,7 @@ function isEmptyOrSpaces(str){
                         
                         <td>
                             <div class="btn-group" role="group">
-                                <input type='number'  value='${dato.value}' onchange="actualizarValue(${index},this)"   >
+                                <input type='number'  value='${dato.value}' step='any' onchange="actualizarValue(${index},this)"   >
                             </div>
                         </td>
                         <td>
@@ -1707,7 +1734,7 @@ function isEmptyOrSpaces(str){
                         
                         <td>
                             <div class="btn-group" role="group">
-                                <input type='number'  value='${dato.value}' onchange="actualizarValue(${index},this)"   >
+                                <input type='number'  value='${dato.value}' step='any' onchange="actualizarValue(${index},this)"   >
                             </div>
                         </td>
                         <td>
