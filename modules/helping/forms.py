@@ -26,6 +26,7 @@ class preguntasfrecuentes(forms.ModelForm):
     class Meta:  
         model = PreguntasFrecuentes
         fields = "__all__" 
+
 class mensajes(forms.ModelForm):
     descripcion = forms.CharField(
         widget=forms.Textarea(

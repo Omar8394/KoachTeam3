@@ -127,11 +127,13 @@ class PreguntasFrecuentes(models.Model):
     texto_respuesta = models.TextField(null=True)
     fk_tipo_pregunta_frecuente = models.ForeignKey(TablasConfiguracion, on_delete=models.DO_NOTHING, default=None, null=True)
 
+
 class MensajesPredefinidos(models.Model):
     id_mensaje = models.AutoField(primary_key=True)
     fk_tipo_mensaje = models.ForeignKey(TablasConfiguracion, on_delete=models.DO_NOTHING, default=None, null=True)
     descripcion = models.TextField(null=True)
     enlace = models.TextField(null=True)
+
 
 class HistoricoUser(models.Model):
     id_historico_user = models.AutoField(primary_key=True)

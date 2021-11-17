@@ -259,6 +259,7 @@ def sending(request):
                         html_template = (loader.get_template('help/modalmail.html')) 
         
                         return HttpResponse(html_template.render(context, request))
+
 @login_required(login_url="/login/")
 def save_Q2 (request): 
  if(request.user.is_staff):
